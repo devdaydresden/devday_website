@@ -1,0 +1,189 @@
+/* --------------------------------------------------------------------------------------
++
++ Speaker SLIDER
++
+-------------------------------------------------------------------------------------- */
+
+
+#speaker {
+
+  /* clearfix */
+  .owl-carousel .owl-wrapper:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+  /* display none until init */
+  .owl-carousel{
+    display: none;
+    position: relative;
+    // width: calc(100% - 234px);
+    width: 100%;
+    //padding-right: 234px;
+    -ms-touch-action: pan-y;
+  }
+  .owl-carousel .owl-wrapper{
+    display: none;
+    position: relative;
+    -webkit-transform: translate3d(0px, 0px, 0px);
+  }
+  .owl-carousel .owl-wrapper-outer{
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+  .owl-carousel .owl-wrapper-outer.autoHeight{
+    -webkit-transition: height 500ms ease-in-out;
+    -moz-transition: height 500ms ease-in-out;
+    -ms-transition: height 500ms ease-in-out;
+    -o-transition: height 500ms ease-in-out;
+    transition: height 500ms ease-in-out;
+  }
+
+  .owl-carousel .owl-item{
+    float: left;
+
+    .item {
+      position: relative;
+      cursor: pointer;
+      @include t(.3s);
+      background-color: $white;
+
+      >img {
+        width: 100%;
+        @include scale(1 , 1);
+        @include t(.3s);
+
+      }
+      h4 {
+        font-family: $title-font;
+      }
+      .hover {
+        position: absolute;
+        z-index: 999999;
+        left: 0px;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        //@include fadeout;
+        @include t(.3s);
+        div {
+          @include box(50px);
+          margin-top: 150px;
+          position: relative;
+          left: 50%;
+          -ms-transform: translate(-50%,-10px); /* IE 9 */
+          -webkit-transform: translate(-50%,-10px); /* Safari */
+          transform: translate(-50%,-10px);
+          @include t(.3s);
+          i {
+            -ms-transform: rotate(45deg); /* IE 9 */
+            -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+            transform: rotate(45deg);
+            @include box(50px);
+            @include fadeout;
+
+          }
+          svg {
+            @include box(50px);
+          }
+        }
+        h6{
+          position: relative;
+          @include t(.3s);
+          text-align: center;
+          margin-top: 100px;
+          background: $base-transparent;
+          padding: 4px 0;
+        }
+      }
+      &:hover {
+        .hover {
+          background-color:$base-transparent;
+          @include fadein;
+          div {
+            -ms-transform: translate(-50%,0); /* IE 9 */
+            -webkit-transform: translate(-50%,0); /* Safari */
+            transform: translate(-50%,0);
+            @include fadein;
+            i{
+              @include fadein;
+            }
+          }
+          h6 {
+            bottom: 0;
+            @include fadein;
+            background: transparent;
+          }
+        }
+      }
+    }
+  }
+  .owl-controls .owl-page,
+  .owl-controls .owl-buttons div{
+    cursor: pointer;
+  }
+  .owl-controls {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  /* mouse grab icon */
+  .grabbing {
+      cursor:url(grabbing.png) 8 8, move;
+  }
+
+  /* fix */
+  .owl-carousel  .owl-wrapper,
+  .owl-carousel  .owl-item{
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility:    hidden;
+    -ms-backface-visibility:     hidden;
+    -webkit-transform: translate3d(0,0,0);
+    -moz-transform: translate3d(0,0,0);
+    -ms-transform: translate3d(0,0,0);
+  }
+
+  .owl-buttons {
+    >div {
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      width: 46px;
+      height: 35px;
+      display: block!important;
+      @include opacity(0.5) ;
+      @include ht;
+      @include t(.4s);
+      position: absolute;
+      bottom: 100%;
+      margin-bottom: 30px;
+      &:hover {
+        @include opacity(1) ;
+
+      }
+    }
+  }
+
+  .owl-prev {
+    background-image: url('../images/left-arrow1.png');
+    left: 50%;
+    margin-left: -55px!important;
+  }
+  .owl-next {
+    background-image: url('../images/right-arrow1.png');
+    right: 50%;
+    margin-right: -55px!important;
+  }
+  .owl-dots {
+    display: none;
+  }
+
+
+}

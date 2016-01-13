@@ -1,0 +1,464 @@
+/* --------------------------------------------------------------------------------------
++
++ ICONS FONT
++
+-------------------------------------------------------------------------------------- */
+
+//LOAD UP ICONS
+@font-face {
+    font-family: 'et-line';
+    src:url('../fonts/et-line.eot');
+    src:url('../fonts/et-line.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/et-line.woff') format('woff'),
+        url('../fonts/et-line.ttf') format('truetype'),
+        url('../fonts/et-line.svg#et-line') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+    font-family: 'et-line';
+    content: attr(data-icon);
+    speak: none;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display:inline-block;
+}
+
+//ICON FONT (with silent class for extending)
+%icon,
+.icon {
+    font-family: 'et-line';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    @include font-size(64px);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display:inline-block;
+    position: relative;
+    color: $color-alert;
+    @include lh(110px); 
+    &:after {
+        content: '';
+        @include box(110px);
+        @include pie(50%);
+        position: absolute;
+        left: 50%;
+        margin-left: -55px;
+        top: 0;
+        border: 2px solid $color-alert;
+    }
+}
+
+.icon--mobile:before {
+    content: "\e000";
+}
+.icon--laptop:before {
+    content: "\e001";
+}
+.icon--desktop:before {
+    content: "\e002";
+}
+.icon--tablet:before {
+    content: "\e003";
+}
+.icon--phone:before {
+    content: "\e004";
+}
+.icon--document:before {
+    content: "\e005";
+}
+.icon--documents:before {
+    content: "\e006";
+}
+.icon--search:before {
+    content: "\e007";
+}
+.icon--clipboard:before {
+    content: "\e008";
+}
+.icon--newspaper:before {
+    content: "\e009";
+}
+.icon--notebook:before {
+    content: "\e00a";
+}
+.icon--book-open:before {
+    content: "\e00b";
+}
+.icon--browser:before {
+    content: "\e00c";
+}
+.icon--calendar:before {
+    content: "\e00d";
+}
+.icon--presentation:before {
+    content: "\e00e";
+}
+.icon--picture:before {
+    content: "\e00f";
+}
+.icon--pictures:before {
+    content: "\e010";
+}
+.icon--video:before {
+    content: "\e011";
+}
+.icon--camera:before {
+    content: "\e012";
+}
+.icon--printer:before {
+    content: "\e013";
+}
+.icon--toolbox:before {
+    content: "\e014";
+}
+.icon--briefcase:before {
+    content: "\e015";
+}
+.icon--wallet:before {
+    content: "\e016";
+}
+.icon--gift:before {
+    content: "\e017";
+}
+.icon--bargraph:before {
+    content: "\e018";
+}
+.icon--grid:before {
+    content: "\e019";
+}
+.icon--expand:before {
+    content: "\e01a";
+}
+.icon--focus:before {
+    content: "\e01b";
+}
+.icon--edit:before {
+    content: "\e01c";
+}
+.icon--adjustments:before {
+    content: "\e01d";
+}
+.icon--ribbon:before {
+    content: "\e01e";
+}
+.icon--hourglass:before {
+    content: "\e01f";
+}
+.icon--lock:before {
+    content: "\e020";
+}
+.icon--megaphone:before {
+    content: "\e021";
+}
+.icon--shield:before {
+    content: "\e022";
+}
+.icon--trophy:before {
+    content: "\e023";
+}
+.icon--flag:before {
+    content: "\e024";
+}
+.icon--map:before {
+    content: "\e025";
+}
+.icon--puzzle:before {
+    content: "\e026";
+}
+.icon--basket:before {
+    content: "\e027";
+}
+.icon--envelope:before {
+    content: "\e028";
+}
+.icon--streetsign:before {
+    content: "\e029";
+}
+.icon--telescope:before {
+    content: "\e02a";
+}
+.icon--gears:before {
+    content: "\e02b";
+}
+.icon--key:before {
+    content: "\e02c";
+}
+.icon--paperclip:before {
+    content: "\e02d";
+}
+.icon--attachment:before {
+    content: "\e02e";
+}
+.icon--pricetags:before {
+    content: "\e02f";
+}
+.icon--lightbulb:before {
+    content: "\e030";
+}
+.icon--layers:before {
+    content: "\e031";
+}
+.icon--pencil:before {
+    content: "\e032";
+}
+.icon--tools:before {
+    content: "\e033";
+}
+.icon--tools-2:before {
+    content: "\e034";
+}
+.icon--scissors:before {
+    content: "\e035";
+}
+.icon--paintbrush:before {
+    content: "\e036";
+}
+.icon--magnifying-glass:before {
+    content: "\e037";
+}
+.icon--circle-compass:before {
+    content: "\e038";
+}
+.icon--linegraph:before {
+    content: "\e039";
+}
+.icon--mic:before {
+    content: "\e03a";
+}
+.icon--strategy:before {
+    content: "\e03b";
+}
+.icon--beaker:before {
+    content: "\e03c";
+}
+.icon--caution:before {
+    content: "\e03d";
+}
+.icon--recycle:before {
+    content: "\e03e";
+}
+.icon--anchor:before {
+    content: "\e03f";
+}
+.icon--profile-male:before {
+    content: "\e040";
+}
+.icon--profile-female:before {
+    content: "\e041";
+}
+.icon--bike:before {
+    content: "\e042";
+}
+.icon--wine:before {
+    content: "\e043";
+}
+.icon--hotairballoon:before {
+    content: "\e044";
+}
+.icon--globe:before {
+    content: "\e045";
+}
+.icon--genius:before {
+    content: "\e046";
+}
+.icon--map-pin:before {
+    content: "\e047";
+}
+.icon--dial:before {
+    content: "\e048";
+}
+.icon--chat:before {
+    content: "\e049";
+}
+.icon--heart:before {
+    content: "\e04a";
+}
+.icon--cloud:before {
+    content: "\e04b";
+}
+.icon--upload:before {
+    content: "\e04c";
+}
+.icon--download:before {
+    content: "\e04d";
+}
+.icon--target:before {
+    content: "\e04e";
+}
+.icon--hazardous:before {
+    content: "\e04f";
+}
+.icon--piechart:before {
+    content: "\e050";
+}
+.icon--speedometer:before {
+    content: "\e051";
+}
+.icon--global:before {
+    content: "\e052";
+}
+.icon--compass:before {
+    content: "\e053";
+}
+.icon--lifesaver:before {
+    content: "\e054";
+}
+.icon--clock:before {
+    content: "\e055";
+}
+.icon--aperture:before {
+    content: "\e056";
+}
+.icon--quote:before {
+    content: "\e057";
+}
+.icon--scope:before {
+    content: "\e058";
+}
+.icon--alarmclock:before {
+    content: "\e059";
+}
+.icon--refresh:before {
+    content: "\e05a";
+}
+.icon--happy:before {
+    content: "\e05b";
+}
+.icon--sad:before {
+    content: "\e05c";
+}
+.icon--facebook:before {
+    content: "\e05d";
+}
+.icon--twitter:before {
+    content: "\e05e";
+}
+.icon--googleplus:before {
+    content: "\e05f";
+}
+.icon--rss:before {
+    content: "\e060";
+}
+.icon--tumblr:before {
+    content: "\e061";
+}
+.icon--linkedin:before {
+    content: "\e062";
+}
+.icon--dribbble:before {
+    content: "\e063";
+}
+
+
+// <i class="icon icon--laptop"></i>
+// <i class="icon icon--mobile"></i>
+// <i class="icon icon--desktop"></i>
+// <i class="icon icon--tablet"></i>
+// <i class="icon icon--phone"></i>
+// <i class="icon icon--document"></i>
+// <i class="icon icon--documents"></i>
+// <i class="icon icon--search"></i>
+// <i class="icon icon--clipboard"></i>
+// <i class="icon icon--newspaper"></i>
+// <i class="icon icon--notebook"></i>
+// <i class="icon icon--book-open"></i>
+// <i class="icon icon--browser"></i>
+// <i class="icon icon--calendar"></i>
+// <i class="icon icon--presentation"></i>
+// <i class="icon icon--picture"></i>
+// <i class="icon icon--pictures"></i>
+// <i class="icon icon--video"></i>
+// <i class="icon icon--camera"></i>
+// <i class="icon icon--printer"></i>
+// <i class="icon icon--toolbox"></i>
+// <i class="icon icon--briefcase"></i>
+// <i class="icon icon--wallet"></i>
+// <i class="icon icon--gift"></i>
+// <i class="icon icon--bargraph"></i>
+// <i class="icon icon--grid"></i>
+// <i class="icon icon--expand"></i>
+// <i class="icon icon--focus"></i>
+// <i class="icon icon--edit"></i>
+// <i class="icon icon--adjustments"></i>
+// <i class="icon icon--ribbon"></i>
+// <i class="icon icon--hourglass"></i>
+// <i class="icon icon--lock"></i>
+// <i class="icon icon--megaphone"></i>
+// <i class="icon icon--shield"></i>
+// <i class="icon icon--trophy"></i>
+// <i class="icon icon--flag"></i>
+// <i class="icon icon--map"></i>
+// <i class="icon icon--puzzle"></i>
+// <i class="icon icon--basket"></i>
+// <i class="icon icon--envelope"></i>
+// <i class="icon icon--streetsign"></i>
+// <i class="icon icon--telescope"></i>
+// <i class="icon icon--gears"></i>
+// <i class="icon icon--key"></i>
+// <i class="icon icon--paperclip"></i>
+// <i class="icon icon--attachment"></i>
+// <i class="icon icon--pricetags"></i>
+// <i class="icon icon--lightbulb"></i>
+// <i class="icon icon--layers"></i>
+// <i class="icon icon--pencil"></i>
+// <i class="icon icon--tools"></i>
+// <i class="icon icon--tools-2"></i>
+// <i class="icon icon--scissors"></i>
+// <i class="icon icon--paintbrush"></i>
+// <i class="icon icon--magnifying-glass"></i>
+// <i class="icon icon--circle-compass"></i>
+// <i class="icon icon--linegraph"></i>
+// <i class="icon icon--mic"></i>
+// <i class="icon icon--strategy"></i>
+// <i class="icon icon--beaker"></i>
+// <i class="icon icon--caution"></i>
+// <i class="icon icon--recycle"></i>
+// <i class="icon icon--anchor"></i>
+// <i class="icon icon--profile-male"></i>
+// <i class="icon icon--profile-female"></i>
+// <i class="icon icon--bike"></i>
+// <i class="icon icon--wine"></i>
+// <i class="icon icon--hotairballoon"></i>
+// <i class="icon icon--globe"></i>
+// <i class="icon icon--genius"></i>
+// <i class="icon icon--map-pin"></i>
+// <i class="icon icon--dial"></i>
+// <i class="icon icon--chat"></i>
+// <i class="icon icon--heart"></i>
+// <i class="icon icon--cloud"></i>
+// <i class="icon icon--upload"></i>
+// <i class="icon icon--download"></i>
+// <i class="icon icon--target"></i>
+// <i class="icon icon--hazardous"></i>
+// <i class="icon icon--piechart"></i>
+// <i class="icon icon--speedometer"></i>
+// <i class="icon icon--global"></i>
+// <i class="icon icon--compass"></i>
+// <i class="icon icon--lifesaver"></i>
+// <i class="icon icon--clock"></i>
+// <i class="icon icon--aperture"></i>
+// <i class="icon icon--quote"></i>
+// <i class="icon icon--scope"></i>
+// <i class="icon icon--alarmclock"></i>
+// <i class="icon icon--refresh"></i>
+// <i class="icon icon--happy"></i>
+// <i class="icon icon--sad"></i>
+// <i class="icon icon--facebook"></i>
+// <i class="icon icon--twitter"></i>
+// <i class="icon icon--googleplus"></i>
+// <i class="icon icon--rss"></i>
+// <i class="icon icon--tumblr"></i>
+// <i class="icon icon--linkedin"></i>
+// <i class="icon icon--dribbble"></i>
+

@@ -1,0 +1,38 @@
+/* --------------------------------------------------------------------------------------
++
++ VERTICALIZE
++
+-------------------------------------------------------------------------------------- */
+
+/*
+    <div class="verticalize">
+      <div class="verticalize__box">
+        Content that needs to be vertically and horizontally centered
+      </div>
+    </div>
+*/
+
+//VERTICALIZE CONTAINER
+.verticalize {
+    text-align: center;
+
+    &:before {
+        content: "";
+        display: inline-block;
+        height: 100%;
+        margin-right: -0.25em; /* Adjusts for spacing */
+        vertical-align: middle;
+    }
+}
+
+//FULL VERTICALIZE
+.verticalize--full {
+    height: 100%;
+}
+
+//VERTICALIZE BOX
+.verticalize__box {
+    display: inline-block;
+    max-width: 99%;             /* Prevent verticalize box to go to next line and break layout if window is too narrow */
+    vertical-align: middle;
+}

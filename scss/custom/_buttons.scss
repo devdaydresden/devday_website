@@ -1,0 +1,87 @@
+/*************************************
+**************************************
+**************************************
+
+  Buttons
+
+**************************************
+**************************************
+**************************************/
+
+
+.btn1 {
+    font-family: $base-font;
+    font-size: $base-font-size;
+    @include unselectable;
+    text-decoration: none !important;
+    text-shadow: none;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    display: inline-block;
+    text-align: center;
+    text-transform: uppercase;
+    // @include pie;
+    // @include lh(25px);
+    // padding: 0 10px;
+    margin: 0;/* remove margin for some browsers */
+    color: $btn-clr;
+    // background: $btn-bgr;
+    border: none;
+    @include transition(all .3s ease);
+    &.medium {
+        width: 170px;
+    }
+    &.big {
+        width: 200px;
+    }
+    &:hover {
+        cursor: pointer !important;
+        text-decoration: none !important;
+        // background: $btn-hover;
+        color: $white;
+        text-shadow: 1px 1px 0 $highlight-dark;
+
+        span {
+            @include fadein;
+            margin-left: 10px!important;
+            @include scale(1);
+
+        }
+    }
+    &.btn--white {
+        @include lh(61px);
+        background-color: transparent;
+        border: 1px solid rgba(255,255,255,.4);
+        text-shadow: 0;
+        &:hover {
+            padding: 0 10px;
+            color: $white !important;
+        }
+
+	}
+	&.btn--blue {
+		@include lh(51px);
+		background-color: $base;
+        border: 1px solid rgba(15,18,47,.4);
+		// border: 1px solid $base;
+    }
+    &.btn--white-blue {
+        @include lh(51px);
+        border: 1px solid rgba(197,199,213,.4);
+        background-color: transparent;
+        color: $base!important;
+    }
+	span {
+		// margin-right: -20px;
+        display: inline-block;
+		@include fadeout;
+		margin-left: 10px;
+		@include t(.4s);
+        margin-left: -3px;
+        @include scale(0);
+        svg {
+            width: 19px;
+            height: 11px;
+        }
+	}
+}

@@ -1,0 +1,72 @@
+
+// devday fonts
+$grey-lighter: #E2E2E2;
+$grey-light: #A5A5A5;
+$grey: #909198;
+$grey-darker: #535353;
+$grey-logo: #b3b3ba;
+$white: #fff;
+$white-transparent: rgba(255, 255, 255, 0.2);
+$base: #292b3f;
+$base-transparent: rgba(41,43,63,0.5);
+$highlight: #289BAE;
+$highlight-dark: #144c55;
+
+//you can overwrite bootstrap variables
+
+
+//Basic colors
+$base-clr:                              #fff;
+$header-bgr:                            #fff;
+$footer-bgr:                            #fff;
+
+$text-clr:                              $grey-darker;
+$second-clr:                            #fff;
+$title-clr:                             #fff;
+$link-clr:                              $highlight;
+$link-hover:                            $base;
+$border:                                #fff;
+$input-clr:                             #fff;
+$input-bgr:                             #fff;
+$input-border:                          #fff;
+$btn-clr:                               #fff;
+$btn-bgr:                               $highlight;
+$btn-hover:                             #fff;
+$btn-border-orange:                     #fff;
+
+//Used colors
+$color-dark:                            #fff;
+$color-cold:                            #fff;
+$color-warm:                            #fff;
+$color-alert:                           #fff;
+$color-success:                         #fff;
+$color-mute:                            #fff;
+$color-white:                           #fff;
+
+//Font
+$base-font:                             "Source Sans Pro", sans-serif;;
+$title-font:                            "Source Sans Pro", sans-serif;
+$icon-font:                             "fontawesome-webfont" !default;
+
+$base-font-size:                        15px;
+$fs:$base-font-size;
+$base-line-height:                      $base-font-size*1.5;
+$lh : $base-line-height;
+
+
+
+//LAYOUT
+$space:                          		20px;
+$page-width:                            1170px;
+$radius:								3px;
+
+
+//SELECT TEXT
+$selected-text-bgr:						#000;
+$selected-text-clr:						#fff;
+
+
+//GRID
+$gutter:                                20px;
+$grid-gutter:                           $gutter;
+$grid-wide-gutter:                      30px;

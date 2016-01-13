@@ -1,0 +1,40 @@
+/* --------------------------------------------------------------------------------------
++
++ HELPERS
++
+-------------------------------------------------------------------------------------- */
+
+
+.clear {
+	@include clear;
+}
+
+.block {
+	display: block;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.bold {
+	font-weight: 700;
+}
+
+.underline {
+	text-decoration: underline;
+}
+
+.full-width {
+	width: 100%;
+	display: block;
+}
+
+.inline-block {
+	display: inline-block;
+}
+
+.center {
+	text-align: center;
+}
+

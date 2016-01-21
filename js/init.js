@@ -396,8 +396,8 @@
     /*-------------------------------------------------*/
     $("#owl2").owlCarousel({
       items : 4,
-      itemsDesktop : [1199,2],
-      itemsDesktopSmall : [700,1],
+      itemsDesktop : [1199,4],
+      itemsDesktopSmall : [700,2],
       itemsTablet: [480,1],
       navigation : true
     });

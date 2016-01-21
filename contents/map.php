@@ -13,7 +13,7 @@
             <h2><?=$mapHeadline?></h2>
             <article class="left first">
                 <h4><?=$mapHeadline2?></h4>
-                <h5><?=$mapHeadline3?></h5>
+                <h5><a href="https://www.google.com/maps/d/edit?mid=zBfktBmVT9XI.kY8LsPwquYbs" target="_blank"><?=$mapHeadline3?></a></h5>
             </article>
             <article class="left">
                 <ul>
@@ -34,7 +34,7 @@
         <article class="left">
             <h2><?=$mapHeadline?></h2>
             <h4><?=$mapHeadline2?></h4>
-            <h5><?=$mapHeadline3?></h5>
+            <h5><a href="https://www.google.com/maps/d/edit?mid=zBfktBmVT9XI.kY8LsPwquYbs" target="_blank"><?=$mapHeadline3?></a></h5>
         </article>
         <article class="left">
             <ul>

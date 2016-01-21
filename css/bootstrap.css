@@ -7522,8 +7522,8 @@ header {
     .map .infoBox img {
       position: absolute !important;
       z-index: 999999;
-      bottom: 91px;
-      left: 50px;
+      bottom: -10000px;
+      left: -10000px;
       cursor: pointer; }
       .map .infoBox img:before {
         position: absolute;
@@ -7554,7 +7554,6 @@ header {
         font-weight: 300;
         position: absolute;
         bottom: 25px;
-        left: 88px;
         color: #535353; }
     .map .infoBox article {
       border-left: 2px solid #E2E2E2; }

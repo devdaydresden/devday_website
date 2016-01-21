@@ -637,7 +637,7 @@
               width: "790px"
           },
           // closeBoxMargin: "12px 4px 2px 2px",
-          closeBoxURL: "images/location.png",
+          //closeBoxURL: "images/location.png",
           infoBoxClearance: new google.maps.Size(1, 1)
       });
 

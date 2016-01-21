@@ -40,7 +40,7 @@
     $mapShowAddress       = 'Zeige Adresse';
     $mapHeadline          = 'Veranstaltungsort';
     $mapHeadline2         = 'Hier findet dieses Jahr der DevDay statt.';
-    $mapHeadline3         = 'Klick auf das Icon zeigt den Veranstaltungsort';
+    $mapHeadline3         = 'Veranstaltungsort in GoogleMaps anzeigen';
     $mapAddressHeadline   = 'Adresse';
     $mapAddress           = '<p>Börse Dresden</p><p>Messering 3</p><p>01067 Dresden</p>';
 

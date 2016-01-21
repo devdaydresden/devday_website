@@ -1020,8 +1020,8 @@
         img {
             position: absolute !important;
             z-index: 999999;
-            bottom: 91px;
-            left: 50px;
+            bottom: -10000px;
+            left: -10000px;
 
             cursor: pointer;
 
@@ -1072,7 +1072,6 @@
 
                 position: absolute;
                 bottom: 25px;
-                left: 88px;
 
                 color: $grey-darker;
             }

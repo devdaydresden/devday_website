@@ -6,7 +6,7 @@
 
         <h3><?=$registerHeadline?></h3>
 
-        <form name="ProfileForm" onsubmit="return CheckInputs();" action="https://news.t-systems-mms.com/u/register.php" method=get class="contact-form" action="form_data.php">
+        <form name="ProfileForm" onsubmit="return CheckInputs();" action="https://news.t-systems-mms.com/u/register.php" method="get" class="contact-form">
             <input type=hidden name="CID" value="112554395">
             <input type=hidden name="SID" value="<? echo $SID; ?>">
             <input type=hidden name="UID" value="<? echo $UID; ?>">
@@ -27,7 +27,7 @@
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 
                         <label>
-                            <select name="inp_46" size=1>
+                            <select name="inp_46" size="1" required>
                                 <option value=""> </option>
                                 <option value="1"<? echo $inp_46=="Herr" ? " SELECTED" : ""; ?>>Herr</option>
                                 <option value="2"<? echo $inp_46=="Frau" ? " SELECTED" : ""; ?>>Frau</option>
@@ -43,7 +43,7 @@
 
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                         <label>
-                            <input class="gray" type="text" name="inp_1" maxlength="60" value="<? echo $inp_1; ?>">
+                            <input class="gray" type="text" name="inp_1" maxlength="60" value="<? echo $inp_1; ?>" required>
                             <i>
                                 <svg role="img" fill="currentColor">
                                     <use xlink:href="icons/icons.svg#name-icon"></use>
@@ -56,7 +56,7 @@
 
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                         <label>
-                            <input class="gray" type="text" name="inp_2" maxlength="60" value="<? echo $inp_2; ?>">
+                            <input class="gray" type="text" name="inp_2" maxlength="60" value="<? echo $inp_2; ?>" required>
                             <i>
                                 <svg role="img" fill="currentColor">
                                     <use xlink:href="icons/icons.svg#name-icon"></use>
@@ -72,7 +72,7 @@
                 <div class="row">
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                         <label>
-                            <input class="gray" type="text" name="inp_3" maxlength="255" value="<? echo $inp_3; ?>">
+                            <input class="gray" type="text" name="inp_3" maxlength="255" value="<? echo $inp_3; ?>" required>
                             <i>
                                 <svg role="img" fill="currentColor">
                                     <use xlink:href="icons/icons.svg#mail-icon"></use>

@@ -751,6 +751,42 @@
     }
 }
 
+.mfp-wrap {
+    .accordion-heading {
+        margin-bottom: 8px;
+    }
+
+    .accordion-toggle {
+        display: block;
+        background: $highlight;
+        color: $white;
+        padding: 5px 10px;
+
+        &.collapsed {
+            &:before {
+                content: "+ ";
+                display: inline;
+            }
+        }
+
+        &:not(.collapsed) {
+            &:before {
+                content: "- ";
+                display: inline;
+            }
+        }
+    }
+
+    .accordion-inner {
+        padding: 8px;
+        font-size: 1em;
+
+        p {
+            font-size: 1em;
+        }
+    }
+}
+
 /*************************************
 **************************************
 **************************************

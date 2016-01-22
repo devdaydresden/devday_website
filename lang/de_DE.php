@@ -19,7 +19,8 @@
     // Speaker
     $speakerHeadline      = 'Speaker';
     $speakerText          = 'Eingeladen sind Sprecher aus ganz Deutschland, um zu aktuellen Themen in der Softwarearchitektur und -entwicklung  Vorträge zu halten und mit Euch gemeinsam über Trends zu diskutieren.</br> Sobald die Agenda final feststeht, wird sie an dieser Stelle bekannt gegeben.';
-
+    $speakerInformations  = 'Zur Person';
+    $speakerSessioninfo   = 'Sessioninformationen';
     // Anmelden
     $registerHeadline     = 'Jetzt kostenlos anmelden';
     $registerName         = 'name';

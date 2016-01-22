@@ -7352,6 +7352,25 @@ header {
     .sessions-section div table tbody tr td {
       padding: 8px; }
 
+.mfp-wrap .accordion-heading {
+  margin-bottom: 8px; }
+.mfp-wrap .accordion-toggle {
+  display: block;
+  background: #289BAE;
+  color: #fff;
+  padding: 5px 10px; }
+  .mfp-wrap .accordion-toggle.collapsed:before {
+    content: "+ ";
+    display: inline; }
+  .mfp-wrap .accordion-toggle:not(.collapsed):before {
+    content: "- ";
+    display: inline; }
+.mfp-wrap .accordion-inner {
+  padding: 8px;
+  font-size: 1em; }
+  .mfp-wrap .accordion-inner p {
+    font-size: 1em; }
+
 /*************************************
 **************************************
 **************************************
@@ -9994,7 +10013,7 @@ img.mfp-img {
     height: 540px !important;
     display: block; }
   .white-popup .person {
-    padding: 50px; }
+    padding: 20px; }
   .white-popup .col-lg-6 {
     padding: 0; }
   .white-popup .row {

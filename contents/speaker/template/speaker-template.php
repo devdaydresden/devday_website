@@ -19,7 +19,33 @@
                 <div class="person">
                     <h4><strong><?php echo $name ?></strong></h4>
                     <h5><?php echo $jobDescription ?></h5>
-                    <?php echo $speakerText ?>
+
+                    <div class="accordion" id="accordion<?php echo $number ?>">
+                      <div class="accordion-group">
+                        <div class="accordion-heading">
+                          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion<?php echo $number ?>" href="#collapseOne<?php echo $number ?>">
+                            <?php echo $speakerInformations ?>
+                          </a>
+                        </div>
+                        <div id="collapseOne<?php echo $number ?>" class="accordion-body collapse in">
+                          <div class="accordion-inner">
+                            <?php echo $speakerText ?>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="accordion-group">
+                        <div class="accordion-heading">
+                          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion<?php echo $number ?>" href="#collapseTwo<?php echo $number ?>">
+                            <?php echo $speakerSessioninfo ?>
+                          </a>
+                        </div>
+                        <div id="collapseTwo<?php echo $number ?>" class="accordion-body collapse">
+                          <div class="accordion-inner">
+                            <?php echo $speakerSessionText ?>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <ul>
                         <?php
                             if(strlen(trim($fbLink)) > 0){

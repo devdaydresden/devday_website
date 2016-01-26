@@ -9,12 +9,12 @@
 
         <ul class="center list-inline">
             <li>
-                <a href="#"><img src="images/bovalino.png" alt=""></a>
+                <a href="#"><img src="images/tsystems.png" alt=""></a>
             </li>
             <li>
-                <a href="#"><img src="images/bbc.png" alt=""></a>
+                <a href="#"><img src="images/lineupr.png" alt=""></a>
             </li>
-            <li>
+            <!-- li>
                 <a href="#"><img src="images/google.png" alt=""></a>
             </li>
             <li>
@@ -22,7 +22,7 @@
             </li>
             <li>
                 <a href="#"><img src="images/microsoft.png" alt=""></a>
-            </li>
+            </li -->
         </ul>
 
     </div>

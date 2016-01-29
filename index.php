@@ -41,7 +41,7 @@
 
                 <?php include 'contents/speaker.php' ?>
 
-                <?php //include 'contents/sessions.php' ?>
+                <?php include 'contents/sessions.php' ?>
 
                 <?php include 'contents/sponsors.php' ?>
                 <?php include 'contents/contact.php' ?>

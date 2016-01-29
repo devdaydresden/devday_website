@@ -36,6 +36,9 @@
                 <li>
                   <a href="#anfahrt"><?=$menuAnfahrt?></a>
                 </li>
+				<li>
+				  <a href="./2015/"><?=$menuDevDay2015?></a>
+				</li>
             </ul>
         </nav>
 

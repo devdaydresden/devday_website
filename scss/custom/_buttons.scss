@@ -45,6 +45,7 @@
             @include fadein;
             margin-left: 10px!important;
             @include scale(1);
+            visibility: visible;
 
         }
     }

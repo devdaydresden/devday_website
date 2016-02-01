@@ -7127,6 +7127,8 @@ header {
     width: 60%;
     margin: 0 auto 75px;
     color: #3f4474; }
+  .sponsors-section .mainsponsor {
+    margin-bottom: 35px; }
   .sponsors-section ul li {
     margin: 0 20px; }
     .sponsors-section ul li img {

@@ -7,10 +7,12 @@
         <h3><?=$sponsorsHeadline?></h3>
         <p class="center"><?=$sponsorsText?></p>
 
-        <ul class="center list-inline">
+        <ul class="center list-inline mainsponsor">
             <li>
                 <a href="https://t-systems-mms.com"><img src="images/tsystems.png" alt="T-Systems"></a>
             </li>
+        </ul>
+        <ul class="center list-inline">
             <li>
                 <a href="https://lineupr.com"><img src="images/lineupr.png" alt="LINEUPR"></a>
             </li>

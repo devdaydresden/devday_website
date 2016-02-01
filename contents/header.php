@@ -30,7 +30,7 @@
                 <li>
                     <a href="#sponsors"><?=$menuSponsors?></a>
                 </li>
-                <li class="hide">
+                <li>
                     <a href="#sessions"><?=$menuSessions?></a>
                 </li>
                 <li>

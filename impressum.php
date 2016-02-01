@@ -90,7 +90,7 @@
 
                                 <h2>Impressum</h2>
                                 <h3>T-Systems Multimedia Solutions</h3>
-                                <p><b>Verantwortlich</b><br>Marie Lajn</p>
+                                <p><b>Verantwortlich</b><br>Arite Grau</p>
                                 <p>
                                     <b>Kontakt zur Software-Architektur-Entwickler-community</b><br>
                                     Riesaer Straße 5<br>
@@ -104,7 +104,7 @@
                                 <p><b>Hauptsitz:</b><br>Riesaer Straße 5<br>01129 Dresden</p>
                                 <p>Telefon: +49 3 51 28 20 2298<br>Fax: +49 3 51 - 28 20 - 51 15</p>
                                 <p><a href="https://www.t-systems-mms.com">www.t-systems-mms.com</a></p>
-                                <p><b>Geschäftsführung:</b><br>Peter Klingenburg, Susanne Heger, Dr. Rolf Werner</p>
+                                <p><b>Geschäftsführung:</b><br>Peter Klingenburg, Susanne Heger</p>
                                 <p><b>Aufsichtsrat:</b><br>Thilo Kusch (Vorsitzender)</p>
                                 <p><b>Handelsregister:</b><br>Amtsgericht Dresden, HRB 11433, Sitz der Gesellschaft Dresden, Deutschland USt.-IdNr. DE 811 807 949</p>
                                 <p>

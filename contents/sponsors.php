@@ -4,14 +4,19 @@
 
     <div class="container">
 
-        <h3><?=$sponsorsHeadline?></h3>
-        <p class="center"><?=$sponsorsText?></p>
+        <h3><?=$mainsponsorsHeadline?></h3>
+        <p class="center"><?=$mainsponsorsText?></p>
 
         <ul class="center list-inline mainsponsor">
-            <li>
+			<li>
                 <a href="https://t-systems-mms.com"><img src="images/tsystems.png" alt="T-Systems"></a>
             </li>
+			<li>
+				<a href="https://saec-dd.de"><img src="images/saec.jpg" alt="SAEC DD"></a>
+			</li>
         </ul>
+		<h3><?=$sponsorsHeadline?></h3>
+		<p></p>
         <ul class="center list-inline">
             <li>
                 <a href="https://lineupr.com"><img src="images/lineupr.png" alt="LINEUPR"></a>

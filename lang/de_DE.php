@@ -35,6 +35,8 @@
     $registerSubmit       = 'Jetzt Anmelden';
 
     // Sponsoren
+	$mainsponsorsHeadline     = 'Hauptsponsor';
+    $mainsponsorsText         = 'Vielen Dank an die T-Systems Multimedia Solutions GmbH';
     $sponsorsHeadline     = 'Unsere Partner';
     $sponsorsText         = 'Ein Dank geht an unsere Partner ohne die der Dev Day 2016 nicht möglich wäre.';
 

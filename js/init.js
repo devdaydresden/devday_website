@@ -20,6 +20,14 @@
     $('textarea').autosize();
     $('textarea').css("height", "50px");
 
+    if ($.browser.mozilla) {
+      $('html').addClass('firefox');
+    }
+
+    if ($.browser.msie) {
+      $('html').addClass('ie');
+    }
+
 
     /*-------------------------------------------------*/
     /* =  scroll to top

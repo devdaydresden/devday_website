@@ -7,26 +7,20 @@
 
             <ul class="list-inline">
                 <li>
-                    <a href="#">
+                    <a href="https://www.facebook.com/events/542515445923143/">
                         <svg role="img" fill="currentColor">
                             <use xlink:href="icons/icons.svg#face-icon"></use>
                         </svg>
                     </a>
                 </li>
-                <li>
+                <li class="hide">
                     <a href="#">
                         <svg role="img" fill="currentColor">
-                            <use xlink:href="icons/icons.svg#twitter-icon"></use>
+                            <use xlink:href="icons/icons.svg#plus-circle"></use>
                         </svg>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
-                        <svg role="img" fill="currentColor">
-                            <use xlink:href="icons/icons.svg#google-icon"></use>
-                        </svg>
-                    </a>
-                </li>
+
                 <li class="br"><br></li>
             </ul>
         </div>

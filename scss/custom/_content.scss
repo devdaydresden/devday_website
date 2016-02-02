@@ -977,6 +977,26 @@
 }
 
 
+.firefox,
+.ie {
+    .contact-section {
+        select {
+            height: 50px;
+        }
+    }
+}
+
+.ie {
+    .contact-section {
+        select {
+            option {
+                background: $base;
+            }
+        }
+    }
+}
+
+
 /*************************************
 **************************************
 **************************************

@@ -7490,6 +7490,13 @@ header {
       margin-left: -20px;
       color: #fff; }
 
+.firefox .contact-section select,
+.ie .contact-section select {
+  height: 50px; }
+
+.ie .contact-section select option {
+  background: #292b3f; }
+
 /*************************************
 **************************************
 **************************************

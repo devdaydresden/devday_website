@@ -5,7 +5,7 @@
     <div class="container">
 
         <h3><?=$mainsponsorsHeadline?></h3>
-        <p class="center"><?=$mainsponsorsText?></p>
+        <p class="center mb25"><?=$mainsponsorsText?></p>
 
         <ul class="center list-inline mainsponsor">
 			<li>
@@ -15,8 +15,7 @@
 				<a href="https://saec-dd.de"><img src="images/saec.jpg" alt="SAEC DD"></a>
 			</li>
         </ul>
-		<h3><?=$sponsorsHeadline?></h3>
-		<p></p>
+		<h3 class="mb25"><?=$sponsorsHeadline?></h3>
         <ul class="center list-inline">
             <li>
                 <a href="https://lineupr.com"><img src="images/lineupr.png" alt="LINEUPR"></a>

@@ -60,7 +60,7 @@
 
                             <h1><img src="images/slogan.png" width="695" height="55"/></h1>
                             <h4>20. April 2016 in Dresden</h4>
-                            <a href="#devday" class="btn">
+                            <a href="index.php#contact" class="btn">
                                 JETZT KOSTENLOS ANMELDEN
                             </a>
 

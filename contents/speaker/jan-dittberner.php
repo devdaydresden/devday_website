@@ -1,6 +1,6 @@
 <?php
     $name               = "Jan Dittberner";
-    $imgURL             = "./contents/speaker/images/dummy-620x930-Bottles.jpg";
+    $imgURL             = "./contents/speaker/images/JanDittberner.jpg";
     $jobDescription     = "Software Architect";
     $speakerText        = "<p>Jan Dittberner ist Software-Architekt bei der T-Systems Multimedia Solutions GmbH. Er arbeitet seit mehreren Jahren als Architekt in einem großen E-Mail-Infrastrukturprojekt für ein großes deutsches Telekommunikationsunternehmen. Daneben engagiert er sich im DevOps-Programm innerhalb der T-Systems MMS und beschäftigt sich intensiv mit Themen wie Automatisierung, Versionskontrolle mit Git und PKI.</p>
 							<br>

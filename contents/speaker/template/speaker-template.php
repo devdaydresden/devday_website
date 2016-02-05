@@ -18,7 +18,11 @@
             <div class="col-lg-6">
                 <div class="person">
                     <h4><strong><?php echo $name ?></strong></h4>
-                    <h5><?php echo $jobDescription ?></h5>
+                    <h5>
+                        <?php echo $jobDescription ?></br>
+                        Session: <?php echo $sessionHeadline ?>
+
+                    </h5>
 
                     <div class="accordion" id="accordion<?php echo $number ?>">
                       <div class="accordion-group">

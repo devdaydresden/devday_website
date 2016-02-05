@@ -5,6 +5,7 @@
     <div class="container">
 
         <h3><?=$registerHeadline?></h3>
+		<h6><?=$registerSubHeadline?></h6>
 
         <form name="ProfileForm" onsubmit="return CheckInputs();" action="https://news.t-systems-mms.com/u/register.php" method="get" class="contact-form">
             <input type=hidden name="CID" value="112554395">

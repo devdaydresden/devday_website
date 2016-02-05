@@ -24,6 +24,7 @@
     $speakerSessioninfo   = 'Sessioninformationen';
     // Anmelden
     $registerHeadline     = 'Jetzt kostenlos anmelden';
+	$registerSubHeadline  = 'Die Anzahl der Plätze ist auf 450 beschränkt.';
     $registerName         = 'name';
     $registerFirstName    = 'vorname';
     $registerMail         = 'email';

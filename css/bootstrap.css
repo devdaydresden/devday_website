@@ -7391,6 +7391,11 @@ header {
     margin-bottom: 60px;
     text-align: center;
     color: #fff; }
+  .contact-section h6 {
+    margin-top: -58px;
+    margin-bottom: 60px;
+    text-align: center;
+    color: #fff; }
   .contact-section .main-form .row:first-child {
     margin-top: 0; }
   .contact-section .main-form .row {

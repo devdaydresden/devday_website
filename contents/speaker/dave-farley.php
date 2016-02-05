@@ -2,7 +2,7 @@
     $name               = "Dave Farley";
     $imgURL             = "./contents/speaker/images/DaveFarley.jpg";
     $jobDescription     = "Book Author and Software Developer";
-    $sessionHeadline    = "LoremIpsum";
+    $sessionHeadline    = "Keynote: The Rationale for Continuous Delivery & Acceptance Testing for Continuous Delivery";
     $speakerText        = "<p>Dave Farley is a thought-leader in the field of Continuous Delivery, DevOps and Software Development in general. </p>
 <p>He is co-author of the Jolt-award winning book 'Continuous Delivery' a regular conference speaker and blogger and one of the authors of the Reactive Manifesto. </p>
 <br>

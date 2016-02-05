@@ -14,7 +14,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="https://www.xing.com/events/dev-day-2016-1648670">
 
                         <svg role="img" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="51px" height="51px" viewBox="-406.6 255.6 51 51" fill="currentColor">
                             <g>

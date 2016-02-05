@@ -2,7 +2,7 @@
     $name               = "Thomas Haase";
     $imgURL             = "./contents/speaker/images/thomashaase.jpg";
     $jobDescription     = "Security Tester";
-    $sessionHeadline    = "LoremIpsum";
+    $sessionHeadline    = "Sicherheit der Dinge – „Hacking im IoT“";
     $speakerText        = "<p>Thomas Haase - Penetrationstester in den Bereichen Web-, Mobile- und Embedded Security und seit 2004 Projektfeldmanager \"Data Privacy and Security\" bei T-Systems Multimedia Solutions GmbH.</p>
 							<br>
 							<p>Seine Schwerpunkte sind Infrastructure and Application Security, Penetrations Tests und Source Code Analysen. Außerdem engagiert er sich als Dozent für verschiedene Bildungseinrichtungen im Bereich Security Awareness und Hacking. Er ist zertifiziert als ISO27001 Lead Auditor, Certified Ethical Hacker und TeleTrusT Information Security Professional (TISP).</p>";

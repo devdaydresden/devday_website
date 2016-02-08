@@ -1,6 +1,6 @@
 <?php
     $name               = "Frank Lamack";
-    $imgURL             = "./contents/speaker/images/Frank_lamack.png";
+    $imgURL             = "./contents/speaker/images/Frank_Lamack.png";
     $jobDescription     = "Innovation Developer";
     $sessionHeadline    = "MIXING UP REALITIES – Mit AR , VR, AV zu neuen Realitäten";
     $speakerText        = "<p>Seit 16 Jahren in der T-Systems Multimedia Solutions GmbH in verschiedenen Bereichen und Rollen tätig. Er hat langjährige Erfahrungen als Innovation Developer und Strategischer Berater im Umfeld 3D, sowohl auf Seiten der User Experience, Digital Products und 3D Printing. Er bildet dabei die Schnittstelle zwischen Kundenanforderungen, Creative und Technical Teams sowie – getrieben durch technologische Grenzbereiche – enge Vernetzung mit Forschungs- und Ausbildungseinrichtungen. Er betreute verschiedene Unternehmen aus den Branchen Telekomunikation, Automobilbau, Flugzeugbau, Maschinenbau, Baubranchen sowie Messen.</p>";

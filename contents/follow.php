@@ -42,7 +42,7 @@
                     <div class="customNavigation">
                         <a class="prev">
                             <span>
-                                <svg fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                <svg fill="currentColor" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink" x="0px" y="0px"
                                 width="19px" height="11px" viewBox="0 0 19 11" enable-background="new 0 0 19 11" xml:space="preserve">
                                 <polygon fill-rule="evenodd" clip-rule="evenodd" points="19,5.25 13.749,0 13,0.75 17.249,5.001 0,5.001 0,6.001 17.248,6.001
                                 13,10.25 13.749,11 19,5.75 "/>
@@ -52,7 +52,7 @@
                     </a>
                     <a class="next">
                         <span>
-                            <svg fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                            <svg fill="currentColor" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink" x="0px" y="0px"
                             width="19px" height="11px" viewBox="0 0 19 11" enable-background="new 0 0 19 11" xml:space="preserve">
                             <polygon fill-rule="evenodd" clip-rule="evenodd" points="19,5.25 13.749,0 13,0.75 17.249,5.001 0,5.001 0,6.001 17.248,6.001
                             13,10.25 13.749,11 19,5.75 "/>

@@ -8,14 +8,14 @@
         <span class="icon-menu_320 hide bars">
 
             <svg role="img">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="icons/icons.svg#icon-menu_320"></use>
+                <use xmlns:xlink="https://www.w3.org/1999/xlink" xlink:href="icons/icons.svg#icon-menu_320"></use>
             </svg>
 
         </span>
         <span class="icon-menu_768 hide bars">
 
             <svg role="img">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="icons/icons.svg#icon-menu_768"></use>
+                <use xmlns:xlink="https://www.w3.org/1999/xlink" xlink:href="icons/icons.svg#icon-menu_768"></use>
             </svg>
 
         </span>

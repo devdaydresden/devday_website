@@ -16,7 +16,7 @@
                 <li>
                     <a href="https://www.xing.com/events/dev-day-2016-1648670">
 
-                        <svg role="img" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="51px" height="51px" viewBox="-406.6 255.6 51 51" fill="currentColor">
+                        <svg role="img" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink" x="0px" y="0px" width="51px" height="51px" viewBox="-406.6 255.6 51 51" fill="currentColor">
                             <g>
                                 <path d="M-381.1,255.6c-14.1,0-25.5,11.4-25.5,25.5s11.4,25.5,25.5,25.5s25.5-11.4,25.5-25.5S-367,255.6-381.1,255.6z
                                      M-390.3,288.2h-5.1c-0.3,0-0.5-0.1-0.7-0.3c-0.1-0.2-0.1-0.5,0-0.8l5.4-9.6c0,0,0,0,0,0l-3.5-6c-0.1-0.3-0.2-0.6,0-0.8

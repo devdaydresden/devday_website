@@ -4,6 +4,7 @@
     $menuSpeaker          = 'SPEAKER';
     $menuSponsors         = 'PARTNER';
     $menuSessions         = 'SESSIONS';
+	$menuLineupr          = 'LINEUPR';
     $menuAnfahrt          = 'ANFAHRT';
 	$menuDevDay2015		  = 'DevDay 2015';
 

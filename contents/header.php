@@ -37,6 +37,9 @@
                   <a href="#anfahrt"><?=$menuAnfahrt?></a>
                 </li>
 				<li>
+                    <a href="https://lineupr.com/saec/devday16"><?=$menuLineupr?></a>
+                </li>
+				<li>
 				  <a href="./2015/"><?=$menuDevDay2015?></a>
 				</li>
             </ul>

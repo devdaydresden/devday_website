@@ -12,7 +12,7 @@
                 <a href="https://www.t-systems-mms.com"><img src="images/tsystems.png" alt="T-Systems"></a>
             </li>
 			<li>
-				<a href="https://saec-dd.de"><img src="images/saec.jpg" alt="SAEC DD"></a>
+				<a href="#"><img src="images/saec.jpg" alt="SAEC DD"></a>
 			</li>
         </ul>
 		<h3 class="mb25"><?=$sponsorsHeadline?></h3>

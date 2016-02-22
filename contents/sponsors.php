@@ -9,7 +9,7 @@
 
         <ul class="center list-inline mainsponsor">
 			<li>
-                <a href="https://t-systems-mms.com"><img src="images/tsystems.png" alt="T-Systems"></a>
+                <a href="https://www.t-systems-mms.com"><img src="images/tsystems.png" alt="T-Systems"></a>
             </li>
 			<li>
 				<a href="https://saec-dd.de"><img src="images/saec.jpg" alt="SAEC DD"></a>

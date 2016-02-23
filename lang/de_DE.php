@@ -15,7 +15,7 @@
     $whichInfos           = 'Der Dev Day ist eine Veranstaltung für alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals sind herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. 2015 begrüßten wir mehr als 300 Gäste aus über 70 verschiedenen Firmen.';
 
     // Follow
-    $followAccountName    = 'Dev Day';
+    $followAccountName    = '#devdaydd';
     $followUs             = 'FOLGE UNS';
 
     // Speaker

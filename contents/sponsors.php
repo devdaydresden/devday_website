@@ -26,9 +26,9 @@
             <li>
                 <a href="https://spartakiade.org"><img src="images/Spartakiade_Logo.png" alt=""></a>
             </li>
-            <!--li>
-                <a href="#"><img src="images/microsoft.png" alt=""></a>
-            </li -->
+            <li>
+                <a href="http://www.sogehtsoftware.de/"><img src="images/saxonia.png" alt=""></a>
+            </li>
         </ul>
 
     </div>

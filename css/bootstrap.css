@@ -7336,13 +7336,19 @@ header {
 .sessions-section {
   overflow: hidden;
   background-color: #292b3f; }
-  .sessions-section h3 {
+  .sessions-section h3,
+  .sessions-section h4 {
     cursor: pointer;
     text-align: center;
     color: #fff; }
-    .sessions-section h3 i {
+    .sessions-section h3 i,
+    .sessions-section h4 i {
       font-size: 30px;
       font-weight: 300; }
+  .sessions-section h4 {
+    margin-bottom: 20px; }
+    .sessions-section h4 a:hover {
+      color: #fff !important; }
   .sessions-section div {
     color: #fff; }
     .sessions-section div.collapse {
@@ -7388,11 +7394,6 @@ header {
   .contact-section h3:before {
     display: none; }
   .contact-section h3 {
-    margin-bottom: 60px;
-    text-align: center;
-    color: #fff; }
-  .contact-section h6 {
-    margin-top: -58px;
     margin-bottom: 60px;
     text-align: center;
     color: #fff; }

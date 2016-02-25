@@ -5,11 +5,14 @@
 
     <div class="container">
 
+        <h4><a href="https://lineupr.com/saec/devday16">Sessionplan in der Webapp öffnen</a></h4>
+
         <h3 data-toggle="collapse"  data-target="#sessionCollapse" aria-expanded="false" aria-controls="sessionCollapse">
             Zeige Sessions
             <i class="fa fa-angle-down"></i>
         </h3>
-        
+
+
         <div class="collapse" id="sessionCollapse">
             <table>
                 <thead>
@@ -125,7 +128,7 @@
                 </tbody>
             </table>
         </div>
-        
+
     </div>
 
 </section>

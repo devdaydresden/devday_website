@@ -715,7 +715,8 @@
 
     background-color: $base;
 
-    h3 {
+    h3,
+    h4 {
         cursor: pointer;
         text-align: center;
 
@@ -724,6 +725,14 @@
         i {
             font-size: 30px;
             font-weight: 300;
+        }
+    }
+
+    h4 {
+        margin-bottom: 20px;
+
+        a:hover {
+            color: $white !important;
         }
     }
 

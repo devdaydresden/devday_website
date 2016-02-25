@@ -11015,6 +11015,8 @@ p.notify {
     .follow-section .owl-carousel .owl-item .item a {
       font-size: 35px;
       font-weight: 400; }
+      .follow-section .owl-carousel .owl-item .item a:hover {
+        color: #fff; }
     .follow-section .owl-carousel .owl-item .item img {
       display: inline-block;
       float: left;

@@ -68,6 +68,10 @@
 			a {
 				font-size: 35px;
 				font-weight: 400;
+
+				&:hover {
+					color: $white;
+				}
 			}
 			img {
 				display: inline-block;

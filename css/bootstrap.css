@@ -7221,6 +7221,8 @@ header {
     top: 1px;
     margin-left: -25px;
     color: #fff; }
+  .follow-section p a:hover {
+    color: #fff; }
 
 /*************************************
 **************************************

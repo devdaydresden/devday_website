@@ -5,14 +5,13 @@
     <div class="container">
 
         <h3><?=$registerHeadline?></h3>
-		<h6><?=$registerSubHeadline?></h6>
+		<h5 class="center"><?=$registerSubHeadline?></h5>
 
-        <form name="ProfileForm" onsubmit="return CheckInputs();" action="https://news.t-systems-mms.com/u/register.php" method="get" class="contact-form">
+        <form name="ProfileForm" onsubmit="return CheckInputs();" action="https://news.t-systems-mms.com/u/register.php" method=get class="contact-form">
             <input type=hidden name="CID" value="112554395">
             <input type=hidden name="SID" value="<? echo $SID; ?>">
             <input type=hidden name="UID" value="<? echo $UID; ?>">
-            <input type=hidden name="f" value="36466">
-            <input type=hidden name="p" value="2">
+            <input type=hidden name="f" value="36664"><input type=hidden name="p" value="2">
             <input type=hidden name="a" value="r">
             <input type=hidden name="el" value="<? echo $el; ?>">
             <input type=hidden name="endlink" value="<? echo $endlink; ?>">

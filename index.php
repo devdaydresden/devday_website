@@ -45,6 +45,7 @@
 
                 <?php include 'contents/sponsors.php' ?>
 
+                <?php include 'contents/contact.php' ?>
 
                 <?php include 'contents/map.php' ?>
 

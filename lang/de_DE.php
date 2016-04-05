@@ -25,7 +25,7 @@
     $speakerSessioninfo   = 'Sessioninformationen';
     // Anmelden
     $registerHeadline     = 'Jetzt in die Interessentenliste eintragen';
-	$registerSubHeadline  = 'Der diesjährige DevDay ist ausgebucht, du hast dich für die Interessentenliste für den Dev Day 2016 und zukünftige Events registrieren';
+	$registerSubHeadline  = 'Der diesjährige DevDay ist ausgebucht, du kannst dich für die Interessentenliste für den Dev Day 2016 und zukünftige Events registrieren';
     $registerName         = 'name';
     $registerFirstName    = 'vorname';
     $registerMail         = 'email';

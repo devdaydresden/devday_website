@@ -27,14 +27,14 @@ r = requests.get(
 
 data = fromstring(r.text)
 
-slideshows = []
+slideshows = {}
 
 for slideshow in data.iter('Slideshow'):
-    slideshows.append({
+    embedkey = slideshow.find('SecretKey').text
+    slideshows[embedkey] = {
         'id': slideshow.find('ID').text,
         'title': slideshow.find('Title').text,
-        'embedkey': slideshow.find('SecretKey').text,
         'url': slideshow.find('URL').text
-    })
+    }
 
 print(dumps(slideshows, sort_keys=True, indent=2))

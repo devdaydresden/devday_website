@@ -1,62 +1,52 @@
-[
-  {
-    "embedkey": "tL5tCWxSe4fJ3u",
-    "id": "61819036",
-    "title": "DevDay 2016: Thomas Haase - Sicherheit der Dinge, Hacking im Internet of Things",
-    "url": "http://www.slideshare.net/devday-dd/devday-2016-thomas-haase-sicherheit-der-dinge-hacking-im-internet-of-things"
-  },
-  {
-    "embedkey": "LIydla0m0gTfnP",
-    "id": "61818957",
-    "title": "DevDay 2016: Dave Farley - The Rationale for Continuous Delivery",
-    "url": "http://www.slideshare.net/devday-dd/devday-2016-dave-farley-the-rationale-for-continuous-delivery"
-  },
-  {
-    "embedkey": "gBpn0tAOyHfRWw",
-    "id": "61818849",
-    "title": "DevDay 2016: Sascha Askani - Cloud-Umgebungen mit Terraform verwalten",
-    "url": "http://www.slideshare.net/devday-dd/devday-2016-sascha-askani-cloudumgebungen-mit-terraform-verwalten"
-  },
-  {
-    "embedkey": "u7kSpVVwTxWtOf",
-    "id": "61818670",
-    "title": "DevDay 2016: Peter Lehmann - Testautomatisierungsframework Xeta",
-    "url": "http://www.slideshare.net/devday-dd/devday-2016-peter-lehmann-testautomatisierungsframework-xeta"
-  },
-  {
-    "embedkey": "K08mkov1dx9NGA",
-    "id": "61818596",
-    "title": "DevDay 2016: Adam Bien - Eine sprachneutrale Essenz der Microservices",
-    "url": "http://www.slideshare.net/devday-dd/devday-2016-adam-bien-eine-sprachneutrale-essenz-der-microservices"
-  },
-  {
-    "embedkey": "WPXAyCGDNZHXa",
-    "id": "61818488",
-    "title": "DevDay 2016: Hendrik L\u00f6sch - Lose gekoppelt wie nie: DI vs. IoC",
-    "url": "http://www.slideshare.net/devday-dd/devday2016-hendrik-lsch-lose-gekoppelt-wie-nie-di-vs-ioc"
-  },
-  {
-    "embedkey": "zZXFxzyxzeOUKs",
-    "id": "61818297",
-    "title": "DevDay 2016: Frank Lamack, Denis Loh - Mixing Up Realities \u2013 Mit AR, VR, AV zu neuen Realit\u00e4ten",
-    "url": "http://www.slideshare.net/devday-dd/devday2016-frank-lamack-denis-loh-mixing-up-realities-mit-ar-vr-av-zu-neuen-realitten"
-  },
-  {
-    "embedkey": "3GppXjxcDaAOik",
+{
+  "3GppXjxcDaAOik": {
     "id": "61818166",
     "title": "DevDay 2016 - Jan Dittberner - Continous Delivery - Aber sicher?!",
     "url": "http://www.slideshare.net/devday-dd/devday-2016-jan-dittberner-continous-delivery-aber-sicher"
   },
-  {
-    "embedkey": "MOZ1ZKmgwcWaOU",
+  "K08mkov1dx9NGA": {
+    "id": "61818596",
+    "title": "DevDay 2016: Adam Bien - Eine sprachneutrale Essenz der Microservices",
+    "url": "http://www.slideshare.net/devday-dd/devday-2016-adam-bien-eine-sprachneutrale-essenz-der-microservices"
+  },
+  "KQkgVjJNbUPa2": {
+    "id": "61817798",
+    "title": "DevDay 2016: Dave Farley - Acceptance testing for continuous delivery",
+    "url": "http://www.slideshare.net/devday-dd/devday-2016-dave-farley-acceptance-testing-for-continuous-delivery"
+  },
+  "LIydla0m0gTfnP": {
+    "id": "61818957",
+    "title": "DevDay 2016: Dave Farley - The Rationale for Continuous Delivery",
+    "url": "http://www.slideshare.net/devday-dd/devday-2016-dave-farley-the-rationale-for-continuous-delivery"
+  },
+  "MOZ1ZKmgwcWaOU": {
     "id": "61818065",
     "title": "DevDay 2016: Artur Speth - DevOps - Microsoft Developer Divisions Weg ins n\u00e4chste Agile Zeitalter",
     "url": "http://www.slideshare.net/devday-dd/devday-2016-artur-speth-devops-microsoft-developer-divisions-weg-ins-nchste-agile-zeitalter"
   },
-  {
-    "embedkey": "KQkgVjJNbUPa2",
-    "id": "61817798",
-    "title": "DevDay 2016: Dave Farley - Acceptance testing for continuous delivery",
-    "url": "http://www.slideshare.net/devday-dd/devday-2016-dave-farley-acceptance-testing-for-continuous-delivery"
+  "WPXAyCGDNZHXa": {
+    "id": "61818488",
+    "title": "DevDay 2016: Hendrik L\u00f6sch - Lose gekoppelt wie nie: DI vs. IoC",
+    "url": "http://www.slideshare.net/devday-dd/devday2016-hendrik-lsch-lose-gekoppelt-wie-nie-di-vs-ioc"
+  },
+  "gBpn0tAOyHfRWw": {
+    "id": "61818849",
+    "title": "DevDay 2016: Sascha Askani - Cloud-Umgebungen mit Terraform verwalten",
+    "url": "http://www.slideshare.net/devday-dd/devday-2016-sascha-askani-cloudumgebungen-mit-terraform-verwalten"
+  },
+  "tL5tCWxSe4fJ3u": {
+    "id": "61819036",
+    "title": "DevDay 2016: Thomas Haase - Sicherheit der Dinge, Hacking im Internet of Things",
+    "url": "http://www.slideshare.net/devday-dd/devday-2016-thomas-haase-sicherheit-der-dinge-hacking-im-internet-of-things"
+  },
+  "u7kSpVVwTxWtOf": {
+    "id": "61818670",
+    "title": "DevDay 2016: Peter Lehmann - Testautomatisierungsframework Xeta",
+    "url": "http://www.slideshare.net/devday-dd/devday-2016-peter-lehmann-testautomatisierungsframework-xeta"
+  },
+  "zZXFxzyxzeOUKs": {
+    "id": "61818297",
+    "title": "DevDay 2016: Frank Lamack, Denis Loh - Mixing Up Realities \u2013 Mit AR, VR, AV zu neuen Realit\u00e4ten",
+    "url": "http://www.slideshare.net/devday-dd/devday2016-frank-lamack-denis-loh-mixing-up-realities-mit-ar-vr-av-zu-neuen-realitten"
   }
-]
+}

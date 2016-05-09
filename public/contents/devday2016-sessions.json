@@ -1,0 +1,133 @@
+{
+    "12:00 - 13:00": [
+        {
+            "description": "Anmeldung"
+        }
+    ],
+    "13:00 - 13:15": [
+        {
+            "room": "Hamburg",
+            "description": "Er\u00f6ffnung durch Prof. Frank Sch\u00f6nefeld"
+        }
+    ],
+    "13:15 - 14:15": [
+        {
+            "room": "Hamburg",
+            "description": "Keynote (Englisch): The Rationale for Continuous Delivery",
+            "speaker": "Dave Farley",
+            "slideshare": {
+                "key": "LIydla0m0gTfnP"
+            }
+        }
+    ],
+    "14:15 - 14:30": [
+        {
+            "description": "kurze Pause"
+        }
+    ],
+    "14:30 - 15:15": [
+        {
+            "description": "DevOps - Microsoft Developer Divisions Weg ins n\u00e4chste Agile Zeitalter",
+            "speaker": "Artur Speth",
+            "room": "Hamburg",
+            "slideshare": {
+                "key": "MOZ1ZKmgwcWaOU"
+            }
+        },
+        {
+            "description": "Continuous Delivery - Aber Sicher?!",
+            "speaker": "Jan Dittberner",
+            "room": "Gartensaal",
+            "slideshare": {
+                "key": "3GppXjxcDaAOik"
+            }
+        },
+        {
+            "description": "Lose gekoppelt wie nie: DI vs. IoC",
+            "speaker": "Hendrik L\u00f6sch",
+            "room": "St. Petersburg",
+            "slideshare": {
+                "key": "WPXAyCGDNZHXa"
+            }
+        }
+    ],
+    "15:15 - 15:45": [
+        {
+            "description": "Kaffeepause"
+        }
+    ],
+    "15:45 - 16:30": [
+        {
+            "description": "Acceptance Testing for Continuous Delivery",
+            "speaker": "Dave Farley",
+            "room": "Hamburg",
+            "slideshare": {
+                "key": "KQkgVjJNbUPa2"
+            }
+        },
+        {
+            "description": "MIXING UP REALITIES \u2013 Mit AR, VR, AV zu neuen Realit\u00e4ten",
+            "speaker": "Frank Lamack & Denis Loh",
+            "room": "Gartensaal",
+            "slideshare": {
+                "key": "zZXFxzyxzeOUKs"
+            }
+        },
+        {
+            "description": "Testautomatisierungsframework Xeta",
+            "speaker": "Peter Lehmann",
+            "room": "St. Petersburg",
+            "slideshare": {
+                "key": "u7kSpVVwTxWtOf"
+            }
+        }
+    ],
+    "16:30 - 16:45": [
+        {
+            "description": "kurze Pause"
+        }
+    ],
+    "16:45 - 17:30": [
+        {
+            "description": "Sicherheit der Dinge \u2013 \"Hacking im IoT\"",
+            "speaker": "Thomas Haase",
+            "room": "Hamburg",
+            "slideshare": {
+                "key": "tL5tCWxSe4fJ3u"
+            }
+        },
+        {
+            "description": "Cloud-Umgebungen mit Terraform verwalten",
+            "speaker": "Sascha Askani",
+            "room": "Gartensaal",
+            "slideshare": {
+                "key": "gBpn0tAOyHfRWw"
+            }
+        },
+        {
+            "description": "Zukunft des DevDay",
+            "speaker": "Oliver Guhr",
+            "room": "St. Petersburg"
+        }
+    ],
+    "17:30 - 17:45": [
+        {
+            "description": " kurze Pause"
+        }
+    ],
+    "17:45 - 18:45": [
+        {
+            "description": "Eine sprachneutrale Essenz der Microservices",
+            "speaker": "Adam Bien",
+            "room": "Hamburg",
+            "slideshare": {
+                "key": "K08mkov1dx9NGA"
+            }
+        }
+    ],
+    "18:45 - 20:30": [
+        {
+            "description": "Get together"
+        }
+    ]
+}

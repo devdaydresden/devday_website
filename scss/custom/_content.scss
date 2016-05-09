@@ -768,6 +768,12 @@
             }
         }
     }
+
+    .slideref {
+        a:hover {
+            color: $white !important;
+        }
+    }
 }
 
 .mfp-wrap {

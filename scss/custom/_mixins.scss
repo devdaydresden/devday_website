@@ -226,3 +226,9 @@
     font-size: px-rem($font-size)#{$important};
 }
 
+@mixin transition-transform($transition...) {
+  -webkit-transition: -webkit-transform $transition;
+     -moz-transition: -moz-transform $transition;
+       -o-transition: -o-transform $transition;
+          transition: transform $transition;
+}

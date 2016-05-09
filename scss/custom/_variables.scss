@@ -2,6 +2,7 @@
 // devday fonts
 $grey-lighter: #E2E2E2;
 $grey-light: #A5A5A5;
+$grey-lighter:           lighten(#000, 93.5%) !default; // #eee
 $grey: #909198;
 $grey-darker: #535353;
 $grey-logo: #b3b3ba;
@@ -14,6 +15,7 @@ $highlight-dark: #144c55;
 
 //you can overwrite bootstrap variables
 
+$brand-primary:         #428bca !default;
 
 //Basic colors
 $base-clr:                              #fff;
@@ -70,3 +72,6 @@ $selected-text-clr:						#fff;
 $gutter:                                20px;
 $grid-gutter:                           $gutter;
 $grid-wide-gutter:                      30px;
+
+// Forms
+$input-bg-disabled:              $grey-lighter !default;

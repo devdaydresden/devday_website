@@ -14,7 +14,7 @@
                         <span>
 
                             <svg role="img" fill="currentColor">
-                                <use xlink:href="icons/icons.svg#tweet-icon"></use>
+                                <use xlink:href="svgicons/icons.svg#tweet-icon"></use>
                             </svg>
 
                         </span>
@@ -26,7 +26,7 @@
                         <?=$followUs?>
                         <span>
                             <svg role="img" fill="currentColor">
-                                <use xlink:href="icons/icons.svg#arrow-down"></use>
+                                <use xlink:href="svgicons/icons.svg#arrow-down"></use>
                             </svg>
 
                         </span>

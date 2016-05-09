@@ -4,9 +4,9 @@
     $menuSpeaker          = 'SPEAKER';
     $menuSponsors         = 'PARTNER';
     $menuSessions         = 'SESSIONS';
-	$menuLineupr          = 'LINEUPR';
+    $menuLineupr          = 'LINEUPR';
     $menuAnfahrt          = 'ANFAHRT';
-	$menuDevDay2015		  = 'DevDay 2015';
+    $menuDevDay2015       = 'DevDay 2015';
 
     // About
     $aboutHeadline        = 'INFOS ZUR VERANSTALTUNG';
@@ -25,7 +25,7 @@
     $speakerSessioninfo   = 'Sessioninformationen';
     // Anmelden
     $registerHeadline     = 'Jetzt in die Interessentenliste eintragen';
-	$registerSubHeadline  = 'Der diesjährige DevDay ist ausgebucht, du kannst dich für die Interessentenliste für den Dev Day 2016 und zukünftige Events registrieren';
+    $registerSubHeadline  = 'Der diesjährige DevDay ist ausgebucht, du kannst dich für die Interessentenliste für den Dev Day 2016 und zukünftige Events registrieren';
     $registerName         = 'name';
     $registerFirstName    = 'vorname';
     $registerMail         = 'email';
@@ -37,8 +37,8 @@
     $registerSubmit       = 'Jetzt Anmelden';
 
     // Sponsoren
-	$mainsponsorsHeadline     = 'Hauptsponsor';
-    $mainsponsorsText         = 'Vielen Dank an die T-Systems Multimedia Solutions GmbH';
+    $mainsponsorsHeadline = 'Hauptsponsor';
+    $mainsponsorsText     = 'Vielen Dank an die T-Systems Multimedia Solutions GmbH';
     $sponsorsHeadline     = 'Unsere Partner';
     $sponsorsText         = 'Ein Dank geht an unsere Partner ohne die der Dev Day 2016 nicht möglich wäre.';
 

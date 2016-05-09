@@ -9,7 +9,7 @@
                 <li>
                     <a href="https://www.facebook.com/events/542515445923143/">
                         <svg role="img" fill="currentColor">
-                            <use xlink:href="icons/icons.svg#face-icon"></use>
+                            <use xlink:href="svgicons/icons.svg#face-icon"></use>
                         </svg>
                     </a>
                 </li>

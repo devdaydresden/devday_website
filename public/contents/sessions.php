@@ -42,11 +42,13 @@ $session_data = array(
             "description" => "DevOps - Microsoft Developer Divisions Weg ins nächste Agile Zeitalter",
             "speaker" => "Artur Speth",
             "room" => "Hamburg",
+//                <iframe src="//www.slideshare.net/slideshow/embed_code/key/MOZ1ZKmgwcWaOU" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/devday-dd/devday-2016-artur-speth-devops-microsoft-developer-divisions-weg-ins-nchste-agile-zeitalter" title="DevDay 2016: Artur Speth - DevOps - Microsoft Developer Divisions Weg ins nächste Agile Zeitalter" target="_blank">DevDay 2016: Artur Speth - DevOps - Microsoft Developer Divisions Weg ins nächste Agile Zeitalter</a> </strong> from <strong><a href="//www.slideshare.net/devday-dd" target="_blank">DevDay Dresden</a></strong> </div>
         ),
         array(
             "description" => "Continuous Delivery - Aber Sicher?!",
             "speaker" => "Jan Dittberner",
             "room" => "Gartensaal",
+            // <iframe src="//www.slideshare.net/slideshow/embed_code/key/3GppXjxcDaAOik" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/devday-dd/devday-2016-jan-dittberner-continous-delivery-aber-sicher" title="DevDay 2016 - Jan Dittberner - Continous Delivery - Aber sicher?!" target="_blank">DevDay 2016 - Jan Dittberner - Continous Delivery - Aber sicher?!</a> </strong> from <strong><a href="//www.slideshare.net/devday-dd" target="_blank">DevDay Dresden</a></strong> </div>
         ),
         array(
             "description" => "Lose gekoppelt wie nie: DI vs. IoC",
@@ -111,7 +113,9 @@ $session_data = array(
         ),
     ),
     "18:45 - 20:30" => array(
-        "description" => "Get together",
+        array(
+            "description" => "Get together",
+        ),
     ),
 );
 

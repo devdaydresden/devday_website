@@ -4,7 +4,7 @@
         <div>
             <i>
                 <svg role="img" fill="currentColor">
-                    <use xlink:href="icons/icons.svg#plus-circle"></use>
+                    <use xlink:href="svgicons/icons.svg#plus-circle"></use>
                 </svg>
             </i>
         </div>
@@ -53,25 +53,25 @@
                     <ul>
                         <?php
                             if(strlen(trim($fbLink)) > 0){
-                                echo '<li><a href="'.$fbLink.'"><svg role="img" fill="currentColor"><use xlink:href="icons/icons.svg#face-icon"></use></svg></a></li>';
+                                echo '<li><a href="'.$fbLink.'"><svg role="img" fill="currentColor"><use xlink:href="svgicons/icons.svg#face-icon"></use></svg></a></li>';
                             }
                         ?>
 
                         <?php
                             if(strlen(trim($twLink)) > 0){
-                                echo '<li><a href="'.$twLink.'"><svg role="img" fill="currentColor"><use xlink:href="icons/icons.svg#twitter-icon"></use></svg></a></li>';
+                                echo '<li><a href="'.$twLink.'"><svg role="img" fill="currentColor"><use xlink:href="svgicons/icons.svg#twitter-icon"></use></svg></a></li>';
                             }
                         ?>
 
                         <?php
                             if(strlen(trim($googleLink)) > 0){
-                                echo '<li><a href="'.$googleLink.'"><svg role="img" fill="currentColor"><use xlink:href="icons/icons.svg#google-icon"></use></svg></a></li>';
+                                echo '<li><a href="'.$googleLink.'"><svg role="img" fill="currentColor"><use xlink:href="svgicons/icons.svg#google-icon"></use></svg></a></li>';
                             }
                         ?>
 
                         <?php
                             if(strlen(trim($linkedinLink)) > 0){
-                                echo '<li><a href="'.$linkedinLink.'"><svg role="img" fill="currentColor"><use xlink:href="icons/icons.svg#linkedin-icon"></use></svg></a></li>';
+                                echo '<li><a href="'.$linkedinLink.'"><svg role="img" fill="currentColor"><use xlink:href="svgicons/icons.svg#linkedin-icon"></use></svg></a></li>';
                             }
                         ?>
                     </ul>

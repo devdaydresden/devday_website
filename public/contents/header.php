@@ -8,14 +8,14 @@
         <span class="icon-menu_320 hide bars">
 
             <svg role="img">
-                <use xmlns:xlink="https://www.w3.org/1999/xlink" xlink:href="icons/icons.svg#icon-menu_320"></use>
+                <use xmlns:xlink="https://www.w3.org/1999/xlink" xlink:href="svgicons/icons.svg#icon-menu_320"></use>
             </svg>
 
         </span>
         <span class="icon-menu_768 hide bars">
 
             <svg role="img">
-                <use xmlns:xlink="https://www.w3.org/1999/xlink" xlink:href="icons/icons.svg#icon-menu_768"></use>
+                <use xmlns:xlink="https://www.w3.org/1999/xlink" xlink:href="svgicons/icons.svg#icon-menu_768"></use>
             </svg>
 
         </span>
@@ -36,12 +36,12 @@
                 <li>
                   <a href="#anfahrt"><?=$menuAnfahrt?></a>
                 </li>
-				<li>
+                <li>
                     <a href="https://lineupr.com/saec/devday16"><?=$menuLineupr?></a>
                 </li>
-				<li>
-				  <a href="./2015/"><?=$menuDevDay2015?></a>
-				</li>
+                <li>
+                    <a href="./2015/"><?=$menuDevDay2015?></a>
+                </li>
             </ul>
         </nav>
 

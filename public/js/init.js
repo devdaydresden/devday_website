@@ -411,6 +411,18 @@
     });
 
     /*-------------------------------------------------*/
+    /* = slider slides                                 */
+    /*-------------------------------------------------*/
+    $("#owl3").owlCarousel({
+        items : 1,
+        itemsDesktop: [595, 1],
+        itemsDesktopSmall: [595, 1],
+        itemsTablet: [595, 1],
+        navigation: true,
+        loop: true
+    });
+
+    /*-------------------------------------------------*/
     /* =  animate numbers
     /*-------------------------------------------------*/
     $('#blog').one('inview', function(event, isInView, visiblePartX, visiblePartY){

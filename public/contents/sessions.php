@@ -20,27 +20,23 @@ $slides_data = json_decode(file_get_contents($jsonfile), $assoc=true);
 
 ?><!-- START SESSIONS -->
 <section id="sessions" class="sessions-section ">
-
-    <div class="container">
-
-        <h4><a href="https://lineupr.com/saec/devday16">Sessionplan in der Webapp öffnen</a></h4>
-
-        <h3 data-toggle="collapse"  data-target="#sessionCollapse" aria-expanded="false" aria-controls="sessionCollapse">
-            Zeige Sessions
-            <i class="fa fa-angle-down"></i>
-        </h3>
-
-        <div class="collapse" id="sessionCollapse">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="min-width:135px">Zeit</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody><?php
+  <div class="container">
+    <h4><a href="https://lineupr.com/saec/devday16">Sessionplan in der Webapp öffnen</a></h4>
+    <h3 data-toggle="collapse"  data-target="#sessionCollapse" aria-expanded="false" aria-controls="sessionCollapse">
+      Zeige Sessionplan
+      <i class="fa fa-angle-down"></i>
+    </h3>
+    <div class="collapse" id="sessionCollapse">
+      <table>
+        <thead>
+          <tr>
+            <th style="min-width:135px">Zeit</th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody><?php
 foreach ($session_data as $time => $talks) {
                     ?><tr><td><?= $time; ?></td><?php
     foreach ($talks as $talk) {
@@ -53,41 +49,32 @@ foreach ($session_data as $time => $talks) {
         } ?></td><?php
     } ?></tr><?php
 } ?>
-                </tbody>
-            </table>
-        </div>
+        </tbody>
+      </table>
     </div>
-
-    <h3 data-toggle="collapse" data-target="#slidesCollapse" aria-expanded="false" aria-controls="slidesCollapse">
-        Zeige Slides
-        <i class="fa fa-angle-down"></i>
-    </h3>
-
-    <div class="collapse" id="slidesCollapse">
-        <div class="container"><?php
+  </div>
+  <div class="container">
+    <h3>Slides</h3>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="slider-wrap-slides">
+          <div id="owl3" class="owl-carousel owl-theme"><?php
 foreach ($session_data as $time => $talks) {
     foreach ($talks as $talk) {
         if (array_key_exists("slideshare", $talk)) {
-            $key = $talk['slideshare']['key'];
-            $info = $slides_data[$key];?>
-            <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="center">
-<?php
-            slideshare_iframe($key, $info["url"], $info["title"]); ?>
-                    </div>
-                </div>
-            </div>
+          $key = $talk['slideshare']['key'];
+          $info = $slides_data[$key];?>
+            <div class="item"><?php slideshare_iframe($key, $info["url"], $info["title"]); ?></div>
 <?php
         }
     }
-} ?>
+} ?></div>
         </div>
+      </div>
     </div>
-
+  </div>
 </section>
-
-                <!-- END SESSIONS -->
+<!-- END SESSIONS -->
 <?php
 // vim: et sw=2 ts=2 ai si
 ?>

@@ -1252,8 +1252,16 @@ header nav ul a:focus {
 .sessions-section div table tbody tr td {
   padding: 8px;
 }
+.sessions-section .slideref {
+  width: 595px;
+}
 .sessions-section .slideref a:hover {
   color: #fff !important;
+}
+.sessions-section .slider-wrap-slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .mfp-wrap .accordion-heading {
@@ -6140,6 +6148,239 @@ p.notify {
   margin-right: -55px !important;
 }
 #speaker .owl-dots {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------------------
++
++ Speaker SLIDER
++
+-------------------------------------------------------------------------------------- */
+#sessions {
+  /* clearfix */
+  /* display none until init */
+  /* mouse grab icon */
+  /* fix */
+}
+#sessions .owl-carousel .owl-wrapper:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+#sessions .owl-carousel {
+  display: none;
+  position: relative;
+  width: 100%;
+  -ms-touch-action: pan-y;
+}
+#sessions .owl-carousel .owl-wrapper {
+  display: none;
+  position: relative;
+  -webkit-transform: translate3d(0px, 0px, 0px);
+}
+#sessions .owl-carousel .owl-wrapper-outer {
+  overflow: hidden;
+  position: relative;
+  width: 595px;
+  left: 50%;
+  margin-left: -288px;
+}
+#sessions .owl-carousel .owl-wrapper-outer.autoHeight {
+  -webkit-transition: height 500ms ease-in-out;
+  -moz-transition: height 500ms ease-in-out;
+  -ms-transition: height 500ms ease-in-out;
+  -o-transition: height 500ms ease-in-out;
+  transition: height 500ms ease-in-out;
+}
+#sessions .owl-carousel .owl-item {
+  float: left;
+}
+#sessions .owl-carousel .owl-item .item {
+  position: relative;
+  cursor: pointer;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+#sessions .owl-carousel .owl-item .item > img {
+  width: 100%;
+  -moz-transform: scale(1, 1);
+  -ms-transform: scale(1, 1);
+  -webkit-transform: scale(1, 1);
+  transform: scale(1, 1);
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+#sessions .owl-carousel .owl-item .item h4 {
+  font-family: "Source Sans Pro", sans-serif;
+}
+#sessions .owl-carousel .owl-item .item .hover {
+  position: absolute;
+  z-index: 999999;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+#sessions .owl-carousel .owl-item .item .hover div {
+  width: 50px;
+  height: 50px;
+  display: block;
+  margin-top: 150px;
+  position: relative;
+  left: 50%;
+  -ms-transform: translate(-50%, -10px);
+  /* IE 9 */
+  -webkit-transform: translate(-50%, -10px);
+  /* Safari */
+  transform: translate(-50%, -10px);
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+#sessions .owl-carousel .owl-item .item .hover div i {
+  -ms-transform: rotate(45deg);
+  /* IE 9 */
+  -webkit-transform: rotate(45deg);
+  /* Chrome, Safari, Opera */
+  transform: rotate(45deg);
+  width: 50px;
+  height: 50px;
+  display: block;
+  visibility: hidden;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  -moz-transition: all 0.4s ease;
+  -o-transition: all 0.4s ease;
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  /* hack for ie8 */
+  opacity: 1\9;
+  visibility: visible\9;
+  display: none\9;
+}
+#sessions .owl-carousel .owl-item .item .hover div svg {
+  width: 50px;
+  height: 50px;
+  display: block;
+}
+#sessions .owl-carousel .owl-item .item .hover h6 {
+  position: relative;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  text-align: center;
+  margin-top: 100px;
+  background: rgba(41, 43, 63, 0.5);
+  padding: 4px 0;
+}
+#sessions .owl-carousel .owl-item .item:hover .hover {
+  background-color: rgba(41, 43, 63, 0.5);
+  visibility: visible;
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+  /* hacks for ie8 */
+  display: block\9;
+}
+#sessions .owl-carousel .owl-item .item:hover .hover div {
+  -ms-transform: translate(-50%, 0);
+  /* IE 9 */
+  -webkit-transform: translate(-50%, 0);
+  /* Safari */
+  transform: translate(-50%, 0);
+  visibility: visible;
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+  /* hacks for ie8 */
+  display: block\9;
+}
+#sessions .owl-carousel .owl-item .item:hover .hover div i {
+  visibility: visible;
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+  /* hacks for ie8 */
+  display: block\9;
+}
+#sessions .owl-carousel .owl-item .item:hover .hover h6 {
+  bottom: 0;
+  visibility: visible;
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+  /* hacks for ie8 */
+  display: block\9;
+  background: transparent;
+}
+#sessions .owl-controls .owl-page,
+#sessions .owl-controls .owl-buttons div {
+  cursor: pointer;
+}
+#sessions .owl-controls {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+#sessions .grabbing {
+  cursor: url(grabbing.png) 8 8, move;
+}
+#sessions .owl-carousel .owl-wrapper,
+#sessions .owl-carousel .owl-item {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+}
+#sessions .owl-buttons > div {
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  width: 46px;
+  height: 35px;
+  display: block !important;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+  opacity: 0.5;
+  border: 0;
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
+  background-color: transparent;
+  -moz-transition: all 0.4s ease;
+  -o-transition: all 0.4s ease;
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  position: absolute;
+  margin-bottom: 30px;
+}
+#sessions .owl-buttons > div:hover {
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+}
+#sessions .owl-prev {
+  background-image: url("../images/left-arrow1.png");
+  left: 50%;
+  margin-left: -55px !important;
+}
+#sessions .owl-next {
+  background-image: url("../images/right-arrow1.png");
+  right: 50%;
+  margin-right: -55px !important;
+}
+#sessions .owl-dots {
   display: none;
 }
 

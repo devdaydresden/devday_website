@@ -17,7 +17,9 @@
             "speaker": "Dave Farley",
             "slideshare": {
                 "key": "LIydla0m0gTfnP"
-            }
+            },
+            "id": "dave_farley_1",
+            "text": "<p>Many people working in software development spend their careers without seeing what good looks like. Our history is littered with inefficient processes creating poor quality output, too late to capitalise on the expected business value. How have we got to this state? How do we get past it? What does good really look like? Continuous Delivery changes the economics of software development, find out how and why.</p>"
         }
     ],
     "14:15 - 14:30": [
@@ -32,7 +34,9 @@
             "room": "Hamburg",
             "slideshare": {
                 "key": "MOZ1ZKmgwcWaOU"
-            }
+            },
+            "id": "artur_speth_1",
+            "text": "<p>Märkte sind dynamischer denn je und Businessmodelle ändern sich. Oft unterstützt das Engineering nicht mehr ausreichend diese Dynamik, wodurch sich erhebliche Wettbewerbsnachteile ergeben können. Kürzere Zyklen und eine agile Kultur sind hierbei Schlüsselelemente für eine bessere Wertschöpfung, sind aber in großen Organisationen nicht trivial zu realisieren. Der Vortrag wird am Beispiel von Visual Studio Team Services die agile Transformation der Microsoft Developer Division hin zu einer DevOps-Kultur beschreiben und Ihnen einige Einblicke hinter die Kulissen gewähren, wie die Developer Division heute arbeitet.</p>"
         },
         {
             "description": "Continuous Delivery - Aber Sicher?!",
@@ -40,7 +44,9 @@
             "room": "Gartensaal",
             "slideshare": {
                 "key": "3GppXjxcDaAOik"
-            }
+            },
+            "id": "jan_dittberner_1",
+            "text": "<p>Für kurze Entwicklungszyklen bei gleichbleibend hoher Qualität sind Continuous Integration und sinnvollerweise Continuous Delivery heutzutage wichtige Hilfsmittel.</p><p>Im Vortrag werde ich zeigen wie wir in einem relativ großen sicherheitsrelevanten Projekt damit umgehen, kontinuierlich Entwicklungs- und Testumgebungen bereitzustellen und dabei ein hohes Sicherheitsniveau gewährleisten können.</p><p>Dabei wird es technologisch um Jenkins, Puppet, den Umgang mit Zertifikaten und Keystores, die Umsetzung von Berechtigungen auf Betriebssystem- und Datenbankebene und daran angrenzende Themen gehen.</p>"
         },
         {
             "description": "Lose gekoppelt wie nie: DI vs. IoC",
@@ -48,7 +54,9 @@
             "room": "St. Petersburg",
             "slideshare": {
                 "key": "WPXAyCGDNZHXa"
-            }
+            },
+            "id": "hendrik_loesch_1",
+            "text": "<p>Dependency Injection, Service Locator, Inversion of Control, Dependency Inversion Principle, … Viele Begriffe die irgendwie das Gleiche zu sagen scheinen und sich dann doch wieder unterscheiden. Sicher ist nur, dass es sich um lose Kopplung handelt. Dass wir dank dieser ominösen Begriffe wartbare Software erstellen können, die leichter zu erweitern ist und sich darüber hinaus auch noch gut testen lässt.</p><p>Der Vortrag greift die zuvor genannten Begriffe auf und erläutert ihre Zusammenhänge. Dabei ist das Ziel mit altbekannten Vorurteilen aufzuräumen und bei der Entscheidung zu helfen wo Softwarebestandteile wirklich entkoppelt werden sollten und welche Antipatterns sich beim Praxiseinsatz ergeben können. Dabei sehen wir diverse Beispiele des Einsatzes der SOLID Prinzipien und warum Dependency Injection allein eben nicht zu besserer Software führt.</p>"
         }
     ],
     "15:15 - 15:45": [
@@ -63,7 +71,9 @@
             "room": "Hamburg",
             "slideshare": {
                 "key": "KQkgVjJNbUPa2"
-            }
+            },
+            "id": "dave_farley_2",
+            "text": "<p>Writing and maintaining a suite acceptance tests that can give you a high level of confidence in the behaviour and configuration of your system is a complex task. In this talk Dave will describe approaches to acceptance testing that allow teams to: work quickly and effectively; build excellent functional coverage for complex enterprise-scale systems; manage and maintain those tests in the face of change, and of evolution in both the codebase and the understanding of the business problem.</p><p>This talk will answer the following questions, and more: How do you fail fast? How do you make your testing scalable? How do you isolate test cases from one-another? How do you maintain a working body of tests when you radically change the interface to your system?</p>"
         },
         {
             "description": "MIXING UP REALITIES \u2013 Mit AR, VR, AV zu neuen Realit\u00e4ten",
@@ -71,7 +81,9 @@
             "room": "Gartensaal",
             "slideshare": {
                 "key": "zZXFxzyxzeOUKs"
-            }
+            },
+            "id": "loh_lamack_1",
+            "text": "<p>Mit der fortgeschrittenen Hardware-Miniaturisierung von ehemaligen Highperformance-Rechnern auf Taschengröße erheben sich 3D User Interfaces im Gewand von Smartphones zu einem zweiten Anlauf im Technology Hypecycle. Mit Augmented Reality, Virtual Reality, Augmented Virtuality oder einfach Mixed Reality ergeben sich spannende und auch herausfordernde Möglichkeiten, den digitalen Erfahrungsraum für uns zu erweitern. Wir stellen Technologien, Projekte und Erfahrungen vor.</p>"
         },
         {
             "description": "Testautomatisierungsframework Xeta",
@@ -79,7 +91,9 @@
             "room": "St. Petersburg",
             "slideshare": {
                 "key": "u7kSpVVwTxWtOf"
-            }
+            },
+            "id": "peter_lehmann_1",
+            "text": "<p>Die Testautomatisierung spielt bei der Umsetzung von Softwareentwicklungsprojekten eine immer größere Rolle. Vor allem beim Einsatz eines Continuous-Integration-Prozesses ist sie unabdingbar. Schnelles Feedback über die Softwarequalität und eine hohe Testabdeckung sind dabei genauso wichtig wie die Stabilität der Tests. Oft müssen neben dem Frontend auch Backend-Schnittstellen wie Webservices betrachtet werden. Dafür wird ein umfangreiches Testframework benötigt, welches die gestellten Anforderungen erfüllt. In diesem Vortrag wird das Testautomatisierungsframework XETA vorgestellt, welches von der T-Systems Multimedia Solutions GmbH für eben diese hohen Ansprüche entwickelt wurde.</p>"
         }
     ],
     "16:30 - 16:45": [
@@ -94,7 +108,9 @@
             "room": "Hamburg",
             "slideshare": {
                 "key": "tL5tCWxSe4fJ3u"
-            }
+            },
+            "id": "thomas_haase_1",
+            "text": "<p>Im Rahmen der zunehmenden Digitalisierung und der einhergehenden Vernetzung geraten immer mehr kritische Infrastrukturen und die vernetzten Geräte in den Fokus krimineller Hacker. Früher waren die meisten viele dieser Netze von den öffentlichen Netzen / Internet strikt getrennt und von außen nicht erreichbar. Doch auch der Einzug digitaler Technologien und die damit einhergehende enge Integration externer Geschäftspartner und Kunden in die Wertschöpfungskette bergen für die Unternehmen neue Gefahren. Allerdings werden immer mehr Firmen im Rahmen des sogenannten „digitalen Darwinismus“ in eine Situation gebracht, wo sie gezwungen sind, etwaige Bedenken zu ignorieren.</p><p>Im Rahmen des Vortrages werden mögliche Gefahren und Probleme anhand des Tests der Infrastruktur eines Fußballstadions und der darin eingebundenen Geräte demonstriert. Anhand von Praxisbeispielen werden Schwachstellen / Programmierfehler bei der Entwicklung solcher Systeme aufgezeigt und mögliche Verbesserungsmaßnahmen diskutiert.</p>"
         },
         {
             "description": "Cloud-Umgebungen mit Terraform verwalten",
@@ -102,7 +118,9 @@
             "room": "Gartensaal",
             "slideshare": {
                 "key": "gBpn0tAOyHfRWw"
-            }
+            },
+            "id": "sascha_askani_1",
+            "text": "<p>Continuous Delivery setzt auf die Automatisierung von Entwicklungs- und Betriebsprozessen, um die Performance und Qualität in der IT zu erhöhen. Mit Terraform zeigen die Referenten ein Tool, mit dessen Hilfe Infrastruktur effizient verwaltet werden kann.</p><p>Die Referenten demonstrieren live den Aufbau einer Cloud-Infrastruktur aus virtuellen Instanzen, Netzen, Loadbalancing und DNS bei Amazon AWS. Weiterhin gehen sie auf Herausforderungen und Vorteile (immutable Infrastructure) ein, die sich dadurch bei der Implementierung von Continuous-Delivery-Pipelines für die Entwicklung und den Betrieb ergeben.</p>"
         },
         {
             "description": "Zukunft des DevDay",
@@ -122,7 +140,9 @@
             "room": "Hamburg",
             "slideshare": {
                 "key": "K08mkov1dx9NGA"
-            }
+            },
+            "id": "adam_bien_1",
+            "text": "<p>O.k. wir starten nun ein Microservice Projekt. Was ist genau zu tun? Wie startet man ein Projekt? Worauf ist zu achten? Was sind die wesentlichen Unterschiede zu der Prä-Microservice Ära? Brauchen wir doch Transaktionen? Was machen wir mit der DB? Gibt es shared Libraries?</p><br><p>In dieser Keynote werde ich möglichst konkret, allerdings garantiert ohne Java EE (=der perfekten Java EE Plattform :-)) Microservice Konzepte und Patterns wie Bulkheads, Circuit Breaker oder Tolerant Reader vorstellen. Fragen der Teilnehmer haben, wie immer, absolute Priorität und werden sofort beantwortet.</p>"
         }
     ],
     "18:45 - 20:30": [

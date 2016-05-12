@@ -149,3 +149,6 @@
 </section>
 
                 <!-- END CONTACT -->
+<?php
+// vim: et sw=2 ts=2 ai si
+?>

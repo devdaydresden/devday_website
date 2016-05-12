@@ -9,8 +9,8 @@
               <use xlink:href="svgicons/icons.svg#tweet-icon"></use>
             </svg>
           </span></a>
-          <h3><?= $followAccountName; ?></h3>
-          <a href="https://twitter.com/devdaydresden" class="btn1 btn--white big follow-btn"><?= $followUs; ?><span>
+          <h3>#devdaydd</h3>
+          <a href="https://twitter.com/devdaydresden" class="btn1 btn--white big follow-btn">FOLGE UNS<span>
             <svg role="img" fill="currentColor">
               <use xlink:href="svgicons/icons.svg#arrow-down"></use>
             </svg>
@@ -54,4 +54,5 @@ foreach ($tweetdata['tweets'] as $tweet) { ?>
 </section>
 <!-- END FOLLOW -->
 <?php
-// vim: set sw=2 ts=2 et ?>
+// vim: et sw=2 ts=2 ai si
+?>

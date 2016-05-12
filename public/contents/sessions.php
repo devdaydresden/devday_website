@@ -88,3 +88,6 @@ foreach ($session_data as $time => $talks) {
 </section>
 
                 <!-- END SESSIONS -->
+<?php
+// vim: et sw=2 ts=2 ai si
+?>

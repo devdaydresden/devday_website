@@ -1,26 +1,3 @@
-<?php
-$ints = array();
-
-function cmp($a, $b) {
-    if (strlen($a) == strlen($b)) {
-        return 0;
-    }
-    return (strlen($a) > strlen($b)) ? -1 : 1;
-}
-
-uasort($ints, "cmp");
-
-$myints = array();
-
-foreach ($ints as $key => $value) {
-    $pos = strpos($interest[0], $value);
-    if ($pos !== false) {
-        $myints[] = $key;
-        $interest[0] = substr($interest[0], 0, $pos) .
-            substr($interest[0], $pos+strlen($value), strlen($interest[0]));
-    }
-}
-?>
 <script language="javascript"><!--
 function onbeforesubmit() {
     return true;
@@ -160,62 +137,5 @@ function SubmitIt() {
         document.ProfileForm.submit();
     }
 }
-
-function MailIt() {
-    if (CheckInputs()) {
-        if ((document.ProfileForm.subject.value=='') || (document.ProfileForm.msg.value=='')) {
-            alert('Bitte f\u00fcr Sie die Nachrichtenfelder aus!');
-        } else {
-            document.ProfileForm.submit();
-        }
-    }
-}
-
-function FieldWithName(frm, fieldname, numofield) {
-    if (!numofield) {
-        numofield = 0;
-    }
-    field_count = 0;
-    for (i = 0; i < frm.elements.length; ++i) {
-        if (frm.elements[i].name == fieldname) {
-            if (field_count == numofield) {
-                return frm.elements[i];
-            } else {
-                field_count++;
-            }
-        }
-    }
-}
-
-function NumChecked(frm, fieldname) {
-    var count = 0;
-    for (i = 0; i < frm.elements.length; ++i) {
-        if (frm.elements[i].name == fieldname && frm.elements[i].checked == true) {
-            ++count;
-        }
-    }
-    return count;
-}
-
-function NumSel(field) {
-    var count = 0;
-    for (i = 0; i < field.length; ++i) {
-        if (field[i].selected == true) {
-            ++count;
-        }
-    }
-    return count;
-}
-
-var multiFields = new Array();
-var dateFields = new Array();
-multiFields["interest[]"] = "interest"
-multiFields["optin"] = "optin"
-
-var arr_interest = new Array();
-
 </script><?php
-if ($alertbox != "") {
-    echo "\r\n<script language=\"javascript\">\r\nalert(\"$alertbox\");</script>";
-}
 ?>

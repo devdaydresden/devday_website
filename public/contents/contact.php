@@ -2,7 +2,7 @@
 <section id="contact" class="contact-section">
   <div class="container">
     <h3>Jetzt in die Interessentenliste eintragen</h3>
-    <h5 class="center">Du kannst dich für die Interessentenliste für zukünftige Events registrieren</h5>
+    <h5 class="center">Hier kannst Du dich als Interessent für zukünftige Events registrieren</h5>
     <form name="ProfileForm" onsubmit="return CheckInputs();" action="https://news.t-systems-mms.com/u/register.php" method=get class="contact-form">
       <input type=hidden name="CID" value="112554395">
       <input type=hidden name="SID" value="<?= isset($SID) ? $SID : ""; ?>">

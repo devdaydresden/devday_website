@@ -21,7 +21,6 @@ $slides_data = json_decode(file_get_contents($jsonfile), $assoc=true);
 ?><!-- START SESSIONS -->
 <section id="sessions" class="sessions-section ">
   <div class="container">
-    <h4><a href="https://lineupr.com/saec/devday16">Sessionplan in der Webapp öffnen</a></h4>
     <h3 data-toggle="collapse"  data-target="#sessionCollapse" aria-expanded="false" aria-controls="sessionCollapse">
       Zeige Sessionplan
       <i class="fa fa-angle-down"></i>
@@ -54,9 +53,9 @@ foreach ($session_data as $time => $talks) {
     </div>
   </div>
   <div class="container">
-    <h3>Slides</h3>
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
+        <p class="center">Hier findet ihr die Vortragsfolien zu den DevDay 2016-Vorträgen:</p>
         <div class="slider-wrap-slides">
           <div id="owl3" class="owl-carousel owl-theme"><?php
 foreach ($session_data as $time => $talks) {

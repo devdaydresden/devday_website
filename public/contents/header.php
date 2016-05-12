@@ -18,9 +18,8 @@
         <li><a href="#speaker">SPEAKER</a></li>
         <li><a href="#sponsors">PARTNER</a></li>
         <li><a href="#sessions">SESSIONS</a></li>
-        <li><a href="#anfahrt">ANFAHRT</a></li>
         <li><a href="https://lineupr.com/saec/devday16">LINEUPR</a></li>
-        <li><a href="./2015/">DevDay 2015</a></li>
+        <li><a href="./2015/">2015</a></li>
       </ul>
     </nav>
   </div>

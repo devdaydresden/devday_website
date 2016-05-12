@@ -645,20 +645,12 @@
         }
       ];
 
-      infobox = new InfoBox({
+      infobox = new InfoBubble({
            content: document.getElementById("infobox"),
            disableAutoPan: false,
            maxWidth: 790,
-           pixelOffset: new google.maps.Size(-395, -200),
+           minHeight: 300,
            zIndex: 999,
-           boxStyle: {
-              // background: "url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/examples/tipbox.gif') no-repeat",
-              opacity: 1,
-              width: "790px"
-          },
-          // closeBoxMargin: "12px 4px 2px 2px",
-          //closeBoxURL: "images/location.png",
-          infoBoxClearance: new google.maps.Size(1, 1)
       });
 
       var styledMap = new google.maps.StyledMapType(styles,

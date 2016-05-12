@@ -43,7 +43,7 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="https://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+    <script type="text/javascript" src="js/libs/infobubble.js"></script>
     <script src="js/libs/jquery.autosize.js"></script>
     <script src="js/jquery.validate.js"></script>
     <script src="js/jquery.easing.1.3.js"></script>

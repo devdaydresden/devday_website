@@ -4,7 +4,7 @@
     <article>
       <h1><img src="images/slogan.png" width="695" height="55"/></h1>
       <h4>12. April 2016 in Dresden</h4>
-      <a href="#contact" class="btn">In Interessentenliste eintragen</a>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/kDgVhKhnWsk?autoplay=1" frameborder="0" allowfullscreen></iframe>
     </article>
   </div>
   <div class="clearfix"></div>

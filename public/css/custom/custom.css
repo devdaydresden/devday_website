@@ -6153,7 +6153,7 @@ p.notify {
 
 /* --------------------------------------------------------------------------------------
 +
-+ Speaker SLIDER
++ Slides SLIDER
 +
 -------------------------------------------------------------------------------------- */
 #sessions {
@@ -6161,6 +6161,10 @@ p.notify {
   /* display none until init */
   /* mouse grab icon */
   /* fix */
+}
+#sessions .slider-wrap-slides {
+  position: relative;
+  top: 68px;
 }
 #sessions .owl-carousel .owl-wrapper:after {
   content: ".";
@@ -6216,6 +6220,9 @@ p.notify {
   -o-transition: all 0.3s ease;
   -webkit-transition: all 0.3s ease;
   transition: all 0.3s ease;
+}
+#sessions .owl-carousel .owl-item .item blockquote {
+  width: 590px;
 }
 #sessions .owl-carousel .owl-item .item h4 {
   font-family: "Source Sans Pro", sans-serif;
@@ -6364,6 +6371,7 @@ p.notify {
   -webkit-transition: all 0.4s ease;
   transition: all 0.4s ease;
   position: absolute;
+  bottom: 100%;
   margin-bottom: 30px;
 }
 #sessions .owl-buttons > div:hover {

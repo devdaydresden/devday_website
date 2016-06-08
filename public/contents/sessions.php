@@ -1,11 +1,36 @@
 <?php
+# vim: sw=4 ts=4 et
 function slideshare_url($link, $user) {
     return sprintf("//www.slideshare.net/%s/%s", $user, $link);
 }
 
 function slideshare_iframe($key, $link, $title, $width=595, $height=485, $user = "devday-dd", $usertitle="DevDay Dresden") {
-?><iframe src="//www.slideshare.net/slideshow/embed_code/key/<?= $key ?>" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
-    <p class="slideref"><a href="<?= $link; ?>" title="<?= $title; ?>" target="_blank"><?= $title; ?></a> from <a href="//www.slideshare.net/<?= $user; ?>" target="_blank"><?= $usertitle; ?></a></p><?php
+  return sprintf(
+    '<iframe src="//www.slideshare.net/slideshow/embed_code/key/%s" width="%d" height="%d" frameborder="0" marginwidth="0" ' .
+    'marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%%;" ' .
+    'allowfullscreen> </iframe><p class="slideref"><a href="%s" title="%s" target="_blank">%s</a> from ' .
+    '<a href="//www.slideshare.net/%s" target="_blank">%s</a></p>',
+    $key, $width, $height, $link, $title, $title, $user, $usertitle
+  );
+}
+
+function youtube_iframe($key) {
+  return sprintf('<iframe width="560" height="315" src="https://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>', $key);
+}
+
+function talk_feedback($text) {
+  return sprintf('<blockquote>%s</blockquote>', $text);
+}
+
+function accordion_group($number, $title, $text, $subnum, $collapsed=false) {
+  return sprintf('<div class="accordion-group">
+  <div class="accordion-heading">
+    <a class="accordion-toggle%s" data-toggle="collapse" data-parent="#accordion%d" href="#collapse%s%d">%s</a>
+  </div>
+  <div id="collapse%s%d" class="accordion-body collapse%s">
+    <div class="accordion-inner">%s</div>
+  </div>
+</div>', $collapsed ? ' collapsed' : '', $number, $subnum, $number, $title, $subnum, $number, $collapsed ? '' : ' in', $text); 
 }
 
 $jsonfile = implode(
@@ -47,24 +72,36 @@ foreach ($session_data as $time => $talks) {
             ?><p class="hint italic"><i class="fa fa-arrow-circle-o-down"></i> Raum: <?= $talk["room"]; ?></p><?php
         } ?></td><?php
     } ?></tr><?php
-} ?>
-        </tbody>
+} ?></tbody>
       </table>
     </div>
   </div>
   <div class="container">
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
-        <p class="center">Hier findet ihr die Vortragsfolien zu den DevDay 2016-Vorträgen:</p>
+        <p class="center">Hier findet ihr die Vortragsfolien und Videos zu den DevDay 2016-Vorträgen:</p>
         <div class="slider-wrap-slides">
           <div id="owl3" class="owl-carousel owl-theme"><?php
 foreach ($session_data as $time => $talks) {
     foreach ($talks as $talk) {
-        if (array_key_exists("slideshare", $talk)) {
-          $key = $talk['slideshare']['key'];
-          $info = $slides_data[$key];?>
-            <div class="item"><?php slideshare_iframe($key, $info["url"], $info["title"]); ?></div>
-<?php
+        if (array_key_exists('slideshare', $talk) or array_key_exists('youtube', $talk) or array_key_exists('feedback', $talk)) {
+            $number++;
+            $data = array();
+            if (array_key_exists('slideshare', $talk)) {
+                $key = $talk['slideshare']['key'];
+                $info = $slides_data[$key];
+                $data[] = accordion_group($number, 'Vortragsfolien', slideshare_iframe($key, $info['url'], $info['title']), 'Slides');
+            }
+            if (array_key_exists('youtube', $talk)) {
+                $key = $talk['youtube']['key'];
+                $data[] = accordion_group($number, 'Video', youtube_iframe($key), 'Video', true);
+            }
+            if (array_key_exists('feedback', $talk)) {
+                $data[] = accordion_group($number, 'Zusammenfassung', talk_feedback($talk['feedback']), 'Feedback', true);
+            } ?>
+            <div class="item">
+                <div class="accordion" id="accordion<?= $number; ?>"><?php print(implode($data)); ?></div>
+            </div><?php
         }
     }
 } ?></div>

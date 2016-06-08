@@ -7,6 +7,11 @@
 
 #sessions {
 
+  .slider-wrap-slides {
+      position:relative;
+      top:68px;
+  }
+
   /* clearfix */
   .owl-carousel .owl-wrapper:after {
     content: ".";
@@ -56,6 +61,9 @@
         @include scale(1 , 1);
         @include t(.3s);
 
+      }
+      blockquote {
+        width: 590px;
       }
       h4 {
         font-family: $title-font;
@@ -161,6 +169,7 @@
       @include ht;
       @include t(.4s);
       position: absolute;
+      bottom: 100%;
       margin-bottom: 30px;
       &:hover {
         @include opacity(1) ;
@@ -182,6 +191,4 @@
   .owl-dots {
     display: none;
   }
-
-
 }

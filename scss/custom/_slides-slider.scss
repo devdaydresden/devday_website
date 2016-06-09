@@ -39,6 +39,7 @@
     width: 595px;
     left: 50%;
     margin-left: -288px;
+    margin-top: 40px;
   }
   .owl-carousel .owl-wrapper-outer.autoHeight{
     -webkit-transition: height 500ms ease-in-out;
@@ -55,6 +56,43 @@
       position: relative;
       cursor: pointer;
       @include t(.3s);
+
+      h4.session-name {
+        text-align: left;
+        display: inline-block;
+        max-width: 595px;
+      }
+
+      .session_accordion {
+
+        .accordion-heading {
+          max-width: 595px;
+        }
+
+        a.accordion-toggle {
+          background: $highlight;
+          color: $white !important;
+          padding: 1.2rem;
+          width: 100%;
+          font-size: 1.4rem;
+          display: block;
+          margin-bottom: 8px;
+
+          &.collapsed {
+            .fa-angle-down {
+              display: inline-block;
+            }
+
+            .fa-angle-up {
+              display: none;
+            }
+          }
+
+          .fa-angle-down {
+            display: none;
+          }
+        }
+      }
 
       >img {
         width: 100%;

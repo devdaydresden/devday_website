@@ -22,15 +22,15 @@ function talk_feedback($text) {
   return sprintf('<blockquote>%s</blockquote>', $text);
 }
 
-function accordion_group($number, $title, $text, $subnum, $collapsed=false) {
+function accordion_group($number, $title, $text, $subnum, $collapsed=true) {
   return sprintf('<div class="accordion-group">
   <div class="accordion-heading">
-    <a class="accordion-toggle%s" data-toggle="collapse" data-parent="#accordion%d" href="#collapse%s%d">%s</a>
+    <a class="accordion-toggle%s" data-toggle="collapse" data-parent="#accordion%d" href="#collapse%s%d">%s <i class="fa fa-angle-down pull-right"></i><i class="fa fa-angle-up pull-right"></i></a>
   </div>
   <div id="collapse%s%d" class="accordion-body collapse%s">
     <div class="accordion-inner">%s</div>
   </div>
-</div>', $collapsed ? ' collapsed' : '', $number, $subnum, $number, $title, $subnum, $number, $collapsed ? '' : ' in', $text); 
+</div>', $collapsed ? ' collapsed' : '', $number, $subnum, $number, $title, $subnum, $number, $collapsed ? '' : ' in', $text);
 }
 
 $jsonfile = implode(
@@ -45,7 +45,7 @@ $slides_data = json_decode(file_get_contents($jsonfile), $assoc=true);
 
 ?><!-- START SESSIONS -->
 <section id="sessions" class="sessions-section ">
-  <div class="container">
+  <!--<div class="container">
     <h3 data-toggle="collapse"  data-target="#sessionCollapse" aria-expanded="false" aria-controls="sessionCollapse">
       Zeige Sessionplan
       <i class="fa fa-angle-down"></i>
@@ -75,11 +75,11 @@ foreach ($session_data as $time => $talks) {
 } ?></tbody>
       </table>
     </div>
-  </div>
+  </div>-->
   <div class="container">
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
-        <p class="center">Hier findet ihr die Vortragsfolien und Videos zu den DevDay 2016-Vorträgen:</p>
+        <h4>Hier findet ihr die Vortragsfolien und Videos zu den DevDay 2016-Vorträgen:</h4>
         <div class="slider-wrap-slides">
           <div id="owl3" class="owl-carousel owl-theme"><?php
 foreach ($session_data as $time => $talks) {
@@ -100,7 +100,8 @@ foreach ($session_data as $time => $talks) {
                 $data[] = accordion_group($number, 'Zusammenfassung', talk_feedback($talk['feedback']), 'Feedback', true);
             } ?>
             <div class="item">
-                <div class="accordion" id="accordion<?= $number; ?>"><?php print(implode($data)); ?></div>
+                <h4 class="session-name"><?= $talk["description"]; ?></h4>
+                <div class="accordion session_accordion" id="accordion<?= $number; ?>"><?php print(implode($data)); ?></div>
             </div><?php
         }
     }

@@ -1,0 +1,6 @@
+.librarian/
+.tmp/
+Puppetfile.lock
+modules/*/
+!modules/role/
+!modules/profile/

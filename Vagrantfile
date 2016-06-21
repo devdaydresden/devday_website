@@ -31,6 +31,18 @@ Vagrant.configure(2) do |config|
       sudo yum update
       sudo yum install -y puppet-agent
     fi
+    if rpm -q rubygems; then
+      echo "Rubygems is already installed"
+    else
+      sudo yum install -y rubygems
+    fi
+    if gem list | grep -q librarian-puppet; then
+      echo "librarian-puppet is already installed"
+    else
+      sudo gem install librarian-puppet
+    fi
+    cd /tmp/vagrant-puppet/environments/dev
+    /usr/local/bin/librarian-puppet install --verbose
   SHELL
   config.vm.provision "puppet" do |puppet|
     puppet.environment = "dev"

@@ -1,0 +1,20 @@
+# vim: ft=python ts=4 sw=4 et:
+from __future__ import absolute_import
+import os
+import sys
+
+os.environ['DEVDAY_PG_DBNAME'] = "<%= @devday_dbname %>"
+os.environ['DEVDAY_PG_HOST'] = "<%= @devday_dbhost %>"
+os.environ['DEVDAY_PG_PORT'] = "<%= @devday_dbport %>"
+os.environ['DEVDAY_PG_USER'] = "<%= @devday_dbuser %>"
+os.environ['DEVDAY_PG_PASSWORD'] = "<%= @devday_dbpassword %>"
+os.environ['DEVDAY_SECRET'] = "<%= @devday_secret %>"
+os.environ['DJANGO_SETTINGS_MODULE'] = 'devday.settings.<%= @environment %>'
+
+sys.path.insert(0, '<%= @python_path %>')
+sys.path.insert(0, os.path.join('<%= @basedir %>', 'devday'))
+sys.stdout = sys.stderr
+
+from django.core.wsgi import get_wsgi_application
+
+application = get_wsgi_application()

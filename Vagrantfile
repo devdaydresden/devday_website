@@ -46,6 +46,7 @@ Vagrant.configure(2) do |config|
   SHELL
   config.vm.provision "puppet" do |puppet|
     puppet.environment = "dev"
+    puppet.options = ["--verbose"]
     puppet.environment_path = "puppet/environments"
     puppet.hiera_config_path = "puppet/hiera.yaml"
     puppet.working_directory = "/tmp/vagrant-puppet"

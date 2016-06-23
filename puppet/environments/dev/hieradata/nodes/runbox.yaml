@@ -1,3 +1,8 @@
 ---
 roles:
   - role::devday_runtime
+profile::djangocms::dbpassword: secret
+profile::djangocms::secret: "r+-e#7^6mwh_44f6@nqma^3w!y6(ob3c304mc27#0ccu6^6k%0"
+profile::wsgi_webserver::user: vagrant
+profile::wsgi_webserver::group: vagrant
+profile::wsgi_webserver::basedir: /vagrant

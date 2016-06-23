@@ -2,3 +2,6 @@ forge "https://forgeapi.puppetlabs.com"
 
 mod "treydock-gpg_key", "0.0.3"
 mod "puppetlabs-nodejs", "0.8.0"
+mod "puppetlabs-postgresql", "4.7.1"
+mod "puppetlabs-apache", "1.10.0"
+mod "stankevich-python", "1.12.0"

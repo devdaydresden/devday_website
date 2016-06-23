@@ -1,1 +1,6 @@
 roles: []
+devday_root: /srv/devday
+profile::djangocms::dbhost: localhost
+profile::djangocms::dbuser: devday
+profile::djangocms::dbname: devday
+profile::djangocms::dbport: 5432

@@ -17,6 +17,7 @@ class profile::djangocms(
     "DEVDAY_PG_PASSWORD=${dbpassword}",
     "DEVDAY_SECRET=${secret}",
   ]
+  $venv = "${devday_root}/venv"
 
   class { 'postgresql::lib::devel':
   }
@@ -37,7 +38,7 @@ class profile::djangocms(
     dev        => 'present',
     virtualenv => 'present',
   } ->
-  python::virtualenv { "${devday_root}/venv":
+  python::virtualenv { $venv:
     ensure       => present,
     version      => 'system',
     requirements => '/vagrant/devday/requirements.txt',
@@ -51,6 +52,15 @@ class profile::djangocms(
       Package['libpng-devel'],
       Package['zlib-devel'],
     ],
+  }
+
+  file { "${devday_root}/devday.sh":
+    ensure  => file,
+    owner   => 'vagrant',
+    group   => 'vagrant',
+    mode    => '0755',
+    content => template('profile/devday/devday.sh.erb'),
+    require => File[$devday_root],
   }
 
   class { 'postgresql::server':

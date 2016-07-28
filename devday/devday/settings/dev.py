@@ -141,7 +141,9 @@ INSTALLED_APPS = [
     'djangocms_teaser',
     'djangocms_video',
     'reversion',
-    'devday'
+    'devday',
+    'attendee',
+    'talk'
 ]
 
 LANGUAGES = (

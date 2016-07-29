@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<form action="{% url "submit_session" %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div>
+        <input type="submit" name="submit" value="{% trans "Submit" %}">
+    </div>
+</form>
+{% endblock %}

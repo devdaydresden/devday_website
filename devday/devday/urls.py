@@ -18,6 +18,7 @@ urlpatterns = i18n_patterns(
         {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^', include('cms.urls')),
+    url(r'^session/', include('talk.urls'))
 )
 
 # This is only needed when using runserver.

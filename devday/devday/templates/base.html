@@ -1,4 +1,4 @@
-{% load cms_tags menu_tags sekizai_tags %}
+{% load cms_tags menu_tags sekizai_tags static %}
 <!doctype html>
 <html>
     <head>
@@ -26,6 +26,7 @@
                 width: 20%;
             }
         </style>
+        <link rel="icon" href="{% static "favicon.ico" %}">
         {% render_block "css" %}
     </head>
     <body>

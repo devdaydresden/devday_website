@@ -18,6 +18,8 @@ Vagrant.configure(2) do |config|
   # box containing development tools
   config.vm.define "devbox" do |devbox|
     devbox.vm.hostname = 'devbox.local'
+    devbox.vm.network "forwarded_port", guest: 8000, host: 8000
+    devbox.vm.network "private_network", ip: "192.168.199.201"
   end
 
   config.vm.provision "shell", inline: <<-SHELL

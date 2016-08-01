@@ -1,9 +1,15 @@
 class profile::compass {
-  package { ['ruby-devel', 'libffi-devel', 'glibc-devel', 'gcc', 'gcc-c++']:
+  include profile::devpackages
+
+  package { 'ruby-devel':
     ensure => installed,
-  } ->
+  }
+
   package { 'compass':
     ensure   => installed,
     provider => 'gem',
+    require  => [
+      Package['ruby-devel'], Package['libffi-devel'], Package['glibc-devel'], Package['gcc'], Package['gcc-c++']
+    ]
   }
 }

@@ -21,9 +21,8 @@ class profile::djangocms(
 
   class { 'postgresql::lib::devel':
   }
-  package { ['libjpeg-devel', 'zlib-devel', 'gcc', 'libpng-devel']:
-    ensure => installed,
-  }
+
+  include profile::devpackages
 
   file { $devday_root:
     ensure => directory,
@@ -61,19 +60,5 @@ class profile::djangocms(
     mode    => '0755',
     content => template('profile/devday/devday.sh.erb'),
     require => File[$devday_root],
-  }
-
-  class { 'postgresql::server':
-    listen_addresses => '::1,127.0.0.1',
-  }
-
-  postgresql::server::db { $dbname:
-    user     => $dbuser,
-    password => postgresql_password($dbuser, $dbpassword),
-  } ->
-  exec { "${devday_root}/venv/bin/python manage.py migrate":
-    user        => 'vagrant',
-    cwd         => "${basedir}/devday",
-    environment => $django_env,
   }
 }

@@ -1,3 +1,6 @@
 ---
 roles:
   - role::devbox
+profile::djangocms::dbpassword: secret
+profile::djangocms::secret: "r+-e#7^6mwh_44f6@nqma^3w!y6(ob3c304mc27#0ccu6^6k%0"
+profile::djangocms::dbhost: pgsql

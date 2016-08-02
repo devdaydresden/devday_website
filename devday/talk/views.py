@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from django.views.generic import FormView
 from django.contrib.auth import get_user_model
+from django.views.generic import TemplateView
 
 from attendee.models import Attendee
 from talk.forms import CreateTalkWithSpeakerForm
@@ -9,9 +10,14 @@ from talk.models import Speaker
 User = get_user_model()
 
 
+class TalkSubmittedView(TemplateView):
+    template_name = "talk_submitted.html"
+
+
 class CreateTalkWithSpeakerView(FormView):
     template_name = "create_talk_with_speaker.html"
     form_class = CreateTalkWithSpeakerForm
+    success_url = 'talk_submitted'
 
     def form_valid(self, form):
         firstname = form.cleaned_data['firstname']

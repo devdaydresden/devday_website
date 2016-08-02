@@ -15,6 +15,9 @@ class Speaker(models.Model):
         verbose_name = _("Speaker")
         verbose_name_plural = _("Speakers")
 
+    def __str__(self):
+        return str(self.user)
+
 
 class Talk(models.Model):
     speaker = models.ForeignKey(Speaker)
@@ -24,3 +27,6 @@ class Talk(models.Model):
     class Meta:
         verbose_name = _("Session")
         verbose_name_plural = _("Sessions")
+
+    def __str__(self):
+        return "%s - %s" % (str(self.speaker), self.title)

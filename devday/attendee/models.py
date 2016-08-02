@@ -2,17 +2,17 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.conf import settings
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext_lazy as _
 
 
 T_SHIRT_SIZES = (
-    (1, ugettext_lazy("XS")),
-    (2, ugettext_lazy("S")),
-    (3, ugettext_lazy("M")),
-    (4, ugettext_lazy("L")),
-    (5, ugettext_lazy("XL")),
-    (6, ugettext_lazy("XXL")),
-    (7, ugettext_lazy("XXXL")),
+    (1, _("XS")),
+    (2, _("S")),
+    (3, _("M")),
+    (4, _("L")),
+    (5, _("XL")),
+    (6, _("XXL")),
+    (7, _("XXXL")),
 )
 
 

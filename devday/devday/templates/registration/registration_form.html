@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{% block title %}{% trans "Register" %}{% endblock %}
+{% block content %}
+    <form action="{% url 'registration_register' %}" method="post" role="form">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">{% trans "Register" %}</button>
+        </div>
+    </form>
+{% endblock %}

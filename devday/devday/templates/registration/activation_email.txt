@@ -1,0 +1,17 @@
+{% load i18n %}{% blocktrans %}Hello {{ user.username }},
+
+thank you for registering your interest to join us at DevDay 2017.
+
+To finish your registration please click the following link to verify your email address.
+{% endblocktrans %}
+
+https://{{ site.domain }}{% url 'registration_activate' activation_key %}
+
+{% blocktrans %}
+The link is valid for {{ expiration_days }} days.
+
+
+The DevDay team
+
+--
+https://www.devday.de/{% endblocktrans %}

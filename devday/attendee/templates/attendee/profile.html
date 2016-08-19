@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Attendee profile" %}{% endblock %}
+{% block content %}
+    <h1>User profile for {{ user.username }}</h1>
+    <dl>
+        <dt>Firstname</dt><dd>{{ user.first_name }}</dd>
+        <dt>Lastname</dt><dd>{{ user.last_name }}</dd>
+    </dl>
+{% endblock %}

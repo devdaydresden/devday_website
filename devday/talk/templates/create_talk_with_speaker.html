@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load bootstrap %}
 {% block title %}{% trans "Submit a session" %}{% endblock %}
 {% block content %}
 <form action="{% url "submit_session" %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form|bootstrap }}
     <div>
         <input type="submit" name="submit" value="{% trans "Submit" %}">
     </div>

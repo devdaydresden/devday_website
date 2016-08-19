@@ -1,7 +1,8 @@
-from django.shortcuts import redirect
-from django.views.generic import FormView
 from django.contrib.auth import get_user_model
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
+from registration import signals
+from registration.backends.hmac.views import RegistrationView
 
 from attendee.models import Attendee
 from talk.forms import CreateTalkWithSpeakerForm
@@ -14,10 +15,12 @@ class TalkSubmittedView(TemplateView):
     template_name = "talk_submitted.html"
 
 
-class CreateTalkWithSpeakerView(FormView):
+class CreateTalkWithSpeakerView(RegistrationView):
     template_name = "create_talk_with_speaker.html"
     form_class = CreateTalkWithSpeakerForm
-    success_url = 'talk_submitted'
+
+    def get_success_url(self):
+        return 'talk_submitted'
 
     def form_valid(self, form):
         firstname = form.cleaned_data['firstname']
@@ -27,7 +30,12 @@ class CreateTalkWithSpeakerView(FormView):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            user = User.objects.create_user(firstname=firstname, lastname=lastname, email=email)
+            user = User.objects.create_user(
+                username=email, first_name=firstname, last_name=lastname, email=email, is_active=False)
+            signals.user_registered.send(sender=self.__class__,
+                                         user=user,
+                                         request=self.request)
+            self.send_activation_email(user)
             user.save()
 
         try:

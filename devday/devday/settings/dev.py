@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 gettext = lambda s: s
-DATA_DIR = os.path.dirname(os.path.dirname(__file__))
+DATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -32,7 +32,7 @@ def get_env_variable(var_name):
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -102,6 +102,7 @@ TEMPLATES = [
 
 
 MIDDLEWARE_CLASSES = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'cms.middleware.utils.ApphookReloadMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -113,7 +114,7 @@ MIDDLEWARE_CLASSES = [
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
-    'cms.middleware.language.LanguageCookieMiddleware'
+    'cms.middleware.language.LanguageCookieMiddleware',
 ]
 
 INSTALLED_APPS = [
@@ -143,7 +144,9 @@ INSTALLED_APPS = [
     'reversion',
     'devday',
     'attendee',
-    'talk'
+    'talk',
+    'bootstrapform',
+    'debug_toolbar',
 ]
 
 LANGUAGES = (
@@ -199,3 +202,14 @@ CMS_STYLE_NAMES = (
 MIGRATION_MODULES = {
     
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# settings for django-registration
+# see: https://django-registration.readthedocs.io/en/2.1.1/index.html
+ACCOUNT_ACTIVATION_DAYS = 14
+
+# settings for django-debug-toolbar
+# see: http://django-debug-toolbar.readthedocs.io/en/stable/installation.html#explicit-setup
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+INTERNAL_IPS = ('127.0.0.1', '::1')

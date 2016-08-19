@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Activation failed." %}{% endblock %}
+{% block content %}
+    <p>{% trans "You specified an invalid activation code or your code has expired." %}</p>
+{% endblock %}

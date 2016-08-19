@@ -12,14 +12,14 @@ from django.views.static import serve as serve_static
 
 admin.autodiscover()
 
-urlpatterns = i18n_patterns(
+urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),  # NOQA
     url(r'^sitemap\.xml$', sitemap_view,
         {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^', include('cms.urls')),
     url(r'^session/', include('talk.urls'))
-)
+]
 
 # This is only needed when using runserver.
 if settings.DEBUG:

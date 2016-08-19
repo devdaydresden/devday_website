@@ -147,14 +147,13 @@ INSTALLED_APPS = [
 ]
 
 LANGUAGES = (
-    ## Customize this
     ('de', gettext('de')),
-    ('en', gettext('en')),
+    ('en', gettext('en'))
 )
 
 CMS_LANGUAGES = {
-    ## Customize this
     'default': {
+        'fallbacks': ['de'],
         'public': True,
         'hide_untranslated': False,
         'redirect_on_fallback': True,
@@ -167,21 +166,11 @@ CMS_LANGUAGES = {
             'name': gettext('de'),
             'redirect_on_fallback': True,
         },
-        {
-            'public': True,
-            'code': 'en',
-            'hide_untranslated': False,
-            'name': gettext('en'),
-            'redirect_on_fallback': True,
-        },
     ],
 }
 
 CMS_TEMPLATES = (
-    ## Customize this
-    ('fullwidth.html', 'Fullwidth'),
-    ('sidebar_left.html', 'Sidebar Left'),
-    ('sidebar_right.html', 'Sidebar Right')
+    ('devday.html', 'Devday'),
 )
 
 CMS_PERMISSION = True
@@ -198,6 +187,14 @@ DATABASES = {
         'PORT': get_env_variable('DEVDAY_PG_PORT'),
     }
 }
+
+CMS_STYLE_NAMES = (
+    # styles for bootstrap grid model
+    ('row', gettext('row')),
+    ('container', gettext('container')),
+    ('col-xs-12', gettext('col-xs-12')),
+    ('col-md-12', gettext('col-md-12')),
+)
 
 MIGRATION_MODULES = {
     

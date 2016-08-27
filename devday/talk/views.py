@@ -1,3 +1,5 @@
+from __future__ import print_function, unicode_literals
+
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
@@ -12,11 +14,13 @@ User = get_user_model()
 
 
 class TalkSubmittedView(TemplateView):
-    template_name = "talk_submitted.html"
+    template_name = "talk/submitted.html"
 
 
 class CreateTalkWithSpeakerView(RegistrationView):
-    template_name = "create_talk_with_speaker.html"
+    template_name = "talk/create_with_speaker.html"
+    email_body_template = "talk/speaker_activation_email.txt"
+    email_subject_template = "talk/speaker_activation_email_subject.txt"
     form_class = CreateTalkWithSpeakerForm
 
     def get_success_url(self):
@@ -32,6 +36,7 @@ class CreateTalkWithSpeakerView(RegistrationView):
         except User.DoesNotExist:
             user = User.objects.create_user(
                 username=email, first_name=firstname, last_name=lastname, email=email, is_active=False)
+            user.set_password(form.cleaned_data['password1'])
             signals.user_registered.send(sender=self.__class__,
                                          user=user,
                                          request=self.request)

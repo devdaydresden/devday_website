@@ -1,0 +1,20 @@
+{% load i18n %}{% blocktrans with shortname=user.get_short_name %}Hello {{ shortname }},
+
+thank you for your interest to speak at DevDay 2017.
+
+To finish your registration please click the following link to verify your email address.
+{% endblocktrans %}
+https://{{ site.domain }}{% url 'registration_activate' activation_key %}
+{% blocktrans count days=expiration_days %}
+The link is valid for one day.
+{% plural %}
+The link is valid for {{ days }} days.
+{% endblocktrans %}{% blocktrans %}
+You will be able to use your account to add additional sessions and to change
+your short biography, photography and session information.
+
+
+The DevDay team
+
+--
+https://www.devday.de/{% endblocktrans %}

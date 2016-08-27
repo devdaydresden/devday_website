@@ -40,7 +40,7 @@ class profile::djangocms(
   python::virtualenv { $venv:
     ensure       => present,
     version      => 'system',
-    requirements => '/vagrant/devday/requirements.txt',
+    requirements => "${basedir}/devday/${::environment}_requirements.txt",
     owner        => 'vagrant',
     group        => 'vagrant',
     require => [

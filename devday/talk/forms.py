@@ -40,5 +40,17 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
         return super(RegistrationFormUniqueEmail, self).clean()
 
 
+class CreateTalkForSpeakerForm(CombinedFormBase):
+    form_classes = [TalkForm]
+
+
+class CreateTalkForAttendeeForm(CombinedFormBase):
+    form_classes = [SpeakerForm, TalkForm]
+
+
+class CreateTalkForUserForm(CombinedFormBase):
+    form_classes = [AttendeeForm, SpeakerForm, TalkForm]
+
+
 class CreateTalkWithSpeakerForm(CombinedFormBase):
     form_classes = [DevDayRegistrationForm, AttendeeForm, SpeakerForm, TalkForm]

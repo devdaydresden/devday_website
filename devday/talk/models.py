@@ -6,7 +6,7 @@ from attendee.models import Attendee
 
 
 class Speaker(models.Model):
-    user = models.ForeignKey(Attendee)
+    user = models.OneToOneField(Attendee, related_name="speaker")
     videopermission = models.BooleanField(verbose_name=_("Video permitted"))
     shortbio = models.TextField(verbose_name=_("Short biography"))
     portrait = models.ImageField(verbose_name=_("Speaker image"), upload_to='speakers')

@@ -20,7 +20,7 @@ class Attendee(models.Model):
     """
     This is a model class for an attendee.
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="attendee")
     shirt_size = models.PositiveSmallIntegerField(verbose_name=_("T-shirt size"), choices=T_SHIRT_SIZES)
 
     class Meta:

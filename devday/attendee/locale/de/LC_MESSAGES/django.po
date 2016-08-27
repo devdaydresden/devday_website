@@ -1,22 +1,23 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# devday attendee app.
+# Copyright (C) 2016 T-Systems Multimedia Solutions GmbH
+# This file is distributed under the same license as the devday attendee app package.
+# Jan Dittberner <jan.dittberner@t-systems.com>, 2016.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-29 13:49+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2016-08-27 16:56+0200\n"
+"PO-Revision-Date: 2016-08-27 16:48+0200\n"
+"Last-Translator: \n"
+"Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: attendee/models.py:9
 msgid "XS"
@@ -57,3 +58,7 @@ msgstr "Teilnehmer"
 #: attendee/models.py:28
 msgid "Attendees"
 msgstr "Teilnehmer"
+
+#: attendee/templates/attendee/profile.html:3
+msgid "Attendee profile"
+msgstr "Teilnehmerprofil"

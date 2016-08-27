@@ -3,20 +3,29 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-29 13:49+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2016-08-27 16:56+0200\n"
+"PO-Revision-Date: 2016-08-27 16:46+0200\n"
+"Last-Translator: \n"
+"Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: talk/forms.py:21
+msgid "Firstname"
+msgstr "Vorname"
+
+#: talk/forms.py:22
+msgid "Lastname"
+msgstr "Nachname"
 
 #: talk/models.py:10
 msgid "Video permitted"
@@ -38,22 +47,88 @@ msgstr "Sprecher"
 msgid "Speakers"
 msgstr "Sprecher"
 
-#: talk/models.py:21
+#: talk/models.py:24
 msgid "Session title"
 msgstr "Sessionname"
 
-#: talk/models.py:22
+#: talk/models.py:25
 msgid "Abstract"
 msgstr "Kurzbeschreibung"
 
-#: talk/models.py:25
+#: talk/models.py:28
 msgid "Session"
 msgstr "Session"
 
-#: talk/models.py:26
+#: talk/models.py:29
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/templates/create_talk_with_speaker.html:8
+#: talk/templates/talk/create_with_speaker.html:4
+#: talk/templates/talk/submitted.html:3
+msgid "Submit a session"
+msgstr "Session einreichen"
+
+#: talk/templates/talk/create_with_speaker.html:10
 msgid "Submit"
 msgstr "Session einreichen"
+
+#: talk/templates/talk/speaker_activation_email.txt:1
+#, python-format
+msgid ""
+"Hello %(shortname)s,\n"
+"\n"
+"thank you for your interest to speak at DevDay 2017.\n"
+"\n"
+"To finish your registration please click the following link to verify your "
+"email address.\n"
+msgstr ""
+"Hallo %(shortname)s,\n"
+"\n"
+"danke, dass du auf dem DevDay 2017 sprechen möchtest.\n"
+"\n"
+"Um deine Anmeldung abzuschließen klicke bitte auf den folgenden Link, um "
+"deine\n"
+"E-Mailadresse zu bestätigen.\n"
+
+#: talk/templates/talk/speaker_activation_email.txt:8
+#, python-format
+msgid ""
+"\n"
+"The link is valid for one day.\n"
+msgid_plural ""
+"\n"
+"The link is valid for %(days)s days.\n"
+msgstr[0] ""
+"\n"
+"Der Link ist für einen Tag gültig.\n"
+msgstr[1] ""
+"\n"
+"Der Link ist für %(days)s Tage gültig.\n"
+
+#: talk/templates/talk/speaker_activation_email.txt:12
+msgid ""
+"\n"
+"You will be able to use your account to add additional sessions and to "
+"change\n"
+"your short biography, photography and session information.\n"
+"\n"
+"\n"
+"The DevDay team\n"
+"\n"
+"--\n"
+"https://www.devday.de/"
+msgstr ""
+"\n"
+"Du kannst dein Benutzerprofil verwenden, um weitere Sessions einzureichen "
+"und\n"
+"um deine Kurzvita, dein Speakerbild und Sessioninformationen zu ändern.\n"
+"\n"
+"\n"
+"Das DevDay-Team\n"
+"\n"
+"-- \n"
+"https://www.devday.de/"
+
+#: talk/templates/talk/speaker_activation_email_subject.txt:1
+msgid "Confirm your speaker registration"
+msgstr "Bestätige deine Sprecheranmeldung"

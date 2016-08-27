@@ -1,27 +1,172 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# devday website.
+# Copyright (C) 2016 T-Systems Multimedia Solutions GmbH
+# This file is distributed under the same license as the devday website package.
+# Jan Dittberner <jan.dittberner@t-systems.com>, 2016.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-28 14:18+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2016-08-27 16:56+0200\n"
+"PO-Revision-Date: 2016-08-27 17:03+0200\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.8\n"
 
-#: devday/settings/dev.py:151 devday/settings/dev.py:167
+#: devday/settings/dev.py:153 devday/settings/dev.py:169
 msgid "de"
 msgstr "de"
 
-#: devday/settings/dev.py:152 devday/settings/dev.py:174
+#: devday/settings/dev.py:154
 msgid "en"
 msgstr "en"
+
+#: devday/settings/dev.py:196
+msgid "row"
+msgstr "row"
+
+#: devday/settings/dev.py:197
+msgid "container"
+msgstr "container"
+
+#: devday/settings/dev.py:198
+msgid "col-xs-12"
+msgstr "col-xs-12"
+
+#: devday/settings/dev.py:199
+msgid "col-md-12"
+msgstr "col-md-12"
+
+#: devday/templates/base.html:52 devday/templates/base.html:66
+msgid "Logout"
+msgstr "Abmelden"
+
+#: devday/templates/base.html:53 devday/templates/base.html:67
+msgid "Profile"
+msgstr "Profil"
+
+#: devday/templates/base.html:55 devday/templates/base.html:69
+msgid "Login"
+msgstr "Anmelden"
+
+#: devday/templates/registration/activate.html:3
+msgid "Activation failed."
+msgstr "Aktivierung fehlgeschlagen."
+
+#: devday/templates/registration/activate.html:5
+msgid "You specified an invalid activation code or your code has expired."
+msgstr ""
+"Du hast einen ungültigen Aktivierungscode angegeben oder der Code ist "
+"bereits abgelaufen."
+
+#: devday/templates/registration/activation_complete.html:3
+msgid "Activation complete"
+msgstr "Aktivierung abgeschlossen"
+
+#: devday/templates/registration/activation_complete.html:5
+msgid "Your account is now activated."
+msgstr "Dein Benutzerkonto ist jetzt aktiviert."
+
+#: devday/templates/registration/activation_email.txt:1
+#, python-format
+msgid ""
+"Hello %(shortname)s,\n"
+"\n"
+"thank you for your interest to join us at DevDay 2017.\n"
+"\n"
+"To finish your registration please click the following link to verify your "
+"email address.\n"
+msgstr ""
+"Hallo %(shortname)s,\n"
+"\n"
+"danke, dass du dich für den DevDay 2017 interessierst.\n"
+"\n"
+"Um dein Benutzerkonto zu aktivieren, klicke bitte folgenden Link, um deine "
+"E-Mailadresse\n"
+"zu verifizieren.\n"
+
+#: devday/templates/registration/activation_email.txt:8
+#, python-format
+msgid ""
+"\n"
+"The link is valid for one day.\n"
+msgid_plural ""
+"\n"
+"The link is valid for %(days)s days.\n"
+msgstr[0] ""
+"\n"
+"Der Link ist für einen Tag gültig.\n"
+msgstr[1] ""
+"\n"
+"Der Link ist für %(days)s Tage gültig.\n"
+
+#: devday/templates/registration/activation_email.txt:12
+msgid ""
+"\n"
+"You will be able to use your account to get information about the DevDay or "
+"to submit own\n"
+"sessions.\n"
+"\n"
+"\n"
+"The DevDay team\n"
+"\n"
+"--\n"
+"https://www.devday.de/"
+msgstr ""
+"\n"
+"Du kannst dein Benutzerkonto verwenden, um Informationen zum DevDay zu "
+"erhalten und\n"
+"um eigene Sessions einzureichen.\n"
+"\n"
+"\n"
+"Das DevDay-Team\n"
+"\n"
+"-- \n"
+"https://www.devday.de/"
+
+#: devday/templates/registration/activation_email_subject.txt:1
+msgid "Confirm your registration"
+msgstr "Bestätige deine Registrierung"
+
+#: devday/templates/registration/login.html:10
+msgid "Log in"
+msgstr "Anmelden"
+
+#: devday/templates/registration/login.html:14
+msgid "Forgot password"
+msgstr "Passwort vergessen"
+
+#: devday/templates/registration/login.html:14
+msgid "Reset it"
+msgstr "Zurücksetzen"
+
+#: devday/templates/registration/login.html:15
+msgid "Not member"
+msgstr "Kein angemeldeter Benutzer"
+
+#: devday/templates/registration/login.html:15
+#: devday/templates/registration/registration_form.html:4
+#: devday/templates/registration/registration_form.html:10
+msgid "Register"
+msgstr "Anmelden"
+
+#: devday/templates/registration/logout.html:3
+msgid "Logged out"
+msgstr "Abgemeldet"
+
+#: devday/templates/registration/logout.html:5
+msgid "You are now logged out."
+msgstr "Du bist jetzt abgemeldet."
+
+#: devday/templates/registration/registration_complete.html:3
+msgid "Registration successful"
+msgstr "Anmeldung erfolgreich"
+
+#: devday/templates/registration/registration_complete.html:5
+msgid "Registration successful."
+msgstr "Anmeldung erfolgreich."

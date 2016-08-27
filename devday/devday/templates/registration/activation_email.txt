@@ -1,14 +1,17 @@
-{% load i18n %}{% blocktrans %}Hello {{ user.username }},
+{% load i18n %}{% blocktrans with shortname=user.get_short_name %}Hello {{ shortname }},
 
-thank you for registering your interest to join us at DevDay 2017.
+thank you for your interest to join us at DevDay 2017.
 
 To finish your registration please click the following link to verify your email address.
 {% endblocktrans %}
-
 https://{{ site.domain }}{% url 'registration_activate' activation_key %}
-
-{% blocktrans %}
-The link is valid for {{ expiration_days }} days.
+{% blocktrans count days=expiration_days %}
+The link is valid for one day.
+{% plural %}
+The link is valid for {{ days }} days.
+{% endblocktrans %}{% blocktrans %}
+You will be able to use your account to get information about the DevDay or to submit own
+sessions.
 
 
 The DevDay team

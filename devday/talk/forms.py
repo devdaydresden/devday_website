@@ -8,6 +8,9 @@ from attendee.forms import AttendeeForm
 from devday.utils.forms import CombinedFormBase
 from talk.models import Talk, Speaker
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Div, Layout, Field, Submit
+
 User = get_user_model()
 
 
@@ -54,3 +57,35 @@ class CreateTalkForUserForm(CombinedFormBase):
 
 class CreateTalkWithSpeakerForm(CombinedFormBase):
     form_classes = [DevDayRegistrationForm, AttendeeForm, SpeakerForm, TalkForm]
+
+    def __init__(self, *args, **kwargs):
+        super(CreateTalkWithSpeakerForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_action = 'submit_session'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Div(
+                Field("email"),
+                "password1",
+                "password2",
+                "shirt_size",
+                Field("videopermission", template="talk/form/videopermission-field.html"),
+                css_class = "col-xs-12 col-sm-6 col-md-6 col-lg-4"
+            ),
+            Div(
+                "firstname",
+                "lastname",
+                Field("portrait", template="talk/form/speakerportrait-field.html"),
+                "shortbio",
+                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
+            ),
+            Div(
+                "title",
+                "abstract",
+                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
+            ),
+            Div(
+                Submit('submit', _('Submit'), css_class="btn-default"),
+                css_class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-4"
+            )
+        )

@@ -1,13 +1,6 @@
 {% extends "devday_site.html" %}
-{% load i18n %}
-{% load bootstrap %}
+{% load i18n crispy_forms_tags %}
 {% block title %}{% trans "Submit a session" %}{% endblock %}
 {% block content_body %}
-<form action="{% url "submit_session" %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form|bootstrap }}
-    <div>
-        <input type="submit" name="submit" value="{% trans "Submit" %}">
-    </div>
-</form>
+{% crispy form %}
 {% endblock %}

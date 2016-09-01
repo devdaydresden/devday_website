@@ -1,0 +1,8 @@
+{% load crispy_forms_field %}
+<div class="input-group file-input{% if field.errors %} has-error{% endif %}">
+    <label for="{{ field.id_for_label }}" class="{% if field.field.required %} requiredField{% endif %}">{{ field.label|safe }}</label>
+    <span class="btn btn-default btn-file">
+        Bild wählen {% crispy_field field %}
+    </span>
+    {% include 'bootstrap3/layout/help_text_and_errors.html' %}
+</div>

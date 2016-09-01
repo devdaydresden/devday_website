@@ -1,171 +1,72 @@
-{% load cms_tags menu_tags sekizai_tags static i18n %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{% page_attribute "page_title" %}</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="description" content="DevDay 2017">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="{% static "favicon.ico" %}">
-    {%  addtoblock "css" %}
-    <link rel="stylesheet" href="{% static "css/style.css" %}">
-    {% endaddtoblock %}
-    {% addtoblock "js" %}
-    <script src="{% static "js/jquery.js" %}" type="text/javascript"></script>
-    <script src="{% static "js/main.js" %}" type="text/javascript"></script>
-    {% endaddtoblock %}
-    {% render_block "css" %}
-</head>
-<body>
-    {% cms_toolbar %}
-    <div class="container-fluid">
-    <div class="row promo">
-        <nav class="navbar navbar-default">
-            <div class="navbar-header">
-                <img src="{% static "images/logo.png" %}" alt="DevDay 2017 Logo">
-            </div>
-            <div class="collapse navbar-collapse navbar-desktop">
-                <ul class="nav navbar-nav navbar-right">
-                    {% show_menu 0 100 100 100 %}
-                    {% if user.is_authenticated %}
-                        <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
-                        <li><a href="{% url 'user_profile' %}">{% trans "Profile" %}</a></li>
-                    {% else %}
-                        <li><a href="{% url 'auth_login' %}">{% trans "Login" %}</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-            <div class="collapse navbar-collapse navbar-mobile">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="#" class="menu-trigger"><i class="icon-menu"></i></a>
-                        <ul>
-                            {% show_menu 0 100 100 100 %}
-                            {% if user.is_authenticated %}
-                                <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
-                                <li><a href="{% url 'user_profile' %}">{% trans "Profile" %}</a></li>
-                            {% else %}
-                                <li><a href="{% url 'auth_login' %}">{% trans "Login" %}</a></li>
-                            {% endif %}
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <div class="col-xs-12 call-to-action">
-            <img src="{% static "images/claim-2x.png" %}" alt="Let Code Rule">
-            <span>Call for Paper offen bis 12.02.2017</span>
-            <a class="btn" type="text" href="{% url "submit_session" %}">Session einreichen</a>
-        </div>
-    </div>
-</div>
+{% extends "base.html" %}
+{% load cms_tags static i18n %}
+{% block body_classes %}{% endblock %}
+{% block title %}{% page_attribute "page_title" %}{% endblock %}
+{% block description %}DevDay 2017{% endblock %}
+{% block promo_classes %}row promo{% endblock %}
+{% block promo_content %}{{ block.super }}
+    <a class="btn" type="text" href="{% url "submit_session" %}">Session einreichen</a>
+{% endblock %}
+{% block content %}
     <div class="row">
-    <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">
-        <div class="col-xs-12 col-sm-6 boxed-content">
-            <i class="icon-rocket"></i>
-            {% placeholder "eventinfo" %}
-            {% comment %}
-            <h4>INFOS ZUR VERANSTALTUNG</h4>
-            <span>Unter dem Motto "Code your World" fand am 12.04.2016 der zweite DevDay in der Börse Dresden statt. Veranstalter ist die Software Architektur Entwickler Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 köpfigen Team aus Software Architekten und Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>
-            {% endcomment %}
-        </div>
-        <div class="col-xs-12 col-sm-6 boxed-content">
-            <i class="icon-user"></i>
-            {% placeholder "audience" %}
-            {% comment %}
-            <h4>FÜR WEN IST DER DEV DAY?</h4>
-            <span>Der DevDay ist eine Veranstaltung für alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begrüßten wir mehr als 300 Gäste aus über 70 verschiedenen Firmen.</span>
-            {% endcomment %}
+        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">
+            <div class="col-xs-12 col-sm-6 boxed-content">
+                <i class="icon-rocket"></i>
+                {% placeholder "eventinfo" %}
+            </div>
+            <div class="col-xs-12 col-sm-6 boxed-content">
+                <i class="icon-user"></i>
+                {% placeholder "audience" %}
+            </div>
         </div>
     </div>
-</div>
     <div class="row twitter-row">
-  <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 twitter-area" id="twitter-area">
-    <div class="col-sm-4 follow-box">
-      <i class="icon-social-twitter"></i>
-      <h3>#DEVDAYDD</h3>
-
-      <a href="#" class="btn btn-line">Folge uns</a>
-    </div>
-    <div class="col-sm-8 tweet-box">
-      <div id="twitterCarousel" class="carousel slide" data-ride="carousel">
-        <!-- Indicators -->
-        <div class="carousel-inner" role="listbox">
-          <div class="item active">
-            <div class="user-row">
-              <img src="https://pbs.twimg.com/profile_images/731049878856601600/OrntgI1F_bigger.jpg" alt="" >
-              <span class="name">Lorem Ipsum</span>
-              <span class="username"><a href="#">@blablubb</a></span>
+        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 twitter-area" id="twitter-area">
+            <div class="col-sm-4 follow-box">
+                <i class="icon-social-twitter"></i>
+                <h3>#DEVDAYDD</h3>
+                <a href="#" class="btn btn-line">Folge uns</a>
             </div>
-            <div class="tweet">
-              Lorem ipsum dolor sit amet, <a href="#">#consectetur</a> adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+            <div class="col-sm-8 tweet-box">
+                <div id="twitterCarousel" class="carousel slide" data-ride="carousel">
+                    <!-- Indicators -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <div class="user-row">
+                                <img src="https://pbs.twimg.com/profile_images/731049878856601600/OrntgI1F_bigger.jpg" alt="" >
+                                <span class="name">Lorem Ipsum</span>
+                                <span class="username"><a href="#">@blablubb</a></span>
+                            </div>
+                            <div class="tweet">
+                                Lorem ipsum dolor sit amet, <a href="#">#consectetur</a> adipisicing elit, sed do eiusmod
+                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="user-row">
+                                <img src="https://pbs.twimg.com/profile_images/731049878856601600/OrntgI1F_bigger.jpg" alt="" >
+                                <span class="name">Lorem Ipsum</span>
+                                <span class="username"><a href="#">@blablubb</a></span>
+                            </div>
+                            <div class="tweet">
+                                Lorem ipsum dolor sit amet, <a href="#">#consectetur</a> adipisicing elit, sed do eiusmod
+                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                            </div>
+                        </div>
+                    </div>
+                    <a class="left carousel-control" href="#twitterCarousel" role="button" data-slide="prev"><span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+                    <a class="right carousel-control" href="#twitterCarousel" role="button" data-slide="next"><span class="icon icon-arrow-right" aria-hidden="true"></span></a>
+                </div>
             </div>
-
-          </div>
-          <div class="item">
-            <div class="user-row">
-              <img src="https://pbs.twimg.com/profile_images/731049878856601600/OrntgI1F_bigger.jpg" alt="" >
-              <span class="name">Lorem Ipsum</span>
-              <span class="username"><a href="#">@blablubb</a></span>
-            </div>
-            <div class="tweet">
-              Lorem ipsum dolor sit amet, <a href="#">#consectetur</a> adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
-            </div>
-
-          </div>
         </div>
-        <a class="left carousel-control" href="#twitterCarousel" role="button" data-slide="prev">
-          <span class="icon icon-arrow-left" aria-hidden="true"></span>
-        </a>
-        <a class="right carousel-control" href="#twitterCarousel" role="button" data-slide="next">
-          <span class="icon icon-arrow-right" aria-hidden="true"></span>
-        </a>
-      </div>
     </div>
-  </div>
-</div>
     <div class="row">
-    <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 sponsors-area center" id="sponsors-area">
-        {% placeholder "sponsors" %}
-        {% comment %}
-        <h2>Hauptsponsor</h2>
-        <span class="hint">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>
-        <ul>
-            <li><img src="{% static "images/t-systems.png" %}" alt=""></li>
-            <li><img src="{% static "images/saec.png" %}" alt=""></li>
-        </ul>
-        <h2>Partner</h2>
-        <span class="hint">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>
-        <ul>
-            <li><img src="{% static "images/devopenspace.png" %}" alt=""></li>
-            <li><img src="{% static "images/lineupr.png" %}" alt=""></li>
-            <li><img src="{% static "images/spartakiade.png" %}" alt=""></li>
-            <li><img src="{% static "images/saxonia.png" %}" alt=""></li>
-        </ul>
-        {% endcomment %}
+        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 sponsors-area center" id="sponsors-area">{% placeholder "sponsors" %}</div>
     </div>
-</div>
     <div class="row session-entry-area">
-    <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1  center">
-        <h2>Jetzt noch schnell eine Session einreichen</h2>
-        <a href="{% url "submit_session" %}" class="btn">Session einreichen</a>
+        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 center">
+            <h2>Jetzt noch schnell eine Session einreichen</h2>
+            <a href="{% url "submit_session" %}" class="btn">Session einreichen</a>
+        </div>
     </div>
-</div>
-    <div class="row social-area">
-    <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1  center">
-        <ul>
-            <li><a href="#"><img src="{% static "images/facebook.png" %}" alt=""></a></li>
-            <li><a href="#"><img src="{% static "images/xing.png" %}" alt=""></a></li>
-        </ul>
-    </div>
-</div>
-    <footer>
-    SOFTWARE ARCHITEKTUR UND ENTWICKLER COMMUNITY | <a href="#">IMPRESSUM</a>
-    </footer>
-        {% render_block "js" %}
-    </body>
-</html>
+{% endblock %}

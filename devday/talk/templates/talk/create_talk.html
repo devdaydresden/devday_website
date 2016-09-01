@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "devday_site.html" %}
 {% load i18n %}
 {% load bootstrap %}
 {% block title %}{% trans "Submit a session" %}{% endblock %}
-{% block content %}
+{% block content_body %}
 <form action="{% url "submit_session" %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form|bootstrap }}

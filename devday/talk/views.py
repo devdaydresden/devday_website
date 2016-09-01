@@ -19,7 +19,7 @@ class TalkSubmittedView(TemplateView):
 
 
 class CreateTalkWithSpeakerView(RegistrationView):
-    template_name = "talk/create_with_speaker.html"
+    template_name = "talk/create_talk.html"
     email_body_template = "talk/speaker_activation_email.txt"
     email_subject_template = "talk/speaker_activation_email_subject.txt"
     form_classes = {

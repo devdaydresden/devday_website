@@ -1,5 +1,5 @@
 /**
- * Build on 2016-8-10
+ * Build on 2016-9-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -6033,14 +6033,14 @@ fieldset {
   box-sizing: border-box;
   min-height: 700px;
   border-bottom: 3px solid #35a4a3;
-  background-image: url(../images/hero-bg-2x.png);
-  /* fallback */
-  background-image: url(../images/hero-bg-2x.png), -webkit-linear-gradient(319deg, #3a3f69 0%, #272c59 100%);
-  background-image: url(../images/hero-bg-2x.png), linear-gradient(-229deg, #3a3f69 0%, #272c59 100%);
-  /* W3C */
+  background-image: url("../images/hero-bg-2x.png");
+  background-image: url("../images/hero-bg-2x.png"), -webkit-linear-gradient(319deg, #3a3f69 0%, #272c59 100%);
+  background-image: url("../images/hero-bg-2x.png"), linear-gradient(-229deg, #3a3f69 0%, #272c59 100%);
   background-repeat: no-repeat;
   background-position: right;
   background-size: cover; }
+  .promo.site {
+    min-height: 480px; }
   .promo.cover {
     background-size: cover; }
   .promo .call-to-action img {
@@ -6057,8 +6057,12 @@ fieldset {
     color: #35a4a3;
     text-shadow: 2px 2px 3px #121212; }
   .promo .call-to-action .btn {
-    display: inherit;
-    margin: 8px auto; }
+    display: inline-block !important;
+    margin: 8px auto;
+    left: 50%;
+    position: relative;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%); }
 
 @media (max-width: 995.9px) {
   .promo .call-to-action img {
@@ -6148,6 +6152,9 @@ input:focus ~ .highlight {
   to {
     width: 0;
     background: transparent; } }
+
+.site-template .info-area {
+  margin-bottom: 110px; }
 
 .info-area {
   z-index: 3;

@@ -173,6 +173,7 @@ CMS_LANGUAGES = {
 }
 
 CMS_TEMPLATES = (
+    ('devday_index.html', 'DevDay Startseite'),
     ('devday.html', 'Devday'),
 )
 

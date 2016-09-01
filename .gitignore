@@ -6,3 +6,4 @@
 *.mo
 media/
 routing.bat
+__pycache__/

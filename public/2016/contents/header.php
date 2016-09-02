@@ -19,7 +19,8 @@
         <li><a href="#sponsors">PARTNER</a></li>
         <li><a href="#sessions">SESSIONS</a></li>
         <li><a href="https://lineupr.com/saec/devday16">LINEUPR</a></li>
-        <li><a href="./2015/">2015</a></li>
+        <li><a href="../2015/">2015</a></li>
+        <li><a href="../">DevDay</a></li>
       </ul>
     </nav>
   </div>

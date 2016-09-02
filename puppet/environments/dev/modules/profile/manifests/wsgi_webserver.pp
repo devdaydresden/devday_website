@@ -16,6 +16,7 @@ class profile::wsgi_webserver(
   include apache::mod::deflate
   include apache::mod::rewrite
   include apache::mod::wsgi
+  include apache::mod::php
 
   $python = regsubst( $::python_version, '(\d)\.(\d).+', 'python\1.\2')
   $python_path = "${devday_root}/venv/lib/${python}/site-packages/"
@@ -45,6 +46,10 @@ class profile::wsgi_webserver(
     wsgi_daemon_process_options => $wsgi_options_hash,
     wsgi_process_group          => 'wsgi_devday',
     wsgi_script_aliases         => { '/' => "${devday_root}/app_init.wsgi", },
+    aliases => [
+      {alias => "/2015", path => "${basedir}/public/2015"},
+      {alias => "/2016", path => "${basedir}/public/2016"},
+    ]
   }
 
   file { "${devday_root}/app_init.wsgi":

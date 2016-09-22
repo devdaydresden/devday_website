@@ -67,7 +67,7 @@ class CreateTalkWithSpeakerView(RegistrationView):
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
                 user = User.objects.create_user(
-                    username=email, first_name=firstname, last_name=lastname, email=email, is_active=False)
+                    email=email, first_name=firstname, last_name=lastname, is_active=False)
                 user.set_password(form.cleaned_data['password1'])
                 signals.user_registered.send(sender=self.__class__,
                                              user=user,

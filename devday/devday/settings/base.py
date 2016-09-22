@@ -119,6 +119,9 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django.contrib.messages',
+    'devday',
+    'attendee',
+    'talk',
     'cms',
     'menus',
     'sekizai',
@@ -134,13 +137,12 @@ INSTALLED_APPS = [
     'djangocms_teaser',
     'djangocms_video',
     'reversion',
-    'devday',
-    'attendee',
-    'talk',
     'crispy_forms',
     'django_file_form',
     'django_file_form.ajaxuploader',
 ]
+
+AUTH_USER_MODEL = 'attendee.devdayuser'
 
 LANGUAGES = (
     ('de', gettext('de')),

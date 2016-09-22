@@ -1,5 +1,5 @@
 /**
- * Build on 2016-9-1
+ * Build on 2016-9-20
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -5601,6 +5601,16 @@ fieldset {
     margin-top: -2rem;
     padding-top: 1rem; }
 
+.form-group:not(.file).has-error .control-label,
+.form-group:not(.file).has-error .help-block {
+  color: #b43737 !important; }
+
+.form-group:not(.file).has-error input,
+.form-group:not(.file).has-error select,
+.form-group:not(.file).has-error textarea,
+.form-group:not(.file).has-error .bar {
+  border-color: #b43737; }
+
 .form-group:not(.file) input {
   height: 3.8rem; }
 
@@ -5836,19 +5846,19 @@ fieldset {
 
 .has-error .legend.legend,
 .has-error.form-group .control-label.control-label {
-  color: #d9534f; }
+  color: #b43737; }
 
 .has-error.form-group .form-help,
 .has-error.form-group .helper, .has-error.checkbox .form-help,
 .has-error.checkbox .helper, .has-error.radio .form-help,
 .has-error.radio .helper, .has-error.form-radio .form-help,
 .has-error.form-radio .helper {
-  color: #d9534f; }
+  color: #b43737; }
 
 .has-error .bar::before {
   left: 0;
   width: 100%;
-  background: #d9534f; }
+  background: #b43737; }
 
 .button {
   font-size: 2.2rem;
@@ -5902,6 +5912,20 @@ fieldset {
 
 .file-input {
   width: 100%; }
+  .file-input.has-error .control-label,
+  .file-input.has-error label,
+  .file-input.has-error .help-block,
+  .file-input.has-error input::-webkit-input-placeholder,
+  .file-input.has-error input:-ms-input-placeholder,
+  .file-input.has-error input::-moz-placeholder {
+    color: #b43737 !important; }
+  .file-input.has-error label {
+    color: #b43737 !important; }
+  .file-input.has-error input,
+  .file-input.has-error .bar {
+    border-color: #b43737; }
+  .file-input.has-error .help-block strong {
+    display: inline-block; }
   .file-input label {
     font-size: 1.6rem;
     position: absolute;
@@ -5970,8 +5994,8 @@ fieldset {
     .navbar-default .navbar-desktop {
       display: none !important; }
     .navbar-default .navbar-mobile {
-      font-size: 16px;
-      display: block !important; }
+      display: block !important;
+      font-size: 16px; }
       .navbar-default .navbar-mobile ul > li {
         position: relative; }
         .navbar-default .navbar-mobile ul > li ul {
@@ -5984,18 +6008,19 @@ fieldset {
           color: #ffffff !important;
           background: #272c59 !important; }
         .navbar-default .navbar-mobile ul > li.active ul {
+          z-index: 1000;
           display: block;
           max-width: 320px;
           padding: 0;
           list-style: none; }
           .navbar-default .navbar-mobile ul > li.active ul li a {
-            font-size: 14px;
             display: inline-block;
             width: 100%;
             padding: 8px;
             text-align: center;
             color: #ffffff;
-            text-shadow: 2px 2px 3px #121212; }
+            text-shadow: 2px 2px 3px #121212;
+            font-size: 14px; }
     .navbar-default .navbar-collapse {
       border: 0;
       border-color: transparent;

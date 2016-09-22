@@ -19,17 +19,24 @@ User = get_user_model()
 class TalkForm(forms.models.ModelForm):
     class Meta:
         model = Talk
-        fields = ["title", "abstract"]
+        fields = ["title", "abstract", "remarks"]
+        widgets = {
+            'abstract': forms.Textarea(attrs={'rows': 3}),
+            'remarks': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class SpeakerForm(FileFormMixin, forms.models.ModelForm):
     firstname = forms.fields.CharField(label=_("Firstname"), max_length=64)
     lastname = forms.fields.CharField(label=_("Lastname"), max_length=64)
-    uploaded_image = UploadedFileField()
+    uploaded_image = UploadedFileField(label=_("Speaker portrait"))
 
     class Meta:
         model = Speaker
         fields = ["shortbio", "videopermission"]
+        widgets = {
+            'shortbio': forms.Textarea(attrs={'rows': 3}),
+        }
 
     def __init__(self, *args, **kwargs):
         super(SpeakerForm, self).__init__(*args, **kwargs)
@@ -83,12 +90,21 @@ class CreateTalkWithSpeakerForm(CombinedFormBase):
         self.helper.form_action = 'submit_session'
         self.helper.form_method = 'post'
         self.helper.form_id = 'create-talk-form'
+        self.helper.field_template = 'talk/form/field.html'
+        self.helper.html5_required = True
+        self.fields['email'].help_text = None
+        self.fields['email'].label = _('E-Mail')
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
+
         self.helper.layout = Layout(
             "upload_url",
             "delete_url",
             "form_id",
             Div(
-                Field("email"),
+                "email",
+                "firstname",
+                "lastname",
                 "password1",
                 "password2",
                 "shirt_size",
@@ -96,15 +112,14 @@ class CreateTalkWithSpeakerForm(CombinedFormBase):
                 css_class = "col-xs-12 col-sm-6 col-md-6 col-lg-4"
             ),
             Div(
-                "firstname",
-                "lastname",
-                "uploaded_image",  # template="talk/form/speakerportrait-field.html"),
+                Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
                 "shortbio",
+                "title",
+                "abstract",
                 css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
             ),
             Div(
-                "title",
-                "abstract",
+                "remarks",
                 css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
             ),
             Div(

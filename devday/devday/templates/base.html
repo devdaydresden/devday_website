@@ -8,14 +8,12 @@
     <meta name="description" content="{% block meta_description %}DevDay 2017{% endblock %}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static "favicon.ico" %}">
-{%  addtoblock "css" %}
-    <link rel="stylesheet" href="{% static "css/style.css" %}">
-{% endaddtoblock %}
 {% addtoblock "js" %}
     <script src="{% static "js/jquery.js" %}" type="text/javascript"></script>
     <script src="{% static "js/main.js" %}" type="text/javascript"></script>
 {% endaddtoblock %}
     {% render_block "css" %}
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
 </head>
 <body class="{% block body_classes %}site-template{% endblock %}">
     {% cms_toolbar %}

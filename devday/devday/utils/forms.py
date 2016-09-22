@@ -14,6 +14,7 @@ class CombinedFormBase(forms.Form):
             setattr(self, name, f(*args, **kwargs))
             form = getattr(self, name)
             self.fields.update(form.fields)
+            self.files.update(form.files)
             self.initial.update(form.initial)
 
     def is_valid(self):
@@ -31,6 +32,7 @@ class CombinedFormBase(forms.Form):
         for f in self.form_classes:
             name = f.__name__.lower()
             form = getattr(self, name)
+            self.files.update(form.files)
             self.errors.update(form.errors)
         return isValid
 

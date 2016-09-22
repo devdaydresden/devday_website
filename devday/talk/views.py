@@ -3,12 +3,16 @@ from __future__ import unicode_literals
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
+from django.views.generic.edit import BaseFormView
+from django_file_form.forms import ExistingFile
+from django_file_form.uploader import FileFormUploader
+from pathlib import Path
 from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
 from attendee.models import Attendee
 from talk.forms import CreateTalkWithSpeakerForm, CreateTalkForSpeakerForm, CreateTalkForAttendeeForm, \
-    CreateTalkForUserForm
+    CreateTalkForUserForm, ExistingFileForm
 from talk.models import Speaker
 
 User = get_user_model()
@@ -102,3 +106,23 @@ class CreateTalkWithSpeakerView(RegistrationView):
         talk.save()
 
         return redirect(self.get_success_url())
+
+
+class ExistingFileView(BaseFormView):
+    form_class = ExistingFileForm
+
+    def get_form_kwargs(self):
+        form_kwargs = super(ExistingFileView, self).get_form_kwargs()
+
+        speaker = Speaker.objects.get(id=self.kwargs['id'])
+
+        if speaker.portrait:
+            name = Path(speaker.portrait.name).name
+            form_kwargs['initial'] = dict(
+                uploaded_image=ExistingFile(name)
+            )
+
+        return form_kwargs
+
+
+handle_upload = FileFormUploader()

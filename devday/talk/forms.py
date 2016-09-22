@@ -1,6 +1,8 @@
 from django import forms
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
+from django_file_form.forms import FileFormMixin, UploadedFileField
 
 from registration.forms import RegistrationFormUniqueEmail
 
@@ -9,7 +11,7 @@ from devday.utils.forms import CombinedFormBase
 from talk.models import Talk, Speaker
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Layout, Field, Submit
+from crispy_forms.layout import Div, Layout, Field, Submit, Hidden
 
 User = get_user_model()
 
@@ -20,13 +22,30 @@ class TalkForm(forms.models.ModelForm):
         fields = ["title", "abstract"]
 
 
-class SpeakerForm(forms.models.ModelForm):
+class SpeakerForm(FileFormMixin, forms.models.ModelForm):
     firstname = forms.fields.CharField(label=_("Firstname"), max_length=64)
     lastname = forms.fields.CharField(label=_("Lastname"), max_length=64)
+    uploaded_image = UploadedFileField()
 
     class Meta:
         model = Speaker
-        fields = ["portrait", "shortbio", "videopermission"]
+        fields = ["shortbio", "videopermission"]
+
+    def __init__(self, *args, **kwargs):
+        super(SpeakerForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        speaker = self.instance
+        speaker.portrait = self.cleaned_data['uploaded_image']
+        result = super().save(commit)
+        self.delete_temporary_files()
+        return result
+
+
+class ExistingFileForm(SpeakerForm):
+
+    def get_upload_url(self):
+        return reverse('talk_handle_upload')
 
 
 class DevDayRegistrationForm(RegistrationFormUniqueEmail):
@@ -63,7 +82,11 @@ class CreateTalkWithSpeakerForm(CombinedFormBase):
         self.helper = FormHelper()
         self.helper.form_action = 'submit_session'
         self.helper.form_method = 'post'
+        self.helper.form_id = 'create-talk-form'
         self.helper.layout = Layout(
+            "upload_url",
+            "delete_url",
+            "form_id",
             Div(
                 Field("email"),
                 "password1",
@@ -75,7 +98,7 @@ class CreateTalkWithSpeakerForm(CombinedFormBase):
             Div(
                 "firstname",
                 "lastname",
-                Field("portrait", template="talk/form/speakerportrait-field.html"),
+                "uploaded_image",  # template="talk/form/speakerportrait-field.html"),
                 "shortbio",
                 css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
             ),

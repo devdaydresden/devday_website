@@ -22,8 +22,9 @@ urlpatterns = [
     url(r'^select2/', include('django_select2.urls')),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^accounts/profile/', AttendeeProfileView.as_view(), name='user_profile'),
-    url(r'^', include('cms.urls')),
+    url(r'^upload/', include('django_file_form.urls')),
     url(r'^session/', include('talk.urls')),
+    url(r'^', include('cms.urls')),
 ]
 
 # This is only needed when using runserver.

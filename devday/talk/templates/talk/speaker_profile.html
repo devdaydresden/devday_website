@@ -13,8 +13,8 @@
             <dd>{{ speaker.shortbio }}</dd>
             {% if speaker.portrait %}
                 <dt>{% trans "Speaker image" %}</dt>
-                <dd><img src="{{ speaker.portrait.url }}" width="{{ speaker.portrait.width }}"
-                         height="{{ speaker.portrait.height }}"></dd>
+                <dd><img src="{{ speaker.thumbnail.url }}" width="{{ speaker.thumbnail.width }}"
+                         height="{{ speaker.thumbnail.height }}"></dd>
             {% endif %}
         </dl>
     </div>

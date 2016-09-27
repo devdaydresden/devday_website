@@ -1,7 +1,14 @@
 from __future__ import unicode_literals
 
+import os
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from mimetypes import MimeTypes
+from six import BytesIO
+
+from PIL import Image
+
 from attendee.models import Attendee
 
 T_SHIRT_SIZES = (
@@ -27,6 +34,9 @@ class Speaker(models.Model):
     )
     shortbio = models.TextField(verbose_name=_("Short biography"))
     portrait = models.ImageField(verbose_name=_("Speaker image"), upload_to='speakers')
+    thumbnail = models.ImageField(
+        verbose_name=_("Speaker image thumbnail"), upload_to='speaker_thumbs',
+        max_length=500, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Speaker")
@@ -34,6 +44,41 @@ class Speaker(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+    def create_thumbnail(self):
+        if not self.portrait:
+            return
+
+        thumbnail_size = (100, 60)
+        mime = MimeTypes()
+        django_type = mime.guess_type(self.portrait.name)[0]
+
+        if django_type == 'image/jpeg':
+            pil_type = 'jpeg'
+            file_extension = 'jpg'
+        elif django_type == 'image/png':
+            pil_type = 'png'
+            file_extension = 'png'
+        else:
+            return
+
+        image = Image.open(BytesIO(self.portrait.read()))
+        image.thumbnail(thumbnail_size, Image.ANTIALIAS)
+
+        temp_handle = BytesIO()
+        image.save(temp_handle, pil_type)
+        temp_handle.seek(0)
+
+        suf = SimpleUploadedFile(os.path.split(self.portrait.name)[-1],
+                                 temp_handle.read(), content_type=django_type)
+        self.thumbnail.save("%s_thumbnail.%s" % (os.path.splitext(suf.name)[0], file_extension), suf, save=False)
+
+    def save(self, **kwargs):
+        self.create_thumbnail()
+        force_update = False
+        if self.id:
+            force_update = True
+        super(Speaker, self).save(force_update=force_update, **kwargs)
 
 
 class Talk(models.Model):

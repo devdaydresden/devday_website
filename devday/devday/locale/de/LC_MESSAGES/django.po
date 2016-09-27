@@ -5,54 +5,83 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-27 16:56+0200\n"
-"PO-Revision-Date: 2016-08-27 17:03+0200\n"
+"POT-Creation-Date: 2016-09-27 22:25+0200\n"
+"PO-Revision-Date: 2016-09-27 20:40+0200\n"
+"Last-Translator: \n"
+"Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.9\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
-#: devday/settings/dev.py:153 devday/settings/dev.py:169
+#: devday/cms_menus.py:9
+msgid "2016"
+msgstr "2016"
+
+#: devday/settings/base.py:148 devday/settings/base.py:164
 msgid "de"
 msgstr "de"
 
-#: devday/settings/dev.py:154
+#: devday/settings/base.py:149
 msgid "en"
 msgstr "en"
 
-#: devday/settings/dev.py:196
+#: devday/settings/base.py:192
 msgid "row"
 msgstr "row"
 
-#: devday/settings/dev.py:197
+#: devday/settings/base.py:193
 msgid "container"
 msgstr "container"
 
-#: devday/settings/dev.py:198
+#: devday/settings/base.py:194
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/dev.py:199
+#: devday/settings/base.py:195
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/templates/base.html:52 devday/templates/base.html:66
+#: devday/templates/base.html:30 devday/templates/base.html:44
 msgid "Logout"
 msgstr "Abmelden"
 
-#: devday/templates/base.html:53 devday/templates/base.html:67
+#: devday/templates/base.html:31 devday/templates/base.html:45
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/templates/base.html:55 devday/templates/base.html:69
+#: devday/templates/base.html:33 devday/templates/base.html:47
 msgid "Login"
 msgstr "Anmelden"
+
+#: devday/templates/django_file_form/upload_template.html:5
+msgid "Drop files here to upload"
+msgstr "Dateien hierhin schieben, um diese Hochzuladen"
+
+#: devday/templates/django_file_form/upload_template.html:8
+msgid "Choose Image"
+msgstr "Bild wählen"
+
+#: devday/templates/django_file_form/upload_template.html:11
+msgid "Processing dropped files..."
+msgstr "Verarbeite hochgeladene Dateien ..."
+
+#: devday/templates/django_file_form/upload_template.html:24
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: devday/templates/django_file_form/upload_template.html:25
+msgid "Retry"
+msgstr "Wiederholen"
+
+#: devday/templates/django_file_form/upload_template.html:26
+msgid "Delete"
+msgstr "Löschen"
 
 #: devday/templates/registration/activate.html:3
 msgid "Activation failed."
@@ -86,8 +115,8 @@ msgstr ""
 "\n"
 "danke, dass du dich für den DevDay 2017 interessierst.\n"
 "\n"
-"Um dein Benutzerkonto zu aktivieren, klicke bitte folgenden Link, um deine "
-"E-Mailadresse\n"
+"Um dein Benutzerkonto zu aktivieren, klicke bitte folgenden Link, um deine E-"
+"Mailadresse\n"
 "zu verifizieren.\n"
 
 #: devday/templates/registration/activation_email.txt:8
@@ -133,27 +162,18 @@ msgstr ""
 msgid "Confirm your registration"
 msgstr "Bestätige deine Registrierung"
 
-#: devday/templates/registration/login.html:10
+#: devday/templates/registration/login.html:9
+#: devday/templates/registration/password_reset_complete.html:6
 msgid "Log in"
 msgstr "Anmelden"
 
-#: devday/templates/registration/login.html:14
+#: devday/templates/registration/login.html:12
 msgid "Forgot password"
 msgstr "Passwort vergessen"
 
-#: devday/templates/registration/login.html:14
+#: devday/templates/registration/login.html:12
 msgid "Reset it"
 msgstr "Zurücksetzen"
-
-#: devday/templates/registration/login.html:15
-msgid "Not member"
-msgstr "Kein angemeldeter Benutzer"
-
-#: devday/templates/registration/login.html:15
-#: devday/templates/registration/registration_form.html:4
-#: devday/templates/registration/registration_form.html:10
-msgid "Register"
-msgstr "Anmelden"
 
 #: devday/templates/registration/logout.html:3
 msgid "Logged out"
@@ -163,6 +183,131 @@ msgstr "Abgemeldet"
 msgid "You are now logged out."
 msgstr "Du bist jetzt abgemeldet."
 
+#: devday/templates/registration/password_change_done.html:3
+msgid "Password changed"
+msgstr "Passwort geändert"
+
+#: devday/templates/registration/password_change_done.html:5
+msgid "Your password was changed."
+msgstr "Dein Passwort wurde geändert."
+
+#: devday/templates/registration/password_change_form.html:10
+msgid "Please correct the error below."
+msgstr "Bitte behebe die unten stehenden Fehler"
+
+#: devday/templates/registration/password_change_form.html:10
+msgid "Please correct the errors below."
+msgstr "Bitte behebe die unten stehenden Fehler."
+
+#: devday/templates/registration/password_change_form.html:15
+msgid ""
+"Please enter your old password, for security's sake, and then enter your new "
+"password twice so we can verify you typed it in correctly."
+msgstr ""
+"Bitte gib aus Sicherheitsgründen dein altes Passwort ein und gib dein neues "
+"Passwort doppelt ein, so dass wir prüfen können, dass du es korrekt getippt "
+"hast."
+
+#: devday/templates/registration/password_change_form.html:43
+#: devday/templates/registration/password_reset_confirm.html:12
+msgid "Change my password"
+msgstr "Mein Passwort ändern"
+
+#: devday/templates/registration/password_reset_complete.html:5
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr ""
+"Dein Passwort wurde gesetzt. Du kannst jetzt damit fortfahren dich "
+"einzuloggen."
+
+#: devday/templates/registration/password_reset_confirm.html:6
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+"Bitte gib dein neues Passwort doppelt ein, damit wir prüfen können, dass du "
+"es richtig getippt hast."
+
+#: devday/templates/registration/password_reset_confirm.html:9
+msgid "New password:"
+msgstr "Neues Passwort:"
+
+#: devday/templates/registration/password_reset_confirm.html:11
+msgid "Confirm password:"
+msgstr "Passwort bestätigen:"
+
+#: devday/templates/registration/password_reset_confirm.html:15
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+"Der Link für die Passwortrücksetzung war ungültig, vielleicht wurde er schon "
+"einmal benutzt. Bitte fordere eine neue Passwortrücksetzung an."
+
+#: devday/templates/registration/password_reset_done.html:5
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+"Wir haben dir Hinweise zum Setzen deines Passworts gemailt, falls ein "
+"Nutzerkonto mit der eingegebenen E-Mailadresse existiert. Du solltest diese "
+"in Kürze erhalten."
+
+#: devday/templates/registration/password_reset_done.html:6
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+"Wenn du keine E-Mail erhalten solltest, prüfe bitte, ob die eingegebene E-"
+"Mailadresse die ist, mit der du dich bei uns angemeldet hast und prüfe "
+"deinen Spam-Ordner."
+
+#: devday/templates/registration/password_reset_email.txt:2
+#, python-format
+msgid ""
+"You're receiving this email because you requested a password reset for your "
+"user account at %(site_name)s."
+msgstr ""
+"Du bekommst diese E-Mail weil eine Passwortrücksetzung für dein Nutzerkonto "
+"auf %(site_name)s angefordert wurde."
+
+#: devday/templates/registration/password_reset_email.txt:3
+msgid "Please go to the following page and choose a new password:"
+msgstr "Bitte klicke folgenden Link und wähle ein neues Passwort:"
+
+#: devday/templates/registration/password_reset_email.txt:7
+msgid "Your username, in case you've forgotten:"
+msgstr "Dein Nutzername, falls du diesen vergessen hast:"
+
+#: devday/templates/registration/password_reset_email.txt:8
+msgid "Thanks for using our site!"
+msgstr "Danke, dass du unsere Webseite nutzt!"
+
+#: devday/templates/registration/password_reset_email.txt:9
+#, python-format
+msgid "The %(site_name)s team"
+msgstr "Dein %(site_name)s team"
+
+#: devday/templates/registration/password_reset_form.html:5
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll email "
+"instructions for setting a new one."
+msgstr ""
+"Hast du dein Passwort vergessen? Gib unten deine E-Mailadresse ein und wir "
+"werden dir Hinweise schicken, wie du ein neues Passwort setzen kannst."
+
+#: devday/templates/registration/password_reset_form.html:8
+msgid "Email address:"
+msgstr "E-Mailadresse:"
+
+#: devday/templates/registration/password_reset_form.html:8
+msgid "Reset my password"
+msgstr "Mein Passwort zurücksetzen"
+
+#: devday/templates/registration/password_reset_subject.txt:2
+#, python-format
+msgid "Password reset on %(site_name)s"
+msgstr "Passwortrücksetzung auf %(site_name)s"
+
 #: devday/templates/registration/registration_complete.html:3
 msgid "Registration successful"
 msgstr "Anmeldung erfolgreich"
@@ -170,3 +315,11 @@ msgstr "Anmeldung erfolgreich"
 #: devday/templates/registration/registration_complete.html:5
 msgid "Registration successful."
 msgstr "Anmeldung erfolgreich."
+
+#: devday/templates/registration/registration_form.html:4
+#: devday/templates/registration/registration_form.html:10
+msgid "Register"
+msgstr "Anmelden"
+
+#~ msgid "Not member"
+#~ msgstr "Kein angemeldeter Benutzer"

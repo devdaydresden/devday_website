@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-27 16:56+0200\n"
-"PO-Revision-Date: 2016-08-27 16:46+0200\n"
+"POT-Creation-Date: 2016-09-27 22:25+0200\n"
+"PO-Revision-Date: 2016-09-27 22:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,60 +16,113 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/forms.py:21
+#: talk/forms.py:29 talk/templates/talk/speaker_profile.html:8
 msgid "Firstname"
 msgstr "Vorname"
 
-#: talk/forms.py:22
+#: talk/forms.py:30 talk/templates/talk/speaker_profile.html:10
 msgid "Lastname"
 msgstr "Nachname"
 
+#: talk/forms.py:31
+msgid "Speaker portrait"
+msgstr "Speakerbild"
+
+#: talk/forms.py:114 talk/forms.py:162
+msgid "Submit"
+msgstr "Session einreichen"
+
+#: talk/forms.py:132
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: talk/models.py:8
+msgid "XS"
+msgstr "XS"
+
+#: talk/models.py:9
+msgid "S"
+msgstr "S"
+
 #: talk/models.py:10
+msgid "M"
+msgstr "M"
+
+#: talk/models.py:11
+msgid "L"
+msgstr "L"
+
+#: talk/models.py:12
+msgid "XL"
+msgstr "XL"
+
+#: talk/models.py:13
+msgid "XXL"
+msgstr "XXL"
+
+#: talk/models.py:14
+msgid "XXXL"
+msgstr "XXXL"
+
+#: talk/models.py:20
+msgid "T-shirt size"
+msgstr "T-Shirtgröße"
+
+#: talk/models.py:22
 msgid "Video permitted"
 msgstr "Videofreigabe erteilt"
 
-#: talk/models.py:11
+#: talk/models.py:23
+msgid ""
+"I hereby agree that audio and visual recordings of me and my session can be "
+"published on the social media channels of the event organizer and the "
+"website devday.de."
+msgstr ""
+"Ich stimme hiermit zu, dass Ton- und Videoaufzeichnungen von mir und meiner "
+"Session auf den Social-Media-Kanälen des Veranstalters und auf der Webseite "
+"devday.de verwendet werden dürfen."
+
+#: talk/models.py:28 talk/templates/talk/speaker_profile.html:12
 msgid "Short biography"
 msgstr "Kurzvita"
 
-#: talk/models.py:12
+#: talk/models.py:29 talk/templates/talk/speaker_profile.html:15
 msgid "Speaker image"
 msgstr "Speakerbild"
 
-#: talk/models.py:15
+#: talk/models.py:32
 msgid "Speaker"
 msgstr "Sprecher"
 
-#: talk/models.py:16
+#: talk/models.py:33
 msgid "Speakers"
 msgstr "Sprecher"
 
-#: talk/models.py:24
+#: talk/models.py:41
 msgid "Session title"
 msgstr "Sessionname"
 
-#: talk/models.py:25
+#: talk/models.py:42
 msgid "Abstract"
 msgstr "Kurzbeschreibung"
 
-#: talk/models.py:28
+#: talk/models.py:43
+msgid "Remarks"
+msgstr "Anmerkungen"
+
+#: talk/models.py:46
 msgid "Session"
 msgstr "Session"
 
-#: talk/models.py:29
+#: talk/models.py:47
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/templates/talk/create_with_speaker.html:4
-#: talk/templates/talk/submitted.html:3
+#: talk/templates/talk/create_talk.html:3 talk/templates/talk/submitted.html:3
 msgid "Submit a session"
-msgstr "Session einreichen"
-
-#: talk/templates/talk/create_with_speaker.html:10
-msgid "Submit"
 msgstr "Session einreichen"
 
 #: talk/templates/talk/speaker_activation_email.txt:1
@@ -132,3 +185,20 @@ msgstr ""
 #: talk/templates/talk/speaker_activation_email_subject.txt:1
 msgid "Confirm your speaker registration"
 msgstr "Bestätige deine Sprecheranmeldung"
+
+#: talk/templates/talk/speaker_profile.html:3
+msgid "Speaker profile"
+msgstr "Sprecherprofil"
+
+#: talk/templates/talk/speaker_profile.html:6
+#, python-format
+msgid "Speaker profile for %(username)s"
+msgstr "Sprecherprofil für %(username)s"
+
+#: talk/templates/talk/speaker_profile.html:23
+msgid "Your Sessions"
+msgstr "Deine Sessions"
+
+#: talk/templates/talk/speaker_profile.html:27
+msgid "Title"
+msgstr "Titel"

@@ -9,17 +9,6 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 
-T_SHIRT_SIZES = (
-    (1, _("XS")),
-    (2, _("S")),
-    (3, _("M")),
-    (4, _("L")),
-    (5, _("XL")),
-    (6, _("XXL")),
-    (7, _("XXXL")),
-)
-
-
 class DevDayUserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -104,7 +93,6 @@ class Attendee(models.Model):
     This is a model class for an attendee.
     """
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="attendee")
-    shirt_size = models.PositiveSmallIntegerField(verbose_name=_("T-shirt size"), choices=T_SHIRT_SIZES)
 
     class Meta:
         verbose_name = _("Attendee")

@@ -6,12 +6,11 @@ from django_file_form.forms import FileFormMixin, UploadedFileField
 
 from registration.forms import RegistrationFormUniqueEmail
 
-from attendee.forms import AttendeeForm
 from devday.utils.forms import CombinedFormBase
 from talk.models import Talk, Speaker
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Layout, Field, Submit, Hidden
+from crispy_forms.layout import Div, Layout, Field, Submit
 
 User = get_user_model()
 
@@ -33,7 +32,7 @@ class SpeakerForm(FileFormMixin, forms.models.ModelForm):
 
     class Meta:
         model = Speaker
-        fields = ["shortbio", "videopermission"]
+        fields = ["shortbio", "videopermission", "shirt_size"]
         widgets = {
             'shortbio': forms.Textarea(attrs={'rows': 3}),
         }
@@ -45,12 +44,12 @@ class SpeakerForm(FileFormMixin, forms.models.ModelForm):
         speaker = self.instance
         speaker.portrait = self.cleaned_data['uploaded_image']
         result = super().save(commit)
-        self.delete_temporary_files()
+        if commit:
+            self.delete_temporary_files()
         return result
 
 
 class ExistingFileForm(SpeakerForm):
-
     def get_upload_url(self):
         return reverse('talk_handle_upload')
 
@@ -72,17 +71,54 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
 class CreateTalkForSpeakerForm(CombinedFormBase):
     form_classes = [TalkForm]
 
-
-class CreateTalkForAttendeeForm(CombinedFormBase):
-    form_classes = [SpeakerForm, TalkForm]
+    def __init__(self, *args, **kwargs):
+        super(CreateTalkForSpeakerForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_action = 'submit_session'
+        self.helper.form_id = 'create-talk-form'
+        self.helper.field_template = 'talk/form/field.html'
+        self.helper.html5_required = True
 
 
 class CreateTalkForUserForm(CombinedFormBase):
-    form_classes = [AttendeeForm, SpeakerForm, TalkForm]
+    form_classes = [SpeakerForm, TalkForm]
+
+    def __init__(self, *args, **kwargs):
+        super(CreateTalkForUserForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_action = 'submit_session'
+        self.helper.form_id = 'create-talk-form'
+        self.helper.field_template = 'talk/form/field.html'
+        self.helper.html5_required = True
+
+        self.helper.layout = Layout(
+            "upload_url",
+            "delete_url",
+            "form_id",
+            Div(
+                "firstname",
+                "lastname",
+                "shirt_size",
+                "shortbio",
+                Field("videopermission", template="talk/form/videopermission-field.html"),
+                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-6"
+            ),
+            Div(
+                Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
+                "title",
+                "abstract",
+                "remarks",
+                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-6"
+            ),
+            Div(
+                Submit('submit', _('Submit'), css_class="btn-default"),
+                css_class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-4"
+            )
+        )
 
 
 class CreateTalkWithSpeakerForm(CombinedFormBase):
-    form_classes = [DevDayRegistrationForm, AttendeeForm, SpeakerForm, TalkForm]
+    form_classes = [DevDayRegistrationForm, SpeakerForm, TalkForm]
 
     def __init__(self, *args, **kwargs):
         super(CreateTalkWithSpeakerForm, self).__init__(*args, **kwargs)
@@ -109,7 +145,7 @@ class CreateTalkWithSpeakerForm(CombinedFormBase):
                 "password2",
                 "shirt_size",
                 Field("videopermission", template="talk/form/videopermission-field.html"),
-                css_class = "col-xs-12 col-sm-6 col-md-6 col-lg-4"
+                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
             ),
             Div(
                 Field("uploaded_image", template="talk/form/speakerportrait-field.html"),

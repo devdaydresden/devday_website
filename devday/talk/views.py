@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import DatabaseError
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import BaseFormView
@@ -11,7 +13,7 @@ from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
 from attendee.models import Attendee
-from talk.forms import CreateTalkWithSpeakerForm, CreateTalkForSpeakerForm, CreateTalkForAttendeeForm, \
+from talk.forms import CreateTalkWithSpeakerForm, CreateTalkForSpeakerForm, \
     CreateTalkForUserForm, ExistingFileForm
 from talk.models import Speaker
 
@@ -29,7 +31,7 @@ class CreateTalkWithSpeakerView(RegistrationView):
     form_classes = {
         'anonymous': CreateTalkWithSpeakerForm,
         'user': CreateTalkForUserForm,
-        'attendee': CreateTalkForAttendeeForm,
+        'attendee': CreateTalkForUserForm,
         'speaker': CreateTalkForSpeakerForm,
     }
 
@@ -59,32 +61,32 @@ class CreateTalkWithSpeakerView(RegistrationView):
 
     def form_valid(self, form):
         if self.auth_level == 'anonymous':
-            firstname = form.cleaned_data['firstname']
-            lastname = form.cleaned_data['lastname']
             email = form.cleaned_data['email']
+            first_name = form.cleaned_data['firstname']
+            last_name = form.cleaned_data['lastname']
 
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
                 user = User.objects.create_user(
-                    email=email, first_name=firstname, last_name=lastname, is_active=False)
+                    email=email, first_name=first_name, last_name=last_name, is_active=False)
                 user.set_password(form.cleaned_data['password1'])
                 signals.user_registered.send(sender=self.__class__,
                                              user=user,
                                              request=self.request)
                 self.send_activation_email(user)
-                user.save()
         else:
             user = self.request.user
 
         if self.auth_level in ('user', 'anonymous'):
+            user.first_name = form.cleaned_data['firstname']
+            user.last_name = form.cleaned_data['lastname']
+            user.save()
             try:
                 attendee = Attendee.objects.get(user=user)
                 attendee.shirt_size = form.attendeeform.instance.shirt_size
             except Attendee.DoesNotExist:
-                attendee = form.attendeeform.instance
-                attendee.user = user
-            attendee.save()
+                attendee = Attendee.objects.create(user=user)
         else:
             attendee = user.attendee
 
@@ -95,9 +97,10 @@ class CreateTalkWithSpeakerView(RegistrationView):
                 speaker.shortbio = form.speakerform.instance.shortbio
                 speaker.videopermission = form.speakerform.instance.videopermission
             except Speaker.DoesNotExist:
-                speaker = form.speakerform.instance
+                speaker = form.speakerform.save(commit=False)
                 speaker.user = attendee
             speaker.save()
+            form.speakerform.delete_temporary_files()
         else:
             speaker = attendee.speaker
 
@@ -123,6 +126,27 @@ class ExistingFileView(BaseFormView):
             )
 
         return form_kwargs
+
+
+class SpeakerProfileView(LoginRequiredMixin, TemplateView):
+    template_name = "talk/speaker_profile.html"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.get_context_data()
+        except AttributeError:
+            return redirect('/')
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        attendee = Attendee.objects.filter(user=self.request.user).select_related('speaker').get()
+        context.update({
+            'attendee': attendee,
+            'speaker': attendee.speaker,
+            'talks': attendee.speaker.talk_set.all(),
+        })
+        return context
 
 
 handle_upload = FileFormUploader()

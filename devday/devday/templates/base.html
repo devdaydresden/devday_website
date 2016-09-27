@@ -28,7 +28,7 @@
                         {% show_menu 0 100 100 100 %}
                         {% if user.is_authenticated %}
                             <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
-                            <li><a href="{% url 'user_profile' %}">{% trans "Profile" %}</a></li>
+                            <li><a href="{% if user.attendee.speaker %}{% url 'speaker_profile' %}{% else %}{% url 'user_profile' %}{% endif %}">{% trans "Profile" %}</a></li>
                         {% else %}
                             <li><a href="{% url 'auth_login' %}">{% trans "Login" %}</a></li>
                         {% endif %}

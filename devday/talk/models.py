@@ -4,9 +4,20 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from attendee.models import Attendee
 
+T_SHIRT_SIZES = (
+    (1, _("XS")),
+    (2, _("S")),
+    (3, _("M")),
+    (4, _("L")),
+    (5, _("XL")),
+    (6, _("XXL")),
+    (7, _("XXXL")),
+)
+
 
 class Speaker(models.Model):
     user = models.OneToOneField(Attendee, related_name="speaker")
+    shirt_size = models.PositiveSmallIntegerField(verbose_name=_("T-shirt size"), choices=T_SHIRT_SIZES)
     videopermission = models.BooleanField(
         verbose_name=_("Video permitted"),
         help_text=_("I hereby agree that audio and visual recordings of "

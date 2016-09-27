@@ -38,7 +38,7 @@ to stop a running virtual machine use
 vagrant halt <boxname>
 ```
 
-> All testing has been done using Vagrant 1.8.4 with VirtualBox 5.0.18, if you
+> All testing has been done using Vagrant 1.8.5 with VirtualBox 5.1.4, if you
 > experience issues please update to this versions first.
 
 To run the Django application for local development you can do the following:
@@ -50,20 +50,3 @@ cd /vagrant
 ```
 
 You should be able to access the application via http://127.0.0.1:8000/ now.
-
-## build css
-
-CSS is built using [compass](http://compass-style.org/)/[sass](http://sass-lang.com/):
-
-```
-compass compile
-```
-
-## run local instance in docker
-
-```
-./dockerrun.sh
-```
-
-> The Dockerfile has not been updated to support Django CMS yet, it can be used
-> to serve the static site for DevDay 2016 though

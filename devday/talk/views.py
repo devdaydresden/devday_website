@@ -128,11 +128,14 @@ class EditTalkView(LoginRequiredMixin, UpdateView):
                 "title",
                 Field("abstract", rows=3),
                 Field("remarks", rows=3),
-                css_class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-lg-offset-3"
+                css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2"
             ),
             Div(
-                Submit('submit', _('Submit'), css_class="btn-default"),
-                css_class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3"
+                Div(
+                    Submit('submit', _('Submit'), css_class="btn-default"),
+                    css_class="text-center",
+                ),
+                css_class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2"
             )
         )
         return form

@@ -30,18 +30,18 @@
                 <tbody>
                 {% for talk in talks %}
                     <tr>
-                        <td>{{ talk.title }}</td>
+                        <td><a href="{% url "edit_session" pk=talk.pk %}">{{ talk.title }}</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         {% else %}
-            <div class="alert alert-notice" role="alert">Keine Sessions eingereicht.</div>
+            <div class="alert alert-notice" role="alert"{% trans "No sessions submitted." %}</div>
         {% endif %}
     </div>
     <div class="col-lg-offset-2 col-lg-8">
         <div class="text-center">
-            <a href="{% url "submit_session" %}" class="btn btn-default">Session einreichen</a>
+            <a href="{% url "submit_session" %}" class="btn btn-default">{% trans "Submit session" %}</a>
         </div>
     </div>
 {% endblock %}

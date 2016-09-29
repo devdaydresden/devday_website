@@ -1,0 +1,6 @@
+{% extends "devday_site.html" %}
+{% load i18n crispy_forms_tags sekizai_tags static %}
+{% block title %}{% trans "Edit session" %}{% endblock %}
+{% block content_body %}
+    {% crispy form %}
+{% endblock %}

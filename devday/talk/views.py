@@ -1,13 +1,16 @@
 from __future__ import unicode_literals
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout, Div, Field
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import DatabaseError
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
-from django.views.generic.edit import BaseFormView
+from django.views.generic.edit import BaseFormView, UpdateView
 from django_file_form.forms import ExistingFile
 from django_file_form.uploader import FileFormUploader
+from django.utils.translation import ugettext_lazy as _
 from pathlib import Path
 from registration import signals
 from registration.backends.hmac.views import RegistrationView
@@ -15,7 +18,7 @@ from registration.backends.hmac.views import RegistrationView
 from attendee.models import Attendee
 from talk.forms import CreateTalkWithSpeakerForm, CreateTalkForSpeakerForm, \
     CreateTalkForUserForm, ExistingFileForm
-from talk.models import Speaker
+from talk.models import Speaker, Talk
 
 User = get_user_model()
 
@@ -109,6 +112,33 @@ class CreateTalkWithSpeakerView(RegistrationView):
         talk.save()
 
         return redirect(self.get_success_url())
+
+
+class EditTalkView(LoginRequiredMixin, UpdateView):
+    fields = ['title', 'abstract', 'remarks']
+
+    def get_queryset(self):
+        return Talk.objects.filter(speaker__user=self.request.user.attendee)
+
+    def get_form(self, form_class=None):
+        form = super(EditTalkView, self).get_form(form_class)
+        form.helper = FormHelper()
+        form.helper.layout = Layout(
+            Div(
+                "title",
+                Field("abstract", rows=3),
+                Field("remarks", rows=3),
+                css_class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-lg-offset-3"
+            ),
+            Div(
+                Submit('submit', _('Submit'), css_class="btn-default"),
+                css_class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3"
+            )
+        )
+        return form
+
+    def get_success_url(self):
+        return reverse('speaker_profile')
 
 
 class ExistingFileView(BaseFormView):

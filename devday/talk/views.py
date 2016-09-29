@@ -136,10 +136,10 @@ class SpeakerProfileView(LoginRequiredMixin, TemplateView):
             self.get_context_data()
         except AttributeError:
             return redirect('/')
-        return super().get(request, *args, **kwargs)
+        return super(SpeakerProfileView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(SpeakerProfileView, self).get_context_data(**kwargs)
         attendee = Attendee.objects.filter(user=self.request.user).select_related('speaker').get()
         context.update({
             'attendee': attendee,

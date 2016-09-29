@@ -4,6 +4,7 @@ import os
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 from mimetypes import MimeTypes
 from six import BytesIO
 
@@ -49,7 +50,8 @@ class Speaker(models.Model):
         if not self.portrait:
             return
 
-        thumbnail_size = (100, 60)
+        thumbnail_height = settings.TALK_THUMBNAIL_HEIGHT
+
         mime = MimeTypes()
         django_type = mime.guess_type(self.portrait.name)[0]
 
@@ -63,6 +65,7 @@ class Speaker(models.Model):
             return
 
         image = Image.open(BytesIO(self.portrait.read()))
+        thumbnail_size = (int(thumbnail_height * image.width / image.height), thumbnail_height)
         image.thumbnail(thumbnail_size, Image.ANTIALIAS)
 
         temp_handle = BytesIO()

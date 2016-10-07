@@ -1,13 +1,9 @@
 {% extends "devday_site.html" %}
-{% load i18n crispy_forms_tags sekizai_tags static cms_tags %}
-{% block title %}{% trans "Submit a session" %}{% endblock %}
+{% load crispy_forms_tags sekizai_tags static %}
 {% block content_body %}
     {% addtoblock "css" %}
         <link rel="stylesheet" href="{% static "css/fileuploader.css" %}">
     {% endaddtoblock %}
-    <div class="row">
-        {% static_placeholder "create-talk-introtext" %}
-    </div>
     {% crispy form %}
     {% addtoblock "js" %}
         <script src="{% static "ajaxuploader/js/fileuploader.js" %}"></script>

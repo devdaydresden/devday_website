@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-27 22:25+0200\n"
+"POT-Creation-Date: 2016-10-07 18:20+0200\n"
 "PO-Revision-Date: 2016-09-27 20:40+0200\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -59,29 +59,17 @@ msgstr "Profil"
 msgid "Login"
 msgstr "Anmelden"
 
-#: devday/templates/django_file_form/upload_template.html:5
-msgid "Drop files here to upload"
-msgstr "Dateien hierhin schieben, um diese Hochzuladen"
-
-#: devday/templates/django_file_form/upload_template.html:8
-msgid "Choose Image"
-msgstr "Bild wählen"
-
-#: devday/templates/django_file_form/upload_template.html:11
-msgid "Processing dropped files..."
-msgstr "Verarbeite hochgeladene Dateien ..."
-
-#: devday/templates/django_file_form/upload_template.html:24
+#: devday/templates/django_file_form/upload_template.html:13
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: devday/templates/django_file_form/upload_template.html:25
+#: devday/templates/django_file_form/upload_template.html:14
 msgid "Retry"
 msgstr "Wiederholen"
 
-#: devday/templates/django_file_form/upload_template.html:26
-msgid "Delete"
-msgstr "Löschen"
+#: devday/templates/django_file_form/upload_template.html:20
+msgid "Choose Image"
+msgstr "Bild wählen"
 
 #: devday/templates/registration/activate.html:3
 msgid "Activation failed."
@@ -320,6 +308,15 @@ msgstr "Anmeldung erfolgreich."
 #: devday/templates/registration/registration_form.html:10
 msgid "Register"
 msgstr "Anmelden"
+
+#~ msgid "Drop files here to upload"
+#~ msgstr "Dateien hierhin schieben, um diese Hochzuladen"
+
+#~ msgid "Processing dropped files..."
+#~ msgstr "Verarbeite hochgeladene Dateien ..."
+
+#~ msgid "Delete"
+#~ msgstr "Löschen"
 
 #~ msgid "Not member"
 #~ msgstr "Kein angemeldeter Benutzer"

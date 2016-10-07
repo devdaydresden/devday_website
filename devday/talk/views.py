@@ -4,114 +4,58 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Div, Field
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.urlresolvers import reverse
+from django.contrib.auth.views import login
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
-from django.views.generic.edit import BaseFormView, UpdateView
+from django.views.generic.edit import BaseFormView, UpdateView, CreateView
 from django_file_form.forms import ExistingFile
 from django_file_form.uploader import FileFormUploader
-from django.utils.translation import ugettext_lazy as _
 from pathlib import Path
 from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
 from attendee.models import Attendee
-from talk.forms import CreateTalkWithSpeakerForm, CreateTalkForSpeakerForm, \
-    CreateTalkForUserForm, ExistingFileForm
+from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm
 from talk.models import Speaker, Talk
 
 User = get_user_model()
+
+
+def submit_session_view(request):
+    """
+    This view presents a choice of links for anonymous users.
+
+    """
+    template_name = 'talk/submit_session.html'
+
+    if not request.user.is_anonymous() and request.user.attendee and request.user.attendee.speaker:
+        return redirect(reverse('create_session'))
+
+    return login(request, template_name=template_name, authentication_form=TalkAuthenticationForm)
 
 
 class TalkSubmittedView(TemplateView):
     template_name = "talk/submitted.html"
 
 
-class CreateTalkWithSpeakerView(RegistrationView):
+class CreateTalkView(LoginRequiredMixin, CreateView):
     template_name = "talk/create_talk.html"
-    email_body_template = "talk/speaker_activation_email.txt"
-    email_subject_template = "talk/speaker_activation_email_subject.txt"
-    form_classes = {
-        'anonymous': CreateTalkWithSpeakerForm,
-        'user': CreateTalkForUserForm,
-        'attendee': CreateTalkForUserForm,
-        'speaker': CreateTalkForSpeakerForm,
-    }
+    form_class = CreateTalkForm
+    success_url = reverse_lazy('talk_submitted')
 
-    def dispatch(self, *args, **kwargs):
-        user = self.request.user
-        if user.is_authenticated():
-            try:
-                attendee = user.attendee
-                try:
-                    # noinspection PyStatementEffect
-                    attendee.speaker
-                    self.auth_level = 'speaker'
-                except Speaker.DoesNotExist:
-                    self.auth_level = 'attendee'
-            except Attendee.DoesNotExist:
-                self.auth_level = 'user'
-        else:
-            # noinspection PyAttributeOutsideInit
-            self.auth_level = 'anonymous'
-        return super(CreateTalkWithSpeakerView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        if not user.attendee or not user.attendee.speaker:
+            return HttpResponseBadRequest(_('Authenticated user must be a registered speaker'))
+        return super(CreateTalkView, self).dispatch(request, *args, **kwargs)
 
-    def get_form_class(self):
-        return self.form_classes.get(self.auth_level, None)
-
-    def get_success_url(self, **kwargs):
-        return 'talk_submitted'
-
-    def form_valid(self, form):
-        if self.auth_level == 'anonymous':
-            email = form.cleaned_data['email']
-            first_name = form.cleaned_data['firstname']
-            last_name = form.cleaned_data['lastname']
-
-            try:
-                user = User.objects.get(email=email)
-            except User.DoesNotExist:
-                user = User.objects.create_user(
-                    email=email, first_name=first_name, last_name=last_name, is_active=False)
-                user.set_password(form.cleaned_data['password1'])
-                signals.user_registered.send(sender=self.__class__,
-                                             user=user,
-                                             request=self.request)
-                self.send_activation_email(user)
-        else:
-            user = self.request.user
-
-        if self.auth_level in ('user', 'anonymous'):
-            user.first_name = form.cleaned_data['firstname']
-            user.last_name = form.cleaned_data['lastname']
-            user.save()
-            try:
-                attendee = Attendee.objects.get(user=user)
-                attendee.shirt_size = form.attendeeform.instance.shirt_size
-            except Attendee.DoesNotExist:
-                attendee = Attendee.objects.create(user=user)
-        else:
-            attendee = user.attendee
-
-        if self.auth_level in ('attendee', 'user', 'anonymous'):
-            try:
-                speaker = Speaker.objects.get(user=attendee)
-                speaker.portrait = form.speakerform.instance.portrait
-                speaker.shortbio = form.speakerform.instance.shortbio
-                speaker.videopermission = form.speakerform.instance.videopermission
-            except Speaker.DoesNotExist:
-                speaker = form.speakerform.save(commit=False)
-                speaker.user = attendee
-            speaker.save()
-            form.speakerform.delete_temporary_files()
-        else:
-            speaker = attendee.speaker
-
-        talk = form.talkform.instance
-        talk.speaker = speaker
-        talk.save()
-
-        return redirect(self.get_success_url())
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['speaker'] = self.request.user.attendee.speaker
+        return form_kwargs
 
 
 class EditTalkView(LoginRequiredMixin, UpdateView):
@@ -183,3 +127,83 @@ class SpeakerProfileView(LoginRequiredMixin, TemplateView):
 
 
 handle_upload = FileFormUploader()
+
+
+class CreateSpeakerView(RegistrationView):
+    template_name = 'talk/create_speaker.html'
+    email_body_template = "talk/speaker_activation_email.txt"
+    email_subject_template = "talk/speaker_activation_email_subject.txt"
+    form_classes = {
+        'anonymous': CreateSpeakerForm,
+        'user': BecomeSpeakerForm,
+        'attendee': BecomeSpeakerForm,
+    }
+    success_url = reverse_lazy('create_session')
+
+    def dispatch(self, *args, **kwargs):
+        user = self.request.user
+        if user.is_authenticated():
+            if user.attendee:
+                if user.attendee.speaker:
+                    return redirect(self.success_url)
+                self.auth_level = 'attendee'
+            else:
+                self.auth_level = 'user'
+        else:
+            # noinspection PyAttributeOutsideInit
+            self.auth_level = 'anonymous'
+        return super(CreateSpeakerView, self).dispatch(*args, **kwargs)
+
+    def get_form_class(self):
+        return self.form_classes.get(self.auth_level, None)
+
+    def form_valid(self, form):
+        if self.auth_level == 'anonymous':
+            email = form.cleaned_data['email']
+            first_name = form.cleaned_data['firstname']
+            last_name = form.cleaned_data['lastname']
+
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                user = User.objects.create_user(
+                    email=email, first_name=first_name, last_name=last_name, is_active=False)
+                user.set_password(form.cleaned_data['password1'])
+                signals.user_registered.send(sender=self.__class__,
+                                             user=user,
+                                             request=self.request)
+                self.send_activation_email(user)
+        else:
+            user = self.request.user
+
+        if self.auth_level in ('user', 'anonymous'):
+            user.first_name = form.cleaned_data['firstname']
+            user.last_name = form.cleaned_data['lastname']
+            user.save()
+            try:
+                attendee = Attendee.objects.get(user=user)
+                attendee.shirt_size = form.attendeeform.instance.shirt_size
+            except Attendee.DoesNotExist:
+                attendee = Attendee.objects.create(user=user)
+        else:
+            attendee = user.attendee
+
+        if self.auth_level in ('attendee', 'user', 'anonymous'):
+            try:
+                speaker = Speaker.objects.get(user=attendee)
+                speaker.portrait = form.speakerform.instance.portrait
+                speaker.shortbio = form.speakerform.instance.shortbio
+                speaker.videopermission = form.speakerform.instance.videopermission
+            except Speaker.DoesNotExist:
+                speaker = form.speakerform.save(commit=False)
+                speaker.user = attendee
+            speaker.save()
+            form.speakerform.delete_temporary_files()
+        else:
+            speaker = attendee.speaker
+
+        talk = form.talkform.instance
+        talk.speaker = speaker
+        talk.save()
+
+        return redirect(self.get_success_url())

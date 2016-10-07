@@ -1,16 +1,15 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Div, Layout, Field, Submit, Hidden
 from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import get_user_model
 from django_file_form.forms import FileFormMixin, UploadedFileField
-
 from registration.forms import RegistrationFormUniqueEmail
 
 from devday.utils.forms import CombinedFormBase
 from talk.models import Talk, Speaker
-
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Layout, Field, Submit
 
 User = get_user_model()
 
@@ -43,7 +42,7 @@ class SpeakerForm(FileFormMixin, forms.models.ModelForm):
     def save(self, commit=True):
         speaker = self.instance
         speaker.portrait = self.cleaned_data['uploaded_image']
-        result = super().save(commit)
+        result = super(SpeakerForm, self).save(commit)
         if commit:
             self.delete_temporary_files()
         return result
@@ -68,26 +67,61 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
         return super(RegistrationFormUniqueEmail, self).clean()
 
 
-class CreateTalkForSpeakerForm(CombinedFormBase):
-    form_classes = [TalkForm]
-
+class CreateTalkForm(TalkForm):
     def __init__(self, *args, **kwargs):
-        super(CreateTalkForSpeakerForm, self).__init__(*args, **kwargs)
+        self.speaker = kwargs.pop('speaker')
+        super(CreateTalkForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_action = 'submit_session'
+        self.helper.form_action = 'create_session'
         self.helper.form_id = 'create-talk-form'
         self.helper.field_template = 'talk/form/field.html'
         self.helper.html5_required = True
 
+        self.helper.layout = Layout(
+            Div(
+                Field("title", template='talk/form/field.html', autofocus='autofocus'),
+                "abstract",
+                "remarks",
+                css_class="col-md-12 col-lg-offset-3 col-lg-6"
+            ),
+            Div(
+                Submit('submit', _('Submit'), css_class="btn-default"),
+                css_class="col-md-12 col-lg-offset-3 col-lg-6"
+            )
+        )
 
-class CreateTalkForUserForm(CombinedFormBase):
-    form_classes = [SpeakerForm, TalkForm]
+    def save(self, commit=True):
+        self.instance.speaker = self.speaker
+        return super(CreateTalkForm, self).save(commit=commit)
 
+
+class TalkAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
-        super(CreateTalkForUserForm, self).__init__(*args, **kwargs)
+        super(TalkAuthenticationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = 'submit_session'
-        self.helper.form_id = 'create-talk-form'
+        self.helper.form_method = 'post'
+        self.helper.field_template = 'talk/form/field.html'
+        self.helper.html5_required = True
+        self.helper.layout = Layout(
+            Div(
+                Hidden('next', value=reverse('submit_session')),
+                Field('username', template='talk/form/field.html', autofocus='autofocus'),
+                Field('password', template='talk/form/field.html'),
+            ),
+            Div(
+                Submit('submit', _('Login'), css_class='btn-default'),
+                css_class='text-center'
+            )
+        )
+
+
+class BecomeSpeakerForm(SpeakerForm):
+    def __init__(self, *args, **kwargs):
+        super(BecomeSpeakerForm, self).__init__(*args, **kwargs)
+        self.helper.form_action = 'create_speaker'
+        self.helper.form_method = 'post'
+        self.helper.form_id = 'create-speaker-form'
         self.helper.field_template = 'talk/form/field.html'
         self.helper.html5_required = True
 
@@ -98,34 +132,28 @@ class CreateTalkForUserForm(CombinedFormBase):
             Div(
                 "firstname",
                 "lastname",
+            ),
+            Div(
                 "shirt_size",
-                "shortbio",
                 Field("videopermission", template="talk/form/videopermission-field.html"),
-                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-6"
-            ),
-            Div(
                 Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
-                "title",
-                "abstract",
-                "remarks",
-                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-6"
+                Field("shortbio", rows=2),
             ),
             Div(
-                Submit('submit', _('Submit'), css_class="btn-default"),
-                css_class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-4"
+                Submit('submit', _('Register as speaker'))
             )
         )
 
 
-class CreateTalkWithSpeakerForm(CombinedFormBase):
-    form_classes = [DevDayRegistrationForm, SpeakerForm, TalkForm]
+class CreateSpeakerForm(CombinedFormBase):
+    form_classes = [DevDayRegistrationForm, SpeakerForm]
 
     def __init__(self, *args, **kwargs):
-        super(CreateTalkWithSpeakerForm, self).__init__(*args, **kwargs)
+        super(CreateSpeakerForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_action = 'submit_session'
+        self.helper.form_action = 'create_speaker'
         self.helper.form_method = 'post'
-        self.helper.form_id = 'create-talk-form'
+        self.helper.form_id = 'create-speaker-form'
         self.helper.field_template = 'talk/form/field.html'
         self.helper.html5_required = True
         self.fields['email'].help_text = None
@@ -134,32 +162,26 @@ class CreateTalkWithSpeakerForm(CombinedFormBase):
         self.fields['password2'].help_text = None
 
         self.helper.layout = Layout(
-            "upload_url",
-            "delete_url",
-            "form_id",
+            'upload_url',
+            'delete_url',
+            'form_id',
             Div(
-                "email",
-                "firstname",
-                "lastname",
-                "password1",
-                "password2",
-                "shirt_size",
-                Field("videopermission", template="talk/form/videopermission-field.html"),
-                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
+                Field('email', template='talk/form/field.html', autofocus='autofocus'),
+                'firstname',
+                'lastname',
+                'password1',
+                'password2',
+                css_class='col-md-12 col-lg-offset-2 col-lg-4'
             ),
             Div(
-                Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
-                Field("shortbio", rows=2),
-                "title",
-                Field("abstract", rows=2),
-                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
+                Field('uploaded_image', template='talk/form/speakerportrait-field.html'),
+                'shirt_size',
+                Field('shortbio', rows=2, template='talk/form/field.html'),
+                Field('videopermission', template='talk/form/videopermission-field.html'),
+                css_class='col-md-12 col-lg-4'
             ),
             Div(
-                Field("remarks", rows=2),
-                css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
-            ),
-            Div(
-                Submit('submit', _('Submit'), css_class="btn-default"),
-                css_class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-4"
+                Submit('submit', _('Register as speaker')),
+                css_class='col-md-12 col-lg-offset-2 col-lg-8 text-center'
             )
         )

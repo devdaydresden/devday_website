@@ -4,7 +4,7 @@ thank you for your interest to join us at DevDay 2017.
 
 To finish your registration please click the following link to verify your email address.
 {% endblocktrans %}
-https://{{ site.domain }}{% url 'registration_activate' activation_key %}
+{{ request.scheme }}://{{ site.domain }}{% url 'registration_activate' activation_key %}
 {% blocktrans count days=expiration_days %}
 The link is valid for one day.
 {% plural %}

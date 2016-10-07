@@ -1,5 +1,5 @@
 /**
- * Build on 2016-9-20
+ * Build on 2016-10-7
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -5569,6 +5569,11 @@ body {
   background: white;
   filter: alpha(opacity=0); }
 
+*:focus {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; }
+
 fieldset {
   margin: 0 0 6rem;
   padding: 0;
@@ -5737,13 +5742,27 @@ fieldset {
   cursor: pointer;
   text-align: left;
   color: #333; }
+  .checkbox label:focus,
+  .form-radio label:focus {
+    color: #35a4a3;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none; }
 
 .checkbox input,
 .form-radio input {
   position: absolute;
   left: 0;
   width: auto;
-  opacity: 0.00000001; }
+  opacity: 0.00000001;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; }
+  .checkbox input:focus,
+  .form-radio input:focus {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none; }
 
 .radio {
   margin-bottom: 2rem; }
@@ -5930,7 +5949,7 @@ fieldset {
     font-size: 1.6rem;
     position: absolute;
     top: -2rem;
-    left: 0;
+    left: 6px;
     margin-bottom: 0;
     color: #272c59; }
   .file-input > input {
@@ -5953,7 +5972,7 @@ fieldset {
     position: relative;
     float: right;
     overflow: hidden;
-    width: 40%;
+    width: 100%;
     box-shadow: 0 0 0 transparent; }
   .file-input .btn-file input[type=file] {
     font-size: 100px;
@@ -5969,6 +5988,9 @@ fieldset {
     outline: none;
     background: white;
     filter: alpha(opacity=0); }
+
+.form-control {
+  border-radius: 0 !important; }
 
 .navbar-default {
   margin-top: 15px;
@@ -6100,6 +6122,41 @@ fieldset {
 @media (min-width: 996px) and (max-width: 1279.9px) {
   .promo .call-to-action img {
     width: 60%; } }
+
+.qq-upload-list {
+  float: left;
+  width: 60%;
+  border-bottom: 1px solid #BABABA;
+  border-left: 1px solid #BABABA;
+  font-size: 2rem;
+  padding: 5px 25px 5px 5px !important;
+  height: 39px; }
+  .qq-upload-list .qq-upload-file {
+    width: 100%;
+    text-overflow: ellipsis;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap; }
+  .qq-upload-list .qq-upload-delete {
+    float: right;
+    position: absolute;
+    right: 41%;
+    top: 4px;
+    font-family: 'simple-line-icons';
+    padding: 4px;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    color: #272c59; }
+    .qq-upload-list .qq-upload-delete:hover {
+      text-decoration: none;
+      color: #35a4a3; }
+    .qq-upload-list .qq-upload-delete:before {
+      content: "\e054"; }
 
 /* LABEL ======================================= */
 label {

@@ -1,6 +1,6 @@
 {% load crispy_forms_field %}
 <div class="checkbox">
-    <label for="{{ field.id_for_label }}" class="{% if field.field.required %} requiredField{% endif %}">
+    <label tabindex="0" for="{{ field.id_for_label }}" class="{% if field.field.required %} requiredField{% endif %}">
         {% crispy_field field %}<i class="helper"></i>
         {{ field.label|safe }}
         {% include 'bootstrap3/layout/help_text_and_errors.html' %}

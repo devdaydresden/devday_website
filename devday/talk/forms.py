@@ -149,13 +149,13 @@ class CreateTalkWithSpeakerForm(CombinedFormBase):
             ),
             Div(
                 Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
-                "shortbio",
+                Field("shortbio", rows=2),
                 "title",
-                "abstract",
+                Field("abstract", rows=2),
                 css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
             ),
             Div(
-                "remarks",
+                Field("remarks", rows=2),
                 css_class="col-xs-12 col-sm-6 col-md-6 col-lg-4"
             ),
             Div(

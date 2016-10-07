@@ -126,8 +126,8 @@ class EditTalkView(LoginRequiredMixin, UpdateView):
         form.helper.layout = Layout(
             Div(
                 "title",
-                Field("abstract", rows=3),
-                Field("remarks", rows=3),
+                Field("abstract", rows=2),
+                Field("remarks", rows=2),
                 css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2"
             ),
             Div(

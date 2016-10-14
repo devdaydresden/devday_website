@@ -57,7 +57,7 @@ class CreateTalkView(LoginRequiredMixin, CreateView):
         return super(CreateTalkView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
+        form_kwargs = super(CreateTalkView, self).get_form_kwargs()
         form_kwargs['speaker'] = self.request.user.attendee.speaker
         return form_kwargs
 

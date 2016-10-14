@@ -199,4 +199,4 @@ class CreateSpeakerView(RegistrationView):
         speaker.save()
         form.delete_temporary_files()
 
-        return redirect(self.get_success_url())
+        return redirect(self.success_url)

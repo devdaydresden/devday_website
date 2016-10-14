@@ -144,15 +144,12 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'attendee.devdayuser'
 
+LANGUAGES = {
+    'de': gettext('de'),
+    'en': gettext('en'),
+}
+
 CMS_LANGUAGES = {
-    'default': {
-        'fallbacks': ['de'],
-        'code': 'de',
-        'public': True,
-        'hide_untranslated': False,
-        'name': gettext('de'),
-        'redirect_on_fallback': True,
-    },
     1: [
         {
             'public': True,
@@ -161,7 +158,22 @@ CMS_LANGUAGES = {
             'name': gettext('de'),
             'redirect_on_fallback': True,
         },
+        {
+            'public': False,
+            'code': 'en',
+            'hide_untranslated': False,
+            'name': gettext('en'),
+            'redirect_on_fallback': True,
+        },
     ],
+    'default': {
+        'fallbacks': [],
+        'code': 'de',
+        'public': True,
+        'hide_untranslated': False,
+        'name': gettext('de'),
+        'redirect_on_fallback': True,
+    },
 }
 
 CMS_TEMPLATES = (

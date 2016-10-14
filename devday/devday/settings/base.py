@@ -144,16 +144,13 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'attendee.devdayuser'
 
-LANGUAGES = (
-    ('de', gettext('de')),
-    ('en', gettext('en'))
-)
-
 CMS_LANGUAGES = {
     'default': {
         'fallbacks': ['de'],
+        'code': 'de',
         'public': True,
         'hide_untranslated': False,
+        'name': gettext('de'),
         'redirect_on_fallback': True,
     },
     1: [

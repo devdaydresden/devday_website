@@ -31,8 +31,12 @@ def submit_session_view(request):
     """
     template_name = 'talk/submit_session.html'
 
-    if not request.user.is_anonymous() and request.user.attendee and request.user.attendee.speaker:
-        return redirect(reverse('create_session'))
+    if not request.user.is_anonymous():
+        try:
+            request.user.attendee and request.user.attendee.speaker
+            return redirect(reverse('create_session'))
+        except (Attendee.DoesNotExist, Speaker.DoesNotExist):
+            pass
 
     return login(request, template_name=template_name, authentication_form=TalkAuthenticationForm)
 
@@ -143,11 +147,13 @@ class CreateSpeakerView(RegistrationView):
     def dispatch(self, *args, **kwargs):
         user = self.request.user
         if user.is_authenticated():
-            if user.attendee:
-                if user.attendee.speaker:
-                    return redirect(self.success_url)
+            try:
+                if user.attendee:
+                    if user.attendee.speaker:
+                        return redirect(self.success_url)
+            except Speaker.DoesNotExist:
                 self.auth_level = 'attendee'
-            else:
+            except Attendee.DoesNotExist:
                 self.auth_level = 'user'
         else:
             # noinspection PyAttributeOutsideInit
@@ -188,22 +194,9 @@ class CreateSpeakerView(RegistrationView):
         else:
             attendee = user.attendee
 
-        if self.auth_level in ('attendee', 'user', 'anonymous'):
-            try:
-                speaker = Speaker.objects.get(user=attendee)
-                speaker.portrait = form.speakerform.instance.portrait
-                speaker.shortbio = form.speakerform.instance.shortbio
-                speaker.videopermission = form.speakerform.instance.videopermission
-            except Speaker.DoesNotExist:
-                speaker = form.speakerform.save(commit=False)
-                speaker.user = attendee
-            speaker.save()
-            form.speakerform.delete_temporary_files()
-        else:
-            speaker = attendee.speaker
-
-        talk = form.talkform.instance
-        talk.speaker = speaker
-        talk.save()
+        speaker = form.save(commit=False)
+        speaker.user = attendee
+        speaker.save()
+        form.delete_temporary_files()
 
         return redirect(self.get_success_url())

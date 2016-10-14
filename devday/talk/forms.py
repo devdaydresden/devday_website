@@ -119,28 +119,31 @@ class TalkAuthenticationForm(AuthenticationForm):
 class BecomeSpeakerForm(SpeakerForm):
     def __init__(self, *args, **kwargs):
         super(BecomeSpeakerForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
         self.helper.form_action = 'create_speaker'
         self.helper.form_method = 'post'
         self.helper.form_id = 'create-speaker-form'
         self.helper.field_template = 'talk/form/field.html'
         self.helper.html5_required = True
-
         self.helper.layout = Layout(
             "upload_url",
             "delete_url",
             "form_id",
             Div(
-                "firstname",
+                Field("firstname", template='talk/form/field.html', autofocus='autofocus'),
                 "lastname",
-            ),
-            Div(
                 "shirt_size",
-                Field("videopermission", template="talk/form/videopermission-field.html"),
-                Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
-                Field("shortbio", rows=2),
+                css_class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-12",
             ),
             Div(
-                Submit('submit', _('Register as speaker'))
+                Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
+                Field("shortbio", rows=2, template="talk/form/field.html"),
+                Field("videopermission", template="talk/form/videopermission-field.html"),
+                css_class="col-lg-4 col-md-6 col-sm-12",
+            ),
+            Div(
+                Submit('submit', _('Register as speaker')),
+                css_class="col-lg-offset-2 col-lg-8 col-md-12 text-center"
             )
         )
 

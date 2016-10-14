@@ -1,0 +1,1322 @@
+[
+  {
+    "model": "cms.usersettings",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "language": "de",
+      "clipboard": 1
+    }
+  },
+  {
+    "model": "cms.page",
+    "pk": 1,
+    "fields": {
+      "path": "0001",
+      "depth": 1,
+      "numchild": 0,
+      "created_by": "script",
+      "changed_by": "jdi",
+      "parent": null,
+      "creation_date": "2016-07-28T08:48:26.390Z",
+      "changed_date": "2016-09-01T18:52:50.941Z",
+      "publication_date": "2016-07-28T08:48:26.636Z",
+      "publication_end_date": null,
+      "in_navigation": true,
+      "soft_root": false,
+      "reverse_id": null,
+      "navigation_extenders": null,
+      "template": "INHERIT",
+      "site": 1,
+      "login_required": false,
+      "limit_visibility_in_menu": null,
+      "is_home": true,
+      "application_urls": null,
+      "application_namespace": null,
+      "publisher_is_draft": true,
+      "publisher_public": 2,
+      "languages": "de",
+      "revision_id": 0,
+      "xframe_options": 0,
+      "placeholders": [
+        2,
+        13,
+        14,
+        15
+      ]
+    }
+  },
+  {
+    "model": "cms.page",
+    "pk": 2,
+    "fields": {
+      "path": "0002",
+      "depth": 1,
+      "numchild": 0,
+      "created_by": "script",
+      "changed_by": "script",
+      "parent": null,
+      "creation_date": "2016-07-28T08:48:26.644Z",
+      "changed_date": "2016-09-22T17:34:52.255Z",
+      "publication_date": "2016-07-28T08:48:26.636Z",
+      "publication_end_date": null,
+      "in_navigation": true,
+      "soft_root": false,
+      "reverse_id": null,
+      "navigation_extenders": null,
+      "template": "INHERIT",
+      "site": 1,
+      "login_required": false,
+      "limit_visibility_in_menu": null,
+      "is_home": true,
+      "application_urls": null,
+      "application_namespace": null,
+      "publisher_is_draft": false,
+      "publisher_public": 1,
+      "languages": "de",
+      "revision_id": 0,
+      "xframe_options": 0,
+      "placeholders": [
+        3,
+        10,
+        11,
+        12
+      ]
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 1,
+    "fields": {
+      "slot": "clipboard",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 2,
+    "fields": {
+      "slot": "content",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 3,
+    "fields": {
+      "slot": "content",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 4,
+    "fields": {
+      "slot": "talk_submitted",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 5,
+    "fields": {
+      "slot": "talk_submitted",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 6,
+    "fields": {
+      "slot": "talk_submitted",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 7,
+    "fields": {
+      "slot": "talk_submitted",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 8,
+    "fields": {
+      "slot": "talk_submitted",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 9,
+    "fields": {
+      "slot": "talk_submitted",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 10,
+    "fields": {
+      "slot": "eventinfo",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 11,
+    "fields": {
+      "slot": "audience",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 12,
+    "fields": {
+      "slot": "sponsors",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 13,
+    "fields": {
+      "slot": "eventinfo",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 14,
+    "fields": {
+      "slot": "audience",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.placeholder",
+    "pk": 15,
+    "fields": {
+      "slot": "sponsors",
+      "default_width": null
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 1,
+    "fields": {
+      "path": "000J00010001",
+      "depth": 3,
+      "numchild": 1,
+      "placeholder": 2,
+      "parent": 45,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-07-28T08:48:26.596Z",
+      "changed_date": "2016-09-01T11:44:02.789Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 6,
+    "fields": {
+      "path": "000D000100040001",
+      "depth": 4,
+      "numchild": 0,
+      "placeholder": 2,
+      "parent": 71,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-07-28T08:49:51.740Z",
+      "changed_date": "2016-08-11T13:45:31.425Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 7,
+    "fields": {
+      "path": "000D000100030001",
+      "depth": 4,
+      "numchild": 0,
+      "placeholder": 2,
+      "parent": 81,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-07-28T08:52:41.747Z",
+      "changed_date": "2016-07-28T08:57:48.176Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 21,
+    "fields": {
+      "path": "0006",
+      "depth": 1,
+      "numchild": 0,
+      "placeholder": 1,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "AliasPlugin",
+      "creation_date": "2016-07-29T09:52:02.279Z",
+      "changed_date": "2016-07-29T09:52:02.286Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 28,
+    "fields": {
+      "path": "0009",
+      "depth": 1,
+      "numchild": 0,
+      "placeholder": 8,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-08-02T15:26:02.052Z",
+      "changed_date": "2016-08-02T15:26:36.208Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 29,
+    "fields": {
+      "path": "000A",
+      "depth": 1,
+      "numchild": 0,
+      "placeholder": 9,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-08-02T15:26:02.052Z",
+      "changed_date": "2016-08-02T15:26:40.188Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 36,
+    "fields": {
+      "path": "000D",
+      "depth": 1,
+      "numchild": 1,
+      "placeholder": 2,
+      "parent": null,
+      "position": 2,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-10T14:44:44.017Z",
+      "changed_date": "2016-08-11T13:34:36.295Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 37,
+    "fields": {
+      "path": "000D0001",
+      "depth": 2,
+      "numchild": 2,
+      "placeholder": 2,
+      "parent": 36,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-10T14:44:59.826Z",
+      "changed_date": "2016-08-11T13:36:29.685Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 45,
+    "fields": {
+      "path": "000J0001",
+      "depth": 2,
+      "numchild": 1,
+      "placeholder": 2,
+      "parent": 92,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-10T15:22:23.610Z",
+      "changed_date": "2016-08-11T13:39:22.905Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 46,
+    "fields": {
+      "path": "000J000100010001",
+      "depth": 4,
+      "numchild": 0,
+      "placeholder": 2,
+      "parent": 1,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "PicturePlugin",
+      "creation_date": "2016-08-10T15:24:49.793Z",
+      "changed_date": "2016-09-01T11:43:56.783Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 71,
+    "fields": {
+      "path": "000D00010004",
+      "depth": 3,
+      "numchild": 1,
+      "placeholder": 2,
+      "parent": 37,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T13:28:59.416Z",
+      "changed_date": "2016-08-11T13:37:53.107Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 81,
+    "fields": {
+      "path": "000D00010003",
+      "depth": 3,
+      "numchild": 1,
+      "placeholder": 2,
+      "parent": 37,
+      "position": 1,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T13:29:51.452Z",
+      "changed_date": "2016-08-11T13:38:06.162Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 92,
+    "fields": {
+      "path": "000J",
+      "depth": 1,
+      "numchild": 1,
+      "placeholder": 2,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T13:40:37.932Z",
+      "changed_date": "2016-08-11T13:41:02.926Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 113,
+    "fields": {
+      "path": "000M",
+      "depth": 1,
+      "numchild": 1,
+      "placeholder": 2,
+      "parent": null,
+      "position": 2,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T14:33:59.514Z",
+      "changed_date": "2016-08-11T14:33:59.519Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 114,
+    "fields": {
+      "path": "000M0001",
+      "depth": 2,
+      "numchild": 1,
+      "placeholder": 2,
+      "parent": 113,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T14:34:26.690Z",
+      "changed_date": "2016-08-11T14:34:26.694Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 115,
+    "fields": {
+      "path": "000M00010001",
+      "depth": 3,
+      "numchild": 0,
+      "placeholder": 2,
+      "parent": 114,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-08-11T14:34:32.852Z",
+      "changed_date": "2016-08-11T14:36:35.676Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 129,
+    "fields": {
+      "path": "000Q",
+      "depth": 1,
+      "numchild": 0,
+      "placeholder": 13,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-09-01T12:35:31.935Z",
+      "changed_date": "2016-09-01T12:36:03.774Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 130,
+    "fields": {
+      "path": "000R",
+      "depth": 1,
+      "numchild": 0,
+      "placeholder": 14,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-09-01T12:36:18.388Z",
+      "changed_date": "2016-09-01T12:36:42.452Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 131,
+    "fields": {
+      "path": "000S",
+      "depth": 1,
+      "numchild": 1,
+      "placeholder": 15,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-09-01T12:38:22.843Z",
+      "changed_date": "2016-09-01T12:41:28.690Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 133,
+    "fields": {
+      "path": "000S0002",
+      "depth": 2,
+      "numchild": 0,
+      "placeholder": 15,
+      "parent": 131,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "PicturePlugin",
+      "creation_date": "2016-09-01T12:41:21.928Z",
+      "changed_date": "2016-09-01T12:41:29.939Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 134,
+    "fields": {
+      "path": "000T",
+      "depth": 1,
+      "numchild": 1,
+      "placeholder": 3,
+      "parent": null,
+      "position": 2,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-10T14:44:44.017Z",
+      "changed_date": "2016-09-01T18:52:49.870Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 135,
+    "fields": {
+      "path": "000T0001",
+      "depth": 2,
+      "numchild": 2,
+      "placeholder": 3,
+      "parent": 134,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-10T14:44:59.826Z",
+      "changed_date": "2016-09-01T18:52:49.893Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 136,
+    "fields": {
+      "path": "000T00010001",
+      "depth": 3,
+      "numchild": 1,
+      "placeholder": 3,
+      "parent": 135,
+      "position": 1,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T13:29:51.452Z",
+      "changed_date": "2016-09-01T18:52:49.914Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 137,
+    "fields": {
+      "path": "000T000100010001",
+      "depth": 4,
+      "numchild": 0,
+      "placeholder": 3,
+      "parent": 136,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-07-28T08:52:41.747Z",
+      "changed_date": "2016-09-01T18:52:50.190Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 138,
+    "fields": {
+      "path": "000T00010002",
+      "depth": 3,
+      "numchild": 1,
+      "placeholder": 3,
+      "parent": 135,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T13:28:59.416Z",
+      "changed_date": "2016-09-01T18:52:49.974Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 139,
+    "fields": {
+      "path": "000T000100020001",
+      "depth": 4,
+      "numchild": 0,
+      "placeholder": 3,
+      "parent": 138,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-07-28T08:49:51.740Z",
+      "changed_date": "2016-09-01T18:52:50.206Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 140,
+    "fields": {
+      "path": "000U",
+      "depth": 1,
+      "numchild": 1,
+      "placeholder": 3,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T13:40:37.932Z",
+      "changed_date": "2016-09-01T18:52:50.025Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 141,
+    "fields": {
+      "path": "000U0001",
+      "depth": 2,
+      "numchild": 1,
+      "placeholder": 3,
+      "parent": 140,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-10T15:22:23.610Z",
+      "changed_date": "2016-09-01T18:52:50.047Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 142,
+    "fields": {
+      "path": "000U00010001",
+      "depth": 3,
+      "numchild": 1,
+      "placeholder": 3,
+      "parent": 141,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-07-28T08:48:26.596Z",
+      "changed_date": "2016-09-01T18:52:50.233Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 143,
+    "fields": {
+      "path": "000U000100010001",
+      "depth": 4,
+      "numchild": 0,
+      "placeholder": 3,
+      "parent": 142,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "PicturePlugin",
+      "creation_date": "2016-08-10T15:24:49.793Z",
+      "changed_date": "2016-09-01T18:52:50.100Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 144,
+    "fields": {
+      "path": "000V",
+      "depth": 1,
+      "numchild": 1,
+      "placeholder": 3,
+      "parent": null,
+      "position": 2,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T14:33:59.514Z",
+      "changed_date": "2016-09-01T18:52:50.120Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 145,
+    "fields": {
+      "path": "000V0001",
+      "depth": 2,
+      "numchild": 1,
+      "placeholder": 3,
+      "parent": 144,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "StylePlugin",
+      "creation_date": "2016-08-11T14:34:26.690Z",
+      "changed_date": "2016-09-01T18:52:50.142Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 146,
+    "fields": {
+      "path": "000V00010001",
+      "depth": 3,
+      "numchild": 0,
+      "placeholder": 3,
+      "parent": 145,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-08-11T14:34:32.852Z",
+      "changed_date": "2016-09-01T18:52:50.259Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 147,
+    "fields": {
+      "path": "000W",
+      "depth": 1,
+      "numchild": 0,
+      "placeholder": 10,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-09-01T12:35:31.935Z",
+      "changed_date": "2016-09-01T18:52:50.305Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 148,
+    "fields": {
+      "path": "000X",
+      "depth": 1,
+      "numchild": 0,
+      "placeholder": 11,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-09-01T12:36:18.388Z",
+      "changed_date": "2016-09-01T18:52:50.351Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 149,
+    "fields": {
+      "path": "000Y",
+      "depth": 1,
+      "numchild": 1,
+      "placeholder": 12,
+      "parent": null,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "TextPlugin",
+      "creation_date": "2016-09-01T12:38:22.843Z",
+      "changed_date": "2016-09-01T18:52:50.442Z"
+    }
+  },
+  {
+    "model": "cms.cmsplugin",
+    "pk": 150,
+    "fields": {
+      "path": "000Y0001",
+      "depth": 2,
+      "numchild": 0,
+      "placeholder": 12,
+      "parent": 149,
+      "position": 0,
+      "language": "de",
+      "plugin_type": "PicturePlugin",
+      "creation_date": "2016-09-01T12:41:21.928Z",
+      "changed_date": "2016-09-01T18:52:50.426Z"
+    }
+  },
+  {
+    "model": "cms.title",
+    "pk": 1,
+    "fields": {
+      "language": "de",
+      "title": "devday.17",
+      "page_title": "",
+      "menu_title": "",
+      "meta_description": "",
+      "slug": "devday17-let-code-rule",
+      "path": "",
+      "has_url_overwrite": false,
+      "redirect": null,
+      "page": 1,
+      "creation_date": "2016-07-28T08:48:26.500Z",
+      "published": true,
+      "publisher_is_draft": true,
+      "publisher_public": 2,
+      "publisher_state": 0
+    }
+  },
+  {
+    "model": "cms.title",
+    "pk": 2,
+    "fields": {
+      "language": "de",
+      "title": "devday.17",
+      "page_title": "",
+      "menu_title": "",
+      "meta_description": "",
+      "slug": "devday17-let-code-rule",
+      "path": "",
+      "has_url_overwrite": false,
+      "redirect": null,
+      "page": 2,
+      "creation_date": "2016-07-28T08:48:26.500Z",
+      "published": true,
+      "publisher_is_draft": false,
+      "publisher_public": 1,
+      "publisher_state": 1
+    }
+  },
+  {
+    "model": "cms.staticplaceholder",
+    "pk": 1,
+    "fields": {
+      "name": "talk_submitted",
+      "code": "talk_submitted",
+      "draft": 4,
+      "public": 5,
+      "dirty": false,
+      "creation_method": "template",
+      "site": 1
+    }
+  },
+  {
+    "model": "cms.staticplaceholder",
+    "pk": 3,
+    "fields": {
+      "name": "talk_submitted",
+      "code": "talk_submitted",
+      "draft": 8,
+      "public": 9,
+      "dirty": false,
+      "creation_method": "template",
+      "site": null
+    }
+  },
+  {
+    "model": "cms.aliaspluginmodel",
+    "pk": 21,
+    "fields": {
+      "plugin": 6,
+      "alias_placeholder": null
+    }
+  },
+  {
+    "model": "cms.urlconfrevision",
+    "pk": 1,
+    "fields": {
+      "revision": "bc5587b7-58d1-4307-a9e3-b5aff77cb8d8"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 36,
+    "fields": {
+      "class_name": "row",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": ""
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 37,
+    "fields": {
+      "class_name": "col-md-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "col-xs-12,col-lg-10,col-lg-offset-1,info-area"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 45,
+    "fields": {
+      "class_name": "col-xs-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "call-to-action"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 71,
+    "fields": {
+      "class_name": "col-xs-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "col-sm-6,boxed-content"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 81,
+    "fields": {
+      "class_name": "col-xs-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "col-sm-6,boxed-content"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 92,
+    "fields": {
+      "class_name": "row",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "promo"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 113,
+    "fields": {
+      "class_name": "row",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "session-entry-area"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 114,
+    "fields": {
+      "class_name": "col-md-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "col-xs-12,col-lg-10,col-lg-offset-1,center"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 134,
+    "fields": {
+      "class_name": "row",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": ""
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 135,
+    "fields": {
+      "class_name": "col-md-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "col-xs-12,col-lg-10,col-lg-offset-1,info-area"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 136,
+    "fields": {
+      "class_name": "col-xs-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "col-sm-6,boxed-content"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 138,
+    "fields": {
+      "class_name": "col-xs-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "col-sm-6,boxed-content"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 140,
+    "fields": {
+      "class_name": "row",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "promo"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 141,
+    "fields": {
+      "class_name": "col-xs-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "call-to-action"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 144,
+    "fields": {
+      "class_name": "row",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "session-entry-area"
+    }
+  },
+  {
+    "model": "djangocms_style.style",
+    "pk": 145,
+    "fields": {
+      "class_name": "col-md-12",
+      "tag_type": "div",
+      "padding_left": null,
+      "padding_right": null,
+      "padding_top": null,
+      "padding_bottom": null,
+      "margin_left": null,
+      "margin_right": null,
+      "margin_top": null,
+      "margin_bottom": null,
+      "additional_classes": "col-xs-12,col-lg-10,col-lg-offset-1,center"
+    }
+  },
+  {
+    "model": "djangocms_picture.picture",
+    "pk": 46,
+    "fields": {
+      "image": "cms_page_media/1/logo-2x.png",
+      "url": "",
+      "page_link": null,
+      "alt": "Let Code Rule",
+      "longdesc": "",
+      "float": null,
+      "width": null,
+      "height": null
+    }
+  },
+  {
+    "model": "djangocms_picture.picture",
+    "pk": 133,
+    "fields": {
+      "image": "cms_page_media/1/t-systems.png",
+      "url": "https://www.t-systems-mms.eu/",
+      "page_link": null,
+      "alt": "T-Systems Multimedia Solutions GmbH",
+      "longdesc": "",
+      "float": null,
+      "width": null,
+      "height": null
+    }
+  },
+  {
+    "model": "djangocms_picture.picture",
+    "pk": 143,
+    "fields": {
+      "image": "cms_page_media/1/logo-2x.png",
+      "url": "",
+      "page_link": null,
+      "alt": "Let Code Rule",
+      "longdesc": "",
+      "float": null,
+      "width": null,
+      "height": null
+    }
+  },
+  {
+    "model": "djangocms_picture.picture",
+    "pk": 150,
+    "fields": {
+      "image": "cms_page_media/1/t-systems.png",
+      "url": "https://www.t-systems-mms.eu/",
+      "page_link": null,
+      "alt": "T-Systems Multimedia Solutions GmbH",
+      "longdesc": "",
+      "float": null,
+      "width": null,
+      "height": null
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 1,
+    "fields": {
+      "body": "<p><img src=\"/static/cms/img/icons/plugins/image.png\" id=\"plugin_obj_46\" title=\"Bild - Let Code Rule\" alt=\"Bild\"> <span>Call for Paper offen bis 12.02.2017</span></p>\n\n<p><a class=\"btn\" href=\"/session/submit-session\">Session einreichen</a></p>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 6,
+    "fields": {
+      "body": "<i class=\"icon-rocket\"></i>\n<h4>Infos zur Veranstaltung</h4>\n\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite DevDay in der B\u00f6rse Dresden statt. Veranstalter ist die Software-Architektur-Entwickler-Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Softwarearchitekten und -Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 7,
+    "fields": {
+      "body": "<h2>F\u00fcr wen ist der DevDay?</h2>\n\n<p>Der DevDay ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</p>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 28,
+    "fields": {
+      "body": "<h1>Vielen Dank!</h1>\n\n<p>Sie haben erfolgreich eine Session f\u00fcr den DevDay 2017 eingereicht.</p>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 29,
+    "fields": {
+      "body": "<h1>Vielen Dank!</h1>\n\n<p>Sie haben erfolgreich eine Session f\u00fcr den DevDay 2017 eingereicht.</p>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 115,
+    "fields": {
+      "body": "<h2>Jetzt noch schnell eine Session einreichen</h2>\n\n<p><a href=\"/session/submit-session\" class=\"btn\">Session einreichen</a></p>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 129,
+    "fields": {
+      "body": "<h4>INFOS ZUR VERANSTALTUNG</h4>\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite DevDay in der B\u00f6rse Dresden statt. Veranstalter ist die Software Architektur Entwickler Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Software Architekten und Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 130,
+    "fields": {
+      "body": "<h4>F\u00dcR WEN IST DER DEV DAY?</h4>\n<span>Der DevDay ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</span>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 131,
+    "fields": {
+      "body": "<h2>Hauptsponsor</h2>\n\n<p><span class=\"hint\">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span></p>\n\n<ul>\n\t<li><span class=\"hint\"><img alt=\"Bild\" id=\"plugin_obj_133\" src=\"/static/cms/img/icons/plugins/image.png\" title=\"Bild - T-Systems Multimedia Solutions GmbH\"></span></li>\n\t<li>\u00a0</li>\n</ul>\n\n<h2>Partner</h2>\n\n<p><span class=\"hint\">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span></p>\n\n<ul>\n\t<li>\u00a0</li>\n\t<li>\u00a0</li>\n\t<li>\u00a0</li>\n\t<li>\u00a0</li>\n</ul>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 137,
+    "fields": {
+      "body": "<h2>F\u00fcr wen ist der DevDay?</h2>\n\n<p>Der DevDay ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</p>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 139,
+    "fields": {
+      "body": "<i class=\"icon-rocket\"></i>\n<h4>Infos zur Veranstaltung</h4>\n\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite DevDay in der B\u00f6rse Dresden statt. Veranstalter ist die Software-Architektur-Entwickler-Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Softwarearchitekten und -Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 142,
+    "fields": {
+      "body": "<p><img alt=\"Bild - Let Code Rule\" id=\"plugin_obj_143\" title=\"Bild - Let Code Rule\" src=\"/static/cms/img/icons/plugins/image.png\"> <span>Call for Paper offen bis 12.02.2017</span></p>\n\n<p><a href=\"/session/submit-session\" class=\"btn\">Session einreichen</a></p>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 146,
+    "fields": {
+      "body": "<h2>Jetzt noch schnell eine Session einreichen</h2>\n\n<p><a href=\"/session/submit-session\" class=\"btn\">Session einreichen</a></p>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 147,
+    "fields": {
+      "body": "<h4>INFOS ZUR VERANSTALTUNG</h4>\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite DevDay in der B\u00f6rse Dresden statt. Veranstalter ist die Software Architektur Entwickler Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Software Architekten und Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 148,
+    "fields": {
+      "body": "<h4>F\u00dcR WEN IST DER DEV DAY?</h4>\n<span>Der DevDay ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</span>"
+    }
+  },
+  {
+    "model": "djangocms_text_ckeditor.text",
+    "pk": 149,
+    "fields": {
+      "body": "<h2>Hauptsponsor</h2>\n\n<p><span class=\"hint\">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span></p>\n\n<ul>\n\t<li><span class=\"hint\"><img alt=\"Bild - T-Systems Multimedia Solutions GmbH\" id=\"plugin_obj_150\" title=\"Bild - T-Systems Multimedia Solutions GmbH\" src=\"/static/cms/img/icons/plugins/image.png\"></span></li>\n\t<li>\u00a0</li>\n</ul>\n\n<h2>Partner</h2>\n\n<p><span class=\"hint\">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span></p>\n\n<ul>\n\t<li>\u00a0</li>\n\t<li>\u00a0</li>\n\t<li>\u00a0</li>\n\t<li>\u00a0</li>\n</ul>"
+    }
+  }
+]

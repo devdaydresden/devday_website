@@ -23,7 +23,7 @@ from attendee.models import Attendee
 from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm
 from talk.models import Speaker, Talk
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('talk')
 
 User = get_user_model()
 

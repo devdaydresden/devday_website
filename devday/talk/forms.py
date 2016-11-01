@@ -3,6 +3,7 @@ from crispy_forms.layout import Div, Layout, Field, Submit, Hidden
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django_file_form.forms import FileFormMixin, UploadedFileField
@@ -54,12 +55,22 @@ class ExistingFileForm(SpeakerForm):
 
 
 class DevDayRegistrationForm(RegistrationFormUniqueEmail):
+    accept_contact = forms.BooleanField(help_text=_(
+        'I hereby agree to be contacted by the DevDay organization team to get informed about future events and '
+        'for requests related to my session proposals.'))
+
     class Meta(RegistrationFormUniqueEmail.Meta):
         fields = [
             'email',
             'password1',
             'password2'
         ]
+
+    def clean_accept_contact(self):
+        value = self.cleaned_data.get('accept_contact')
+        if not value:
+            raise ValidationError(_('You need to agree to be contacted by us.'))
+        return value
 
     def clean(self):
         if self.cleaned_data.get('email'):
@@ -82,11 +93,14 @@ class CreateTalkForm(TalkForm):
                 Field("title", template='talk/form/field.html', autofocus='autofocus'),
                 "abstract",
                 "remarks",
-                css_class="col-md-12 col-lg-offset-3 col-lg-6"
+                css_class="col-md-12 col-lg-offset-2 col-lg-8"
             ),
             Div(
-                Submit('submit', _('Submit'), css_class="btn-default"),
-                css_class="col-md-12 col-lg-offset-3 col-lg-6"
+                Div(
+                    Submit('submit', _('Submit'), css_class="btn-default"),
+                    css_class="text-center",
+                ),
+                css_class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2"
             )
         )
 
@@ -181,6 +195,7 @@ class CreateSpeakerForm(CombinedFormBase):
                 'shirt_size',
                 Field('shortbio', rows=2, template='talk/form/field.html'),
                 Field('videopermission', template='talk/form/videopermission-field.html'),
+                Field('accept_contact', template='talk/form/accept_contact-field.html'),
                 css_class='col-md-12 col-lg-4'
             ),
             Div(

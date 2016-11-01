@@ -1,11 +1,13 @@
 from __future__ import unicode_literals
 
+import logging
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Div, Field
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import login
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.transaction import atomic
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
@@ -20,6 +22,8 @@ from registration.backends.hmac.views import RegistrationView
 from attendee.models import Attendee
 from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm
 from talk.models import Speaker, Talk
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -41,6 +45,10 @@ def submit_session_view(request):
     return login(request, template_name=template_name, authentication_form=TalkAuthenticationForm)
 
 
+class SpeakerRegisteredView(TemplateView):
+    template_name = "talk/speaker_registered.html"
+
+
 class TalkSubmittedView(TemplateView):
     template_name = "talk/submitted.html"
 
@@ -52,7 +60,7 @@ class CreateTalkView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not user.attendee or not user.attendee.speaker:
+        if user.is_anonymous() or not user.attendee or not user.attendee.speaker:
             return HttpResponseBadRequest(_('Authenticated user must be a registered speaker'))
         return super(CreateTalkView, self).dispatch(request, *args, **kwargs)
 
@@ -71,16 +79,17 @@ class EditTalkView(LoginRequiredMixin, UpdateView):
     def get_form(self, form_class=None):
         form = super(EditTalkView, self).get_form(form_class)
         form.helper = FormHelper()
+        form.helper.field_template = 'talk/form/field.html'
         form.helper.layout = Layout(
             Div(
-                "title",
-                Field("abstract", rows=2),
-                Field("remarks", rows=2),
+                Field("title", template='talk/form/field.html', autofocus='autofocus'),
+                Field("abstract", template='talk/form/field.html', rows=2),
+                Field("remarks", template='talk/form/field.html', rows=2),
                 css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2"
             ),
             Div(
                 Div(
-                    Submit('submit', _('Submit'), css_class="btn-default"),
+                    Submit('submit', _('Update session'), css_class="btn-default"),
                     css_class="text-center",
                 ),
                 css_class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2"
@@ -142,7 +151,7 @@ class CreateSpeakerView(RegistrationView):
         'user': BecomeSpeakerForm,
         'attendee': BecomeSpeakerForm,
     }
-    success_url = reverse_lazy('create_session')
+    success_url = reverse_lazy('speaker_registered')
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
@@ -163,7 +172,9 @@ class CreateSpeakerView(RegistrationView):
     def get_form_class(self):
         return self.form_classes.get(self.auth_level, None)
 
+    @atomic
     def form_valid(self, form):
+        send_mail = False
         if self.auth_level == 'anonymous':
             email = form.cleaned_data['email']
             first_name = form.cleaned_data['firstname']
@@ -178,7 +189,7 @@ class CreateSpeakerView(RegistrationView):
                 signals.user_registered.send(sender=self.__class__,
                                              user=user,
                                              request=self.request)
-                self.send_activation_email(user)
+                send_mail = True
         else:
             user = self.request.user
 
@@ -194,9 +205,15 @@ class CreateSpeakerView(RegistrationView):
         else:
             attendee = user.attendee
 
-        speaker = form.save(commit=False)
+        speaker = form.speakerform.save(commit=False)
         speaker.user = attendee
         speaker.save()
-        form.delete_temporary_files()
+        try:
+            form.speakerform.delete_temporary_files()
+        except PermissionError:
+            logger.warning("Error deleting temporary files")
+
+        if send_mail:
+            self.send_activation_email(user)
 
         return redirect(self.success_url)

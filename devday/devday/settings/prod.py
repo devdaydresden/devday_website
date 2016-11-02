@@ -14,6 +14,8 @@ ADMINS = [
     ('Jan Dittberner', 'jan.dittberner@t-systems.com'),
 ]
 
+DEFAULT_FROM_EMAIL = 'info@devday.de'
+
 ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'q4deumsy0dg.mms-at-work.de', 'localhost', 'devday-test.t-systems-mms.eu']
 
 LOGGING = {

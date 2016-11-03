@@ -10,6 +10,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve as serve_static
 
 from attendee.views import AttendeeProfileView
+from devday.views import ImprintView
 from talk.views import SpeakerProfileView
 
 admin.autodiscover()
@@ -25,6 +26,7 @@ urlpatterns = [
     url(r'^speaker/profile$', SpeakerProfileView.as_view(), name='speaker_profile'),
     url(r'^upload/', include('django_file_form.urls')),
     url(r'^session/', include('talk.urls')),
+    url(r'^imprint/', ImprintView.as_view(), name='imprint'),
     url(r'^', include('cms.urls')),
 ]
 

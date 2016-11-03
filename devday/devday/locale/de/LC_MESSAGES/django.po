@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-03 11:55+0100\n"
-"PO-Revision-Date: 2016-11-03 11:55+0100\n"
+"POT-Creation-Date: 2016-11-03 12:27+0100\n"
+"PO-Revision-Date: 2016-11-03 12:27+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -70,6 +70,10 @@ msgstr "Wiederholen"
 #: devday/templates/django_file_form/upload_template.html:20
 msgid "Choose Image"
 msgstr "Bild wählen"
+
+#: devday/templates/imprint.html:3
+msgid "Imprint and Data Privacy Policy"
+msgstr "Impressum und Datenschutzhinweis"
 
 #: devday/templates/registration/activate.html:3
 msgid "Activation failed."

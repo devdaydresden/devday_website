@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-01 20:44+0100\n"
-"PO-Revision-Date: 2016-11-01 20:48+0100\n"
+"POT-Creation-Date: 2016-11-03 11:55+0100\n"
+"PO-Revision-Date: 2016-11-03 11:48+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -32,34 +32,37 @@ msgid "Speaker portrait"
 msgstr "Speakerbild"
 
 #: talk/forms.py:59
+msgid "Accept contact"
+msgstr "Kontaktaufnahme erlauben"
+
+#: talk/forms.py:61
 msgid ""
 "I hereby agree to be contacted by the DevDay organization team to get "
 "informed about future events and for requests related to my session "
 "proposals."
 msgstr ""
 "Ich bin damit einverstanden, dass ich vom DevDay-Orgateam in unregelmäßigen "
-"Abständen über weitere Veranstaltungen informiert werde. Das DevDay-"
-"Orgateam darf mich desweiteren zu von mir eingereichten Sessions "
-"kontaktieren."
+"Abständen über weitere Veranstaltungen informiert werde. Das DevDay-Orgateam "
+"darf mich desweiteren zu von mir eingereichten Sessions kontaktieren."
 
-#: talk/forms.py:72
+#: talk/forms.py:74
 msgid "You need to agree to be contacted by us."
 msgstr "Es ist notwendig, dass du der Kontaktaufnahme zustimmst."
 
-#: talk/forms.py:100
+#: talk/forms.py:102
 msgid "Submit"
 msgstr "Session einreichen"
 
-#: talk/forms.py:127
+#: talk/forms.py:129
 msgid "Login"
 msgstr "Anmelden"
 
-#: talk/forms.py:159 talk/forms.py:202
+#: talk/forms.py:161 talk/forms.py:204
 #: talk/templates/talk/submit_session.html:14
 msgid "Register as speaker"
 msgstr "Als Sprecher registrieren"
 
-#: talk/forms.py:177
+#: talk/forms.py:179
 msgid "E-Mail"
 msgstr "E-Mail"
 
@@ -267,15 +270,24 @@ msgstr "Sprecher werden"
 msgid "Session submitted"
 msgstr "Session eingereicht"
 
+#: talk/templates/talk/submitted.html:7
+#, python-format
+msgid ""
+"Visit your <a href=\"%(speaker_profile)s\">speaker profile</a> to see all "
+"your sessions."
+msgstr ""
+"Besuche dein <a href=\"%(speaker_profile)s\">Sprecherprofil</a>, um deine "
+"eingereichten Sessions anzusehen."
+
 #: talk/templates/talk/talk_form.html:3
 msgid "Edit session"
 msgstr "Session bearbeiten"
 
-#: talk/views.py:65
+#: talk/views.py:64
 msgid "Authenticated user must be a registered speaker"
 msgstr "Der angemeldete Nutzer muss als Sprecher registriert sein"
 
-#: talk/views.py:93
+#: talk/views.py:92
 msgid "Update session"
 msgstr "Session aktualisieren"
 

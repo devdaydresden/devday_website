@@ -172,6 +172,11 @@ class CreateSpeakerView(RegistrationView):
     def get_form_class(self):
         return self.form_classes.get(self.auth_level, None)
 
+    def get_email_context(self, activation_key):
+        context = super(CreateSpeakerView, self).get_email_context(activation_key)
+        context.update({'request': self.request})
+        return context
+
     @atomic
     def form_valid(self, form):
         send_mail = False

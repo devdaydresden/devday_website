@@ -2,5 +2,9 @@
 {% load i18n %}
 {% block title %}{% trans "Activation complete" %}{% endblock %}
 {% block content_body %}
-    <p>{% trans "Your account is now activated." %}</p>
+    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+        <h2>{% trans "Account activated" %}</h2>
+        <p>{% trans "Your account is now activated." %}</p>
+        <p>{% url "pages-root" as root_page %}{% blocktrans %}Back to <a href="{{ root_page }}">home page</a>.{% endblocktrans %}</p>
+    </div>
 {% endblock %}

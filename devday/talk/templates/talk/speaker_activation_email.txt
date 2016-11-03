@@ -4,7 +4,7 @@ thank you for your interest to speak at DevDay 2017.
 
 To finish your registration please click the following link to verify your email address.
 {% endblocktrans %}
-https://{{ site.domain }}{% url 'registration_activate' activation_key %}
+{% if request.is_secure %}https{% else %}http{% endif %}://{{ site.domain }}{% url 'registration_activate' activation_key %}
 {% blocktrans count days=expiration_days %}
 The link is valid for one day.
 {% plural %}

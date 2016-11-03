@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-07 18:20+0200\n"
-"PO-Revision-Date: 2016-09-27 20:40+0200\n"
+"POT-Creation-Date: 2016-11-03 11:55+0100\n"
+"PO-Revision-Date: 2016-11-03 11:55+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -23,41 +23,41 @@ msgstr ""
 msgid "2016"
 msgstr "2016"
 
-#: devday/settings/base.py:148 devday/settings/base.py:164
+#: devday/settings/base.py:148 devday/settings/base.py:156
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:149
+#: devday/settings/base.py:149 devday/settings/base.py:163
 msgid "en"
 msgstr "en"
 
-#: devday/settings/base.py:192
+#: devday/settings/base.py:200
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:193
+#: devday/settings/base.py:201
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:194
+#: devday/settings/base.py:202
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:195
+#: devday/settings/base.py:203
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/templates/base.html:30 devday/templates/base.html:44
+#: devday/templates/base.html:29 devday/templates/base.html:43
 msgid "Logout"
 msgstr "Abmelden"
 
-#: devday/templates/base.html:31 devday/templates/base.html:45
+#: devday/templates/base.html:30 devday/templates/base.html:44
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/templates/base.html:33 devday/templates/base.html:47
+#: devday/templates/base.html:32 devday/templates/base.html:46
 msgid "Login"
-msgstr "Anmelden"
+msgstr "Login"
 
 #: devday/templates/django_file_form/upload_template.html:13
 msgid "Cancel"
@@ -85,9 +85,19 @@ msgstr ""
 msgid "Activation complete"
 msgstr "Aktivierung abgeschlossen"
 
-#: devday/templates/registration/activation_complete.html:5
+#: devday/templates/registration/activation_complete.html:6
+msgid "Account activated"
+msgstr "Benutzerkonto aktiviert"
+
+#: devday/templates/registration/activation_complete.html:7
 msgid "Your account is now activated."
 msgstr "Dein Benutzerkonto ist jetzt aktiviert."
+
+#: devday/templates/registration/activation_complete.html:8
+#: devday/templates/registration/logout.html:8
+#, python-format
+msgid "Back to <a href=\"%(root_page)s\">home page</a>."
+msgstr "Zurück zur <a href=\"%(root_page)s\">Startseite</a>"
 
 #: devday/templates/registration/activation_email.txt:1
 #, python-format
@@ -164,10 +174,11 @@ msgid "Reset it"
 msgstr "Zurücksetzen"
 
 #: devday/templates/registration/logout.html:3
+#: devday/templates/registration/logout.html:6
 msgid "Logged out"
 msgstr "Abgemeldet"
 
-#: devday/templates/registration/logout.html:5
+#: devday/templates/registration/logout.html:7
 msgid "You are now logged out."
 msgstr "Du bist jetzt abgemeldet."
 

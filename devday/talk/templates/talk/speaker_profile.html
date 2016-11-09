@@ -3,7 +3,13 @@
 {% block title %}{% trans "Speaker profile" %}{% endblock %}
 {% block content_body %}
     <div class="col-lg-offset-2 col-lg-8 col-md-12">
-        <h1>{% blocktrans with username=user.get_full_name %}Speaker profile for {{ username }}{% endblocktrans %}</h1>
+        <h1>{% spaceless %}
+            {% if user.first_name %}
+                {% blocktrans with username=user.get_full_name %}Speaker profile for {{ username }}{% endblocktrans %}
+            {% else %}
+                {% blocktrans with username=user.get_username %}Speaker profile for {{ username }}{% endblocktrans %}
+            {% endif %}
+        {% endspaceless %}</h1>
         <dl class="definition-list">
             <dt>{% trans "Firstname" %}</dt>
             <dd>{{ user.first_name }}</dd>
@@ -39,9 +45,10 @@
             <div class="alert alert-notice" role="alert"{% trans "No sessions submitted." %}</div>
         {% endif %}
     </div>
-    <div class="col-lg-offset-2 col-lg-8">
+    <div class="col-lg-offset-2 col-lg-8 col-md-12">
         <div class="text-center">
             <a href="{% url "submit_session" %}" class="btn btn-default">{% trans "Submit another session" %}</a>
         </div>
+        <p><a href="{% url "auth_password_change" %}">{% trans "Change password" %}</a></p>
     </div>
 {% endblock %}

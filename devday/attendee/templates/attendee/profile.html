@@ -2,9 +2,14 @@
 {% load i18n %}
 {% block title %}{% trans "Attendee profile" %}{% endblock %}
 {% block content_body %}
-    <h1>{% blocktrans with username=user.username %}User profile for {{ username}}{% endblocktrans %}</h1>
-    <dl>
-        <dt>{% trans "Firstname" %}</dt><dd>{{ user.first_name }}</dd>
-        <dt>{% trans "Lastname" %}</dt><dd>{{ user.last_name }}</dd>
-    </dl>
+    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+        <h1>{% blocktrans with username=user.get_username %}User profile for {{ username }}{% endblocktrans %}</h1>
+        <dl>
+            <dt>{% trans "Firstname" %}</dt>
+            <dd>{{ user.first_name|default:"-" }}</dd>
+            <dt>{% trans "Lastname" %}</dt>
+            <dd>{{ user.last_name|default:"-" }}</dd>
+        </dl>
+        <p><a href="{% url "auth_password_change" %}">{% trans "Change password" %}</a></p>
+    </div>
 {% endblock %}

@@ -87,12 +87,12 @@ class CreateTalkForm(TalkForm):
         self.helper = FormHelper()
         self.helper.form_action = 'create_session'
         self.helper.form_id = 'create-talk-form'
-        self.helper.field_template = 'talk/form/field.html'
+        self.helper.field_template = 'devday/form/field.html'
         self.helper.html5_required = True
 
         self.helper.layout = Layout(
             Div(
-                Field("title", template='talk/form/field.html', autofocus='autofocus'),
+                Field("title", template='devday/form/field.html', autofocus='autofocus'),
                 "abstract",
                 "remarks",
                 css_class="col-md-12 col-lg-offset-2 col-lg-8"
@@ -117,13 +117,13 @@ class TalkAuthenticationForm(AuthenticationForm):
         self.helper = FormHelper()
         self.helper.form_action = 'submit_session'
         self.helper.form_method = 'post'
-        self.helper.field_template = 'talk/form/field.html'
+        self.helper.field_template = 'devday/form/field.html'
         self.helper.html5_required = True
         self.helper.layout = Layout(
             Div(
                 Hidden('next', value=reverse('submit_session')),
-                Field('username', template='talk/form/field.html', autofocus='autofocus'),
-                Field('password', template='talk/form/field.html'),
+                Field('username', template='devday/form/field.html', autofocus='autofocus'),
+                Field('password', template='devday/form/field.html'),
             ),
             Div(
                 Submit('submit', _('Login'), css_class='btn-default'),
@@ -139,21 +139,21 @@ class BecomeSpeakerForm(SpeakerForm):
         self.helper.form_action = 'create_speaker'
         self.helper.form_method = 'post'
         self.helper.form_id = 'create-speaker-form'
-        self.helper.field_template = 'talk/form/field.html'
+        self.helper.field_template = 'devday/form/field.html'
         self.helper.html5_required = True
         self.helper.layout = Layout(
             "upload_url",
             "delete_url",
             "form_id",
             Div(
-                Field("firstname", template='talk/form/field.html', autofocus='autofocus'),
+                Field("firstname", template='devday/form/field.html', autofocus='autofocus'),
                 "lastname",
                 "shirt_size",
                 css_class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-12",
             ),
             Div(
                 Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
-                Field("shortbio", rows=2, template="talk/form/field.html"),
+                Field("shortbio", rows=2, template="devday/form/field.html"),
                 Field("videopermission", template="talk/form/videopermission-field.html"),
                 css_class="col-lg-4 col-md-6 col-sm-12",
             ),
@@ -173,7 +173,7 @@ class CreateSpeakerForm(CombinedFormBase):
         self.helper.form_action = 'create_speaker'
         self.helper.form_method = 'post'
         self.helper.form_id = 'create-speaker-form'
-        self.helper.field_template = 'talk/form/field.html'
+        self.helper.field_template = 'devday/form/field.html'
         self.helper.html5_required = True
         self.fields['email'].help_text = None
         self.fields['email'].label = _('E-Mail')
@@ -185,7 +185,7 @@ class CreateSpeakerForm(CombinedFormBase):
             'delete_url',
             'form_id',
             Div(
-                Field('email', template='talk/form/field.html', autofocus='autofocus'),
+                Field('email', template='devday/form/field.html', autofocus='autofocus'),
                 'firstname',
                 'lastname',
                 'password1',
@@ -195,7 +195,7 @@ class CreateSpeakerForm(CombinedFormBase):
             Div(
                 Field('uploaded_image', template='talk/form/speakerportrait-field.html'),
                 'shirt_size',
-                Field('shortbio', rows=2, template='talk/form/field.html'),
+                Field('shortbio', rows=2, template='devday/form/field.html'),
                 Field('videopermission', template='talk/form/videopermission-field.html'),
                 Field('accept_contact', template='talk/form/accept_contact-field.html'),
                 css_class='col-md-12 col-lg-4'

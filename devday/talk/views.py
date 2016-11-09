@@ -79,12 +79,12 @@ class EditTalkView(LoginRequiredMixin, UpdateView):
     def get_form(self, form_class=None):
         form = super(EditTalkView, self).get_form(form_class)
         form.helper = FormHelper()
-        form.helper.field_template = 'talk/form/field.html'
+        form.helper.field_template = 'devday/form/field.html'
         form.helper.layout = Layout(
             Div(
-                Field("title", template='talk/form/field.html', autofocus='autofocus'),
-                Field("abstract", template='talk/form/field.html', rows=2),
-                Field("remarks", template='talk/form/field.html', rows=2),
+                Field("title", template='devday/form/field.html', autofocus='autofocus'),
+                Field("abstract", template='devday/form/field.html', rows=2),
+                Field("remarks", template='devday/form/field.html', rows=2),
                 css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2"
             ),
             Div(

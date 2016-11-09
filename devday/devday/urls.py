@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^sitemap\.xml$', sitemap_view,
         {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),
-    url(r'^accounts/', include('registration.backends.hmac.urls')),
+    url(r'^accounts/', include('devday.registration_urls')),
     url(r'^accounts/profile/', AttendeeProfileView.as_view(), name='user_profile'),
     url(r'^speaker/profile$', SpeakerProfileView.as_view(), name='speaker_profile'),
     url(r'^upload/', include('django_file_form.urls')),

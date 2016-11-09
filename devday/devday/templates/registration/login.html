@@ -1,16 +1,16 @@
 {% extends "devday_site.html" %}
-{% load i18n %}
-{% load crispy_forms_tags %}
+{% load i18n crispy_forms_tags %}
 {% block content_body %}
-<form method="post" action=".">
-  {% csrf_token %}
-  {{ form|crispy }}
+    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+        <form method="post" action="{% url "auth_login" %}">
+            {% crispy form %}
 
-  <input class="btn" type="submit" value="{% trans 'Log in' %}" />
-  <input type="hidden" name="next" value="{{ next }}" />
-</form>
-<p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
-{% comment %}
-    <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
-{% endcomment %}
+            <input class="btn" type="submit" value="{% trans 'Log in' %}"/>
+            <input type="hidden" name="next" value="{{ next }}"/>
+        </form>
+        <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+        {% comment %}
+            <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+        {% endcomment %}
+    </div>
 {% endblock %}

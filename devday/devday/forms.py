@@ -15,7 +15,7 @@ class DevDayFormHelper(FormHelper):
 
 class DevDayField(Field):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(DevDayField, self).__init__(*args, **kwargs)
         if not 'template' in kwargs:
             self.template = 'devday/form/field.html'
 

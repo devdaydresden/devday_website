@@ -6095,7 +6095,8 @@ fieldset {
     width: 512px;
     margin: 0 auto; }
   .promo .call-to-action > span,
-  .promo .call-to-action > p {
+  .promo .call-to-action > p,
+  .promo .call-to-action > .cms-plugin {
     font-size: 22px;
     display: inherit;
     width: 100%;

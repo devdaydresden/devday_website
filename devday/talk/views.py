@@ -35,7 +35,7 @@ def submit_session_view(request):
     """
     template_name = 'talk/submit_session.html'
 
-    if not request.user.is_anonymous():
+    if not request.user.is_anonymous() and not "edit" in request.GET:
         try:
             request.user.attendee and request.user.attendee.speaker
             return redirect(reverse('create_session'))

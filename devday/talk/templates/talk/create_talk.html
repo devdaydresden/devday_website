@@ -1,22 +1,11 @@
 {% extends "devday_site.html" %}
-{% load i18n crispy_forms_tags sekizai_tags static cms_tags %}
+{% load i18n crispy_forms_tags cms_tags %}
 {% block title %}{% trans "Submit a session" %}{% endblock %}
 {% block content_body %}
-    {% addtoblock "css" %}
-        <link rel="stylesheet" href="{% static "css/fileuploader.css" %}">
-    {% endaddtoblock %}
     <div class="row">
-        {% static_placeholder "create-talk-introtext" %}
+        <div class="col-lg-offset-2 col-lg-8 col-md-12">
+            {% static_placeholder "create-talk-introtext" %}
+        </div>
     </div>
     {% crispy form %}
-    {% addtoblock "js" %}
-        <script src="{% static "ajaxuploader/js/fileuploader.js" %}"></script>
-        <script src="{% static "file_form/file_form.js" %}"></script>
-        {% include 'django_file_form/upload_template.html' %}
-        <script>
-            $(function () {
-                initUploadFields($('#{{ form.helper.form_id }}'));
-            });
-        </script>
-    {% endaddtoblock %}
 {% endblock %}

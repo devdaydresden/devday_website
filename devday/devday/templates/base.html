@@ -52,8 +52,8 @@
             </nav>
             <div class="col-xs-12 call-to-action">
                 {% block promo_content %}
-                <img src="{% static "images/claim-2x.png" %}" alt="Let Code Rule">
-                <span>Call for Paper offen bis 12.02.2017</span>
+                    <img src="{% static "images/claim-2x.png" %}" alt="Let Code Rule" />
+                    {% static_placeholder "call-for-papers-date" %}
                 {% endblock %}
             </div>
         </div>

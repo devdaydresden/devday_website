@@ -1,23 +1,11 @@
 from __future__ import unicode_literals
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Field
+from crispy_forms.layout import Layout, Submit
 from django.contrib.auth import forms as auth_forms
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-
-class DevDayFormHelper(FormHelper):
-    def __init__(self, form=None):
-        super(DevDayFormHelper, self).__init__(form)
-        self.field_template = 'devday/form/field.html'
-
-
-class DevDayField(Field):
-    def __init__(self, *args, **kwargs):
-        super(DevDayField, self).__init__(*args, **kwargs)
-        if not 'template' in kwargs:
-            self.template = 'devday/form/field.html'
+from devday.utils.forms import DevDayField, DevDayFormHelper
 
 
 class AuthenticationForm(auth_forms.AuthenticationForm):
@@ -62,7 +50,7 @@ class SetPasswordForm(auth_forms.SetPasswordForm):
         self.helper = DevDayFormHelper()
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
-           DevDayField('new_password1', autofocus='autofocus'),
+            DevDayField('new_password1', autofocus='autofocus'),
             'new_password2',
             Submit('submit', _('Change my password')),
         )

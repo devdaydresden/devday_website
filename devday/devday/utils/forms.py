@@ -1,4 +1,19 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Field
 from django import forms
+
+
+class DevDayFormHelper(FormHelper):
+    def __init__(self, form=None):
+        super(DevDayFormHelper, self).__init__(form)
+        self.field_template = 'devday/form/field.html'
+
+
+class DevDayField(Field):
+    def __init__(self, *args, **kwargs):
+        super(DevDayField, self).__init__(*args, **kwargs)
+        if not 'template' in kwargs:
+            self.template = 'devday/form/field.html'
 
 
 class CombinedFormBase(forms.Form):

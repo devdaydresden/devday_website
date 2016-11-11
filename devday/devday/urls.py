@@ -31,7 +31,7 @@ urlpatterns = [
 ]
 
 # This is only needed when using runserver.
-if settings.DEBUG:
+if settings.DEBUG:  # pragma: nocover
     import debug_toolbar
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),

@@ -34,22 +34,22 @@ class DevDayUserManagerTest(TransactionTestCase):
     def test_manager_enforce_email(self):
         with self.assertRaises(ValueError) as error_context:
             DevDayUser.objects.create_user(None)
-        self.assertEqual(error_context.exception.message, 'The given email must be set')
+        self.assertEqual(str(error_context.exception), 'The given email must be set')
         with self.assertRaises(ValueError) as error_context:
             DevDayUser.objects.create_user('')
-        self.assertEqual(error_context.exception.message, 'The given email must be set')
+        self.assertEqual(str(error_context.exception), 'The given email must be set')
         user = DevDayUser.objects.create_user('noemail')
         self.assertEqual(user.get_username(), 'noemail')
 
     def test_manager_create_superuser_force_staff(self):
         with self.assertRaises(ValueError) as error_context:
             DevDayUser.objects.create_superuser(ADMIN_EMAIL, ADMIN_PASSWORD, is_staff=False)
-        self.assertEqual(error_context.exception.message, 'Superuser must have is_staff=True.')
+        self.assertEqual(str(error_context.exception), 'Superuser must have is_staff=True.')
 
     def test_manager_create_superuser_force_superuser(self):
         with self.assertRaises(ValueError) as error_context:
             DevDayUser.objects.create_superuser(ADMIN_EMAIL, ADMIN_PASSWORD, is_superuser=False)
-        self.assertEqual(error_context.exception.message, 'Superuser must have is_superuser=True.')
+        self.assertEqual(str(error_context.exception), 'Superuser must have is_superuser=True.')
 
 
 class DevDayUserTest(TransactionTestCase):

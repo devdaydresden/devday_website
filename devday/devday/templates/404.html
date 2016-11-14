@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Seite nicht gefunden{% endblock %}
+{% block navigation %}
+    <div class="container-fluid">
+        <div class="{% block promo_classes %}row promo site{% endblock %}">
+            <nav class="navbar navbar-default">
+                <div class="navbar-header">
+                    <a href="{% url "pages-root" %}"><img src="{% static "images/logo.png" %}" alt="DevDay 2017"></a>
+                </div>
+                <div class="collapse navbar-collapse navbar-desktop">
+                    <ul class="nav navbar-nav navbar-right">
+                    </ul>
+                </div>
+                <div class="collapse navbar-collapse navbar-mobile">
+                </div>
+            </nav>
+            <div class="col-xs-12 call-to-action">
+                <img src="{% static "images/claim-2x.png" %}" alt="Let Code Rule" />
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}<h1>Seite nicht gefunden</h1>{% endblock %}

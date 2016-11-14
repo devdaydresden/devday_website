@@ -16,6 +16,7 @@
 </head>
 <body class="{% block body_classes %}site-template{% endblock %}">
     {% cms_toolbar %}
+    {% block navigation %}
     <div class="container-fluid">
         <div class="{% block promo_classes %}row promo site{% endblock %}">
             <nav class="navbar navbar-default">
@@ -58,6 +59,7 @@
             </div>
         </div>
     </div>
+    {% endblock navigation %}
     {% block content %}
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">

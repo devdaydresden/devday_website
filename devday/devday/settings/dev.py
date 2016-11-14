@@ -27,3 +27,46 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # see: http://django-debug-toolbar.readthedocs.io/en/stable/installation.html#explicit-setup
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 INTERNAL_IPS = ('127.0.0.1', '::1')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)s %(message)s'
+        },
+        'simple': {
+            'format': '%(asctime)s %(levelname)s %(message)s'
+        }
+
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'devday.log'),
+            'formatter': 'simple',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'attendee': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'devday': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'talk': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+    },
+}

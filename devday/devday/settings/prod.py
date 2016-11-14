@@ -34,10 +34,10 @@ LOGGING = {
     },
     'handlers': {
         'file': {
-            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': '/home/devdayprod/devday.log',
             'formatter': 'simple',
+            'level': 'INFO',
         },
     },
     'loggers': {
@@ -57,6 +57,11 @@ LOGGING = {
             'propagate': True,
         },
         'talk': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'cms': {
             'handlers': ['file'],
             'level': 'INFO',
             'propagate': True,

@@ -48,7 +48,7 @@ ROOT_URLCONF = 'devday.urls'
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'de'
 TIME_ZONE = 'Europe/Berlin'
 USE_I18N = True
 USE_L10N = True
@@ -146,7 +146,6 @@ AUTH_USER_MODEL = 'attendee.devdayuser'
 
 LANGUAGES = (
     ('de', gettext('de')),
-    ('en', gettext('en')),
 )
 
 CMS_LANGUAGES = {
@@ -155,14 +154,6 @@ CMS_LANGUAGES = {
             'code': 'de',
             'name': gettext('de'),
             'public': True,
-            'hide_untranslated': False,
-            'redirect_on_fallback': True,
-        },
-        {
-            'code': 'en',
-            'name': gettext('en'),
-            'fallbacks': ['de'],
-            'public': False,
             'hide_untranslated': False,
             'redirect_on_fallback': True,
         },

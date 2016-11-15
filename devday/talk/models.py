@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
 
 import os
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
 from mimetypes import MimeTypes
 from six import BytesIO
 
@@ -23,6 +24,7 @@ T_SHIRT_SIZES = (
 )
 
 
+@python_2_unicode_compatible
 class Speaker(models.Model):
     user = models.OneToOneField(Attendee, related_name="speaker")
     shirt_size = models.PositiveSmallIntegerField(verbose_name=_("T-shirt size"), choices=T_SHIRT_SIZES)
@@ -84,6 +86,7 @@ class Speaker(models.Model):
         super(Speaker, self).save(force_update=force_update, **kwargs)
 
 
+@python_2_unicode_compatible
 class Talk(models.Model):
     speaker = models.ForeignKey(Speaker)
     title = models.CharField(verbose_name=_("Session title"), max_length=255)

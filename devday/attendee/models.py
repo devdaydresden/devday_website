@@ -1,11 +1,12 @@
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.core.mail import send_mail
 from django.db import models
-from django.conf import settings
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -41,6 +42,7 @@ class DevDayUserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+@python_2_unicode_compatible
 class DevDayUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
@@ -87,7 +89,14 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def __str__(self):
+        full_name = self.get_full_name()
+        if full_name:
+            return "{} <{}>".format(full_name, self.email)
+        return self.email
 
+
+@python_2_unicode_compatible
 class Attendee(models.Model):
     """
     This is a model class for an attendee.

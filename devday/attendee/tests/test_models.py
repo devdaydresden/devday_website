@@ -83,6 +83,13 @@ class DevDayUserTest(TransactionTestCase):
         self.assertEqual(email.subject, 'Test mail')
         self.assertEqual(email.body, 'Test mail body')
 
+    def test___str__(self):
+        user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
+        self.assertEqual(str(user), USER_EMAIL)
+        user.first_name = 'Test'
+        user.last_name = 'User'
+        self.assertEqual(str(user), "Test User <%s>" % USER_EMAIL)
+
 
 class AttendeeTest(TransactionTestCase):
     """

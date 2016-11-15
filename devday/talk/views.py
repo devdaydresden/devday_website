@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import logging
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Div, Field
 from django.contrib.auth import get_user_model
@@ -215,8 +216,8 @@ class CreateSpeakerView(RegistrationView):
         speaker.save()
         try:
             form.speakerform.delete_temporary_files()
-        except PermissionError:
-            logger.warning("Error deleting temporary files")
+        except Exception as e:  # may be Windows error on Windows when file is locked by another process
+            logger.warning("Error deleting temporary files: %s", e)
 
         if send_mail:
             self.send_activation_email(user)

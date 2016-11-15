@@ -24,14 +24,20 @@ class profile::postgresql_server(
     ipv4acls         => ['host all all 0.0.0.0/0 md5'],
   }
 
+  postgresql::server::role { $dbuser:
+    password_hash => postgresql_password($dbuser, $dbpassword),
+    createdb      => true,  # needed for test execution
+  }
   postgresql::server::db { $dbname:
     user     => $dbuser,
     password => postgresql_password($dbuser, $dbpassword),
-  } ->
+    require  => Postgresql::Server::Role[$dbuser],
+  }
   exec { "${devday_root}/venv/bin/python manage.py migrate":
     user        => 'vagrant',
     cwd         => "${basedir}/devday",
     environment => $django_env,
+    require     => Postgresql::Server::Db[$dbname],
   }
 
   firewalld_service { 'Allow PostgreSQL':

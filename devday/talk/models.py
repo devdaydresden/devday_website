@@ -1,15 +1,15 @@
 from __future__ import unicode_literals
 
 import os
+from mimetypes import MimeTypes
+
+from PIL import Image
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from mimetypes import MimeTypes
 from six import BytesIO
-
-from PIL import Image
 
 from attendee.models import Attendee
 
@@ -46,7 +46,7 @@ class Speaker(models.Model):
         verbose_name_plural = _("Speakers")
 
     def __str__(self):
-        return str(self.user)
+        return "%s" % self.user
 
     def create_thumbnail(self):
         if not self.portrait:
@@ -98,4 +98,4 @@ class Talk(models.Model):
         verbose_name_plural = _("Sessions")
 
     def __str__(self):
-        return "%s - %s" % (str(self.speaker), self.title)
+        return "%s - %s" % (self.speaker, self.title)

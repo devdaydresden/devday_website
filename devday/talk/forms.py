@@ -42,7 +42,8 @@ class SpeakerForm(FileFormMixin, forms.models.ModelForm):
 
     def save(self, commit=True):
         speaker = self.instance
-        speaker.portrait = self.cleaned_data['uploaded_image']
+        assert hasattr(self, 'cleaned_data')
+        speaker.portrait = self.cleaned_data.get('uploaded_image')
         result = super(SpeakerForm, self).save(commit)
         if commit:
             self.delete_temporary_files()

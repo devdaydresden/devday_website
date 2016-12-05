@@ -60,7 +60,9 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
         label=_('Accept contact'),
         help_text=_(
             'I hereby agree to be contacted by the DevDay organization team to get informed about future events and '
-            'for requests related to my session proposals.'))
+            'for requests related to my session proposals.'),
+        required=False,
+    )
 
     class Meta(RegistrationFormUniqueEmail.Meta):
         fields = [

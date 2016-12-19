@@ -1,5 +1,5 @@
 /**
- * Build on 2016-11-10
+ * Build on 2016-12-19
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -5527,6 +5527,23 @@ html {
 body {
   overflow: hidden; }
 
+.error-404 {
+  min-height: 620px;
+  background-color: #272c59 !important;
+  background-image: url(../../assets/images/out-of-space.svg) !important;
+  background-size: contain !important;
+  background-position: 50% bottom !important;
+  background-repeat: no-repeat !important; }
+  .error-404 h1,
+  .error-404 h2 {
+    text-align: center; }
+  .error-404 h1 {
+    color: #35a4a3;
+    font-size: 48px; }
+  .error-404 h2 {
+    color: #ffffff;
+    text-shadow: 0 0 4px #000000; }
+
 .btn {
   font-size: 18px;
   color: #ffffff;
@@ -6397,6 +6414,9 @@ footer {
   color: #ffffff;
   border-top: 1px solid #545454;
   background: #272c59; }
+  footer img {
+    height: 60px;
+    margin-right: 12px; }
   footer a {
     color: #ffffff; }
     footer a:hover {

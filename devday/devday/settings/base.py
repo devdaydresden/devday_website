@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 import os
+
 from django.core.exceptions import ImproperlyConfigured
 
 gettext = lambda s: s
@@ -83,7 +84,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'sekizai.context_processors.sekizai',
                 'django.template.context_processors.static',
-                'cms.context_processors.cms_settings'
+                'cms.context_processors.cms_settings',
+                'devday.contextprocessors.devdaysettings_contextprocessor',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -205,3 +207,5 @@ ACCOUNT_ACTIVATION_DAYS = 14
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 TALK_THUMBNAIL_HEIGHT = 320
+
+DEVDAY_TWITTER_URL = 'https://twitter.com/devdaydresden'

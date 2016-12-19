@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Seite nicht gefunden{% endblock %}
+{% block title %}DevDay 2017 // Let code rule - Seite nicht gefunden{% endblock %}
 {% block navigation %}
     <div class="container-fluid">
         <div class="{% block promo_classes %}row promo site{% endblock %}">
@@ -16,9 +16,16 @@
                 </div>
             </nav>
             <div class="col-xs-12 call-to-action">
-                <img src="{% static "images/claim-2x.png" %}" alt="Let Code Rule" />
+                <img src="{% static "images/claim-2x.png" %}" alt="Let Code Rule"/>
             </div>
         </div>
     </div>
 {% endblock %}
-{% block content %}<h1>Seite nicht gefunden</h1>{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area error-404" id="info-area">
+            <h1>Oops you're in outer space</h1>
+            <h2>Page not found</h2>
+        </div>
+    </div>
+{% endblock %}

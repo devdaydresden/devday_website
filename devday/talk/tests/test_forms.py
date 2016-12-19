@@ -1,10 +1,14 @@
+import os
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django.http import HttpRequest
 from django.test import SimpleTestCase
 from django.test import TransactionTestCase
+from django_file_form.uploader import FileFormUploadBackend
 
 from attendee.models import Attendee
 from talk.forms import TalkForm, SpeakerForm, ExistingFileForm, DevDayRegistrationForm, CreateTalkForm, \
@@ -45,6 +49,51 @@ class SpeakerFormTest(TransactionTestCase):
              'lastname', 'uploaded_image', 'form_id', 'upload_url',
              'delete_url']
         )
+
+    def test_save_uncommitted(self):
+        request = HttpRequest()
+        request.POST['qqfilename'] = 'mu_at_mil_house.jpg'
+        request.POST['form_id'] = 'a_test_speaker_form'
+        request.POST['field_name'] = 'uploaded_image'
+        backend = FileFormUploadBackend()
+        backend.setup(filename='testfile.jpg')
+        backend.upload_chunk(open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb').read())
+        uploaded_file = backend.upload_complete(request=request, filename='testfile.jpg', file_id='0815')
+        data = {
+            'firstname': 'Example', 'lastname': 'Tester',
+            'shortbio': 'A short epic praising the glorious achievements of Example Tester.',
+            'shirt_size': '3', 'form_id': 'a_test_speaker_form'
+        }
+        form = SpeakerForm(data=data)
+        form.full_clean()
+        speaker = form.save(commit=False)
+        self.assertIsInstance(speaker, Speaker)
+        self.assertIsNotNone(speaker.portrait.name)
+        self.assertIsNone(speaker.id)
+
+    def test_save_committed(self):
+        request = HttpRequest()
+        request.POST['qqfilename'] = 'mu_at_mil_house.jpg'
+        request.POST['form_id'] = 'a_test_speaker_form'
+        request.POST['field_name'] = 'uploaded_image'
+        backend = FileFormUploadBackend()
+        backend.setup(filename='testfile.jpg')
+        backend.upload_chunk(open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb').read())
+        uploaded_file = backend.upload_complete(request=request, filename='testfile.jpg', file_id='0815')
+        user = User.objects.create_user(email='test@example.org')
+        attendee = Attendee.objects.create(user=user)
+        data = {
+            'firstname': 'Example', 'lastname': 'Tester',
+            'shortbio': 'A short epic praising the glorious achievements of Example Tester.',
+            'shirt_size': '3', 'form_id': 'a_test_speaker_form',
+        }
+        form = SpeakerForm(data=data)
+        form.full_clean()
+        form.instance.user_id = attendee.id
+        speaker = form.save(commit=True)
+        self.assertIsInstance(speaker, Speaker)
+        self.assertIsNotNone(speaker.portrait.name)
+        self.assertIsNotNone(speaker.id)
 
 
 class ExistingFileFormTest(SimpleTestCase):

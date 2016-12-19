@@ -46,7 +46,10 @@ class SpeakerForm(FileFormMixin, forms.models.ModelForm):
         speaker.portrait = self.cleaned_data.get('uploaded_image')
         result = super(SpeakerForm, self).save(commit)
         if commit:
-            self.delete_temporary_files()
+            try:
+                self.delete_temporary_files()
+            except:
+                pass
         return result
 
 

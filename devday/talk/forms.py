@@ -42,10 +42,14 @@ class SpeakerForm(FileFormMixin, forms.models.ModelForm):
 
     def save(self, commit=True):
         speaker = self.instance
-        speaker.portrait = self.cleaned_data['uploaded_image']
+        assert hasattr(self, 'cleaned_data')
+        speaker.portrait = self.cleaned_data.get('uploaded_image')
         result = super(SpeakerForm, self).save(commit)
         if commit:
-            self.delete_temporary_files()
+            try:
+                self.delete_temporary_files()
+            except:
+                pass
         return result
 
 
@@ -59,7 +63,9 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
         label=_('Accept contact'),
         help_text=_(
             'I hereby agree to be contacted by the DevDay organization team to get informed about future events and '
-            'for requests related to my session proposals.'))
+            'for requests related to my session proposals.'),
+        required=False,
+    )
 
     class Meta(RegistrationFormUniqueEmail.Meta):
         fields = [
@@ -111,6 +117,29 @@ class CreateTalkForm(TalkForm):
         return super(CreateTalkForm, self).save(commit=commit)
 
 
+class EditTalkForm(TalkForm):
+    def __init__(self, *args, **kwargs):
+        super(EditTalkForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.field_template = 'devday/form/field.html'
+        self.helper.html5_required = True
+        self.helper.layout = Layout(
+            Div(
+                Field("title", template='devday/form/field.html', autofocus='autofocus'),
+                Field("abstract", template='devday/form/field.html', rows=2),
+                Field("remarks", template='devday/form/field.html', rows=2),
+                css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2"
+            ),
+            Div(
+                Div(
+                    Submit('submit', _('Update session'), css_class="btn-default"),
+                    css_class="text-center",
+                ),
+                css_class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2"
+            )
+        )
+
+
 class TalkAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(TalkAuthenticationForm, self).__init__(*args, **kwargs)
@@ -132,7 +161,9 @@ class TalkAuthenticationForm(AuthenticationForm):
         )
 
 
-class BecomeSpeakerForm(SpeakerForm):
+class BecomeSpeakerForm(CombinedFormBase):
+    form_classes = [SpeakerForm]
+
     def __init__(self, *args, **kwargs):
         super(BecomeSpeakerForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()

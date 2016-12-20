@@ -1,14 +1,13 @@
 from __future__ import unicode_literals
 
 import logging
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Div, Field
+
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.views import login
+from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.transaction import atomic
-from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
@@ -20,7 +19,8 @@ from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
 from attendee.models import Attendee
-from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm
+from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm, \
+    EditTalkForm
 from talk.models import Speaker, Talk
 
 logger = logging.getLogger('talk')
@@ -53,16 +53,22 @@ class TalkSubmittedView(TemplateView):
     template_name = "talk/submitted.html"
 
 
-class CreateTalkView(LoginRequiredMixin, CreateView):
+class SpeakerRequiredMixin(AccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated():
+            return self.handle_no_permission()
+        try:
+            user.attendee and user.attendee.speaker
+        except (Attendee.DoesNotExist, Speaker.DoesNotExist):
+            raise SuspiciousOperation(_('Authenticated user must be a registered speaker'))
+        return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class CreateTalkView(SpeakerRequiredMixin, CreateView):
     template_name = "talk/create_talk.html"
     form_class = CreateTalkForm
     success_url = reverse_lazy('talk_submitted')
-
-    def dispatch(self, request, *args, **kwargs):
-        user = request.user
-        if user.is_anonymous() or not user.attendee or not user.attendee.speaker:
-            return HttpResponseBadRequest(_('Authenticated user must be a registered speaker'))
-        return super(CreateTalkView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         form_kwargs = super(CreateTalkView, self).get_form_kwargs()
@@ -70,35 +76,12 @@ class CreateTalkView(LoginRequiredMixin, CreateView):
         return form_kwargs
 
 
-class EditTalkView(LoginRequiredMixin, UpdateView):
-    fields = ['title', 'abstract', 'remarks']
+class EditTalkView(SpeakerRequiredMixin, UpdateView):
+    form_class = EditTalkForm
+    success_url = reverse_lazy('speaker_profile')
 
     def get_queryset(self):
-        return Talk.objects.filter(speaker__user=self.request.user.attendee)
-
-    def get_form(self, form_class=None):
-        form = super(EditTalkView, self).get_form(form_class)
-        form.helper = FormHelper()
-        form.helper.field_template = 'devday/form/field.html'
-        form.helper.layout = Layout(
-            Div(
-                Field("title", template='devday/form/field.html', autofocus='autofocus'),
-                Field("abstract", template='devday/form/field.html', rows=2),
-                Field("remarks", template='devday/form/field.html', rows=2),
-                css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2"
-            ),
-            Div(
-                Div(
-                    Submit('submit', _('Update session'), css_class="btn-default"),
-                    css_class="text-center",
-                ),
-                css_class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2"
-            )
-        )
-        return form
-
-    def get_success_url(self):
-        return reverse('speaker_profile')
+        return Talk.objects.filter(speaker=self.request.user.attendee.speaker)
 
 
 class ExistingFileView(BaseFormView):
@@ -111,22 +94,15 @@ class ExistingFileView(BaseFormView):
 
         if speaker.portrait:
             name = Path(speaker.portrait.name).name
-            form_kwargs['initial'] = dict(
-                uploaded_image=ExistingFile(name)
-            )
+            form_kwargs.update({
+                'initial': dict(uploaded_image=ExistingFile(name))
+            })
 
         return form_kwargs
 
 
-class SpeakerProfileView(LoginRequiredMixin, TemplateView):
+class SpeakerProfileView(SpeakerRequiredMixin, TemplateView):
     template_name = "talk/speaker_profile.html"
-
-    def get(self, request, *args, **kwargs):
-        try:
-            self.get_context_data()
-        except AttributeError:
-            return redirect('/')
-        return super(SpeakerProfileView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(SpeakerProfileView, self).get_context_data(**kwargs)
@@ -157,9 +133,8 @@ class CreateSpeakerView(RegistrationView):
         user = self.request.user
         if user.is_authenticated():
             try:
-                if user.attendee:
-                    if user.attendee.speaker:
-                        return redirect(self.success_url)
+                user.attendee and user.attendee.speaker
+                return redirect(self.success_url)
             except Speaker.DoesNotExist:
                 self.auth_level = 'attendee'
             except Attendee.DoesNotExist:
@@ -202,11 +177,7 @@ class CreateSpeakerView(RegistrationView):
             user.first_name = form.cleaned_data['firstname']
             user.last_name = form.cleaned_data['lastname']
             user.save()
-            try:
-                attendee = Attendee.objects.get(user=user)
-                attendee.shirt_size = form.attendeeform.instance.shirt_size
-            except Attendee.DoesNotExist:
-                attendee = Attendee.objects.create(user=user)
+            attendee = Attendee.objects.create(user=user)
         else:
             attendee = user.attendee
 
@@ -215,8 +186,9 @@ class CreateSpeakerView(RegistrationView):
         speaker.save()
         try:
             form.speakerform.delete_temporary_files()
-        except PermissionError:
-            logger.warning("Error deleting temporary files")
+        except Exception as e:  # pragma: nocover
+            # may be Windows error on Windows when file is locked by another process
+            logger.warning("Error deleting temporary files: %s", e)
 
         if send_mail:
             self.send_activation_email(user)

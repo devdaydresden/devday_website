@@ -22,16 +22,16 @@ urlpatterns = [
         {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^accounts/', include('devday.registration_urls')),
-    url(r'^accounts/profile/', AttendeeProfileView.as_view(), name='user_profile'),
-    url(r'^speaker/profile$', SpeakerProfileView.as_view(), name='speaker_profile'),
+    url(r'^accounts/profile/$', AttendeeProfileView.as_view(), name='user_profile'),
+    url(r'^speaker/profile/$', SpeakerProfileView.as_view(), name='speaker_profile'),
     url(r'^upload/', include('django_file_form.urls')),
     url(r'^session/', include('talk.urls')),
-    url(r'^imprint/', ImprintView.as_view(), name='imprint'),
+    url(r'^imprint/$', ImprintView.as_view(), name='imprint'),
     url(r'^', include('cms.urls')),
 ]
 
 # This is only needed when using runserver.
-if settings.DEBUG:
+if settings.DEBUG:  # pragma: nocover
     import debug_toolbar
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),

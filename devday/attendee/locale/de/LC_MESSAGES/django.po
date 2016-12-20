@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-09 15:43+0100\n"
-"PO-Revision-Date: 2016-09-27 20:30+0200\n"
+"POT-Creation-Date: 2016-12-20 13:43+0100\n"
+"PO-Revision-Date: 2016-12-20 13:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,58 +16,60 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: attendee/models.py:45
+#: attendee/apps.py:9
+msgid "Attendee management"
+msgstr "Teilnehmerverwaltung"
+
+#: attendee/models.py:47
 msgid "first name"
 msgstr "Vorname"
 
-#: attendee/models.py:46
+#: attendee/models.py:48
 msgid "last name"
 msgstr "Nachname"
 
-#: attendee/models.py:47
+#: attendee/models.py:49
 msgid "email address"
 msgstr "E-Mailadresse"
 
-#: attendee/models.py:49
+#: attendee/models.py:51
 msgid "staff status"
 msgstr "Staff-Status"
 
-#: attendee/models.py:51
+#: attendee/models.py:53
 msgid "Designates whether the user can log into this admin site."
 msgstr "Gibt an, ob sich der Nutzer an der Admin-Site anmelden kann."
 
-#: attendee/models.py:54
+#: attendee/models.py:56
 msgid "active"
 msgstr "aktiv"
 
-#: attendee/models.py:57
-msgid ""
-"Designates whether this user should be treated as active. Unselect this "
-"instead of deleting accounts."
+#: attendee/models.py:59
+msgid "Designates whether this user should be treated as active. "
 msgstr ""
 "Gibt an, ob dieser Nutzer als aktiv behandelt werden soll. Wähle dies ab, "
 "anstatt Nutzer zu löschen."
 
-#: attendee/models.py:61
+#: attendee/models.py:63
 msgid "date joined"
 msgstr "Anmeldedatum"
 
-#: attendee/models.py:69
+#: attendee/models.py:71
 msgid "user"
 msgstr "Nutzer"
 
-#: attendee/models.py:70
+#: attendee/models.py:72
 msgid "users"
 msgstr "Nutzer"
 
-#: attendee/models.py:98
+#: attendee/models.py:107
 msgid "Attendee"
 msgstr "Teilnehmer"
 
-#: attendee/models.py:99
+#: attendee/models.py:108
 msgid "Attendees"
 msgstr "Teilnehmer"
 
@@ -75,18 +77,22 @@ msgstr "Teilnehmer"
 msgid "Attendee profile"
 msgstr "Teilnehmerprofil"
 
-#: attendee/templates/attendee/profile.html:5
+#: attendee/templates/attendee/profile.html:6
 #, python-format
 msgid "User profile for %(username)s"
 msgstr "Nutzerprofil für %(username)s"
 
-#: attendee/templates/attendee/profile.html:7
+#: attendee/templates/attendee/profile.html:8
 msgid "Firstname"
 msgstr "Vorname"
 
-#: attendee/templates/attendee/profile.html:8
+#: attendee/templates/attendee/profile.html:10
 msgid "Lastname"
 msgstr "Nachname"
+
+#: attendee/templates/attendee/profile.html:13
+msgid "Change password"
+msgstr "Passwort ändern"
 
 #~ msgid "XS"
 #~ msgstr "XS"

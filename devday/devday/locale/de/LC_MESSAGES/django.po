@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-09 15:43+0100\n"
-"PO-Revision-Date: 2016-11-09 15:45+0100\n"
+"POT-Creation-Date: 2016-12-20 13:43+0100\n"
+"PO-Revision-Date: 2016-12-20 13:44+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -23,47 +23,51 @@ msgstr ""
 msgid "2016"
 msgstr "2016"
 
-#: devday/forms.py:43 devday/forms.py:67
+#: devday/forms.py:31 devday/forms.py:55
 msgid "Change my password"
 msgstr "Mein Passwort ändern"
 
-#: devday/forms.py:55
+#: devday/forms.py:43
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
-#: devday/settings/base.py:148 devday/settings/base.py:156
+#: devday/settings/base.py:150 devday/settings/base.py:157
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:149 devday/settings/base.py:163
-msgid "en"
-msgstr "en"
-
-#: devday/settings/base.py:200
+#: devday/settings/base.py:193
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:201
+#: devday/settings/base.py:194
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:202
+#: devday/settings/base.py:195
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:203
+#: devday/settings/base.py:196
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/templates/base.html:29 devday/templates/base.html:43
+#: devday/templates/400.html:3 devday/templates/400.html:28
+msgid "Bad Request"
+msgstr "Ungültige Anfrage"
+
+#: devday/templates/404.html:3 devday/templates/404.html:28
+msgid "Page not found"
+msgstr "Seite nicht gefunden"
+
+#: devday/templates/base.html:30 devday/templates/base.html:44
 msgid "Logout"
 msgstr "Abmelden"
 
-#: devday/templates/base.html:30 devday/templates/base.html:44
+#: devday/templates/base.html:31 devday/templates/base.html:45
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/templates/base.html:32 devday/templates/base.html:46
+#: devday/templates/base.html:33 devday/templates/base.html:47
 msgid "Login"
 msgstr "Login"
 
@@ -308,6 +312,9 @@ msgstr "Anmeldung erfolgreich."
 #: devday/templates/registration/registration_form.html:10
 msgid "Register"
 msgstr "Anmelden"
+
+#~ msgid "en"
+#~ msgstr "en"
 
 #~ msgid "Please correct the error below."
 #~ msgstr "Bitte behebe die unten stehenden Fehler"

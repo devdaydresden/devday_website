@@ -161,7 +161,9 @@ class TalkAuthenticationForm(AuthenticationForm):
         )
 
 
-class BecomeSpeakerForm(SpeakerForm):
+class BecomeSpeakerForm(CombinedFormBase):
+    form_classes = [SpeakerForm]
+
     def __init__(self, *args, **kwargs):
         super(BecomeSpeakerForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()

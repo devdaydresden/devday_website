@@ -3,14 +3,16 @@ from __future__ import unicode_literals
 import os
 
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpRequest
 from django.test import TestCase
 from django_file_form.forms import ExistingFile
 
 from attendee.models import Attendee
+from talk.forms import CreateSpeakerForm, BecomeSpeakerForm
 from talk.models import Speaker, Talk
-from talk.views import CreateTalkView, ExistingFileView, SpeakerProfileView
+from talk.views import CreateTalkView, ExistingFileView, SpeakerProfileView, CreateSpeakerView
 
 User = get_user_model()
 
@@ -179,6 +181,14 @@ class TestExistingFileView(TestCase):
         self.assertIn('uploaded_image', kwargs['initial'])
         self.assertIsInstance(kwargs['initial']['uploaded_image'], ExistingFile)
 
+    def test_get_form_kwargs_no_portrait(self):
+        self.speaker.portrait = None
+        self.speaker.save()
+        view = ExistingFileView(kwargs={'id': self.speaker.id}, request=HttpRequest())
+        kwargs = view.get_form_kwargs()
+        self.assertIn('initial', kwargs)
+        self.assertNotIn('uploaded_image', kwargs['initial'])
+
 
 class TestSpeakerProfileView(TestCase):
     def setUp(self):
@@ -241,3 +251,107 @@ class TestSpeakerProfileView(TestCase):
         self.assertIn('talks', context)
         self.assertEqual(len(context['talks']), 1)
         self.assertEqual(context['talks'][0].title, 'Test talk')
+
+
+class TestCreateSpeakerView(TestCase):
+    def test_dispatch_anonymous(self):
+        response = self.client.get('/session/new-speaker/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('talk/create_speaker.html')
+
+    def test_get_form_class_anonymous(self):
+        response = self.client.get('/session/new-speaker/')
+        self.assertIsInstance(response.context['form'], CreateSpeakerForm)
+
+    def test_dispatch_user(self):
+        User.objects.create_user(email='test@example.org', password='s3cr3t')
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get('/session/new-speaker/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('talk/create_speaker.html')
+
+    def test_get_form_class_user(self):
+        User.objects.create_user(email='test@example.org', password='s3cr3t')
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get('/session/new-speaker/')
+        self.assertIsInstance(response.context['form'], BecomeSpeakerForm)
+
+    def test_dispatch_attendee(self):
+        user = User.objects.create_user(email='test@example.org', password='s3cr3t')
+        Attendee.objects.create(user=user)
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get('/session/new-speaker/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('talk/create_speaker.html')
+
+    def test_get_form_class_attendee(self):
+        user = User.objects.create_user(email='test@example.org', password='s3cr3t')
+        Attendee.objects.create(user=user)
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get('/session/new-speaker/')
+        self.assertIsInstance(response.context['form'], BecomeSpeakerForm)
+
+    def test_dispatch_speaker(self):
+        user = User.objects.create_user(email='test@example.org', password='s3cr3t')
+        attendee = Attendee.objects.create(user=user)
+        Speaker.objects.create(
+            user=attendee, shirt_size=2, videopermission=True, shortbio='A short biography text'
+        )
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get('/session/new-speaker/')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/session/speaker-registered/')
+
+    def test_get_email_context(self):
+        request = HttpRequest()
+        view = CreateSpeakerView(request=request)
+        context = view.get_email_context('test_key')
+        self.assertIn('request', context)
+        self.assertEqual(context['request'], request)
+
+    def test_form_valid_anonymous(self):
+        image_file = open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb')
+        data = {
+            'email': 'speaker@example.org', 'firstname': 'Special', 'lastname': 'Tester', 'password1': 's3cr3t',
+            'password2': 's3cr3t', 'shirt_size': '2', 'accept_contact': 'checked', 'videopermission': 'checked',
+            'shortbio': 'A guy from somewhere having something great to talk about',
+            'uploaded_image': image_file
+        }
+        response = self.client.post('/session/new-speaker/', data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/session/speaker-registered/')
+        self.assertEqual(len(mail.outbox), 1)
+        user = User.objects.get(email='speaker@example.org')
+        self.assertFalse(user.is_active)
+        self.assertTrue(user.check_password('s3cr3t'))
+
+    def test_form_valid_user(self):
+        User.objects.create_user(email='speaker@example.org', password='s3cr3t')
+        image_file = open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb')
+        data = {
+            'firstname': 'Special', 'lastname': 'Tester', 'shirt_size': '2',
+            'accept_contact': 'checked', 'videopermission': 'checked',
+            'shortbio': 'A guy from somewhere having something great to talk about',
+            'uploaded_image': image_file
+        }
+        self.client.login(email='speaker@example.org', password='s3cr3t')
+        response = self.client.post('/session/new-speaker/', data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/session/speaker-registered/')
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_form_valid_attendee(self):
+        user = User.objects.create_user(email='speaker@example.org', password='s3cr3t')
+        Attendee.objects.create(user=user)
+        image_file = open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb')
+        data = {
+            'firstname': 'Special', 'lastname': 'Tester', 'shirt_size': '2',
+            'accept_contact': 'checked', 'videopermission': 'checked',
+            'shortbio': 'A guy from somewhere having something great to talk about',
+            'uploaded_image': image_file
+        }
+        self.client.login(email='speaker@example.org', password='s3cr3t')
+        response = self.client.post('/session/new-speaker/', data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/session/speaker-registered/')
+        self.assertEqual(len(mail.outbox), 0)

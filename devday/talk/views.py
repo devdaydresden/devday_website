@@ -94,9 +94,9 @@ class ExistingFileView(BaseFormView):
 
         if speaker.portrait:
             name = Path(speaker.portrait.name).name
-            form_kwargs['initial'] = dict(
-                uploaded_image=ExistingFile(name)
-            )
+            form_kwargs.update({
+                'initial': dict(uploaded_image=ExistingFile(name))
+            })
 
         return form_kwargs
 
@@ -133,9 +133,8 @@ class CreateSpeakerView(RegistrationView):
         user = self.request.user
         if user.is_authenticated():
             try:
-                if user.attendee:
-                    if user.attendee.speaker:
-                        return redirect(self.success_url)
+                user.attendee and user.attendee.speaker
+                return redirect(self.success_url)
             except Speaker.DoesNotExist:
                 self.auth_level = 'attendee'
             except Attendee.DoesNotExist:
@@ -178,11 +177,7 @@ class CreateSpeakerView(RegistrationView):
             user.first_name = form.cleaned_data['firstname']
             user.last_name = form.cleaned_data['lastname']
             user.save()
-            try:
-                attendee = Attendee.objects.get(user=user)
-                attendee.shirt_size = form.attendeeform.instance.shirt_size
-            except Attendee.DoesNotExist:
-                attendee = Attendee.objects.create(user=user)
+            attendee = Attendee.objects.create(user=user)
         else:
             attendee = user.attendee
 
@@ -191,7 +186,8 @@ class CreateSpeakerView(RegistrationView):
         speaker.save()
         try:
             form.speakerform.delete_temporary_files()
-        except Exception as e:  # may be Windows error on Windows when file is locked by another process
+        except Exception as e:  # pragma: nocover
+            # may be Windows error on Windows when file is locked by another process
             logger.warning("Error deleting temporary files: %s", e)
 
         if send_mail:

@@ -12,7 +12,7 @@ from django_file_form.uploader import FileFormUploadBackend
 
 from attendee.models import Attendee
 from talk.forms import TalkForm, SpeakerForm, ExistingFileForm, DevDayRegistrationForm, CreateTalkForm, \
-    TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm
+    TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm, EditTalkForm
 from talk.models import Talk, Speaker
 
 try:
@@ -197,6 +197,23 @@ class CreateTalkFormTest(TransactionTestCase):
         talk = form.save(commit=False)
         self.assertIsInstance(talk, Talk)
         self.assertEqual(talk.speaker, speaker)
+
+
+class EditTalkFormTest(TransactionTestCase):
+    def test_init_creates_form_helper(self):
+        form = EditTalkForm()
+        self.assertIsInstance(form.helper, FormHelper)
+        self.assertEqual(form.helper.field_template, 'devday/form/field.html')
+        self.assertTrue(form.helper.html5_required)
+
+    def test_init_creates_layout(self):
+        form = EditTalkForm()
+        self.assertIsInstance(form.helper.layout, Layout)
+        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        self.assertEqual(len(layout_fields), 3)
+        self.assertIn('title', layout_fields)
+        self.assertIn('abstract', layout_fields)
+        self.assertIn('remarks', layout_fields)
 
 
 class TalkAuthenticationFormTest(SimpleTestCase):

@@ -117,6 +117,29 @@ class CreateTalkForm(TalkForm):
         return super(CreateTalkForm, self).save(commit=commit)
 
 
+class EditTalkForm(TalkForm):
+    def __init__(self, *args, **kwargs):
+        super(EditTalkForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.field_template = 'devday/form/field.html'
+        self.helper.html5_required = True
+        self.helper.layout = Layout(
+            Div(
+                Field("title", template='devday/form/field.html', autofocus='autofocus'),
+                Field("abstract", template='devday/form/field.html', rows=2),
+                Field("remarks", template='devday/form/field.html', rows=2),
+                css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2"
+            ),
+            Div(
+                Div(
+                    Submit('submit', _('Update session'), css_class="btn-default"),
+                    css_class="text-center",
+                ),
+                css_class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2"
+            )
+        )
+
+
 class TalkAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(TalkAuthenticationForm, self).__init__(*args, **kwargs)

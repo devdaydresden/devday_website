@@ -1,12 +1,16 @@
 from __future__ import unicode_literals
 
+import os
+
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpRequest
 from django.test import TestCase
+from django_file_form.forms import ExistingFile
 
 from attendee.models import Attendee
 from talk.models import Speaker, Talk
-from talk.views import CreateTalkView
+from talk.views import CreateTalkView, ExistingFileView
 
 User = get_user_model()
 
@@ -154,3 +158,23 @@ class TestEditTalkView(TestCase):
         })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/speaker/profile/')
+
+
+class TestExistingFileView(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(email='speaker@example.org', password='s3cr3t')
+        attendee = Attendee.objects.create(user=user)
+        self.speaker = Speaker.objects.create(
+            user=attendee, shirt_size=2, videopermission=True, shortbio='A short biography text',
+            portrait=SimpleUploadedFile(
+                name='testspeaker.jpg',
+                content=open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb').read(),
+                content_type='image/jpeg')
+        )
+
+    def test_get_form_kwargs(self):
+        view = ExistingFileView(kwargs={'id': self.speaker.id}, request=HttpRequest())
+        kwargs = view.get_form_kwargs()
+        self.assertIn('initial', kwargs)
+        self.assertIn('uploaded_image', kwargs['initial'])
+        self.assertIsInstance(kwargs['initial']['uploaded_image'], ExistingFile)

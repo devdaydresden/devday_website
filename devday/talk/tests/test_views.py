@@ -101,7 +101,16 @@ class TestCreateTalkView(TestCase):
         self.assertEqual(kwargs['speaker'], speaker)
 
     def test_redirect_after_success(self):
-        pass  # TODO: implement
+        user = User.objects.create_user(email='test@example.org', password='s3cr3t')
+        attendee = Attendee.objects.create(user=user)
+        Speaker.objects.create(
+            user=attendee, shirt_size=2, videopermission=True, shortbio='A short biography text')
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.post(
+            '/session/create-session/',
+            data={'title': 'A fantastic session', 'abstract': 'News for nerds, stuff that matters'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/session/submitted/')
 
 
 class TestEditTalkView(TestCase):
@@ -137,3 +146,11 @@ class TestEditTalkView(TestCase):
         response = self.client.get('/session/edit-session/{}/'.format(self.talk.id))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('talk/talk_form.html')
+
+    def test_redirect_after_success(self):
+        self.client.login(username='speaker@example.org', password='s3cr3t')
+        response = self.client.post('/session/edit-session/{}/'.format(self.talk.id), data={
+            'title': 'A new title', 'abstract': 'Good things come to those who wait'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/speaker/profile/')

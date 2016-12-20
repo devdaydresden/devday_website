@@ -104,13 +104,6 @@ class ExistingFileView(BaseFormView):
 class SpeakerProfileView(SpeakerRequiredMixin, TemplateView):
     template_name = "talk/speaker_profile.html"
 
-    def get(self, request, *args, **kwargs):
-        try:
-            self.get_context_data()
-        except AttributeError:
-            return redirect('/')
-        return super(SpeakerProfileView, self).get(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super(SpeakerProfileView, self).get_context_data(**kwargs)
         attendee = Attendee.objects.filter(user=self.request.user).select_related('speaker').get()

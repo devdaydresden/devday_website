@@ -10,7 +10,7 @@ from django_file_form.forms import ExistingFile
 
 from attendee.models import Attendee
 from talk.models import Speaker, Talk
-from talk.views import CreateTalkView, ExistingFileView
+from talk.views import CreateTalkView, ExistingFileView, SpeakerProfileView
 
 User = get_user_model()
 
@@ -178,3 +178,66 @@ class TestExistingFileView(TestCase):
         self.assertIn('initial', kwargs)
         self.assertIn('uploaded_image', kwargs['initial'])
         self.assertIsInstance(kwargs['initial']['uploaded_image'], ExistingFile)
+
+
+class TestSpeakerProfileView(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(email='speaker@example.org', password='s3cr3t')
+        attendee = Attendee.objects.create(user=user)
+        self.speaker = Speaker.objects.create(
+            user=attendee, shirt_size=2, videopermission=True, shortbio='A short biography text',
+            portrait=SimpleUploadedFile(
+                name='testspeaker.jpg',
+                content=open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb').read(),
+                content_type='image/jpeg')
+        )
+
+    def test_needs_login(self):
+        response = self.client.get('/speaker/profile/')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/accounts/login/?next=/speaker/profile/')
+
+    def test_needs_speaker_not_user(self):
+        User.objects.create_user(email='test@example.org', password='s3cr3t')
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get('/speaker/profile/')
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed('400.html')
+
+    def test_needs_speaker_not_attendee(self):
+        user = User.objects.create_user(email='test@example.org', password='s3cr3t')
+        Attendee.objects.create(user=user)
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get('/speaker/profile/')
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed('400.html')
+
+    def test_template(self):
+        self.client.login(username='speaker@example.org', password='s3cr3t')
+        response = self.client.get('/speaker/profile/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('talk/speaker_profile.html')
+
+    def test_get_context_data_no_talks(self):
+        request = HttpRequest()
+        request.user = self.speaker.user.user
+        view = SpeakerProfileView(request=request)
+        context = view.get_context_data()
+        self.assertIn('attendee', context)
+        self.assertIn('speaker', context)
+        self.assertEqual(context['speaker'], self.speaker)
+        self.assertIn('talks', context)
+        self.assertEqual(len(context['talks']), 0)
+
+    def test_get_context_data_with_talk(self):
+        Talk.objects.create(speaker=self.speaker, title='Test talk', abstract='A tragedy of testing and errors')
+        request = HttpRequest()
+        request.user = self.speaker.user.user
+        view = SpeakerProfileView(request=request)
+        context = view.get_context_data()
+        self.assertIn('attendee', context)
+        self.assertIn('speaker', context)
+        self.assertEqual(context['speaker'], self.speaker)
+        self.assertIn('talks', context)
+        self.assertEqual(len(context['talks']), 1)
+        self.assertEqual(context['talks'][0].title, 'Test talk')

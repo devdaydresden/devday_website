@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-20 13:43+0100\n"
+"POT-Creation-Date: 2016-12-22 11:06+0100\n"
 "PO-Revision-Date: 2016-12-20 13:43+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -36,10 +36,6 @@ msgid "Accept contact"
 msgstr "Kontaktaufnahme erlauben"
 
 #: talk/forms.py:65
-#| msgid ""
-#| "I hereby agree to be contacted by the DevDay organization team to get "
-#| "informed about future events and for requests related to my session "
-#| "proposals."
 msgid ""
 "I hereby agree to be contacted by the DevDay organization team to get "
 "informed about future events and for requests related to my session "
@@ -49,28 +45,28 @@ msgstr ""
 "informed about future events and for requests related to my session "
 "proposals."
 
-#: talk/forms.py:80
+#: talk/forms.py:81
 msgid "You need to agree to be contacted by us."
 msgstr "Es ist notwendig, dass du der Kontaktaufnahme zustimmst."
 
-#: talk/forms.py:108
+#: talk/forms.py:109
 msgid "Submit"
 msgstr "Session einreichen"
 
-#: talk/forms.py:135
+#: talk/forms.py:136
 msgid "Update session"
 msgstr "Session aktualisieren"
 
-#: talk/forms.py:158
+#: talk/forms.py:159
 msgid "Login"
 msgstr "Anmelden"
 
-#: talk/forms.py:190 talk/forms.py:233
+#: talk/forms.py:193 talk/forms.py:236
 #: talk/templates/talk/submit_session.html:30
 msgid "Register as speaker"
 msgstr "Als Sprecher registrieren"
 
-#: talk/forms.py:208
+#: talk/forms.py:211
 msgid "E-Mail"
 msgstr "E-Mail"
 
@@ -120,43 +116,43 @@ msgstr ""
 "Session auf den Social-Media-Kanälen des Veranstalters und auf der Webseite "
 "devday.de verwendet werden dürfen."
 
-#: talk/models.py:35 talk/templates/talk/speaker_profile.html:18
+#: talk/models.py:38 talk/templates/talk/speaker_profile.html:18
 msgid "Short biography"
 msgstr "Kurzvita"
 
-#: talk/models.py:36 talk/templates/talk/speaker_profile.html:21
+#: talk/models.py:39 talk/templates/talk/speaker_profile.html:21
 msgid "Speaker image"
 msgstr "Speakerbild"
 
-#: talk/models.py:38
+#: talk/models.py:41
 msgid "Speaker image thumbnail"
 msgstr "Vorschau Speakerbild"
 
-#: talk/models.py:42
+#: talk/models.py:45
 msgid "Speaker"
 msgstr "Sprecher"
 
-#: talk/models.py:43
+#: talk/models.py:46
 msgid "Speakers"
 msgstr "Sprecher"
 
-#: talk/models.py:89
+#: talk/models.py:92
 msgid "Session title"
 msgstr "Sessionname"
 
-#: talk/models.py:90
+#: talk/models.py:93
 msgid "Abstract"
 msgstr "Kurzbeschreibung"
 
-#: talk/models.py:91
+#: talk/models.py:94
 msgid "Remarks"
 msgstr "Anmerkungen"
 
-#: talk/models.py:94
+#: talk/models.py:97
 msgid "Session"
 msgstr "Session"
 
-#: talk/models.py:95
+#: talk/models.py:98
 msgid "Sessions"
 msgstr "Sessions"
 
@@ -299,6 +295,3 @@ msgstr "Session bearbeiten"
 #: talk/views.py:64
 msgid "Authenticated user must be a registered speaker"
 msgstr "Der angemeldete Nutzer muss als Sprecher registriert sein"
-
-#~ msgid "Submit session"
-#~ msgstr "Session einreichen"

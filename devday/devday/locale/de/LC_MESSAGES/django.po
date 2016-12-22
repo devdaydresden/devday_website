@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-20 13:43+0100\n"
+"POT-Creation-Date: 2016-12-22 11:06+0100\n"
 "PO-Revision-Date: 2016-12-20 13:44+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -312,41 +312,3 @@ msgstr "Anmeldung erfolgreich."
 #: devday/templates/registration/registration_form.html:10
 msgid "Register"
 msgstr "Anmelden"
-
-#~ msgid "en"
-#~ msgstr "en"
-
-#~ msgid "Please correct the error below."
-#~ msgstr "Bitte behebe die unten stehenden Fehler"
-
-#~ msgid "Please correct the errors below."
-#~ msgstr "Bitte behebe die unten stehenden Fehler."
-
-#~ msgid ""
-#~ "Please enter your old password, for security's sake, and then enter your "
-#~ "new password twice so we can verify you typed it in correctly."
-#~ msgstr ""
-#~ "Bitte gib aus Sicherheitsgründen dein altes Passwort ein und gib dein "
-#~ "neues Passwort doppelt ein, so dass wir prüfen können, dass du es korrekt "
-#~ "getippt hast."
-
-#~ msgid "New password:"
-#~ msgstr "Neues Passwort:"
-
-#~ msgid "Confirm password:"
-#~ msgstr "Passwort bestätigen:"
-
-#~ msgid "Email address:"
-#~ msgstr "E-Mailadresse:"
-
-#~ msgid "Drop files here to upload"
-#~ msgstr "Dateien hierhin schieben, um diese Hochzuladen"
-
-#~ msgid "Processing dropped files..."
-#~ msgstr "Verarbeite hochgeladene Dateien ..."
-
-#~ msgid "Delete"
-#~ msgstr "Löschen"
-
-#~ msgid "Not member"
-#~ msgstr "Kein angemeldeter Benutzer"

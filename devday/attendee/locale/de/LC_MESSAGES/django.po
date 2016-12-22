@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-20 13:43+0100\n"
+"POT-Creation-Date: 2016-12-22 11:06+0100\n"
 "PO-Revision-Date: 2016-12-20 13:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: attendee/apps.py:9
+#: attendee/apps.py:9 attendee/tests/test_appconfig.py:10
 msgid "Attendee management"
 msgstr "Teilnehmerverwaltung"
 
@@ -40,7 +40,7 @@ msgid "staff status"
 msgstr "Staff-Status"
 
 #: attendee/models.py:53
-msgid "Designates whether the user can log into this admin site."
+msgid "Designates whether the user can log into the admin site."
 msgstr "Gibt an, ob sich der Nutzer an der Admin-Site anmelden kann."
 
 #: attendee/models.py:56
@@ -48,7 +48,9 @@ msgid "active"
 msgstr "aktiv"
 
 #: attendee/models.py:59
-msgid "Designates whether this user should be treated as active. "
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
 msgstr ""
 "Gibt an, ob dieser Nutzer als aktiv behandelt werden soll. Wähle dies ab, "
 "anstatt Nutzer zu löschen."
@@ -93,27 +95,3 @@ msgstr "Nachname"
 #: attendee/templates/attendee/profile.html:13
 msgid "Change password"
 msgstr "Passwort ändern"
-
-#~ msgid "XS"
-#~ msgstr "XS"
-
-#~ msgid "S"
-#~ msgstr "S"
-
-#~ msgid "M"
-#~ msgstr "M"
-
-#~ msgid "L"
-#~ msgstr "L"
-
-#~ msgid "XL"
-#~ msgstr "XL"
-
-#~ msgid "XXL"
-#~ msgstr "XXL"
-
-#~ msgid "XXXL"
-#~ msgstr "XXXL"
-
-#~ msgid "T-shirt size"
-#~ msgstr "T-Shirt-Größe"

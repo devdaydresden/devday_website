@@ -62,8 +62,9 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
     accept_contact = forms.BooleanField(
         label=_('Accept contact'),
         help_text=_(
-            'I hereby agree to be contacted by the DevDay organization team to get informed about future events and '
-            'for requests related to my session proposals.'),
+            'I hereby agree to be contacted by the DevDay organization team '  # \
+            'to get informed about future events and for requests related to '  # \
+            'my session proposals.'),
         required=False,
     )
 

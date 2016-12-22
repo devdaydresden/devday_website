@@ -30,9 +30,9 @@ class Speaker(models.Model):
     shirt_size = models.PositiveSmallIntegerField(verbose_name=_("T-shirt size"), choices=T_SHIRT_SIZES)
     videopermission = models.BooleanField(
         verbose_name=_("Video permitted"),
-        help_text=_("I hereby agree that audio and visual recordings of "
-                    "me and my session can be published on the social media "
-                    "channels of the event organizer and the website "
+        help_text=_("I hereby agree that audio and visual recordings of "      # \
+                    "me and my session can be published on the social media "  # \
+                    "channels of the event organizer and the website "         # \
                     "devday.de.")
     )
     shortbio = models.TextField(verbose_name=_("Short biography"))

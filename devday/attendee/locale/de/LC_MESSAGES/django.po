@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-22 11:06+0100\n"
+"POT-Creation-Date: 2016-12-22 15:05+0100\n"
 "PO-Revision-Date: 2016-12-20 13:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -22,6 +22,34 @@ msgstr ""
 #: attendee/apps.py:9 attendee/tests/test_appconfig.py:10
 msgid "Attendee management"
 msgstr "Teilnehmerverwaltung"
+
+#: attendee/forms.py:18
+msgid "Accept DevDay 17 contact"
+msgstr "Kontaktaufnahme zum Dev Day 17"
+
+#: attendee/forms.py:20
+msgid "I hereby agree to be contacted by the DevDay 17 organization team."
+msgstr ""
+"Ich erlaube hiermit, dass das Dev Day 17 Organisationsteam Kontakt zu mir "
+"aufnehmen darf."
+
+#: attendee/forms.py:32
+msgid "Contact for other events"
+msgstr "Kontaktaufnahme zu weiteren Veranstaltungen"
+
+#: attendee/forms.py:34
+msgid "I hereby agree to be contacted for other SECO events."
+msgstr ""
+"Ich möchte zu weiteren Veranstaltungen der Software Engineering Community "
+"der T-Sytems Multimedia Solutions GmbH informiert werden."
+
+#: attendee/forms.py:70
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: attendee/forms.py:93
+msgid "Register as attendee"
+msgstr "Als Teilnehmer anmelden"
 
 #: attendee/models.py:47
 msgid "first name"
@@ -59,19 +87,39 @@ msgstr ""
 msgid "date joined"
 msgstr "Anmeldedatum"
 
-#: attendee/models.py:71
+#: attendee/models.py:64
+msgid "twitter handle"
+msgstr "Twitter-Name"
+
+#: attendee/models.py:73
 msgid "user"
 msgstr "Nutzer"
 
-#: attendee/models.py:72
+#: attendee/models.py:74
 msgid "users"
 msgstr "Nutzer"
 
 #: attendee/models.py:107
+msgid "job or study subject"
+msgstr "Position oder Studiengang"
+
+#: attendee/models.py:108
+msgid "company or institution"
+msgstr "Firma oder Bildungseinrichtung"
+
+#: attendee/models.py:110
+msgid "source"
+msgstr "Informationsquelle"
+
+#: attendee/models.py:110
+msgid "How have you become aware of DevDay 2017?"
+msgstr "Wie bist du auf den Dev Day 2017 aufmerksam geworden?"
+
+#: attendee/models.py:113
 msgid "Attendee"
 msgstr "Teilnehmer"
 
-#: attendee/models.py:108
+#: attendee/models.py:114
 msgid "Attendees"
 msgstr "Teilnehmer"
 

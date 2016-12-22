@@ -1,13 +1,11 @@
 {% extends "devday_site.html" %}
-{% load i18n %}
-{% load bootstrap %}
-{% block title %}{% trans "Register" %}{% endblock %}
+{% load i18n crispy_forms_tags cms_tags %}
+{% block title %}{% trans "Register for DevDay" %}{% endblock %}
 {% block content_body %}
-    <form action="{% url 'registration_register' %}" method="post" role="form">
-        {% csrf_token %}
-        {{ form|bootstrap }}
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">{% trans "Register" %}</button>
+    <div class="row">
+        <div class="col-lg-offset-2 col-lg-8 col-md-12">
+            {% static_placeholder "register-attendee-introtext" %}
         </div>
-    </form>
+    </div>
+    {% crispy form %}
 {% endblock %}

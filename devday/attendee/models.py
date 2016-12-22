@@ -61,6 +61,8 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    twitter_handle = models.CharField(_('twitter handle'), blank=True, max_length=64)
+    contact_permission_date = models.DateTimeField(null=True)
 
     objects = DevDayUserManager()
 
@@ -102,6 +104,10 @@ class Attendee(models.Model):
     This is a model class for an attendee.
     """
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="attendee")
+    position = models.CharField(_('job or study subject'), blank=True, max_length=128)
+    organization = models.CharField(_('company or institution'), blank=True, max_length=128)
+    contact_permission_date = models.DateTimeField(null=True)
+    source = models.TextField(_('source'), help_text=_('How have you become aware of DevDay 2017?'), blank=True)
 
     class Meta:
         verbose_name = _("Attendee")

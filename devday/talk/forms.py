@@ -229,7 +229,7 @@ class CreateSpeakerForm(CombinedFormBase):
                 'shirt_size',
                 Field('shortbio', rows=2, template='devday/form/field.html'),
                 Field('videopermission', template='talk/form/videopermission-field.html'),
-                Field('accept_contact', template='talk/form/accept_contact-field.html'),
+                Field('accept_contact', template='devday/form/accept_contact-field.html'),
                 css_class='col-md-12 col-lg-4'
             ),
             Div(

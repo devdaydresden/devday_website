@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase
 
-from devday.utils.forms import DevDayFormHelper, DevDayField, CombinedFormBase
+from devday.utils.forms import DevDayFormHelper, DevDayField, CombinedFormBase, DevDayContactField
 
 try:
     from unittest import mock
@@ -33,6 +33,21 @@ class DevDayFieldTest(SimpleTestCase):
 
     def test_override_template(self):
         field = DevDayField(template='test_field.html')
+        self.assertEqual(field.template, 'test_field.html')
+
+
+class DevDayContactFieldTest(SimpleTestCase):
+    """
+    Tests for devday.utils.forms.DevDayContactField.
+
+    """
+
+    def test_default_template(self):
+        field = DevDayContactField()
+        self.assertEqual(field.template, 'devday/form/accept_contact-field.html')
+
+    def test_override_template(self):
+        field = DevDayContactField(template='test_field.html')
         self.assertEqual(field.template, 'test_field.html')
 
 

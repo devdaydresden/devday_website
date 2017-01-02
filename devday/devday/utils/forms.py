@@ -12,8 +12,13 @@ class DevDayFormHelper(FormHelper):
 class DevDayField(Field):
     def __init__(self, *args, **kwargs):
         super(DevDayField, self).__init__(*args, **kwargs)
-        if not 'template' in kwargs:
-            self.template = 'devday/form/field.html'
+        self.template = kwargs.get('template', 'devday/form/field.html')
+
+
+class DevDayContactField(Field):
+    def __init__(self, *args, **kwargs):
+        super(DevDayContactField, self).__init__(*args, **kwargs)
+        self.template = kwargs.get('template', 'devday/form/accept_contact-field.html')
 
 
 class CombinedFormBase(forms.Form):

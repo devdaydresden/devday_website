@@ -6,9 +6,9 @@ HMAC activation workflow.
 
 from django.conf.urls import include, url
 from django.views.generic.base import TemplateView
-
 from registration.backends.hmac import views
 
+from attendee.views import AttendeeRegistrationView
 
 urlpatterns = [
     url(r'^activate/complete/$',
@@ -22,7 +22,7 @@ urlpatterns = [
         views.ActivationView.as_view(),
         name='registration_activate'),
     url(r'^register/$',
-        views.RegistrationView.as_view(),
+        AttendeeRegistrationView.as_view(),
         name='registration_register'),
     url(r'^register/complete/$',
         TemplateView.as_view(

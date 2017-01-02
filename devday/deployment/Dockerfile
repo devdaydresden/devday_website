@@ -4,7 +4,7 @@ LABEL vendor=T-Systems\ Multimedia\ Solutions\ GmbH
 LABEL devday.release=0.1
 
 ARG VENV_BASE=/srv/devday
-ARG HTTP_PROXY=http://proxy:8080/
+ARG HTTP_PROXY=http://proxy.mms-dresden.de:8080/
 ARG HTTP_NOPROXY=localhost,127.0.0.1,git.t-systems-mms.eu,.mms-dresden.de,.mms-at-work.de
 ENV VENV_BASE ${VENV_BASE}
 ENV http_proxy ${HTTP_PROXY}

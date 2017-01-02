@@ -310,7 +310,7 @@ msgstr "Anmeldung erfolgreich."
 
 #: devday/templates/registration/registration_form.html:3
 msgid "Register for DevDay"
-msgstr ""
+msgstr "Für den DevDay registrieren"
 
 #~ msgid "Register"
 #~ msgstr "Anmelden"

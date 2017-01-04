@@ -121,6 +121,9 @@ class TalkComment(TimeStampedModel):
     commenter = models.ForeignKey(settings.AUTH_USER_MODEL)
     talk = models.ForeignKey(Talk)
     comment = models.TextField()
+    is_visible = models.BooleanField(
+        default=False,
+        help_text=_('Indicates whether the comment is visible to the speaker.'))
 
     def __str__(self):
         return '{} commented {} for {} by {}'.format(

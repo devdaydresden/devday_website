@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.test import SimpleTestCase
-from django.test import TransactionTestCase
+from django.test import TestCase
 from django_file_form.uploader import FileFormUploadBackend
 
 from attendee.models import Attendee
@@ -23,7 +23,7 @@ except ImportError:  # Python 2.7 has no mock in unittest
 User = get_user_model()
 
 
-class TalkFormTest(TransactionTestCase):
+class TalkFormTest(TestCase):
     def test_fields(self):
         form = TalkForm()
         self.assertListEqual(
@@ -40,7 +40,7 @@ class TalkFormTest(TransactionTestCase):
         self.assertIsInstance(form.fields['remarks'].widget, forms.Textarea)
 
 
-class SpeakerFormTest(TransactionTestCase):
+class SpeakerFormTest(TestCase):
     def test_fields(self):
         form = SpeakerForm()
         self.assertListEqual(
@@ -105,7 +105,7 @@ class ExistingFileFormTest(SimpleTestCase):
         )
 
 
-class DevDayRegistrationFormTest(TransactionTestCase):
+class DevDayRegistrationFormTest(TestCase):
     def test_fields(self):
         form = DevDayRegistrationForm()
         self.assertListEqual(
@@ -163,7 +163,7 @@ class DevDayRegistrationFormTest(TransactionTestCase):
         self.assertEqual(form.cleaned_data.get(User.USERNAME_FIELD), 'test@example.org')
 
 
-class CreateTalkFormTest(TransactionTestCase):
+class CreateTalkFormTest(TestCase):
     def test_init_creates_form_helper(self):
         speaker = mock.Mock()
         form = CreateTalkForm(speaker=speaker)
@@ -199,7 +199,7 @@ class CreateTalkFormTest(TransactionTestCase):
         self.assertEqual(talk.speaker, speaker)
 
 
-class EditTalkFormTest(TransactionTestCase):
+class EditTalkFormTest(TestCase):
     def test_init_creates_form_helper(self):
         form = EditTalkForm()
         self.assertIsInstance(form.helper, FormHelper)

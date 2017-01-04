@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.core import mail
-from django.test import TransactionTestCase
+from django.test import TestCase
 
 from attendee.models import DevDayUser, Attendee
 
@@ -11,7 +11,7 @@ USER_EMAIL = 'test@example.org'
 USER_PASSWORD = 's3cr3t'
 
 
-class DevDayUserManagerTest(TransactionTestCase):
+class DevDayUserManagerTest(TestCase):
     """
     Tests for attendee.models.DevDayUserManager.
 
@@ -52,7 +52,7 @@ class DevDayUserManagerTest(TransactionTestCase):
         self.assertEqual(str(error_context.exception), 'Superuser must have is_superuser=True.')
 
 
-class DevDayUserTest(TransactionTestCase):
+class DevDayUserTest(TestCase):
     """
     Tests for attendee.models.DevDayUser.
 
@@ -91,7 +91,7 @@ class DevDayUserTest(TransactionTestCase):
         self.assertEqual(str(user), "Test User <%s>" % USER_EMAIL)
 
 
-class AttendeeTest(TransactionTestCase):
+class AttendeeTest(TestCase):
     """
     Tests for attendee.models.Attendee.
 

@@ -1,0 +1,36 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Talk" %} - {{ talk.title }}{% endblock %}
+{% block content_body %}
+    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+        <h1>{% spaceless %}{{ talk.title }}{% endspaceless %}</h1>
+        <dl class="definition-list">
+            <dt>{% trans "Title" %}</dt>
+            <dd>{{ talk.title }}</dd>
+            <dt>{% trans "Abstract" %}</dt>
+            <dd>{{ talk.abstract }}</dd>
+            <dt>{% trans "Remarks" %}</dt>
+            <dd>{{ talk.remarks }}</dd>
+        </dl>
+    </div>
+    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+        <h2>{% trans "Votes" %}</h2>
+        <p>{% if talk.vote_set.exists %}
+            {% trans "Average vote" %}: {{ talk.average_votes }}<br>
+            {% if uservote %}{% trans "Your vote" %}: {{ uservote }}{% else %}{% trans "You have not voted yet" %}{% endif %}
+        {% else %}
+            {% trans "No votes yet" %}{% endif %}
+        </p>
+        <h2>{% trans "Comments" %}</h2>
+        {% if talk.talkcomment_set.exists %}
+            {% for comment in talk.talkcomment_set %}
+                <p>{{ comment.comment }}<br>
+                    {{ comment.created }} {{ comment.commenter }}
+                    {% if comment.is_visible %}{% trans "visible" %}{% else %}{% trans "private" %}{% endif %}
+                </p>
+            {% endfor %}
+        {% else %}
+            <p>{% trans "No comments yet" %}</p>
+        {% endif %}
+    </div>
+{% endblock %}

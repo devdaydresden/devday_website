@@ -1,0 +1,30 @@
+{% extends "devday_site.html" %}
+{% load i18n crispy_forms_tags cms_tags %}
+{% block title %}{% trans "List of sessions" %}{% endblock %}
+{% block content_body %}
+    <div class="row">
+        <div class="col-lg-offset-1 col-lg-10 col-md-12">
+            <h1>{% trans "List of sessions" %}</h1>
+            {% if talk_list %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>{% trans "Speaker" %}</th>
+                        <th>{% trans "Session title" %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for talk in talk_list %}
+                        <tr>
+                            <td><a href="{% url 'speaker_details' pk=talk.speaker.pk %}">{{ talk.speaker }}</a></td>
+                            <td><a href="{% url 'talk_details' pk=talk.pk %}">{{ talk.title }}</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-info">{% trans "There are no talks yet." %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

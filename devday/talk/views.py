@@ -3,14 +3,16 @@ from __future__ import unicode_literals
 import logging
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import AccessMixin
+from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.contrib.auth.views import login
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.transaction import atomic
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic import ListView
 from django.views.generic import TemplateView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import BaseFormView, UpdateView, CreateView
 from django_file_form.forms import ExistingFile
 from django_file_form.uploader import FileFormUploader
@@ -194,3 +196,22 @@ class CreateSpeakerView(RegistrationView):
             self.send_activation_email(user)
 
         return redirect(self.success_url)
+
+
+class CommitteeRequiredMixin(PermissionRequiredMixin):
+    permission_required = ('talk.add_vote', 'talk.add_talkcomment')
+
+
+class TalkOverview(CommitteeRequiredMixin, ListView):
+    model = Talk
+    template_name_suffix = '_overview'
+
+
+class SpeakerDetails(CommitteeRequiredMixin, DetailView):
+    model = Speaker
+    template_name_suffix = '_details'
+
+
+class TalkDetails(CommitteeRequiredMixin, DetailView):
+    model = Talk
+    template_name_suffix = '_details'

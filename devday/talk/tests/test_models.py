@@ -2,15 +2,15 @@ import os
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TransactionTestCase
+from django.test import TestCase
 
 from attendee.models import Attendee
-from talk.models import Speaker, Talk
+from talk.models import Speaker, Talk, Vote, TalkComment
 
 User = get_user_model()
 
 
-class SpeakerTest(TransactionTestCase):
+class SpeakerTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(email='test@example.org')
         self.attendee = Attendee.objects.create(user=user)
@@ -61,7 +61,7 @@ class SpeakerTest(TransactionTestCase):
         self.assertIsNotNone(speaker.thumbnail.name)
 
 
-class TalkTest(TransactionTestCase):
+class TalkTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(email='test@example.org')
         attendee = Attendee.objects.create(user=user)
@@ -74,3 +74,43 @@ class TalkTest(TransactionTestCase):
             remarks='Test remarks',
         )
         self.assertEqual('{}'.format(talk), '{} - {}'.format(self.speaker, 'Test'))
+
+
+class VoteTest(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(email='speaker@example.org')
+        attendee = Attendee.objects.create(user=user)
+        self.speaker = Speaker.objects.create(
+            user=attendee, videopermission=True, shirt_size=1)
+        self.talk = Talk.objects.create(
+            speaker=self.speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks')
+        self.voter = User.objects.create_user(email='voter@example.org')
+
+    def test_str(self):
+        vote = Vote.objects.create(voter=self.voter, talk=self.talk, score=5)
+        self.assertEqual(
+            '{}'.format(vote),
+            '{} voted {} for {} by {}'.format(
+                self.voter, 5, 'Test', self.speaker))
+
+
+class TalkCommentTest(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(email='speaker@example.org')
+        attendee = Attendee.objects.create(user=user)
+        self.speaker = Speaker.objects.create(
+            user=attendee, videopermission=True, shirt_size=1)
+        self.talk = Talk.objects.create(
+            speaker=self.speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks')
+        self.commenter = User.objects.create_user(email='voter@example.org')
+
+    def test_str(self):
+        talk_comment = TalkComment.objects.create(
+            commenter=self.commenter, talk=self.talk,
+            comment='A Test comment')
+        self.assertEqual(
+            "{}".format(talk_comment),
+            "{} commented {} for {} by {}".format(
+                self.commenter, 'A Test comment', 'Test', self.speaker))

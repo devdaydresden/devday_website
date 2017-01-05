@@ -2,18 +2,21 @@ from __future__ import unicode_literals
 
 import logging
 
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.contrib.auth.views import login
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.transaction import atomic
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView
 from django.views.generic import TemplateView
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import BaseFormView, UpdateView, CreateView
+from django.views.generic import View
+from django.views.generic.detail import DetailView, SingleObjectMixin
+from django.views.generic.edit import BaseFormView, UpdateView, CreateView, FormView
 from django_file_form.forms import ExistingFile
 from django_file_form.uploader import FileFormUploader
 from pathlib import Path
@@ -22,8 +25,8 @@ from registration.backends.hmac.views import RegistrationView
 
 from attendee.models import Attendee
 from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm, \
-    EditTalkForm
-from talk.models import Speaker, Talk
+    EditTalkForm, TalkCommentForm, TalkVoteForm
+from talk.models import Speaker, Talk, Vote, TalkComment
 
 logger = logging.getLogger('talk')
 
@@ -215,3 +218,92 @@ class SpeakerDetails(CommitteeRequiredMixin, DetailView):
 class TalkDetails(CommitteeRequiredMixin, DetailView):
     model = Talk
     template_name_suffix = '_details'
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkDetails, self).get_context_data(**kwargs)
+        talk = context['talk']
+        try:
+            user_vote = talk.vote_set.get(voter=self.request.user)
+            user_score = user_vote.score
+        except Vote.DoesNotExist:
+            user_score = None
+        context.update({
+            'comment_form': TalkCommentForm(instance=talk),
+            'user_vote': user_score,
+            'average_votes': talk.get_average_votes()
+        })
+        return context
+
+
+class SubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, FormView):
+    model = Talk
+    form_class = TalkCommentForm
+    http_method_names = ['post']
+
+    def form_invalid(self, form):
+        messages.warning(self.request, form.errors)
+        # TODO: implement form_invalid for ajax calls
+        return redirect(self.get_success_url())
+
+    def form_valid(self, form):
+        # TODO: implement form valid for ajax calls
+        talk = self.get_object()
+        talk.talkcomment_set.create(
+            commenter=self.request.user, comment=form.cleaned_data['comment'],
+            is_visible=form.cleaned_data['is_visible'])
+        return super(SubmitTalkComment, self).form_valid(form)
+
+    def get_success_url(self):
+        talk = self.get_object()
+        return reverse_lazy('talk_details', kwargs={'pk': talk.pk})
+
+    def get_form_kwargs(self):
+        kwargs = super(SubmitTalkComment, self).get_form_kwargs()
+        kwargs['instance'] = self.get_object()
+        return kwargs
+
+
+class TalkVote(CommitteeRequiredMixin, UpdateView):
+    model = Talk
+    template_name_suffix = '_vote'
+    form_class = TalkVoteForm
+
+    def form_invalid(self, form):
+        if self.request.is_ajax():
+            return JsonResponse({'message': 'error', 'errors': form.errors})
+        return super(TalkVote, self).form_invalid(form)
+
+    def form_valid(self, form):
+        talk = self.get_object()
+        score = form.cleaned_data['score']
+        try:
+            vote = talk.vote_set.get(voter=self.request.user)
+            vote.score = score
+            vote.save()
+        except Vote.DoesNotExist:
+            talk.vote_set.create(voter=self.request.user, score=score)
+        if self.request.is_ajax():
+            return JsonResponse({'message': 'ok'})
+        return super(TalkVote, self).form_valid(form)
+
+
+class TalkVoteClear(CommitteeRequiredMixin, SingleObjectMixin, View):
+    model = Talk
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        talk = self.get_object()
+        talk.vote_set.filter(voter=request.user).delete()
+        return JsonResponse({'message': 'vote deleted'})
+
+
+class TalkCommentDelete(CommitteeRequiredMixin, SingleObjectMixin, View):
+    model = TalkComment
+    http_method_names = ['post']
+
+    def get_queryset(self):
+        return super(TalkCommentDelete, self).get_queryset().filter(commenter=self.request.user)
+
+    def post(self, request, *args, **kwargs):
+        self.get_object().delete()
+        return JsonResponse({'message': 'comment deleted'})

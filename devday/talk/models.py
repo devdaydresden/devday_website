@@ -7,6 +7,7 @@ from PIL import Image
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
+from django.db.models import Avg
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -98,6 +99,10 @@ class Talk(models.Model):
         verbose_name = _("Session")
         verbose_name_plural = _("Sessions")
 
+    def get_average_votes(self):
+        result = self.vote_set.aggregate(Avg('score'))
+        return result['score__avg']
+
     def __str__(self):
         return "%s - %s" % (self.speaker, self.title)
 
@@ -109,7 +114,7 @@ class Vote(models.Model):
     score = models.PositiveSmallIntegerField()
 
     class Meta:
-        unique_together = ['voter', 'score']
+        unique_together = ['voter', 'talk']
 
     def __str__(self):
         return '{} voted {} for {} by {}'.format(

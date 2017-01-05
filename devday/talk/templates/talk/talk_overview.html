@@ -1,16 +1,24 @@
 {% extends "devday_site.html" %}
-{% load i18n crispy_forms_tags cms_tags %}
+{% load i18n l10n cms_tags static sekizai_tags %}
 {% block title %}{% trans "List of sessions" %}{% endblock %}
 {% block content_body %}
     <div class="row">
         <div class="col-lg-offset-1 col-lg-10 col-md-12">
             <h1>{% trans "List of sessions" %}</h1>
             {% if talk_list %}
+                {% addtoblock "css" %}
+                    <link rel="stylesheet" href="{% static "css/star-rating.css" %}">
+                    <link rel="stylesheet" href="{% static "css/theme-krajee-svg.css" %}">
+                {% endaddtoblock %}
+                {% addtoblock "js" %}
+                    <script src="{% static "js/star-rating.js" %}" type="text/javascript"></script>
+                {% endaddtoblock %}
                 <table class="table">
                     <thead>
                     <tr>
                         <th>{% trans "Speaker" %}</th>
                         <th>{% trans "Session title" %}</th>
+                        <th>{% trans "Vote average" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -18,10 +26,33 @@
                         <tr>
                             <td><a href="{% url 'speaker_details' pk=talk.speaker.pk %}">{{ talk.speaker }}</a></td>
                             <td><a href="{% url 'talk_details' pk=talk.pk %}">{{ talk.title }}</a></td>
+                            <td>{% if talk.vote_set.exists %}
+                                <input title="{% trans 'average vote' %}" id="talk-average-{{ talk.pk }}-id"
+                                       name="talk-average" type="number" class="rating-loading" data-size="xs"
+                                       value="{{ talk.get_average_votes|unlocalize }}">{% else %}
+                                {% trans "No votes yet" %}{% endif %}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
+                {% addtoblock "js" %}
+                    <script type="text/javascript">
+                        $(document).on('ready', function () {
+                            $('.rating-loading').rating({
+                                theme: 'krajee-svg',
+                                filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                                emptyStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                                showCaption: false,
+                                showClear: false,
+                                displayOnly: true,
+                                readOnly: true,
+                                step: 0.1,
+                                min: 0,
+                                max: 5
+                            });
+                        });
+                    </script>
+                {% endaddtoblock %}
             {% else %}
                 <p class="text-info">{% trans "There are no talks yet." %}</p>
             {% endif %}

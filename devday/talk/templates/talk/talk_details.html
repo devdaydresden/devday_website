@@ -1,7 +1,30 @@
 {% extends "devday_site.html" %}
-{% load i18n %}
+{% load i18n sekizai_tags static l10n crispy_forms_tags %}
 {% block title %}{% trans "Talk" %} - {{ talk.title }}{% endblock %}
 {% block content_body %}
+    {% addtoblock "css" %}
+        <link rel="stylesheet" href="{% static "css/star-rating.css" %}">
+        <link rel="stylesheet" href="{% static "css/theme-krajee-svg.css" %}">
+    {% endaddtoblock %}
+    {% addtoblock "js" %}
+        <script src="{% static "js/star-rating.js" %}" type="text/javascript"></script>
+        <script type="text/javascript">
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        </script>
+    {% endaddtoblock %}
     <div class="col-lg-offset-2 col-lg-8 col-md-12">
         <h1>{% spaceless %}{{ talk.title }}{% endspaceless %}</h1>
         <dl class="definition-list">
@@ -16,21 +39,99 @@
     <div class="col-lg-offset-2 col-lg-8 col-md-12">
         <h2>{% trans "Votes" %}</h2>
         <p>{% if talk.vote_set.exists %}
-            {% trans "Average vote" %}: {{ talk.average_votes }}<br>
-            {% if uservote %}{% trans "Your vote" %}: {{ uservote }}{% else %}{% trans "You have not voted yet" %}{% endif %}
+            {% trans "Average vote" %}:
+            <input title="{% trans 'average vote' %}" id="talk-average-id" name="talk-average" type="number"
+                   class="rating-loading" value="{{ average_votes|unlocalize }}"><br>
         {% else %}
             {% trans "No votes yet" %}{% endif %}
         </p>
+        {% trans "Your vote" %}: <input title="{% trans "your vote" %}" id="talk-vote-id" name="talk-vote" type="number"
+                                        class="rating-loading" value="{{ user_vote }}">
+        {% addtoblock "js" %}
+            <script type="text/javascript">
+                $(document).on('ready', function () {
+                    $('#talk-average-id').rating({
+                        theme: 'krajee-svg',
+                        filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                        emptyStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                        showCaption: false,
+                        showClear: false,
+                        displayOnly: true,
+                        readOnly: true,
+                        step: 0.1,
+                        min: 0,
+                        max: 5
+                    });
+                    $('#talk-vote-id').rating({
+                        theme: 'krajee-svg',
+                        filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                        emptyStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                        clearButton: '<a class="btn">{% trans "Delete" %}</span>',
+                        showCaption: false,
+                        step: 1,
+                    }).on('rating.clear', function (event) {
+                        $.ajax(
+                            "{% url 'talk_vote_clear' pk=talk.pk %}",
+                            {
+                                data: {"score": null},
+                                headers: {
+                                    "X-CSRFToken": getCookie('csrftoken')
+                                },
+                                method: 'POST'
+                            }
+                        );
+                    }).on('rating.change', function (event, value, caption) {
+                        $.ajax(
+                            "{% url 'talk_vote' pk=talk.pk %}",
+                            {
+                                data: {"score": value},
+                                headers: {
+                                    "X-CSRFToken": getCookie('csrftoken')
+                                },
+                                method: 'POST'
+                            }
+                        );
+                    });
+                });
+            </script>
+        {% endaddtoblock %}
         <h2>{% trans "Comments" %}</h2>
         {% if talk.talkcomment_set.exists %}
-            {% for comment in talk.talkcomment_set %}
-                <p>{{ comment.comment }}<br>
+            {% for comment in talk.talkcomment_set.all %}
+                <p id="comment-{{ comment.pk }}">{{ comment.comment }}<br>
                     {{ comment.created }} {{ comment.commenter }}
                     {% if comment.is_visible %}{% trans "visible" %}{% else %}{% trans "private" %}{% endif %}
+                    {% if comment.commenter == request.user %}<a class="delete-comment-link" href="#"
+                                                                 data-url="{% url "delete_talk_comment" pk=comment.pk %}" data-comment-id="comment-{{ comment.pk }}">{% trans "delete" %}</a>{% endif %}
                 </p>
             {% endfor %}
+            {% addtoblock "js" %}
+                <script type="text/javascript">
+                    $(document).on('ready', function () {
+                        $('.delete-comment-link').on('click', function () {
+                            var comment_paragraph_id = $(this).data('comment-id');
+                            $.ajax(
+                                $(this).data('url'),
+                                {
+                                    headers: {
+                                        "X-CSRFToken": getCookie('csrftoken')
+                                    },
+                                    method: 'POST',
+                                    success: function (data, textStatus, jqXHR) {
+                                        $('#' + comment_paragraph_id).remove();
+                                    }
+                                }
+                            );
+                        });
+                    });
+                </script>
+            {% endaddtoblock %}
         {% else %}
             <p>{% trans "No comments yet" %}</p>
         {% endif %}
+        {% crispy comment_form %}
+    </div>
+    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+        <a class="btn" href="{% url 'talk_overview' %}">{% trans "Back to list of sessions" %}</a>
     </div>
 {% endblock %}

@@ -5530,7 +5530,7 @@ body {
 .error-404 {
   min-height: 620px;
   background-color: #272c59 !important;
-  background-image: url(../../assets/images/out-of-space.svg) !important;
+  background-image: url(../images/out-of-space.svg) !important;
   background-size: contain !important;
   background-position: 50% bottom !important;
   background-repeat: no-repeat !important; }

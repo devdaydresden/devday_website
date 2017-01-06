@@ -209,6 +209,11 @@ class TalkOverview(CommitteeRequiredMixin, ListView):
     model = Talk
     template_name_suffix = '_overview'
 
+    def get_queryset(self):
+        qs = super(TalkOverview, self).get_queryset().select_related(
+            'speaker', 'speaker__user', 'speaker__user__user').order_by('title')
+        return qs
+
 
 class SpeakerDetails(CommitteeRequiredMixin, DetailView):
     model = Speaker

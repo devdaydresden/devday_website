@@ -41,7 +41,7 @@ msgstr "Kontaktaufnahme zu weiteren Veranstaltungen"
 msgid "I hereby agree to be contacted for other SECO events."
 msgstr ""
 "Ich möchte zu weiteren Veranstaltungen der Software Engineering Community "
-"der T-Sytems Multimedia Solutions GmbH informiert werden."
+"der T-Systems Multimedia Solutions GmbH informiert werden."
 
 #: attendee/forms.py:70
 msgid "E-Mail"

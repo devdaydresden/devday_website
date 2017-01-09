@@ -38,7 +38,7 @@
     </div>
     <div class="col-lg-offset-2 col-lg-8 col-md-12">
         <h2>{% trans "Votes" %}</h2>
-        <p>{% if talk.vote_set.exists %}
+        <p>{% if average_votes %}
             {% trans "Average vote" %}:
             <input title="{% trans 'average vote' %}" id="talk-average-id" name="talk-average" type="number"
                    class="rating-loading" value="{{ average_votes|unlocalize }}"><br>
@@ -96,14 +96,19 @@
             </script>
         {% endaddtoblock %}
         <h2>{% trans "Comments" %}</h2>
-        {% if talk.talkcomment_set.exists %}
-            {% for comment in talk.talkcomment_set.all %}
-                <p id="comment-{{ comment.pk }}">{{ comment.comment }}<br>
-                    {{ comment.created }} {{ comment.commenter }}
-                    {% if comment.is_visible %}{% trans "visible" %}{% else %}{% trans "private" %}{% endif %}
-                    {% if comment.commenter == request.user %}<a class="delete-comment-link" href="#"
-                                                                 data-url="{% url "delete_talk_comment" pk=comment.pk %}" data-comment-id="comment-{{ comment.pk }}">{% trans "delete" %}</a>{% endif %}
-                </p>
+        {% if comments %}
+            {% for comment in comments %}
+                <div id="comment-{{ comment.pk }}" class="panel panel-default">
+                    <p class="panel-body">{{ comment.comment }}</p>
+                    <p class="panel-footer text-right">{{ comment.created }} {{ comment.commenter }}
+                        {% if comment.is_visible %}{% trans "visible" %}{% else %}{% trans "private" %}{% endif %}
+                        {% if comment.commenter == request.user %}
+                            <a class="delete-comment-link" href="#"
+                               data-url="{% url "delete_talk_comment" pk=comment.pk %}"
+                               data-comment-id="comment-{{ comment.pk }}">{% trans "delete" %}</a>
+                        {% endif %}
+                    </p>
+                </div>
             {% endfor %}
             {% addtoblock "js" %}
                 <script type="text/javascript">

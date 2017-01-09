@@ -19,6 +19,7 @@
                         <th>{% trans "Speaker" %}</th>
                         <th>{% trans "Session title" %}</th>
                         <th>{% trans "Vote average" %}</th>
+                        <th>{% trans "Comments" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -26,11 +27,20 @@
                         <tr>
                             <td><a href="{% url 'speaker_details' pk=talk.speaker.pk %}">{{ talk.speaker }}</a></td>
                             <td><a href="{% url 'talk_details' pk=talk.pk %}">{{ talk.title }}</a></td>
-                            <td>{% if talk.vote_set.exists %}
-                                <input title="{% trans 'average vote' %}" id="talk-average-{{ talk.pk }}-id"
-                                       name="talk-average" type="number" class="rating-loading" data-size="xs"
-                                       value="{{ talk.get_average_votes|unlocalize }}">{% else %}
-                                {% trans "No votes yet" %}{% endif %}</td>
+                            <td>
+                                {% if talk.average_score %}
+                                    <input title="{% trans 'average vote' %}" id="talk-average-{{ talk.pk }}-id"
+                                           name="talk-average" type="number" class="rating-loading" data-size="xs"
+                                           value="{{ talk.average_score|unlocalize }}">
+                                {% else %}
+                                    {% trans "No votes yet" %}
+                                {% endif %}</td>
+                            <td>{% if talk.comment_count %}
+                                {{ talk.comment_count }}
+                                {% else %}
+                                {% trans "No comments yet" %}
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

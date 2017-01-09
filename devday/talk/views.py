@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.contrib.auth.views import login
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.models import Avg, Count
 from django.db.transaction import atomic
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -42,6 +43,7 @@ def submit_session_view(request):
 
     if not request.user.is_anonymous() and not "edit" in request.GET:
         try:
+            # noinspection PyStatementEffect
             request.user.attendee and request.user.attendee.speaker
             return redirect(reverse('create_session'))
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
@@ -67,6 +69,7 @@ class SpeakerRequiredMixin(AccessMixin):
             user.attendee and user.attendee.speaker
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
             raise SuspiciousOperation(_('Authenticated user must be a registered speaker'))
+        # noinspection PyUnresolvedReferences
         return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
 
 
@@ -138,6 +141,7 @@ class CreateSpeakerView(RegistrationView):
         user = self.request.user
         if user.is_authenticated():
             try:
+                # noinspection PyStatementEffect
                 user.attendee and user.attendee.speaker
                 return redirect(self.success_url)
             except Speaker.DoesNotExist:
@@ -210,9 +214,10 @@ class TalkOverview(CommitteeRequiredMixin, ListView):
     template_name_suffix = '_overview'
 
     def get_queryset(self):
-        qs = super(TalkOverview, self).get_queryset().select_related(
-            'speaker', 'speaker__user', 'speaker__user__user').order_by('title')
-        return qs
+        return super(TalkOverview, self).get_queryset().select_related(
+            'speaker', 'speaker__user', 'speaker__user__user').order_by('title').annotate(
+            average_score=Avg('vote__score'),
+            comment_count=Count('talkcomment'))
 
 
 class SpeakerDetails(CommitteeRequiredMixin, DetailView):
@@ -223,6 +228,13 @@ class SpeakerDetails(CommitteeRequiredMixin, DetailView):
 class TalkDetails(CommitteeRequiredMixin, DetailView):
     model = Talk
     template_name_suffix = '_details'
+
+    def get_queryset(self):
+        return super(TalkDetails, self).get_queryset().select_related(
+            'speaker', 'speaker__user', 'speaker__user__user'
+        ).annotate(
+            average_score=Avg('vote__score')
+        )
 
     def get_context_data(self, **kwargs):
         context = super(TalkDetails, self).get_context_data(**kwargs)
@@ -235,7 +247,8 @@ class TalkDetails(CommitteeRequiredMixin, DetailView):
         context.update({
             'comment_form': TalkCommentForm(instance=talk),
             'user_vote': user_score,
-            'average_votes': talk.get_average_votes()
+            'average_votes': talk.average_score,
+            'comments': talk.talkcomment_set.select_related('commenter').order_by('-modified').all()
         })
         return context
 
@@ -256,6 +269,7 @@ class SubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, FormView):
         talk.talkcomment_set.create(
             commenter=self.request.user, comment=form.cleaned_data['comment'],
             is_visible=form.cleaned_data['is_visible'])
+        # TODO: send email to speaker if comment is visible
         return super(SubmitTalkComment, self).form_valid(form)
 
     def get_success_url(self):
@@ -270,13 +284,11 @@ class SubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, FormView):
 
 class TalkVote(CommitteeRequiredMixin, UpdateView):
     model = Talk
-    template_name_suffix = '_vote'
+    http_method_names = ['post']
     form_class = TalkVoteForm
 
     def form_invalid(self, form):
-        if self.request.is_ajax():
-            return JsonResponse({'message': 'error', 'errors': form.errors})
-        return super(TalkVote, self).form_invalid(form)
+        return JsonResponse({'message': 'error', 'errors': form.errors})
 
     def form_valid(self, form):
         talk = self.get_object()
@@ -287,15 +299,14 @@ class TalkVote(CommitteeRequiredMixin, UpdateView):
             vote.save()
         except Vote.DoesNotExist:
             talk.vote_set.create(voter=self.request.user, score=score)
-        if self.request.is_ajax():
-            return JsonResponse({'message': 'ok'})
-        return super(TalkVote, self).form_valid(form)
+        return JsonResponse({'message': 'ok'})
 
 
 class TalkVoteClear(CommitteeRequiredMixin, SingleObjectMixin, View):
     model = Talk
     http_method_names = ['post']
 
+    # noinspection PyUnusedLocal
     def post(self, request, *args, **kwargs):
         talk = self.get_object()
         talk.vote_set.filter(voter=request.user).delete()
@@ -309,6 +320,7 @@ class TalkCommentDelete(CommitteeRequiredMixin, SingleObjectMixin, View):
     def get_queryset(self):
         return super(TalkCommentDelete, self).get_queryset().filter(commenter=self.request.user)
 
+    # noinspection PyUnusedLocal
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
         return JsonResponse({'message': 'comment deleted'})

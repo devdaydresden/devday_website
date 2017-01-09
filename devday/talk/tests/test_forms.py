@@ -1,7 +1,7 @@
 import os
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout
+from crispy_forms.layout import Layout, Submit
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
@@ -11,8 +11,9 @@ from django.test import TestCase
 from django_file_form.uploader import FileFormUploadBackend
 
 from attendee.models import Attendee
+from devday.utils.forms import DevDayFormHelper
 from talk.forms import TalkForm, SpeakerForm, ExistingFileForm, DevDayRegistrationForm, CreateTalkForm, \
-    TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm, EditTalkForm
+    TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm, EditTalkForm, TalkCommentForm, TalkVoteForm
 from talk.models import Talk, Speaker
 
 try:
@@ -279,3 +280,28 @@ class CreateSpeakerFormTest(SimpleTestCase):
         self.assertEqual(len(layout_fields), len(expected_fields))
         for field in expected_fields:
             self.assertIn(field, expected_fields)
+
+
+class TalkCommentFormTest(TestCase):
+    def test_fields(self):
+        form = TalkCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertListEqual(['comment', 'is_visible'], list(form.fields))
+
+    def test_init_creates_form_helper(self):
+        form = TalkCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertEqual(form.fields['comment'].widget.attrs['rows'], 2)
+        self.assertEqual(form.helper.form_action, '/session/committee/talks/1/comment/')
+
+    def test_init_creates_layout(self):
+        form = TalkCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertIsInstance(form.helper.layout, Layout)
+        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        self.assertListEqual(['comment', 'is_visible'], layout_fields)
+        self.assertEqual(len(form.helper.layout.get_layout_objects(Submit)), 1)
+
+
+class TalkVoteFormTest(TestCase):
+    def test_fields(self):
+        form = TalkVoteForm()
+        self.assertListEqual(['score'], list(form.fields))

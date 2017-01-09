@@ -2,16 +2,20 @@ from __future__ import unicode_literals
 
 import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.contrib.auth.views import login
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import SuspiciousOperation
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Avg, Count
 from django.db.transaction import atomic
 from django.http import JsonResponse
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView
 from django.views.generic import TemplateView
@@ -257,6 +261,24 @@ class SubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, FormView):
     model = Talk
     form_class = TalkCommentForm
     http_method_names = ['post']
+    email_subject_template = 'talk/talk_comment_email_subject.txt'
+    email_body_template = 'talk/talk_comment_email_body.txt'
+    talk_comment = None
+
+    def get_email_context(self):
+        return {
+            'talk': self.get_object(),
+            'request': self.request,
+            'comment': self.talk_comment,
+            'site': get_current_site(self.request),
+            'event': 'Dev Day 2017'
+        }
+
+    def get_email_subject(self):
+        return render_to_string(self.email_subject_template, self.get_email_context())
+
+    def get_email_text_body(self):
+        return render_to_string(self.email_body_template, self.get_email_context())
 
     def form_invalid(self, form):
         messages.warning(self.request, form.errors)
@@ -266,10 +288,18 @@ class SubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, FormView):
     def form_valid(self, form):
         # TODO: implement form valid for ajax calls
         talk = self.get_object()
-        talk.talkcomment_set.create(
+        self.talk_comment = talk.talkcomment_set.create(
             commenter=self.request.user, comment=form.cleaned_data['comment'],
             is_visible=form.cleaned_data['is_visible'])
-        # TODO: send email to speaker if comment is visible
+
+        # send email to speaker if comment is visible
+        if self.talk_comment.is_visible:
+            recipient = talk.speaker.user.user.email
+            send_mail(
+                self.get_email_subject(),
+                self.get_email_text_body(),
+                settings.DEFAULT_FROM_EMAIL,
+                [recipient])
         return super(SubmitTalkComment, self).form_valid(form)
 
     def get_success_url(self):
@@ -324,3 +354,13 @@ class TalkCommentDelete(CommitteeRequiredMixin, SingleObjectMixin, View):
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
         return JsonResponse({'message': 'comment deleted'})
+
+
+class SpeakerTalkDetails(SpeakerRequiredMixin, UpdateView):
+    model = Talk
+    template_name_suffix = '_speaker_details'
+
+    def get_queryset(self):
+        return super(SpeakerTalkDetails, self).get_queryset().select_related('comments').filter(
+            speaker__user__user=self.request.user,
+            comments__is_visible=True)

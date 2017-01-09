@@ -1,0 +1,1 @@
+{% load i18n %}{% blocktrans with talk_title=talk.title %}[devday] New comment on your talk submission {{ talk_title }}{% endblocktrans %}

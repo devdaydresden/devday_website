@@ -475,7 +475,7 @@ class TestSubmitTalkComment(TestCase):
                 ),
                 videopermission=True,
                 shirt_size=1,
-            )
+            ), title=u'I have something important to say'
         )
         self.url = u'/session/committee/talks/{0:d}/comment/'.format(self.talk.pk)
 
@@ -527,6 +527,27 @@ class TestSubmitTalkComment(TestCase):
         self.assertEqual(comments[0].comment, u'A little comment for you')
         self.assertFalse(comments[0].is_visible)
         self.assertEqual(comments[0].commenter, user)
+
+    def test_visible_comment_triggers_mail_to_speaker(self):
+        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user.groups.add(Group.objects.get(name=u'talk_committee'))
+        self.client.login(email=u'committee@example.org', password=u's3cr3t')
+        response = self.client.post(self.url, data={
+            u'comment': u'A little comment for you', u'is_visible': u'checked'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/session/committee/talks/{0:d}/'.format(self.talk.pk))
+        response = self.client.get(response.url)
+        self.assertEqual(response.status_code, 200)
+        comments = list(response.context['comments'])
+        self.assertEqual(len(comments), 1)
+        self.assertEqual(comments[0].comment, u'A little comment for you')
+        self.assertTrue(comments[0].is_visible)
+        self.assertEqual(comments[0].commenter, user)
+        self.assertEqual(len(mail.outbox), 1)
+        speaker_mail = mail.outbox[0]
+        self.assertIn(self.talk.speaker.user.user.email, speaker_mail.recipients())
+        self.assertIn(self.talk.title, speaker_mail.subject)
+        self.assertIn(self.talk.title, speaker_mail.body)
 
 
 class TestTalkVote(TestCase):

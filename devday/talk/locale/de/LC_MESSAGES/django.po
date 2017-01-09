@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-06 11:27+0100\n"
-"PO-Revision-Date: 2017-01-06 11:31+0100\n"
+"POT-Creation-Date: 2017-01-09 19:44+0100\n"
+"PO-Revision-Date: 2017-01-09 19:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -76,43 +76,43 @@ msgstr "E-Mail"
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
-#: talk/models.py:19
+#: talk/models.py:18
 msgid "XS"
 msgstr "XS"
 
-#: talk/models.py:20
+#: talk/models.py:19
 msgid "S"
 msgstr "S"
 
-#: talk/models.py:21
+#: talk/models.py:20
 msgid "M"
 msgstr "M"
 
-#: talk/models.py:22
+#: talk/models.py:21
 msgid "L"
 msgstr "L"
 
-#: talk/models.py:23
+#: talk/models.py:22
 msgid "XL"
 msgstr "XL"
 
-#: talk/models.py:24
+#: talk/models.py:23
 msgid "XXL"
 msgstr "XXL"
 
-#: talk/models.py:25
+#: talk/models.py:24
 msgid "XXXL"
 msgstr "XXXL"
 
-#: talk/models.py:32
+#: talk/models.py:31
 msgid "T-shirt size"
 msgstr "T-Shirtgröße"
 
-#: talk/models.py:34
+#: talk/models.py:33
 msgid "Video permitted"
 msgstr "Videofreigabe erteilt"
 
-#: talk/models.py:35
+#: talk/models.py:34
 msgid ""
 "I hereby agree that audio and visual recordings of me and my session can be "
 "published on the social media channels of the event organizer and the "
@@ -122,49 +122,49 @@ msgstr ""
 "Session auf den Social-Media-Kanälen des Veranstalters und auf der Webseite "
 "devday.de verwendet werden dürfen."
 
-#: talk/models.py:40 talk/templates/talk/speaker_details.html:20
+#: talk/models.py:39 talk/templates/talk/speaker_details.html:20
 #: talk/templates/talk/speaker_profile.html:18
 msgid "Short biography"
 msgstr "Kurzvita"
 
-#: talk/models.py:41 talk/templates/talk/speaker_details.html:23
+#: talk/models.py:40 talk/templates/talk/speaker_details.html:23
 #: talk/templates/talk/speaker_profile.html:21
 msgid "Speaker image"
 msgstr "Speakerbild"
 
-#: talk/models.py:43
+#: talk/models.py:42
 msgid "Speaker image thumbnail"
 msgstr "Vorschau Speakerbild"
 
-#: talk/models.py:47 talk/templates/talk/talk_overview.html:19
+#: talk/models.py:46 talk/templates/talk/talk_overview.html:19
 msgid "Speaker"
 msgstr "Sprecher"
 
-#: talk/models.py:48
+#: talk/models.py:47
 msgid "Speakers"
 msgstr "Sprecher"
 
-#: talk/models.py:94 talk/templates/talk/talk_overview.html:20
+#: talk/models.py:93 talk/templates/talk/talk_overview.html:20
 msgid "Session title"
 msgstr "Sessionname"
 
-#: talk/models.py:95 talk/templates/talk/talk_details.html:33
+#: talk/models.py:94 talk/templates/talk/talk_details.html:33
 msgid "Abstract"
 msgstr "Kurzbeschreibung"
 
-#: talk/models.py:96 talk/templates/talk/talk_details.html:35
+#: talk/models.py:95 talk/templates/talk/talk_details.html:35
 msgid "Remarks"
 msgstr "Anmerkungen"
 
-#: talk/models.py:99
+#: talk/models.py:98
 msgid "Session"
 msgstr "Session"
 
-#: talk/models.py:100
+#: talk/models.py:99
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:131
+#: talk/models.py:126
 msgid "Indicates whether the comment is visible to the speaker."
 msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
 
@@ -310,6 +310,54 @@ msgstr ""
 "Besuche dein <a href=\"%(speaker_profile)s\">Sprecherprofil</a>, um deine "
 "eingereichten Sessions anzusehen."
 
+#: talk/templates/talk/talk_comment_email_body.txt:1
+#, python-format
+msgid ""
+"A new comment has been added for your talk submitted for %(event)s under the "
+"title\n"
+"\n"
+"%(talk_title)s\n"
+"\n"
+"\"%(comment)s\"\n"
+"\n"
+"by %(commenter)s at %(commented_at)s\n"
+"\n"
+"You may respond to this comment by visiting\n"
+msgstr ""
+"Für den Vortrag mit dem Titel\n"
+"\n"
+"\"%(talk_title)s\",\n"
+"\n"
+"den du für den %(event)s eingereicht hast, wurde folgender neuer Kommentar "
+"hinzugefügt:\n"
+"\n"
+"\"%(comment)s\"\n"
+"\n"
+"von %(commenter)s am %(commented_at)s\n"
+"\n"
+"Du kannst auf diesen Kommentar antworten, indem du folgenden Link aufrufst:\n"
+
+#: talk/templates/talk/talk_comment_email_body.txt:14
+msgid ""
+"\n"
+"\n"
+"The DevDay team\n"
+"\n"
+"--\n"
+"https://www.devday.de/"
+msgstr ""
+"\n"
+"\n"
+"Das DevDay-Team\n"
+"\n"
+"--\n"
+"https://www.devday.de/"
+
+#: talk/templates/talk/talk_comment_email_subject.txt:1
+#, python-format
+msgid "[devday] New comment on your talk submission %(talk_title)s"
+msgstr "[devday] Neuer Kommentar für deine Sessioneinreichung %(talk_title)s"
+
 #: talk/templates/talk/talk_details.html:3
 msgid "Talk"
 msgstr "Session"
@@ -323,12 +371,12 @@ msgid "Average vote"
 msgstr "Durchschnittliche Bewertung"
 
 #: talk/templates/talk/talk_details.html:43
-#: talk/templates/talk/talk_overview.html:30
+#: talk/templates/talk/talk_overview.html:32
 msgid "average vote"
 msgstr "durchschnittliche Bewertung"
 
 #: talk/templates/talk/talk_details.html:46
-#: talk/templates/talk/talk_overview.html:33
+#: talk/templates/talk/talk_overview.html:36
 msgid "No votes yet"
 msgstr "Noch keine Bewertungen"
 
@@ -345,26 +393,28 @@ msgid "Delete"
 msgstr "Löschen"
 
 #: talk/templates/talk/talk_details.html:98
+#: talk/templates/talk/talk_overview.html:22
 msgid "Comments"
 msgstr "Kommentare"
 
-#: talk/templates/talk/talk_details.html:103
+#: talk/templates/talk/talk_details.html:104
 msgid "visible"
 msgstr "sichtbar"
 
-#: talk/templates/talk/talk_details.html:103
+#: talk/templates/talk/talk_details.html:104
 msgid "private"
 msgstr "privat"
 
-#: talk/templates/talk/talk_details.html:105
+#: talk/templates/talk/talk_details.html:108
 msgid "delete"
 msgstr "löschen"
 
-#: talk/templates/talk/talk_details.html:130
+#: talk/templates/talk/talk_details.html:135
+#: talk/templates/talk/talk_overview.html:41
 msgid "No comments yet"
 msgstr "Noch keine Kommentare"
 
-#: talk/templates/talk/talk_details.html:135
+#: talk/templates/talk/talk_details.html:140
 msgid "Back to list of sessions"
 msgstr "Zurück zur Session-Liste"
 
@@ -381,10 +431,14 @@ msgstr "Session-Liste"
 msgid "Vote average"
 msgstr "Durchschnittliche Bewertung"
 
-#: talk/templates/talk/talk_overview.html:57
+#: talk/templates/talk/talk_overview.html:67
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
-#: talk/views.py:69
+#: talk/tests/test_views.py:514 talk/tests/test_views.py:593
+msgid "This field is required."
+msgstr "Dieses Feld ist erforderlich."
+
+#: talk/views.py:75
 msgid "Authenticated user must be a registered speaker"
 msgstr "Der angemeldete Nutzer muss als Sprecher registriert sein"

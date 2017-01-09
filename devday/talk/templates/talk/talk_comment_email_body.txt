@@ -1,0 +1,19 @@
+{% load i18n %}{% blocktrans with talk_title=talk.title comment=comment.comment commenter=comment.commenter commented_at=comment.created %}A new comment has been added for your talk submitted for {{ event }} under the title
+
+{{ talk_title }}
+
+"{{ comment }}"
+
+by {{ commenter }} at {{ commented_at }}
+
+You may respond to this comment by visiting
+{% endblocktrans %}
+
+{{ request.scheme }}://{{ site.domain }}{% url 'speaker_talk_details' pk=talk.pk %}
+
+{% blocktrans %}
+
+The DevDay team
+
+--
+https://www.devday.de/{% endblocktrans %}

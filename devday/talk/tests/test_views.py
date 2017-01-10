@@ -10,7 +10,7 @@ from django.utils.translation import ugettext as _
 from django_file_form.forms import ExistingFile
 
 from attendee.models import Attendee
-from talk.forms import CreateSpeakerForm, BecomeSpeakerForm, TalkCommentForm
+from talk.forms import CreateSpeakerForm, BecomeSpeakerForm, TalkCommentForm, EditTalkForm, TalkSpeakerCommentForm
 from talk.models import Speaker, Talk, Vote, TalkComment
 from talk.views import CreateTalkView, ExistingFileView, SpeakerProfileView, CreateSpeakerView
 
@@ -507,11 +507,11 @@ class TestSubmitTalkComment(TestCase):
         self.assertEqual(response.url, u'/session/committee/talks/{0:d}/'.format(self.talk.pk))
         response = self.client.get(response.url)
         self.assertEqual(response.status_code, 200)
-        messages = list(response.context['messages'])
+        messages = list(response.context[u'messages'])
         self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].level_tag, 'warning')
+        self.assertEqual(messages[0].level_tag, u'warning')
         self.assertIn(u'comment', messages[0].message)
-        self.assertIn(_('This field is required.'), messages[0].message)
+        self.assertIn(_(u'This field is required.'), messages[0].message)
 
     def test_form_valid_redirects_to_talk_details(self):
         user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
@@ -522,7 +522,7 @@ class TestSubmitTalkComment(TestCase):
         self.assertEqual(response.url, u'/session/committee/talks/{0:d}/'.format(self.talk.pk))
         response = self.client.get(response.url)
         self.assertEqual(response.status_code, 200)
-        comments = list(response.context['comments'])
+        comments = list(response.context[u'comments'])
         self.assertEqual(len(comments), 1)
         self.assertEqual(comments[0].comment, u'A little comment for you')
         self.assertFalse(comments[0].is_visible)
@@ -538,7 +538,7 @@ class TestSubmitTalkComment(TestCase):
         self.assertEqual(response.url, u'/session/committee/talks/{0:d}/'.format(self.talk.pk))
         response = self.client.get(response.url)
         self.assertEqual(response.status_code, 200)
-        comments = list(response.context['comments'])
+        comments = list(response.context[u'comments'])
         self.assertEqual(len(comments), 1)
         self.assertEqual(comments[0].comment, u'A little comment for you')
         self.assertTrue(comments[0].is_visible)
@@ -719,6 +719,190 @@ class TestTalkCommentDelete(TestCase):
 
     def test_post_deletes_comment(self):
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertRaises(TalkComment.DoesNotExist, TalkComment.objects.get, pk=self.talk_comment.pk)
+
+
+class TestSpeakerTalkDetails(TestCase):
+    def setUp(self):
+        self.speaker = Speaker.objects.create(
+            user=Attendee.objects.create(
+                user=User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
+            ),
+            videopermission=True, shirt_size=1,
+        )
+        self.talk = Talk.objects.create(speaker=self.speaker, title=u'Something important',
+                                        abstract=u'I have something important to say')
+        self.committee_member = User.objects.create_user(email=u'committee@example.org', password=u'g3h31m')
+        self.committee_member.groups.add(Group.objects.get(name=u'talk_committee'))
+        self.comment = self.talk.talkcomment_set.create(
+            commenter=self.committee_member, comment=u'Is this really important?', is_visible=True)
+        self.url = u'/session/speaker/talks/{0:d}/'.format(self.talk.pk)
+
+    def test_needs_authentication(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+
+    def test_needs_speaker(self):
+        User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
+        self.client.login(email=u'user@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 400)
+
+    def test_needs_talk_speaker(self):
+        Speaker.objects.create(
+            user=Attendee.objects.create(
+                user=User.objects.create_user(email=u'other@example.org', password=u's3cr3t')
+            ),
+            videopermission=True, shirt_size=1,
+        )
+        self.client.login(email=u'other@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_template(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(u'talk/talk_speaker_details.html')
+
+    def test_form_class(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.context['form'], EditTalkForm)
+
+    def test_get_context_data(self):
+        other_comment = self.talk.talkcomment_set.create(
+            commenter=self.committee_member, comment=u'Committee eyes only', is_visible=False)
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        context = response.context
+        comments = list(context[u'comments'])
+        self.assertEqual(len(comments), 1)
+        self.assertIn(self.comment, comments)
+        self.assertNotIn(other_comment, comments)
+        self.assertIsInstance(context[u'comment_form'], TalkSpeakerCommentForm)
+
+
+class TestSubmitTalkSpeakerComment(TestCase):
+    def setUp(self):
+        self.speaker = Speaker.objects.create(
+            user=Attendee.objects.create(
+                user=User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
+            ),
+            videopermission=True, shirt_size=1,
+        )
+        self.talk = Talk.objects.create(speaker=self.speaker, title=u'Something important',
+                                        abstract=u'I have something important to say')
+        self.url = u'/session/speaker/talks/{0:d}/comment/'.format(self.talk.pk)
+
+    def test_needs_authentication(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+
+    def test_needs_speaker(self):
+        User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
+        self.client.login(email=u'user@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 400)
+
+    def test_needs_talk_speaker(self):
+        Speaker.objects.create(
+            user=Attendee.objects.create(
+                user=User.objects.create_user(email=u'other@example.org', password=u's3cr3t')
+            ),
+            videopermission=True, shirt_size=1,
+        )
+        self.client.login(email=u'other@example.org', password=u's3cr3t')
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_needs_post(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_form_invalid_sets_message(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/session/speaker/talks/{0:d}/'.format(self.talk.pk))
+        response = self.client.get(response.url)
+        self.assertEqual(response.status_code, 200)
+        messages = list(response.context[u'messages'])
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].level_tag, u'warning')
+        self.assertIn(u'comment', messages[0].message)
+        self.assertIn(_(u'This field is required.'), messages[0].message)
+
+    def test_form_valid_redirects_to_talk_details(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.post(self.url, data={u'comment': u'A little comment for you'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/session/speaker/talks/{0:d}/'.format(self.talk.pk))
+        response = self.client.get(response.url)
+        self.assertEqual(response.status_code, 200)
+        comments = list(response.context[u'comments'])
+        self.assertEqual(len(comments), 1)
+        self.assertEqual(comments[0].comment, u'A little comment for you')
+        self.assertTrue(comments[0].is_visible)
+        self.assertEqual(comments[0].commenter, self.speaker.user.user)
+
+
+class TestTalkSpeakerCommentDelete(TestCase):
+    def setUp(self):
+        self.speaker = Speaker.objects.create(
+            user=Attendee.objects.create(
+                user=User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
+            ),
+            videopermission=True, shirt_size=1,
+        )
+        self.talk = Talk.objects.create(speaker=self.speaker, title=u'Something important',
+                                        abstract=u'I have something important to say')
+        self.talk_comment = self.talk.talkcomment_set.create(
+            commenter=self.speaker.user.user, comment='A little anoying comment', is_visible=True)
+        self.url = u'/session/speaker/talks/delete_comment/{0:d}/'.format(self.talk_comment.pk)
+
+    def test_needs_authentication(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+
+    def test_needs_post(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_needs_speaker(self):
+        User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
+        self.client.login(email=u'user@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 400)
+
+    def test_needs_talk_speaker(self):
+        Speaker.objects.create(
+            user=Attendee.objects.create(
+                user=User.objects.create_user(email=u'other@example.org', password=u's3cr3t')
+            ),
+            videopermission=True, shirt_size=1,
+        )
+        self.client.login(email=u'other@example.org', password=u's3cr3t')
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_post_returns_json_response(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content.decode('utf8'), {u'message': u'comment deleted'})
+
+    def test_post_deletes_comment(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertRaises(TalkComment.DoesNotExist, TalkComment.objects.get, pk=self.talk_comment.pk)

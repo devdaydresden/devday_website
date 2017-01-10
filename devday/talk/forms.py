@@ -256,6 +256,22 @@ class TalkCommentForm(forms.models.ModelForm):
         )
 
 
+class TalkSpeakerCommentForm(forms.models.ModelForm):
+    class Meta:
+        model = TalkComment
+        fields = ['comment']
+
+    def __init__(self, *args, **kwargs):
+        super(TalkSpeakerCommentForm, self).__init__(*args, **kwargs)
+        self.fields['comment'].widget.attrs['rows'] = 2
+        self.helper = DevDayFormHelper()
+        self.helper.form_action = reverse('talk_speaker_comment', kwargs={'pk': self.instance.pk})
+        self.helper.layout = Layout(
+            'comment',
+            Submit('submit', _('Add comment'))
+        )
+
+
 class TalkVoteForm(forms.models.ModelForm):
     class Meta:
         model = Vote

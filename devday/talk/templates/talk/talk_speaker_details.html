@@ -1,0 +1,48 @@
+{% extends "devday_site.html" %}
+{% load i18n sekizai_tags static l10n crispy_forms_tags %}
+{% block title %}{% trans "Edit session" %}{% endblock %}
+{% block content_body %}
+    <h1 class="col-lg-offset-1 col-lg-10 col-md-12">{% trans "Edit session" %}</h1>
+    {% crispy form %}
+    <div class="col-lg-offset-1 col-lg-10 col-md-12">
+        <h2>{% trans "Comments" %}</h2>
+        {% if comments %}
+            {% for comment in comments %}
+                <div id="comment-{{ comment.pk }}" class="panel panel-default">
+                    <p class="panel-body">{{ comment.comment }}</p>
+                    <p class="panel-footer text-right">{{ comment.created }} {{ comment.commenter }}
+                        {% if comment.commenter == request.user %}
+                            <a class="delete-comment-link" href="#"
+                               data-url="{% url "delete_talk_speaker_comment" pk=comment.pk %}"
+                               data-comment-id="comment-{{ comment.pk }}">{% trans "delete" %}</a>
+                        {% endif %}
+                    </p>
+                </div>
+            {% endfor %}
+            {% addtoblock "js" %}
+                <script type="text/javascript">
+                    $(document).on('ready', function () {
+                        $('.delete-comment-link').on('click', function () {
+                            var comment_paragraph_id = $(this).data('comment-id');
+                            $.ajax(
+                                $(this).data('url'),
+                                {
+                                    headers: {
+                                        "X-CSRFToken": getCookie('csrftoken')
+                                    },
+                                    method: 'POST',
+                                    success: function (data, textStatus, jqXHR) {
+                                        $('#' + comment_paragraph_id).remove();
+                                    }
+                                }
+                            );
+                        });
+                    });
+                </script>
+            {% endaddtoblock %}
+        {% else %}
+            <p>{% trans "No comments yet" %}</p>
+        {% endif %}
+        {% crispy comment_form %}
+    </div>
+{% endblock %}

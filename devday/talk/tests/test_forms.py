@@ -13,7 +13,8 @@ from django_file_form.uploader import FileFormUploadBackend
 from attendee.models import Attendee
 from devday.utils.forms import DevDayFormHelper
 from talk.forms import TalkForm, SpeakerForm, ExistingFileForm, DevDayRegistrationForm, CreateTalkForm, \
-    TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm, EditTalkForm, TalkCommentForm, TalkVoteForm
+    TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm, EditTalkForm, TalkCommentForm, TalkVoteForm, \
+    TalkSpeakerCommentForm
 from talk.models import Talk, Speaker
 
 try:
@@ -298,6 +299,25 @@ class TalkCommentFormTest(TestCase):
         self.assertIsInstance(form.helper.layout, Layout)
         layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
         self.assertListEqual(['comment', 'is_visible'], layout_fields)
+        self.assertEqual(len(form.helper.layout.get_layout_objects(Submit)), 1)
+
+
+class TalkSpeakerCommentFormTest(TestCase):
+    def test_fields(self):
+        form = TalkSpeakerCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertListEqual(['comment'], list(form.fields))
+
+    def test_init_creates_form_helper(self):
+        form = TalkSpeakerCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertEqual(form.fields['comment'].widget.attrs['rows'], 2)
+        self.assertEqual(form.helper.form_action, '/session/speaker/talks/1/comment/')
+
+    def test_init_creates_layout(self):
+        form = TalkSpeakerCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertIsInstance(form.helper.layout, Layout)
+        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        self.assertListEqual(['comment'], layout_fields)
         self.assertEqual(len(form.helper.layout.get_layout_objects(Submit)), 1)
 
 

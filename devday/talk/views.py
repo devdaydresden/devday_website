@@ -30,7 +30,7 @@ from registration.backends.hmac.views import RegistrationView
 
 from attendee.models import Attendee
 from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm, \
-    EditTalkForm, TalkCommentForm, TalkVoteForm
+    EditTalkForm, TalkCommentForm, TalkVoteForm, TalkSpeakerCommentForm
 from talk.models import Speaker, Talk, Vote, TalkComment
 
 logger = logging.getLogger('talk')
@@ -359,8 +359,58 @@ class TalkCommentDelete(CommitteeRequiredMixin, SingleObjectMixin, View):
 class SpeakerTalkDetails(SpeakerRequiredMixin, UpdateView):
     model = Talk
     template_name_suffix = '_speaker_details'
+    form_class = EditTalkForm
 
     def get_queryset(self):
-        return super(SpeakerTalkDetails, self).get_queryset().select_related('comments').filter(
-            speaker__user__user=self.request.user,
-            comments__is_visible=True)
+        return super(SpeakerTalkDetails, self).get_queryset().select_related('speaker').filter(
+            speaker__user__user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(SpeakerTalkDetails, self).get_context_data(**kwargs)
+        context['comments'] = context['talk'].talkcomment_set.filter(is_visible=True).all()
+        context['comment_form'] = TalkSpeakerCommentForm(data=self.request.POST, instance=context['talk'])
+        return context
+
+
+class SubmitTalkSpeakerComment(SpeakerRequiredMixin, SingleObjectMixin, FormView):
+    model = Talk
+    form_class = TalkSpeakerCommentForm
+    http_method_names = ['post']
+
+    def form_invalid(self, form):
+        messages.warning(self.request, form.errors)
+        # TODO: implement form_invalid for ajax calls
+        return redirect(self.get_success_url())
+
+    def form_valid(self, form):
+        # TODO: implement form valid for ajax calls
+        talk = self.get_object()
+        talk.talkcomment_set.create(
+            commenter=self.request.user, comment=form.cleaned_data['comment'],
+            is_visible=True)
+        return super(SubmitTalkSpeakerComment, self).form_valid(form)
+
+    def get_success_url(self):
+        talk = self.get_object()
+        return reverse_lazy('speaker_talk_details', kwargs={'pk': talk.pk})
+
+    def get_form_kwargs(self):
+        kwargs = super(SubmitTalkSpeakerComment, self).get_form_kwargs()
+        kwargs['instance'] = self.get_object()
+        return kwargs
+
+    def get_queryset(self):
+        return super(SubmitTalkSpeakerComment, self).get_queryset().filter(speaker__user__user=self.request.user)
+
+
+class TalkSpeakerCommentDelete(SpeakerRequiredMixin, SingleObjectMixin, View):
+    model = TalkComment
+    http_method_names = ['post']
+
+    def get_queryset(self):
+        return super(TalkSpeakerCommentDelete, self).get_queryset().filter(commenter=self.request.user)
+
+    # noinspection PyUnusedLocal
+    def post(self, request, *args, **kwargs):
+        self.get_object().delete()
+        return JsonResponse({'message': 'comment deleted'})

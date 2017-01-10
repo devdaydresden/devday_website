@@ -2,6 +2,24 @@
 {% load i18n sekizai_tags static l10n crispy_forms_tags %}
 {% block title %}{% trans "Edit session" %}{% endblock %}
 {% block content_body %}
+    {% addtoblock "js" %}
+        <script type="text/javascript">
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        </script>
+    {% endaddtoblock %}
     <h1 class="col-lg-offset-1 col-lg-10 col-md-12">{% trans "Edit session" %}</h1>
     {% crispy form %}
     <div class="col-lg-offset-1 col-lg-10 col-md-12">
@@ -10,7 +28,7 @@
             {% for comment in comments %}
                 <div id="comment-{{ comment.pk }}" class="panel panel-default">
                     <p class="panel-body">{{ comment.comment }}</p>
-                    <p class="panel-footer text-right">{{ comment.created }} {{ comment.commenter }}
+                    <p class="panel-footer text-right">{{ comment.created }} {{ comment.commenter.get_full_name }}
                         {% if comment.commenter == request.user %}
                             <a class="delete-comment-link" href="#"
                                data-url="{% url "delete_talk_speaker_comment" pk=comment.pk %}"

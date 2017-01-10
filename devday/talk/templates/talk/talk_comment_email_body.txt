@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans with talk_title=talk.title comment=comment.comment commenter=comment.commenter commented_at=comment.created %}A new comment has been added for your talk submitted for {{ event }} under the title
+{% load i18n %}{% blocktrans with talk_title=talk.title comment=comment.comment commenter=comment.commenter.get_full_name commented_at=comment.created %}A new comment has been added for your talk submitted for {{ event }} under the title
 
 {{ talk_title }}
 

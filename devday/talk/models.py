@@ -120,8 +120,9 @@ class Vote(models.Model):
 class TalkComment(TimeStampedModel):
     commenter = models.ForeignKey(settings.AUTH_USER_MODEL)
     talk = models.ForeignKey(Talk)
-    comment = models.TextField()
+    comment = models.TextField(verbose_name=_('Comment'))
     is_visible = models.BooleanField(
+        verbose_name=_('Visible for Speaker'),
         default=False,
         help_text=_('Indicates whether the comment is visible to the speaker.'))
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-09 19:44+0100\n"
-"PO-Revision-Date: 2017-01-09 19:49+0100\n"
+"POT-Creation-Date: 2017-01-10 15:46+0100\n"
+"PO-Revision-Date: 2017-01-10 15:47+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -72,7 +72,7 @@ msgstr "Als Sprecher registrieren"
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: talk/forms.py:255
+#: talk/forms.py:255 talk/forms.py:271
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
@@ -164,7 +164,15 @@ msgstr "Session"
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:126
+#: talk/models.py:123
+msgid "Comment"
+msgstr "Kommentar"
+
+#: talk/models.py:125
+msgid "Visible for Speaker"
+msgstr "Sichtbar für den Sprecher"
+
+#: talk/models.py:127
 msgid "Indicates whether the comment is visible to the speaker."
 msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
 
@@ -394,6 +402,7 @@ msgstr "Löschen"
 
 #: talk/templates/talk/talk_details.html:98
 #: talk/templates/talk/talk_overview.html:22
+#: talk/templates/talk/talk_speaker_details.html:26
 msgid "Comments"
 msgstr "Kommentare"
 
@@ -406,11 +415,13 @@ msgid "private"
 msgstr "privat"
 
 #: talk/templates/talk/talk_details.html:108
+#: talk/templates/talk/talk_speaker_details.html:35
 msgid "delete"
 msgstr "löschen"
 
 #: talk/templates/talk/talk_details.html:135
 #: talk/templates/talk/talk_overview.html:41
+#: talk/templates/talk/talk_speaker_details.html:62
 msgid "No comments yet"
 msgstr "Noch keine Kommentare"
 
@@ -419,6 +430,8 @@ msgid "Back to list of sessions"
 msgstr "Zurück zur Session-Liste"
 
 #: talk/templates/talk/talk_form.html:3
+#: talk/templates/talk/talk_speaker_details.html:3
+#: talk/templates/talk/talk_speaker_details.html:23
 msgid "Edit session"
 msgstr "Session bearbeiten"
 
@@ -436,6 +449,7 @@ msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
 #: talk/tests/test_views.py:514 talk/tests/test_views.py:593
+#: talk/tests/test_views.py:841
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 

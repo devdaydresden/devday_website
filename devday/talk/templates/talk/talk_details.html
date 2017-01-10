@@ -100,7 +100,7 @@
             {% for comment in comments %}
                 <div id="comment-{{ comment.pk }}" class="panel panel-default">
                     <p class="panel-body">{{ comment.comment }}</p>
-                    <p class="panel-footer text-right">{{ comment.created }} {{ comment.commenter }}
+                    <p class="panel-footer text-right">{{ comment.created }} {{ comment.commenter.get_full_name }}
                         {% if comment.is_visible %}{% trans "visible" %}{% else %}{% trans "private" %}{% endif %}
                         {% if comment.commenter == request.user %}
                             <a class="delete-comment-link" href="#"

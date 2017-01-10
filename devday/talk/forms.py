@@ -9,8 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 from django_file_form.forms import FileFormMixin, UploadedFileField
 from registration.forms import RegistrationFormUniqueEmail
 
-from devday.utils.forms import CombinedFormBase
-from talk.models import Talk, Speaker
+from devday.utils.forms import CombinedFormBase, DevDayFormHelper
+from talk.models import Talk, Speaker, TalkComment, Vote
 
 User = get_user_model()
 
@@ -237,3 +237,42 @@ class CreateSpeakerForm(CombinedFormBase):
                 css_class='col-md-12 col-lg-offset-2 col-lg-8 text-center'
             )
         )
+
+
+class TalkCommentForm(forms.models.ModelForm):
+    class Meta:
+        model = TalkComment
+        fields = ['comment', 'is_visible']
+
+    def __init__(self, *args, **kwargs):
+        super(TalkCommentForm, self).__init__(*args, **kwargs)
+        self.fields['comment'].widget.attrs['rows'] = 2
+        self.helper = DevDayFormHelper()
+        self.helper.form_action = reverse('talk_comment', kwargs={'pk': self.instance.pk})
+        self.helper.layout = Layout(
+            'comment',
+            Field('is_visible', template='talk/form/is_visible-field.html'),
+            Submit('submit', _('Add comment'))
+        )
+
+
+class TalkSpeakerCommentForm(forms.models.ModelForm):
+    class Meta:
+        model = TalkComment
+        fields = ['comment']
+
+    def __init__(self, *args, **kwargs):
+        super(TalkSpeakerCommentForm, self).__init__(*args, **kwargs)
+        self.fields['comment'].widget.attrs['rows'] = 2
+        self.helper = DevDayFormHelper()
+        self.helper.form_action = reverse('talk_speaker_comment', kwargs={'pk': self.instance.pk})
+        self.helper.layout = Layout(
+            'comment',
+            Submit('submit', _('Add comment'))
+        )
+
+
+class TalkVoteForm(forms.models.ModelForm):
+    class Meta:
+        model = Vote
+        fields = ["score"]

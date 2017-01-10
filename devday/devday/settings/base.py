@@ -86,6 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'cms.context_processors.cms_settings',
                 'devday.contextprocessors.devdaysettings_contextprocessor',
+                'talk.context_processors.committee_member_context_processor',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',

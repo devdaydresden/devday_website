@@ -1,0 +1,28 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Speaker profile" %}{% endblock %}
+{% block content_body %}
+    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+        <h1>{% spaceless %}
+            {% if speaker.user.user.first_name %}
+                {% blocktrans with username=speaker.user.user.get_full_name %}Speaker profile for
+                    {{ username }}{% endblocktrans %}
+            {% else %}
+                {% blocktrans with username=speaker.user.user.get_username %}Speaker profile for
+                    {{ username }}{% endblocktrans %}
+            {% endif %}
+        {% endspaceless %}</h1>
+        <dl class="definition-list">
+            <dt>{% trans "Firstname" %}</dt>
+            <dd>{{ speaker.user.user.first_name }}</dd>
+            <dt>{% trans "Lastname" %}</dt>
+            <dd>{{ speaker.user.user.last_name }}</dd>
+            <dt>{% trans "Short biography" %}</dt>
+            <dd>{{ speaker.shortbio }}</dd>
+            {% if speaker.portrait %}
+                <dt>{% trans "Speaker image" %}</dt>
+                <dd><img src="{{ speaker.thumbnail.url }}"></dd>
+            {% endif %}
+        </dl>
+    </div>
+{% endblock %}

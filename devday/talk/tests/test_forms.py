@@ -1,18 +1,20 @@
 import os
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout
+from crispy_forms.layout import Layout, Submit
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.test import SimpleTestCase
-from django.test import TransactionTestCase
+from django.test import TestCase
 from django_file_form.uploader import FileFormUploadBackend
 
 from attendee.models import Attendee
+from devday.utils.forms import DevDayFormHelper
 from talk.forms import TalkForm, SpeakerForm, ExistingFileForm, DevDayRegistrationForm, CreateTalkForm, \
-    TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm, EditTalkForm
+    TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm, EditTalkForm, TalkCommentForm, TalkVoteForm, \
+    TalkSpeakerCommentForm
 from talk.models import Talk, Speaker
 
 try:
@@ -23,7 +25,7 @@ except ImportError:  # Python 2.7 has no mock in unittest
 User = get_user_model()
 
 
-class TalkFormTest(TransactionTestCase):
+class TalkFormTest(TestCase):
     def test_fields(self):
         form = TalkForm()
         self.assertListEqual(
@@ -40,7 +42,7 @@ class TalkFormTest(TransactionTestCase):
         self.assertIsInstance(form.fields['remarks'].widget, forms.Textarea)
 
 
-class SpeakerFormTest(TransactionTestCase):
+class SpeakerFormTest(TestCase):
     def test_fields(self):
         form = SpeakerForm()
         self.assertListEqual(
@@ -105,7 +107,7 @@ class ExistingFileFormTest(SimpleTestCase):
         )
 
 
-class DevDayRegistrationFormTest(TransactionTestCase):
+class DevDayRegistrationFormTest(TestCase):
     def test_fields(self):
         form = DevDayRegistrationForm()
         self.assertListEqual(
@@ -163,7 +165,7 @@ class DevDayRegistrationFormTest(TransactionTestCase):
         self.assertEqual(form.cleaned_data.get(User.USERNAME_FIELD), 'test@example.org')
 
 
-class CreateTalkFormTest(TransactionTestCase):
+class CreateTalkFormTest(TestCase):
     def test_init_creates_form_helper(self):
         speaker = mock.Mock()
         form = CreateTalkForm(speaker=speaker)
@@ -199,7 +201,7 @@ class CreateTalkFormTest(TransactionTestCase):
         self.assertEqual(talk.speaker, speaker)
 
 
-class EditTalkFormTest(TransactionTestCase):
+class EditTalkFormTest(TestCase):
     def test_init_creates_form_helper(self):
         form = EditTalkForm()
         self.assertIsInstance(form.helper, FormHelper)
@@ -279,3 +281,47 @@ class CreateSpeakerFormTest(SimpleTestCase):
         self.assertEqual(len(layout_fields), len(expected_fields))
         for field in expected_fields:
             self.assertIn(field, expected_fields)
+
+
+class TalkCommentFormTest(TestCase):
+    def test_fields(self):
+        form = TalkCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertListEqual(['comment', 'is_visible'], list(form.fields))
+
+    def test_init_creates_form_helper(self):
+        form = TalkCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertEqual(form.fields['comment'].widget.attrs['rows'], 2)
+        self.assertEqual(form.helper.form_action, '/session/committee/talks/1/comment/')
+
+    def test_init_creates_layout(self):
+        form = TalkCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertIsInstance(form.helper.layout, Layout)
+        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        self.assertListEqual(['comment', 'is_visible'], layout_fields)
+        self.assertEqual(len(form.helper.layout.get_layout_objects(Submit)), 1)
+
+
+class TalkSpeakerCommentFormTest(TestCase):
+    def test_fields(self):
+        form = TalkSpeakerCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertListEqual(['comment'], list(form.fields))
+
+    def test_init_creates_form_helper(self):
+        form = TalkSpeakerCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertEqual(form.fields['comment'].widget.attrs['rows'], 2)
+        self.assertEqual(form.helper.form_action, '/session/speaker/talks/1/comment/')
+
+    def test_init_creates_layout(self):
+        form = TalkSpeakerCommentForm(instance=mock.MagicMock(pk=1))
+        self.assertIsInstance(form.helper.layout, Layout)
+        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        self.assertListEqual(['comment'], layout_fields)
+        self.assertEqual(len(form.helper.layout.get_layout_objects(Submit)), 1)
+
+
+class TalkVoteFormTest(TestCase):
+    def test_fields(self):
+        form = TalkVoteForm()
+        self.assertListEqual(['score'], list(form.fields))

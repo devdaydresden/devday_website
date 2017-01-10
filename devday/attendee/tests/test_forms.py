@@ -2,13 +2,13 @@ from __future__ import unicode_literals
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
-from django.test import TransactionTestCase
+from django.test import TestCase
 
 from attendee.forms import AttendeeInformationForm, DevDayRegistrationForm, AttendeeRegistrationForm
 from attendee.models import Attendee, DevDayUser
 
 
-class AttendeeInformationFormTest(TransactionTestCase):
+class AttendeeInformationFormTest(TestCase):
     def test_fields(self):
         form = AttendeeInformationForm()
         self.assertListEqual(
@@ -22,7 +22,7 @@ class AttendeeInformationFormTest(TransactionTestCase):
         self.assertIsInstance(attendee, Attendee)
 
 
-class DevDayRegistrationFormTest(TransactionTestCase):
+class DevDayRegistrationFormTest(TestCase):
     def test_fields(self):
         form = DevDayRegistrationForm()
         self.assertListEqual(
@@ -44,7 +44,7 @@ class DevDayRegistrationFormTest(TransactionTestCase):
         self.assertEqual(form.cleaned_data[DevDayUser.USERNAME_FIELD], form.cleaned_data['email'])
 
 
-class AttendeeRegistrationFormTest(TransactionTestCase):
+class AttendeeRegistrationFormTest(TestCase):
     def test_get_user_form(self):
         form = AttendeeRegistrationForm()
         self.assertIsInstance(form.get_user_form(), DevDayRegistrationForm)

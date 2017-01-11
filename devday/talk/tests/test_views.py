@@ -12,7 +12,7 @@ from django_file_form.forms import ExistingFile
 from attendee.models import Attendee
 from talk.forms import CreateSpeakerForm, BecomeSpeakerForm, TalkCommentForm, EditTalkForm, TalkSpeakerCommentForm
 from talk.models import Speaker, Talk, Vote, TalkComment
-from talk.views import CreateTalkView, ExistingFileView, SpeakerProfileView, CreateSpeakerView
+from talk.views import CreateTalkView, ExistingFileView, CreateSpeakerView
 
 User = get_user_model()
 
@@ -123,9 +123,9 @@ class TestEditTalkView(TestCase):
     def setUp(self):
         user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
         attendee = Attendee.objects.create(user=user)
-        speaker = Speaker.objects.create(
+        self.speaker = Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
-        self.talk = Talk.objects.create(speaker=speaker, title=u'A nice topic', abstract=u'reasoning about a topic')
+        self.talk = Talk.objects.create(speaker=self.speaker, title=u'A nice topic', abstract=u'reasoning about a topic')
 
     def test_needs_login(self):
         response = self.client.get(u'/session/edit-session/{}/'.format(self.talk.id))
@@ -159,7 +159,7 @@ class TestEditTalkView(TestCase):
             u'title': u'A new title', u'abstract': u'Good things come to those who wait'
         })
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/speaker/profile/')
+        self.assertEqual(response.url, u'/speaker/profile/{0:d}/'.format(self.speaker.pk))
 
 
 class TestExistingFileView(TestCase):
@@ -201,16 +201,17 @@ class TestSpeakerProfileView(TestCase):
                 content=open(os.path.join(os.path.dirname(__file__), u'mu_at_mil_house.jpg'), 'rb').read(),
                 content_type=u'image/jpeg')
         )
+        self.url = u'/speaker/profile/{0:d}/'.format(self.speaker.pk)
 
     def test_needs_login(self):
-        response = self.client.get(u'/speaker/profile/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next=/speaker/profile/')
+        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_speaker_not_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/speaker/profile/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(u'400.html')
 
@@ -218,21 +219,21 @@ class TestSpeakerProfileView(TestCase):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         Attendee.objects.create(user=user)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/speaker/profile/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(u'400.html')
 
     def test_template(self):
         self.client.login(username=u'speaker@example.org', password=u's3cr3t')
-        response = self.client.get(u'/speaker/profile/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(u'talk/speaker_profile.html')
 
     def test_get_context_data_no_talks(self):
-        request = HttpRequest()
-        request.user = self.speaker.user.user
-        view = SpeakerProfileView(request=request)
-        context = view.get_context_data()
+        self.client.login(username=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        context = response.context
         self.assertIn(u'attendee', context)
         self.assertIn(u'speaker', context)
         self.assertEqual(context[u'speaker'], self.speaker)
@@ -241,10 +242,10 @@ class TestSpeakerProfileView(TestCase):
 
     def test_get_context_data_with_talk(self):
         Talk.objects.create(speaker=self.speaker, title=u'Test talk', abstract=u'A tragedy of testing and errors')
-        request = HttpRequest()
-        request.user = self.speaker.user.user
-        view = SpeakerProfileView(request=request)
-        context = view.get_context_data()
+        self.client.login(username=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        context = response.context
         self.assertIn(u'attendee', context)
         self.assertIn(u'speaker', context)
         self.assertEqual(context[u'speaker'], self.speaker)

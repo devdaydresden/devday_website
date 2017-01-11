@@ -30,7 +30,7 @@ from registration.backends.hmac.views import RegistrationView
 
 from attendee.models import Attendee
 from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm, \
-    EditTalkForm, TalkCommentForm, TalkVoteForm, TalkSpeakerCommentForm
+    EditTalkForm, TalkCommentForm, TalkVoteForm, TalkSpeakerCommentForm, EditSpeakerForm
 from talk.models import Speaker, Talk, Vote, TalkComment
 
 logger = logging.getLogger('talk')
@@ -89,11 +89,15 @@ class CreateTalkView(SpeakerRequiredMixin, CreateView):
 
 
 class EditTalkView(SpeakerRequiredMixin, UpdateView):
+    model = Talk
     form_class = EditTalkForm
-    success_url = reverse_lazy('speaker_profile')
+
+    def get_success_url(self):
+        return reverse_lazy('speaker_profile', kwargs={'pk': self.object.speaker.pk})
 
     def get_queryset(self):
-        return Talk.objects.filter(speaker=self.request.user.attendee.speaker)
+        return super(EditTalkView, self).get_queryset().select_related('speaker').filter(
+            speaker=self.request.user.attendee.speaker)
 
 
 class ExistingFileView(BaseFormView):
@@ -113,18 +117,30 @@ class ExistingFileView(BaseFormView):
         return form_kwargs
 
 
-class SpeakerProfileView(SpeakerRequiredMixin, TemplateView):
-    template_name = "talk/speaker_profile.html"
+class SpeakerProfileView(SpeakerRequiredMixin, UpdateView):
+    model = Speaker
+    template_name_suffix = '_profile'
+    form_class = EditSpeakerForm
 
     def get_context_data(self, **kwargs):
         context = super(SpeakerProfileView, self).get_context_data(**kwargs)
-        attendee = Attendee.objects.filter(user=self.request.user).select_related('speaker').get()
+        speaker = self.get_object()
+        attendee = speaker.user
         context.update({
             'attendee': attendee,
-            'speaker': attendee.speaker,
+            'speaker': speaker,
             'talks': attendee.speaker.talk_set.all(),
         })
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super(SpeakerProfileView, self).get_form_kwargs()
+        kwargs['instance'] = self.get_object()
+        return kwargs
+
+    def get_queryset(self):
+        return super(SpeakerProfileView, self).get_queryset().select_related('user', 'user__user').filter(
+            user__user=self.request.user)
 
 
 handle_upload = FileFormUploader()

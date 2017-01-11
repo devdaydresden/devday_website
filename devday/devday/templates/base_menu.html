@@ -1,0 +1,13 @@
+{% load i18n menu_tags  %}
+{% show_menu 0 100 100 100 %}
+{% if user.is_authenticated %}
+    {% if is_committee_member %}
+        <li><a href="{% url 'talk_overview' %}">{% trans "Session selection" %}</a></li>
+    {% endif %}
+    <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
+    <li><a href="
+            {% if user.attendee.speaker %}{% url 'speaker_profile' pk=user.attendee.speaker.pk %}{% else %}{% url 'user_profile' %}{% endif %}">{% trans "Profile" %}</a>
+    </li>
+{% else %}
+    <li><a href="{% url 'auth_login' %}">{% trans "Login" %}</a></li>
+{% endif %}

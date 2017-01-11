@@ -1,4 +1,4 @@
-{% load cms_tags menu_tags sekizai_tags static i18n %}<!DOCTYPE html>
+{% load cms_tags sekizai_tags static i18n %}<!DOCTYPE html>
 <html>
 <head>
     <title>{% block title %}DevDay 2017 // Let code rule{% endblock title %}</title>
@@ -25,16 +25,7 @@
                 </div>
                 <div class="collapse navbar-collapse navbar-desktop">
                     <ul class="nav navbar-nav navbar-right">
-                        {% show_menu 0 100 100 100 %}
-                        {% if user.is_authenticated %}
-                            {% if is_committee_member %}
-                                <li><a href="{% url 'talk_overview' %}">{% trans "Session selection" %}</a></li>
-                            {% endif %}
-                            <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
-                            <li><a href="{% if user.attendee.speaker %}{% url 'speaker_profile' %}{% else %}{% url 'user_profile' %}{% endif %}">{% trans "Profile" %}</a></li>
-                        {% else %}
-                            <li><a href="{% url 'auth_login' %}">{% trans "Login" %}</a></li>
-                        {% endif %}
+                        {% include "base_menu.html" %}
                     </ul>
                 </div>
                 <div class="collapse navbar-collapse navbar-mobile">
@@ -42,13 +33,7 @@
                         <li>
                             <a href="#" class="menu-trigger"><i class="icon-menu"></i></a>
                             <ul>
-                                {% show_menu 0 100 100 100 %}
-                                {% if user.is_authenticated %}
-                                    <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
-                                    <li><a href="{% url 'user_profile' %}">{% trans "Profile" %}</a></li>
-                                {% else %}
-                                    <li><a href="{% url 'auth_login' %}">{% trans "Login" %}</a></li>
-                                {% endif %}
+                                {% include "base_menu.html" %}
                             </ul>
                         </li>
                     </ul>

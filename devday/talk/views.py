@@ -56,6 +56,18 @@ def submit_session_view(request):
     return login(request, template_name=template_name, authentication_form=TalkAuthenticationForm)
 
 
+class TalkSubmissionOpenMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if not settings.TALK_SUBMISSION_OPEN:
+            return redirect('talk_submission_closed')
+        # noinspection PyUnresolvedReferences
+        return super(TalkSubmissionOpenMixin, self).dispatch(request, *args, **kwargs)
+
+
+class TalkSubmissionClosed(TemplateView):
+    template_name = 'talk/submission_closed.html'
+
+
 class SpeakerRegisteredView(TemplateView):
     template_name = "talk/speaker_registered.html"
 
@@ -77,7 +89,7 @@ class SpeakerRequiredMixin(AccessMixin):
         return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
 
 
-class CreateTalkView(SpeakerRequiredMixin, CreateView):
+class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
     template_name = "talk/create_talk.html"
     form_class = CreateTalkForm
     success_url = reverse_lazy('talk_submitted')
@@ -146,7 +158,7 @@ class SpeakerProfileView(SpeakerRequiredMixin, UpdateView):
 handle_upload = FileFormUploader()
 
 
-class CreateSpeakerView(RegistrationView):
+class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
     template_name = 'talk/create_speaker.html'
     email_body_template = "talk/speaker_activation_email.txt"
     email_subject_template = "talk/speaker_activation_email_subject.txt"

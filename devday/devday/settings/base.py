@@ -208,6 +208,7 @@ ACCOUNT_ACTIVATION_DAYS = 14
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 TALK_THUMBNAIL_HEIGHT = 320
+TALK_SUBMISSION_OPEN = True
 
 DEVDAY_TWITTER_URL = 'https://twitter.com/devdaydresden'
 DEVDAY_XING_URL = 'https://www.xing.com/events/devday-let-code-rule-1769237'

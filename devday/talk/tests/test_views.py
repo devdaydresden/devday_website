@@ -6,6 +6,7 @@ from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpRequest
 from django.test import TestCase
+from django.test import override_settings
 from django.utils.translation import ugettext as _
 from django_file_form.forms import ExistingFile
 
@@ -64,15 +65,24 @@ class TestTalkSubmittedView(TestCase):
 
 
 class TestCreateTalkView(TestCase):
+    def setUp(self):
+        self.url = u'/session/create-session/'
+
+    @override_settings(TALK_SUBMISSION_OPEN=False)
+    def test_redirect_if_talk_submission_closed(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/session/submission-closed/')
+
     def test_needs_login(self):
-        response = self.client.get(u'/session/create-session/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, u'/accounts/login/?next=/session/create-session/')
 
     def test_needs_speaker_not_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/create-session/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(u'400.html')
 
@@ -80,7 +90,7 @@ class TestCreateTalkView(TestCase):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         Attendee.objects.create(user=user)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/create-session/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(u'400.html')
 
@@ -90,7 +100,7 @@ class TestCreateTalkView(TestCase):
         Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/create-session/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, u'talk/create_talk.html')
 
@@ -113,7 +123,7 @@ class TestCreateTalkView(TestCase):
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.post(
-            u'/session/create-session/',
+            self.url,
             data={u'title': u'A fantastic session', u'abstract': u'News for nerds, stuff that matters'})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, u'/session/submitted/')
@@ -255,33 +265,42 @@ class TestSpeakerProfileView(TestCase):
 
 
 class TestCreateSpeakerView(TestCase):
+    def setUp(self):
+        self.url = u'/session/new-speaker/'
+
+    @override_settings(TALK_SUBMISSION_OPEN=False)
+    def test_redirect_if_talk_submission_closed(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/session/submission-closed/')
+
     def test_dispatch_anonymous(self):
-        response = self.client.get(u'/session/new-speaker/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(u'talk/create_speaker.html')
 
     def test_get_form_class_anonymous(self):
-        response = self.client.get(u'/session/new-speaker/')
+        response = self.client.get(self.url)
         self.assertIsInstance(response.context[u'form'], CreateSpeakerForm)
 
     def test_dispatch_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/new-speaker/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(u'talk/create_speaker.html')
 
     def test_get_form_class_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/new-speaker/')
+        response = self.client.get(self.url)
         self.assertIsInstance(response.context[u'form'], BecomeSpeakerForm)
 
     def test_dispatch_attendee(self):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         Attendee.objects.create(user=user)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/new-speaker/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(u'talk/create_speaker.html')
 
@@ -289,7 +308,7 @@ class TestCreateSpeakerView(TestCase):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         Attendee.objects.create(user=user)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/new-speaker/')
+        response = self.client.get(self.url)
         self.assertIsInstance(response.context[u'form'], BecomeSpeakerForm)
 
     def test_dispatch_speaker(self):
@@ -299,12 +318,13 @@ class TestCreateSpeakerView(TestCase):
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text'
         )
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/new-speaker/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, u'/session/speaker-registered/')
 
     def test_get_email_context(self):
         request = HttpRequest()
+        # noinspection PyArgumentList,PyArgumentList
         view = CreateSpeakerView(request=request)
         context = view.get_email_context(u'test_key')
         self.assertIn(u'request', context)
@@ -318,7 +338,7 @@ class TestCreateSpeakerView(TestCase):
             u'shortbio': u'A guy from somewhere having something great to talk about',
             u'uploaded_image': image_file
         }
-        response = self.client.post(u'/session/new-speaker/', data=data)
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, u'/session/speaker-registered/')
         self.assertEqual(len(mail.outbox), 1)
@@ -336,7 +356,7 @@ class TestCreateSpeakerView(TestCase):
             u'uploaded_image': image_file
         }
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        response = self.client.post(u'/session/new-speaker/', data=data)
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, u'/session/speaker-registered/')
         self.assertEqual(len(mail.outbox), 0)
@@ -352,7 +372,7 @@ class TestCreateSpeakerView(TestCase):
             u'uploaded_image': image_file
         }
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        response = self.client.post(u'/session/new-speaker/', data=data)
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, u'/session/speaker-registered/')
         self.assertEqual(len(mail.outbox), 0)

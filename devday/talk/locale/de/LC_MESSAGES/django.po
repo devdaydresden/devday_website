@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-11 12:19+0100\n"
-"PO-Revision-Date: 2017-01-11 12:21+0100\n"
+"POT-Creation-Date: 2017-01-14 15:22+0100\n"
+"PO-Revision-Date: 2017-01-14 15:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -289,6 +289,15 @@ msgstr "Passwort ändern"
 msgid "Successfully registered as a speaker"
 msgstr "Erfolgreich als Sprecher registriert"
 
+#: talk/templates/talk/submission_closed.html:3
+#: talk/templates/talk/submission_closed.html:7
+msgid "Talk submission closed"
+msgstr "Sessioneinreichung geschlossen"
+
+#: talk/templates/talk/submission_closed.html:8
+msgid "You cannot submit new sessions currently."
+msgstr "Zur Zeit können keine weiteren Sessions eingereicht werden."
+
 #: talk/templates/talk/submit_session.html:22
 msgid "You already have an account"
 msgstr "Du hast bereits ein Benutzerkonto"
@@ -452,11 +461,11 @@ msgstr "Durchschnittliche Bewertung"
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
-#: talk/tests/test_views.py:515 talk/tests/test_views.py:594
-#: talk/tests/test_views.py:842
+#: talk/tests/test_views.py:535 talk/tests/test_views.py:614
+#: talk/tests/test_views.py:862
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
-#: talk/views.py:75
+#: talk/views.py:87
 msgid "Authenticated user must be a registered speaker"
 msgstr "Der angemeldete Nutzer muss als Sprecher registriert sein"

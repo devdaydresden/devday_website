@@ -58,9 +58,9 @@
     <div class="row social-area">
         <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1  center">
             <ul>
-                <li><a href="#"><img src="{% static "images/facebook.png" %}" alt="Facebook"></a></li>
-                <li><a href="#"><img src="{% static "images/xing.png" %}" alt="Xing"></a></li>
-                <li><a href="{{ twitter_url }}"><img src="{% static "images/twitter.png" %}" alt="Twitter"></a></li>
+                {% if facebook_url %}<li><a href="{{ facebook_url }}"><img src="{% static "images/facebook.png" %}" alt="Facebook"></a></li>{% endif %}
+                {% if xing_url %}<li><a href="{{ xing_url }}"><img src="{% static "images/xing.png" %}" alt="Xing"></a></li>{% endif %}
+                {% if twitter_url %}<li><a href="{{ twitter_url }}"><img src="{% static "images/twitter.png" %}" alt="Twitter"></a></li>{% endif %}
             </ul>
         </div>
     </div>

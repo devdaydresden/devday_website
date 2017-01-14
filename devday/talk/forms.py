@@ -196,6 +196,26 @@ class BecomeSpeakerForm(CombinedFormBase):
         )
 
 
+class EditSpeakerForm(SpeakerForm):
+    def __init__(self, *args, **kwargs):
+        super(EditSpeakerForm, self).__init__(*args, **kwargs)
+        self.helper = DevDayFormHelper()
+        self.helper.form_action = reverse('speaker_profile', kwargs={'pk': self.instance.pk})
+        self.helper.form_method = 'post'
+        self.helper.html5_required = True
+        self.helper.layout = Layout(
+            Div(
+                "shortbio",
+                Field("videopermission", template="talk/form/videopermission-field.html"),
+                "shirt_size",
+                css_class="col-lg-offset-1 col-lg-10 col-md-12"
+            ),
+            Div(
+                Submit('submit', _('Update your speaker information')),
+                css_class="col-lg-offset-1 col-lg-10 col-md-12 text-center"
+            )
+        )
+
 class CreateSpeakerForm(CombinedFormBase):
     form_classes = [DevDayRegistrationForm, SpeakerForm]
 

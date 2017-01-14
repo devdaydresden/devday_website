@@ -1,8 +1,8 @@
 {% extends "devday_site.html" %}
-{% load i18n %}
+{% load i18n crispy_forms_tags %}
 {% block title %}{% trans "Speaker profile" %}{% endblock %}
 {% block content_body %}
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+    <div class="col-lg-offset-1 col-lg-10 col-md-12">
         <h1>{% spaceless %}
             {% if user.first_name %}
                 {% blocktrans with username=user.get_full_name %}Speaker profile for {{ username }}{% endblocktrans %}
@@ -15,8 +15,6 @@
             <dd>{{ user.first_name }}</dd>
             <dt>{% trans "Lastname" %}</dt>
             <dd>{{ user.last_name }}</dd>
-            <dt>{% trans "Short biography" %}</dt>
-            <dd>{{ speaker.shortbio }}</dd>
             {% if speaker.portrait %}
                 <dt>{% trans "Speaker image" %}</dt>
                 <dd><img src="{{ speaker.thumbnail.url }}" width="{{ speaker.thumbnail.width }}"
@@ -24,7 +22,8 @@
             {% endif %}
         </dl>
     </div>
-    <div class="col-lg-8 col-lg-offset-2 col-md-12">
+    {% crispy form %}
+    <div class="col-lg-offset-1 col-lg-10 col-md-12">
         {% if talks %}
             <h2>{% trans "Your Sessions" %}</h2>
             <table class="table">
@@ -45,9 +44,9 @@
             <div class="alert alert-notice" role="alert"{% trans "No sessions submitted." %}</div>
         {% endif %}
     </div>
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+    <div class="col-lg-offset-1 col-lg-10 col-md-12">
         <div class="text-center">
-            <a href="{% url "submit_session" %}" class="btn btn-default">{% trans "Submit another session" %}</a>
+            <a href="{% url "submit_session" %}" class="btn btn-default">{% if talks %}{% trans "Submit another session" %}{% else %}{% trans "Submit a session" %}{% endif %}</a>
         </div>
         <p><a href="{% url "auth_password_change" %}">{% trans "Change password" %}</a></p>
     </div>

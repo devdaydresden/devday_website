@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-09 19:44+0100\n"
-"PO-Revision-Date: 2017-01-06 11:32+0100\n"
+"POT-Creation-Date: 2017-01-14 15:22+0100\n"
+"PO-Revision-Date: 2017-01-14 15:24+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -59,21 +59,33 @@ msgstr "Ungültige Anfrage"
 msgid "Page not found"
 msgstr "Seite nicht gefunden"
 
-#: devday/templates/base.html:31
+#: devday/templates/base_menu.html:5
 msgid "Session selection"
 msgstr "Session-Auswahl"
 
-#: devday/templates/base.html:33 devday/templates/base.html:47
+#: devday/templates/base_menu.html:7
 msgid "Logout"
 msgstr "Abmelden"
 
-#: devday/templates/base.html:34 devday/templates/base.html:48
+#: devday/templates/base_menu.html:9
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/templates/base.html:36 devday/templates/base.html:50
+#: devday/templates/base_menu.html:12
 msgid "Login"
 msgstr "Login"
+
+#: devday/templates/devday_index.html:9
+msgid "Submit session"
+msgstr "Session einreichen"
+
+#: devday/templates/devday_index.html:11
+msgid "Be part of it!"
+msgstr "Sei dabei!"
+
+#: devday/templates/devday_index.html:24
+msgid "I want to be part of it!"
+msgstr "Ich will dabei sein!"
 
 #: devday/templates/django_file_form/upload_template.html:13
 msgid "Cancel"

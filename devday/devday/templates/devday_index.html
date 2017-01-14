@@ -1,11 +1,15 @@
 {% extends "base.html" %}
-{% load cms_tags static i18n %}
+{% load cms_tags static sekizai_tags i18n %}
 {% block body_classes %}{% endblock %}
 {% block title %}{% page_attribute "page_title" %}{% endblock %}
 {% block description %}DevDay 2017{% endblock %}
 {% block promo_classes %}row promo{% endblock %}
 {% block promo_content %}{{ block.super }}
-    <a class="btn" type="text" href="{% url "submit_session" %}">Session einreichen</a>
+    {% if talk_submission_open %}
+        <a class="btn" href="{% url "submit_session" %}" role="button">{% trans "Submit session" %}</a>
+    {% else %}
+        <a class="btn" href="{% url "registration_register" %}" role="button">{% trans "Be part of it!" %}</a>
+    {% endif %}
 {% endblock %}
 {% block content %}
     <div class="row">
@@ -17,7 +21,7 @@
             <div class="col-xs-12 col-sm-6 boxed-content">
                 <i class="icon-user"></i>
                 {% placeholder "audience" %}
-                <a href="{% url "registration_register" %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">Ich will dabei sein!</a>
+                <a href="{% url 'registration_register' %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "I want to be part of it!" %}</a>
             </div>
         </div>
     </div>{% comment %}
@@ -26,7 +30,7 @@
             <div class="col-sm-4 follow-box">
                 <i class="icon-social-twitter"></i>
                 <h3>#DEVDAYDD</h3>
-                <a href="#" class="btn btn-line">Folge uns</a>
+                <a href="{{ twitter_url }}" class="twitter-follow-button" data-show-count="false">{% trans "Follow us!" %}</a>{% addtoblock "js" %}<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>{% endaddtoblock %}
             </div>
             <div class="col-sm-8 tweet-box">
                 <div id="twitterCarousel" class="carousel slide" data-ride="carousel">

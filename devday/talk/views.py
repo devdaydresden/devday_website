@@ -8,7 +8,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.contrib.auth.views import login
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import SuspiciousOperation
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Avg, Count
@@ -73,6 +72,9 @@ class SpeakerRegisteredView(TemplateView):
 
 
 class SpeakerRequiredMixin(AccessMixin):
+    def get_permission_denied_message(self):
+        return _('Authenticated user must be a registered speaker')
+
     def dispatch(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated():
@@ -80,7 +82,7 @@ class SpeakerRequiredMixin(AccessMixin):
         try:
             user.attendee and user.attendee.speaker
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
-            raise SuspiciousOperation(_('Authenticated user must be a registered speaker'))
+            return self.handle_no_permission()
         # noinspection PyUnresolvedReferences
         return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
 

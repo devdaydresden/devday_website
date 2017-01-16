@@ -64,22 +64,22 @@ class TestTalkSubmittedView(TestCase):
     def test_needs_login(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next=/session/submitted/')
+        self.assertEqual(response.url, u'/accounts/login/?next={}'.format(self.url))
 
     def test_needs_speaker_not_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(u'400.html')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={}'.format(self.url))
 
     def test_needs_speaker_not_attendee(self):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         Attendee.objects.create(user=user)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(u'400.html')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={}'.format(self.url))
 
     def test_template(self):
         user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
@@ -119,22 +119,22 @@ class TestCreateTalkView(TestCase):
     def test_needs_login(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next=/session/create-session/')
+        self.assertEqual(response.url, u'/accounts/login/?next={}'.format(self.url))
 
     def test_needs_speaker_not_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(u'400.html')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={}'.format(self.url))
 
     def test_needs_speaker_not_attendee(self):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         Attendee.objects.create(user=user)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(u'400.html')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={}'.format(self.url))
 
     def test_template(self):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
@@ -221,16 +221,16 @@ class TestSpeakerProfileView(TestCase):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(u'400.html')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_speaker_not_attendee(self):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         Attendee.objects.create(user=user)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(u'400.html')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_template(self):
         self.client.login(username=u'speaker@example.org', password=u's3cr3t')
@@ -781,7 +781,8 @@ class TestSpeakerTalkDetails(TestCase):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_talk_speaker(self):
         Speaker.objects.create(
@@ -858,7 +859,8 @@ class TestSubmitTalkSpeakerComment(TestCase):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_talk_speaker(self):
         Speaker.objects.create(
@@ -931,7 +933,8 @@ class TestTalkSpeakerCommentDelete(TestCase):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_talk_speaker(self):
         Speaker.objects.create(

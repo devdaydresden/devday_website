@@ -105,18 +105,6 @@ class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
         return form_kwargs
 
 
-class EditTalkView(SpeakerRequiredMixin, UpdateView):
-    model = Talk
-    form_class = EditTalkForm
-
-    def get_success_url(self):
-        return reverse_lazy('speaker_profile', kwargs={'pk': self.object.speaker.pk})
-
-    def get_queryset(self):
-        return super(EditTalkView, self).get_queryset().select_related('speaker').filter(
-            speaker=self.request.user.attendee.speaker)
-
-
 class ExistingFileView(BaseFormView):
     form_class = ExistingFileForm
 
@@ -396,6 +384,9 @@ class SpeakerTalkDetails(SpeakerRequiredMixin, UpdateView):
     model = Talk
     template_name_suffix = '_speaker_details'
     form_class = EditTalkForm
+
+    def get_success_url(self):
+        return reverse('speaker_talk_details', kwargs={'pk': self.object.pk})
 
     def get_queryset(self):
         return super(SpeakerTalkDetails, self).get_queryset().select_related('speaker').filter(

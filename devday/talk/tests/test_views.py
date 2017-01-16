@@ -171,60 +171,6 @@ class TestCreateTalkView(TestCase):
         self.assertEqual(response.url, u'/session/submitted/')
 
 
-class TestEditTalkView(TestCase):
-    def setUp(self):
-        user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
-        attendee = Attendee.objects.create(user=user)
-        self.speaker = Speaker.objects.create(
-            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
-        self.talk = Talk.objects.create(speaker=self.speaker, title=u'A nice topic',
-                                        abstract=u'reasoning about a topic')
-
-    def test_needs_login(self):
-        response = self.client.get(u'/session/edit-session/{}/'.format(self.talk.id))
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next=/session/edit-session/{}/'.format(self.talk.id))
-
-    def test_needs_speaker_not_user(self):
-        User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
-        self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/edit-session/{}/'.format(self.talk.id))
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(u'400.html')
-
-    def test_needs_speaker_not_attendee(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
-        Attendee.objects.create(user=user)
-        self.client.login(username=u'test@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/edit-session/{}/'.format(self.talk.id))
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(u'400.html')
-
-    def test_template(self):
-        self.client.login(username=u'speaker@example.org', password=u's3cr3t')
-        response = self.client.get(u'/session/edit-session/{}/'.format(self.talk.id))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(u'talk/talk_form.html')
-
-    def test_redirect_after_success(self):
-        self.client.login(username=u'speaker@example.org', password=u's3cr3t')
-        response = self.client.post(u'/session/edit-session/{}/'.format(self.talk.id), data={
-            u'title': u'A new title', u'abstract': u'Good things come to those who wait'
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/speaker/profile/{0:d}/'.format(self.speaker.pk))
-
-    def test_changes_session_data(self):
-        self.client.login(username=u'speaker@example.org', password=u's3cr3t')
-        response = self.client.post(u'/session/edit-session/{}/'.format(self.talk.id), data={
-            u'title': u'A new title', u'abstract': u'Good things come to those who wait'
-        })
-        self.assertEqual(response.status_code, 302)
-        self.talk.refresh_from_db()
-        self.assertEqual(self.talk.title, u'A new title')
-        self.assertEqual(self.talk.abstract, u'Good things come to those who wait')
-
-
 class TestExistingFileView(TestCase):
     def setUp(self):
         user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
@@ -872,6 +818,23 @@ class TestSpeakerTalkDetails(TestCase):
         self.assertIn(self.comment, comments)
         self.assertNotIn(other_comment, comments)
         self.assertIsInstance(context[u'comment_form'], TalkSpeakerCommentForm)
+
+    def test_changes_session_data(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.post(self.url, data={
+            u'title': u'A good talk', u'abstract': u'This is a really good talk',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.talk.refresh_from_db()
+        self.assertEqual(self.talk.title, u'A good talk')
+        self.assertEqual(self.talk.abstract, u'This is a really good talk')
+
+    def test_success_redirects_to_talk_details(self):
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.post(self.url, data={
+            u'title': u'A good talk', u'abstract': u'This is a really good talk',
+        })
+        self.assertRedirects(response, self.url, status_code=302)
 
 
 class TestSubmitTalkSpeakerComment(TestCase):

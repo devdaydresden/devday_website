@@ -196,7 +196,11 @@ class BecomeSpeakerForm(CombinedFormBase):
         )
 
 
-class EditSpeakerForm(SpeakerForm):
+class EditSpeakerForm(forms.models.ModelForm):
+    class Meta:
+        model = Speaker
+        fields = ['shortbio', 'videopermission', 'shirt_size']
+
     def __init__(self, *args, **kwargs):
         super(EditSpeakerForm, self).__init__(*args, **kwargs)
         self.helper = DevDayFormHelper()
@@ -215,6 +219,7 @@ class EditSpeakerForm(SpeakerForm):
                 css_class="col-lg-offset-1 col-lg-10 col-md-12 text-center"
             )
         )
+
 
 class CreateSpeakerForm(CombinedFormBase):
     form_classes = [DevDayRegistrationForm, SpeakerForm]

@@ -8,7 +8,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.contrib.auth.views import login
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import SuspiciousOperation
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Avg, Count
@@ -72,11 +71,10 @@ class SpeakerRegisteredView(TemplateView):
     template_name = "talk/speaker_registered.html"
 
 
-class TalkSubmittedView(TemplateView):
-    template_name = "talk/submitted.html"
-
-
 class SpeakerRequiredMixin(AccessMixin):
+    def get_permission_denied_message(self):
+        return _('Authenticated user must be a registered speaker')
+
     def dispatch(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated():
@@ -84,9 +82,18 @@ class SpeakerRequiredMixin(AccessMixin):
         try:
             user.attendee and user.attendee.speaker
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
-            raise SuspiciousOperation(_('Authenticated user must be a registered speaker'))
+            return self.handle_no_permission()
         # noinspection PyUnresolvedReferences
         return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class TalkSubmittedView(SpeakerRequiredMixin, TemplateView):
+    template_name = "talk/submitted.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkSubmittedView, self).get_context_data(**kwargs)
+        context['speaker'] = self.request.user.attendee.speaker
+        return context
 
 
 class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
@@ -98,18 +105,6 @@ class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
         form_kwargs = super(CreateTalkView, self).get_form_kwargs()
         form_kwargs['speaker'] = self.request.user.attendee.speaker
         return form_kwargs
-
-
-class EditTalkView(SpeakerRequiredMixin, UpdateView):
-    model = Talk
-    form_class = EditTalkForm
-
-    def get_success_url(self):
-        return reverse_lazy('speaker_profile', kwargs={'pk': self.object.speaker.pk})
-
-    def get_queryset(self):
-        return super(EditTalkView, self).get_queryset().select_related('speaker').filter(
-            speaker=self.request.user.attendee.speaker)
 
 
 class ExistingFileView(BaseFormView):
@@ -153,6 +148,9 @@ class SpeakerProfileView(SpeakerRequiredMixin, UpdateView):
     def get_queryset(self):
         return super(SpeakerProfileView, self).get_queryset().select_related('user', 'user__user').filter(
             user__user=self.request.user)
+
+    def get_success_url(self):
+        return reverse('speaker_profile', kwargs={'pk': self.object.pk})
 
 
 handle_upload = FileFormUploader()
@@ -388,6 +386,9 @@ class SpeakerTalkDetails(SpeakerRequiredMixin, UpdateView):
     model = Talk
     template_name_suffix = '_speaker_details'
     form_class = EditTalkForm
+
+    def get_success_url(self):
+        return reverse('speaker_talk_details', kwargs={'pk': self.object.pk})
 
     def get_queryset(self):
         return super(SpeakerTalkDetails, self).get_queryset().select_related('speaker').filter(

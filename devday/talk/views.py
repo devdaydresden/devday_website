@@ -72,10 +72,6 @@ class SpeakerRegisteredView(TemplateView):
     template_name = "talk/speaker_registered.html"
 
 
-class TalkSubmittedView(TemplateView):
-    template_name = "talk/submitted.html"
-
-
 class SpeakerRequiredMixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
         user = request.user
@@ -87,6 +83,15 @@ class SpeakerRequiredMixin(AccessMixin):
             raise SuspiciousOperation(_('Authenticated user must be a registered speaker'))
         # noinspection PyUnresolvedReferences
         return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class TalkSubmittedView(SpeakerRequiredMixin, TemplateView):
+    template_name = "talk/submitted.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkSubmittedView, self).get_context_data(**kwargs)
+        context['speaker'] = self.request.user.attendee.speaker
+        return context
 
 
 class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
@@ -153,6 +158,9 @@ class SpeakerProfileView(SpeakerRequiredMixin, UpdateView):
     def get_queryset(self):
         return super(SpeakerProfileView, self).get_queryset().select_related('user', 'user__user').filter(
             user__user=self.request.user)
+
+    def get_success_url(self):
+        return reverse('speaker_profile', kwargs={'pk': self.object.pk})
 
 
 handle_upload = FileFormUploader()

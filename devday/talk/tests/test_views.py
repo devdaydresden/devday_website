@@ -58,10 +58,52 @@ class TestSpeakerRegisteredView(TestCase):
 
 
 class TestTalkSubmittedView(TestCase):
+    def setUp(self):
+        self.url = u'/session/submitted/'
+
+    def test_needs_login(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/accounts/login/?next=/session/submitted/')
+
+    def test_needs_speaker_not_user(self):
+        User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        self.client.login(username=u'test@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(u'400.html')
+
+    def test_needs_speaker_not_attendee(self):
+        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        Attendee.objects.create(user=user)
+        self.client.login(username=u'test@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(u'400.html')
+
     def test_template(self):
-        response = self.client.get(u'/session/submitted/')
+        user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
+        attendee = Attendee.objects.create(user=user)
+        speaker = Speaker.objects.create(
+            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, u'talk/submitted.html')
+        self.assertIn(
+            u'"/speaker/profile/{0:d}/"'.format(speaker.pk),
+            response.content.decode('utf8'))
+
+    def test_get_context_data(self):
+        user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
+        attendee = Attendee.objects.create(user=user)
+        speaker = Speaker.objects.create(
+            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
+        self.client.login(email=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(u'speaker', response.context)
+        self.assertEqual(response.context[u'speaker'], speaker)
 
 
 class TestCreateTalkView(TestCase):
@@ -135,7 +177,8 @@ class TestEditTalkView(TestCase):
         attendee = Attendee.objects.create(user=user)
         self.speaker = Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
-        self.talk = Talk.objects.create(speaker=self.speaker, title=u'A nice topic', abstract=u'reasoning about a topic')
+        self.talk = Talk.objects.create(speaker=self.speaker, title=u'A nice topic',
+                                        abstract=u'reasoning about a topic')
 
     def test_needs_login(self):
         response = self.client.get(u'/session/edit-session/{}/'.format(self.talk.id))
@@ -262,6 +305,18 @@ class TestSpeakerProfileView(TestCase):
         self.assertIn(u'talks', context)
         self.assertEqual(len(context[u'talks']), 1)
         self.assertEqual(context[u'talks'][0].title, u'Test talk')
+
+    def test_submit_changes_data(self):
+        Talk.objects.create(speaker=self.speaker, title=u'Test talk', abstract=u'A tragedy of testing and errors')
+        self.client.login(username=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.post(self.url, data={
+            'videopermission': 'checked',
+            'shortbio': 'A nice guy from high above the sky',
+            'shirt_size': 4,
+        })
+        self.assertEqual(response.status_code, 302)
+        self.speaker.refresh_from_db()
+        self.assertEqual(self.speaker.shortbio, 'A nice guy from high above the sky')
 
 
 class TestCreateSpeakerView(TestCase):

@@ -214,6 +214,16 @@ class TestEditTalkView(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, u'/speaker/profile/{0:d}/'.format(self.speaker.pk))
 
+    def test_changes_session_data(self):
+        self.client.login(username=u'speaker@example.org', password=u's3cr3t')
+        response = self.client.post(u'/session/edit-session/{}/'.format(self.talk.id), data={
+            u'title': u'A new title', u'abstract': u'Good things come to those who wait'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.talk.refresh_from_db()
+        self.assertEqual(self.talk.title, u'A new title')
+        self.assertEqual(self.talk.abstract, u'Good things come to those who wait')
+
 
 class TestExistingFileView(TestCase):
     def setUp(self):

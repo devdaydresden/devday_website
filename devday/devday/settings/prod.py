@@ -18,7 +18,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 DEFAULT_FROM_EMAIL = 'info@devday.de'
 
-ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'q4deumsy0dg.mms-at-work.de', 'localhost', 'devday-test.t-systems-mms.eu']
+ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'q4deumsy0dg.mms-at-work.de', 'localhost',
+                 'devday-test.t-systems-mms.eu']
 
 LOGGING = {
     'version': 1,
@@ -32,12 +33,23 @@ LOGGING = {
         }
 
     },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        }
+    },
     'handlers': {
         'file': {
             'class': 'logging.FileHandler',
             'filename': '/home/devdayprod/devday.log',
             'formatter': 'simple',
             'level': 'INFO',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+            'filters': ['require_debug_false'],
         },
     },
     'loggers': {
@@ -46,25 +58,32 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
         'attendee': {
-            'handlers': ['file'],
+            'handlers': ['file', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
         },
         'devday': {
-            'handlers': ['file'],
+            'handlers': ['file', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
         },
         'talk': {
-            'handlers': ['file'],
+            'handlers': ['file', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
         },
         'cms': {
-            'handlers': ['file'],
+            'handlers': ['file', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
         },
     },
 }
+
+TALK_SUBMISSION_OPEN = False

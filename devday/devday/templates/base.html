@@ -44,6 +44,8 @@
                     <img src="{% static "images/claim-2x.png" %}" alt="Let Code Rule" />
                     {% if talk_submission_open %}
                         {% static_placeholder "call-for-papers-date" %}
+                    {% else %}
+                        {% static_placeholder "event-date" %}
                     {% endif %}
                 {% endblock %}
             </div>

@@ -15,7 +15,6 @@ from django.db.transaction import atomic
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic import View
@@ -72,9 +71,6 @@ class SpeakerRegisteredView(TemplateView):
 
 
 class SpeakerRequiredMixin(AccessMixin):
-    def get_permission_denied_message(self):
-        return _('Authenticated user must be a registered speaker')
-
     def dispatch(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated():

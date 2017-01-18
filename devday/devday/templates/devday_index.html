@@ -8,6 +8,7 @@
     {% if talk_submission_open %}
         <a class="btn" href="{% url "submit_session" %}" role="button">{% trans "Submit session" %}</a>
     {% else %}
+        {% placeholder '' %}
         <a class="btn" href="{% url "registration_register" %}" role="button">{% trans "Be part of it!" %}</a>
     {% endif %}
 {% endblock %}
@@ -70,8 +71,12 @@
     </div>{% endcomment %}
     <div class="row session-entry-area">
         <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1">
+        {% if talk_submission_open %}
             <h2>Jetzt noch schnell eine Session einreichen</h2>
             <a href="{% url "submit_session" %}" class="btn">Session einreichen</a>
+        {% else %}
+            {% placeholder 'submission_closed_thanks' %}
+        {% endif %}
         </div>
     </div>
 {% endblock %}

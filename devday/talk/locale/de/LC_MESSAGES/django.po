@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-14 15:22+0100\n"
-"PO-Revision-Date: 2017-01-14 15:23+0100\n"
+"POT-Creation-Date: 2017-01-20 20:32+0100\n"
+"PO-Revision-Date: 2017-01-20 20:33+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -63,20 +63,20 @@ msgstr "Session aktualisieren"
 msgid "Login"
 msgstr "Anmelden"
 
-#: talk/forms.py:193 talk/forms.py:256
+#: talk/forms.py:193 talk/forms.py:261
 #: talk/templates/talk/submit_session.html:30
 msgid "Register as speaker"
 msgstr "Als Sprecher registrieren"
 
-#: talk/forms.py:214
+#: talk/forms.py:218
 msgid "Update your speaker information"
 msgstr "Sprecherinformationen aktualisieren"
 
-#: talk/forms.py:231
+#: talk/forms.py:236
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: talk/forms.py:275 talk/forms.py:291
+#: talk/forms.py:280 talk/forms.py:296
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
@@ -126,11 +126,11 @@ msgstr ""
 "Session auf den Social-Media-Kanälen des Veranstalters und auf der Webseite "
 "devday.de verwendet werden dürfen."
 
-#: talk/models.py:39 talk/templates/talk/speaker_details.html:20
+#: talk/models.py:39 talk/templates/talk/speaker_details.html:22
 msgid "Short biography"
 msgstr "Kurzvita"
 
-#: talk/models.py:40 talk/templates/talk/speaker_details.html:23
+#: talk/models.py:40 talk/templates/talk/speaker_details.html:25
 #: talk/templates/talk/speaker_profile.html:19
 msgid "Speaker image"
 msgstr "Speakerbild"
@@ -257,6 +257,10 @@ msgid ""
 "Speaker profile for\n"
 "                    %(username)s"
 msgstr "Sprecherprofil für %(username)s"
+
+#: talk/templates/talk/speaker_details.html:20
+msgid "Email address"
+msgstr "E-Mailadresse"
 
 #: talk/templates/talk/speaker_profile.html:8
 #: talk/templates/talk/speaker_profile.html:10
@@ -397,7 +401,7 @@ msgid "average vote"
 msgstr "durchschnittliche Bewertung"
 
 #: talk/templates/talk/talk_details.html:46
-#: talk/templates/talk/talk_overview.html:36
+#: talk/templates/talk/talk_overview.html:37
 msgid "No votes yet"
 msgstr "Noch keine Bewertungen"
 
@@ -433,7 +437,7 @@ msgid "delete"
 msgstr "löschen"
 
 #: talk/templates/talk/talk_details.html:135
-#: talk/templates/talk/talk_overview.html:41
+#: talk/templates/talk/talk_overview.html:42
 #: talk/templates/talk/talk_speaker_details.html:62
 msgid "No comments yet"
 msgstr "Noch keine Kommentare"
@@ -457,15 +461,21 @@ msgstr "Session-Liste"
 msgid "Vote average"
 msgstr "Durchschnittliche Bewertung"
 
-#: talk/templates/talk/talk_overview.html:67
+#: talk/templates/talk/talk_overview.html:35
+#, python-format
+msgid "(Sum %(vote_sum)s in %(vote_count)s vote)"
+msgid_plural "(Sum %(vote_sum)s in %(vote_count)s votes)"
+msgstr[0] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimme)"
+msgstr[1] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimmen)"
+
+#: talk/templates/talk/talk_overview.html:68
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
-#: talk/tests/test_views.py:535 talk/tests/test_views.py:614
-#: talk/tests/test_views.py:862
+#: talk/tests/test_views.py:546 talk/tests/test_views.py:625
+#: talk/tests/test_views.py:892
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
-#: talk/views.py:87
-msgid "Authenticated user must be a registered speaker"
-msgstr "Der angemeldete Nutzer muss als Sprecher registriert sein"
+#~ msgid "Authenticated user must be a registered speaker"
+#~ msgstr "Der angemeldete Nutzer muss als Sprecher registriert sein"

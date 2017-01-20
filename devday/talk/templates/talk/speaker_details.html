@@ -17,6 +17,8 @@
             <dd>{{ speaker.user.user.first_name }}</dd>
             <dt>{% trans "Lastname" %}</dt>
             <dd>{{ speaker.user.user.last_name }}</dd>
+            <dt>{% trans "Email address" %}</dt>
+            <dd>{{ speaker.user.user.email }}</dd>
             <dt>{% trans "Short biography" %}</dt>
             <dd>{{ speaker.shortbio }}</dd>
             {% if speaker.portrait %}

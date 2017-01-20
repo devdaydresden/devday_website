@@ -10,7 +10,7 @@ from django.contrib.auth.views import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Sum
 from django.db.transaction import atomic
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -240,10 +240,20 @@ class TalkOverview(CommitteeRequiredMixin, ListView):
     template_name_suffix = '_overview'
 
     def get_queryset(self):
-        return super(TalkOverview, self).get_queryset().select_related(
-            'speaker', 'speaker__user', 'speaker__user__user').order_by('title').annotate(
+        return super(TalkOverview, self).get_queryset().annotate(
             average_score=Avg('vote__score'),
-            comment_count=Count('talkcomment'))
+            vote_sum=Sum('vote__score'),
+            vote_count=Count('vote__id')).select_related(
+            'speaker', 'speaker__user', 'speaker__user__user').order_by('title')
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkOverview, self).get_context_data(**kwargs)
+        talk_list = context['talk_list']
+        for item in Talk.objects.values('id').annotate(comment_count=Count('talkcomment__id')).all():
+            for talk in talk_list:
+                if item['id'] == talk.id:
+                    setattr(talk, 'comment_count', item['comment_count'])
+        return context
 
 
 class SpeakerDetails(CommitteeRequiredMixin, DetailView):

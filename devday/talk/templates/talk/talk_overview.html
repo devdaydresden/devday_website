@@ -32,10 +32,11 @@
                                     <input title="{% trans 'average vote' %}" id="talk-average-{{ talk.pk }}-id"
                                            name="talk-average" type="number" class="rating-loading" data-size="xs"
                                            value="{{ talk.average_score|unlocalize }}">
+                                    {% blocktrans with vote_sum=talk.vote_sum count vote_count=talk.vote_count %}(Sum {{ vote_sum }} in {{ vote_count }} vote){% plural %}(Sum {{ vote_sum }} in {{ vote_count }} votes){% endblocktrans %}
                                 {% else %}
                                     {% trans "No votes yet" %}
                                 {% endif %}</td>
-                            <td>{% if talk.comment_count %}
+                            <td>{% if talk.comment_count > 0 %}
                                 {{ talk.comment_count }}
                                 {% else %}
                                 {% trans "No comments yet" %}

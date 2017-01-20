@@ -261,6 +261,14 @@ class SpeakerDetails(CommitteeRequiredMixin, DetailView):
     template_name_suffix = '_details'
 
 
+class SpeakerPublic(DetailView):
+    model = Speaker
+    template_name_suffix = '_public'
+
+    def get_queryset(self):
+        return super(SpeakerPublic, self).get_queryset().filter(talk__talkslot__isnull=False)
+
+
 class TalkDetails(CommitteeRequiredMixin, DetailView):
     model = Talk
     template_name_suffix = '_details'

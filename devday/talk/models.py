@@ -129,3 +129,20 @@ class TalkComment(TimeStampedModel):
     def __str__(self):
         return '{} commented {} for {} by {}'.format(
             self.commenter, self.comment, self.talk.title, self.talk.speaker)
+
+
+class Room(TimeStampedModel):
+    name = models.CharField(max_length=100, unique=True, blank=False)
+
+
+class TimeSlot(TimeStampedModel):
+    name = models.CharField(max_length=40, unique=True, blank=False)
+
+
+class TalkSlot(TimeStampedModel):
+    talk = models.ForeignKey(Talk)
+    room = models.ForeignKey(Room)
+    time = models.ForeignKey(TimeSlot)
+
+    class Meta:
+        unique_together = (('room', 'time'),)

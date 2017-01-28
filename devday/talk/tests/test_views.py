@@ -429,6 +429,36 @@ class TestTalkOverView(TestCase):
         self.assertTrue(hasattr(talks[0], 'average_score'))
         self.assertTrue(hasattr(talks[0], 'comment_count'))
 
+    def test_get_queryset_sorting(self):
+        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user.groups.add(Group.objects.get(name=u'talk_committee'))
+        speaker1 = Speaker.objects.create(
+            user=Attendee.objects.create(
+                user=User.objects.create_user(first_name=u'Frodo', email=u'speaker@example.org', password=u'g3h31m')
+            ),
+            videopermission=True,
+            shirt_size=1,
+        )
+        speaker2 = Speaker.objects.create(
+            user=Attendee.objects.create(
+                user=User.objects.create_user(first_name=u'Bilbo', email=u'speaker2@example.org', password=u'g3h31m')
+            ),
+            videopermission=True,
+            shirt_size=1,
+        )
+        talk1 = Talk.objects.create(speaker=speaker1, title=u'Test Session 1')
+        talk2 = Talk.objects.create(speaker=speaker2, title=u'Test Session 2')
+        self.client.login(email=u'committee@example.org', password=u's3cr3t')
+        response = self.client.get(u'/session/committee/talks/')
+        talks = list(response.context[u'talk_list'])
+        self.assertListEqual([talk1, talk2], talks)
+        response = self.client.get(u'/session/committee/talks/?sort_order=speaker&sort_dir=asc')
+        talks = list(response.context[u'talk_list'])
+        self.assertListEqual([talk2, talk1], talks)
+        response = self.client.get(u'/session/committee/talks/?sort_order=title&sort_dir=desc')
+        talks = list(response.context[u'talk_list'])
+        self.assertListEqual([talk2, talk1], talks)
+
 
 class TestTalkDetails(TestCase):
     def setUp(self):

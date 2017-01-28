@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-20 20:32+0100\n"
-"PO-Revision-Date: 2017-01-20 20:33+0100\n"
+"POT-Creation-Date: 2017-01-28 12:30+0100\n"
+"PO-Revision-Date: 2017-01-28 12:30+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -396,12 +396,12 @@ msgid "Average vote"
 msgstr "Durchschnittliche Bewertung"
 
 #: talk/templates/talk/talk_details.html:43
-#: talk/templates/talk/talk_overview.html:32
+#: talk/templates/talk/talk_overview.html:33
 msgid "average vote"
 msgstr "durchschnittliche Bewertung"
 
 #: talk/templates/talk/talk_details.html:46
-#: talk/templates/talk/talk_overview.html:37
+#: talk/templates/talk/talk_overview.html:38
 msgid "No votes yet"
 msgstr "Noch keine Bewertungen"
 
@@ -418,7 +418,7 @@ msgid "Delete"
 msgstr "Löschen"
 
 #: talk/templates/talk/talk_details.html:98
-#: talk/templates/talk/talk_overview.html:22
+#: talk/templates/talk/talk_overview.html:23
 #: talk/templates/talk/talk_speaker_details.html:26
 msgid "Comments"
 msgstr "Kommentare"
@@ -437,7 +437,7 @@ msgid "delete"
 msgstr "löschen"
 
 #: talk/templates/talk/talk_details.html:135
-#: talk/templates/talk/talk_overview.html:42
+#: talk/templates/talk/talk_overview.html:43
 #: talk/templates/talk/talk_speaker_details.html:62
 msgid "No comments yet"
 msgstr "Noch keine Kommentare"
@@ -461,14 +461,18 @@ msgstr "Session-Liste"
 msgid "Vote average"
 msgstr "Durchschnittliche Bewertung"
 
-#: talk/templates/talk/talk_overview.html:35
+#: talk/templates/talk/talk_overview.html:22
+msgid "Vote sum"
+msgstr "Gesamtbewertung"
+
+#: talk/templates/talk/talk_overview.html:36
 #, python-format
 msgid "(Sum %(vote_sum)s in %(vote_count)s vote)"
 msgid_plural "(Sum %(vote_sum)s in %(vote_count)s votes)"
 msgstr[0] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimme)"
 msgstr[1] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimmen)"
 
-#: talk/templates/talk/talk_overview.html:68
+#: talk/templates/talk/talk_overview.html:69
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 

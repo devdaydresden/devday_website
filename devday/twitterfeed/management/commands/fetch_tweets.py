@@ -3,6 +3,7 @@ from email.utils import parsedate_tz
 
 import pytz
 import requests
+from django.conf import settings
 from django.core.management import BaseCommand
 from django.core.management import CommandError
 
@@ -17,7 +18,8 @@ def get_access_token():
             consumer_secret = TwitterSetting.objects.get(name="consumer_secret").value
             response = requests.post(
                 'https://api.twitter.com/oauth2/token',
-                data={'grant_type': 'client_credentials'}, auth=(consumer_key, consumer_secret)
+                data={'grant_type': 'client_credentials'}, auth=(consumer_key, consumer_secret),
+                proxies=settings.TWITTERFEED_PROXIES
             )
             response.raise_for_status()
             data = response.json()
@@ -49,14 +51,18 @@ class Command(BaseCommand):
         headers = {'Authorization': "Bearer {}".format(access_token)}
         try:
             last_tweet = Tweet.objects.latest('twitter_id')
-            self.stdout.write("Fetching tweets since {}".format(last_tweet.twitter_id))
+            if options['verbosity'] > 0:
+                self.stdout.write("Fetching tweets since {}".format(last_tweet.twitter_id))
             response = requests.get(twitter_search_url, headers=headers, params={
                 'q': search_query.value, 'include_entities': False, 'count': 100,
-                'since_id': last_tweet.twitter_id})
+                'since_id': last_tweet.twitter_id}, proxies=settings.TWITTERFEED_PROXIES)
         except Tweet.DoesNotExist:
-            self.stdout.write("no tweets yet, fetching tweets from one year in the past")
-            response = requests.get(twitter_search_url, headers=headers, params={
-                'q': search_query.value, 'include_entities': False, 'count': 100})
+            if options['verbosity'] > 0:
+                self.stdout.write("no tweets yet, fetching tweets from one year in the past")
+            response = requests.get(
+                twitter_search_url, headers=headers,
+                params={'q': search_query.value, 'include_entities': False, 'count': 100},
+                proxies=settings.TWITTERFEED_PROXIES)
         response.raise_for_status()
         data = response.json()
         for tweet in data['statuses']:

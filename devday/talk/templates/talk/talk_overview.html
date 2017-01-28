@@ -16,9 +16,10 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>{% trans "Speaker" %}</th>
-                        <th>{% trans "Session title" %}</th>
-                        <th>{% trans "Vote average" %}</th>
+                        <th><a href="{% url 'talk_overview' %}?sort_order=speaker&sort_dir={% if sort_order == 'speaker' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Speaker" %}</a></th>
+                        <th><a href="{% url 'talk_overview' %}?sort_order=title&sort_dir={% if sort_order == 'title' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Session title" %}</a></th>
+                        <th><a href="{% url 'talk_overview' %}?sort_order=score&sort_dir={% if sort_order == 'score' and sort_dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Vote average" %}</a> /
+                        <a href="{% url 'talk_overview' %}?sort_order=score_sum&sort_dir={% if sort_order == 'score_sum' and sort_dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Vote sum" %}</a></th>
                         <th>{% trans "Comments" %}</th>
                     </tr>
                     </thead>

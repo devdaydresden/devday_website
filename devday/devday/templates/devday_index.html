@@ -25,50 +25,40 @@
                 <a href="{% url 'registration_register' %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "I want to be part of it!" %}</a>
             </div>
         </div>
-    </div>{% comment %}
-    <div class="row twitter-row">
-        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 twitter-area" id="twitter-area">
-            <div class="col-sm-4 follow-box">
-                <i class="icon-social-twitter"></i>
-                <h3>#DEVDAYDD</h3>
-                <a href="{{ twitter_url }}" class="twitter-follow-button" data-show-count="false">{% trans "Follow us!" %}</a>{% addtoblock "js" %}<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>{% endaddtoblock %}
-            </div>
-            <div class="col-sm-8 tweet-box">
-                <div id="twitterCarousel" class="carousel slide" data-ride="carousel">
-                    <!-- Indicators -->
-                    <div class="carousel-inner" role="listbox">
-                        <div class="item active">
-                            <div class="user-row">
-                                <img src="https://pbs.twimg.com/profile_images/731049878856601600/OrntgI1F_bigger.jpg" alt="" >
-                                <span class="name">Lorem Ipsum</span>
-                                <span class="username"><a href="#">@blablubb</a></span>
+    </div>
+    {% if twitter_feed %}
+        <div class="row twitter-row">
+            <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 twitter-area" id="twitter-area">
+                <div class="col-sm-4 follow-box">
+                    <i class="icon-social-twitter"></i>
+                    <h3>#DEVDAYDD</h3>
+                    <a href="{{ twitter_url }}" class="twitter-follow-button" data-show-count="false">{% trans "Follow us!" %}</a>{% addtoblock "js" %}<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>{% endaddtoblock %}
+                </div>
+                <div class="col-sm-8 tweet-box">
+                    <div id="twitterCarousel" class="carousel slide" data-ride="carousel">
+                        <!-- Indicators -->
+                        <div class="carousel-inner" role="listbox">
+                            {% for tweet in twitter_feed %}
+                            <div class="item{% if forloop.first %} active{% endif %}">
+                                <div class="user-row">
+                                    <img src="{{ tweet.user_profile_image.image_data.url }}" alt="" >
+                                    <span class="name">{{ tweet.user_name }}</span>
+                                    <span class="username"><a href="https://twitter.com/{{ tweet.user_screen_name }}">@{{ tweet.user_screen_name }}</a></span>
+                                </div>
+                                <div class="tweet">{{ tweet.text|safe }}</div>
                             </div>
-                            <div class="tweet">
-                                Lorem ipsum dolor sit amet, <a href="#">#consectetur</a> adipisicing elit, sed do eiusmod
-                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
-                            </div>
+                            {% endfor %}
                         </div>
-                        <div class="item">
-                            <div class="user-row">
-                                <img src="https://pbs.twimg.com/profile_images/731049878856601600/OrntgI1F_bigger.jpg" alt="" >
-                                <span class="name">Lorem Ipsum</span>
-                                <span class="username"><a href="#">@blablubb</a></span>
-                            </div>
-                            <div class="tweet">
-                                Lorem ipsum dolor sit amet, <a href="#">#consectetur</a> adipisicing elit, sed do eiusmod
-                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
-                            </div>
-                        </div>
+                        <a class="left carousel-control" href="#twitterCarousel" role="button" data-slide="prev"><span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+                        <a class="right carousel-control" href="#twitterCarousel" role="button" data-slide="next"><span class="icon icon-arrow-right" aria-hidden="true"></span></a>
                     </div>
-                    <a class="left carousel-control" href="#twitterCarousel" role="button" data-slide="prev"><span class="icon icon-arrow-left" aria-hidden="true"></span></a>
-                    <a class="right carousel-control" href="#twitterCarousel" role="button" data-slide="next"><span class="icon icon-arrow-right" aria-hidden="true"></span></a>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 sponsors-area center" id="sponsors-area">{% placeholder "sponsors" %}</div>
-    </div>{% endcomment %}
+        <div class="row">
+            <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 sponsors-area center" id="sponsors-area">{% placeholder "sponsors" %}</div>
+        </div>
+    {% endif %}
     <div class="row session-entry-area">
         <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1">
         {% if talk_submission_open %}

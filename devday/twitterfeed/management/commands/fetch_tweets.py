@@ -52,7 +52,7 @@ def create_markup(text, entities):
         for media in entities['media']:
             result = result.replace(
                 media['url'],
-                '<a href="{0:s}">{1:s}</a>'.format(media['url'], media['media_url_https'])
+                '<a href="{0:s}">{1:s}</a>'.format(media['media_url_https'], media['url'])
             )
     if 'urls' in entities:
         for url in entities['urls']:

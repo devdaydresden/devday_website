@@ -112,7 +112,9 @@ class Command(BaseCommand):
         if created:
             if verbosity > 1:
                 self.stdout.write("add profile with url " + profile_image.user_profile_image_url)
-            image_response = requests.get(profile_image.user_profile_image_url.replace('_normal', '_bigger'))
+            image_response = requests.get(
+                profile_image.user_profile_image_url.replace('_normal', '_bigger'),
+                proxies=settings.TWITTERFEED_PROXIES)
             image_response.raise_for_status()
             profile_image.image_data = SimpleUploadedFile(
                 name=profile_image.user_profile_image_url.split('/')[-1],

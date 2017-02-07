@@ -212,6 +212,7 @@ class TestFetchTweetCommandHandleTweet(TestCase):
         self.mock_response.content = self.image_data
         self.mock_response.headers = {'Content-Type': 'text/jpeg'}
 
+    @override_settings(TWITTERFEED_PROXIES={})
     @patch('twitterfeed.management.commands.fetch_tweets.requests.get')
     def test_handle_tweet_creates_profile_image_and_tweet(self, mock_get):
         mock_get.return_value = self.mock_response
@@ -228,7 +229,7 @@ class TestFetchTweetCommandHandleTweet(TestCase):
         }, 0)
         self.assertEqual(Tweet.objects.count(), 1)
         self.assertEqual(TwitterProfileImage.objects.count(), 1)
-        mock_get.assert_called_with('https://www.example.org/test_bigger.jpg')
+        mock_get.assert_called_with('https://www.example.org/test_bigger.jpg', proxies={})
 
     @patch('twitterfeed.management.commands.fetch_tweets.requests.get')
     def test_handle_tweet_reuses_existing_profile_image(self, mock_get):

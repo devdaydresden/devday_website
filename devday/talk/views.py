@@ -239,12 +239,23 @@ class TalkOverview(CommitteeRequiredMixin, ListView):
     model = Talk
     template_name_suffix = '_overview'
 
+    ORDER_MAP = {
+        'speaker': 'speaker__user__user__first_name',
+        'score': 'average_score',
+        'score_sum': 'vote_sum',
+    }
+
     def get_queryset(self):
-        return super(TalkOverview, self).get_queryset().annotate(
+        qs = super(TalkOverview, self).get_queryset().annotate(
             average_score=Avg('vote__score'),
             vote_sum=Sum('vote__score'),
             vote_count=Count('vote__id')).select_related(
             'speaker', 'speaker__user', 'speaker__user__user').order_by('title')
+        sort_order = self.request.GET.get('sort_order', 'title')
+        sort_order = TalkOverview.ORDER_MAP.get(sort_order, sort_order)
+        if self.request.GET.get('sort_dir') == 'desc':
+            sort_order = '-{}'.format(sort_order)
+        return qs.order_by(sort_order)
 
     def get_context_data(self, **kwargs):
         context = super(TalkOverview, self).get_context_data(**kwargs)
@@ -253,6 +264,10 @@ class TalkOverview(CommitteeRequiredMixin, ListView):
             for talk in talk_list:
                 if item['id'] == talk.id:
                     setattr(talk, 'comment_count', item['comment_count'])
+        context.update({
+            'sort_order': self.request.GET.get('sort_order', 'title'),
+            'sort_dir': self.request.GET.get('sort_dir', 'asc'),
+        })
         return context
 
 

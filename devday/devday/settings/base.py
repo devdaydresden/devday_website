@@ -87,6 +87,7 @@ TEMPLATES = [
                 'cms.context_processors.cms_settings',
                 'devday.contextprocessors.devdaysettings_contextprocessor',
                 'talk.context_processors.committee_member_context_processor',
+                'twitterfeed.contextprocessors.twitter_feed_context_processor',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -143,6 +144,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_file_form',
     'django_file_form.ajaxuploader',
+    'twitterfeed',
 ]
 
 AUTH_USER_MODEL = 'attendee.devdayuser'
@@ -213,3 +215,6 @@ TALK_SUBMISSION_OPEN = True
 DEVDAY_TWITTER_URL = 'https://twitter.com/devdaydresden'
 DEVDAY_XING_URL = 'https://www.xing.com/events/devday-let-code-rule-1769237'
 DEVDAY_FACEBOOK_URL = 'https://www.facebook.com/events/1265093543555722/'
+
+TWITTERFEED_PROXIES = {}
+TWITTERFEED_PATHS = ['/']

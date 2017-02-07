@@ -1,5 +1,5 @@
 /**
- * Build on 2016-12-19
+ * Build on 2017-1-30
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -6265,6 +6265,63 @@ input:focus ~ .highlight {
   border-radius: 1px;
   background: #ffffff;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12); }
+  .info-area.speaker-profile h3 {
+    font-size: 3.5rem;
+    margin-bottom: 2rem;
+    color: #272c59; }
+    .info-area.speaker-profile h3 a {
+      color: #272c59;
+      text-decoration: none; }
+      .info-area.speaker-profile h3 a:hover {
+        color: #35a4a3; }
+  .info-area.speaker-profile > [class^="col-"] img,
+  .info-area.speaker-profile > [class*=" col-"] img {
+    width: 100%; }
+  .info-area.speaker-profile > [class^="col-"] .accordion-heading,
+  .info-area.speaker-profile > [class*=" col-"] .accordion-heading {
+    margin-bottom: 8px; }
+  .info-area.speaker-profile > [class^="col-"] .accordion-toggle,
+  .info-area.speaker-profile > [class*=" col-"] .accordion-toggle {
+    display: block;
+    background: #35a4a3;
+    color: #ffffff;
+    padding: 5px 10px;
+    font-size: 2rem; }
+    .info-area.speaker-profile > [class^="col-"] .accordion-toggle.collapsed:before,
+    .info-area.speaker-profile > [class*=" col-"] .accordion-toggle.collapsed:before {
+      content: "+ ";
+      display: inline; }
+    .info-area.speaker-profile > [class^="col-"] .accordion-toggle:not(.collapsed):before,
+    .info-area.speaker-profile > [class*=" col-"] .accordion-toggle:not(.collapsed):before {
+      content: "- ";
+      display: inline; }
+  .info-area.speaker-profile > [class^="col-"] .accordion-inner,
+  .info-area.speaker-profile > [class*=" col-"] .accordion-inner {
+    padding: 8px;
+    font-size: 1em; }
+    .info-area.speaker-profile > [class^="col-"] .accordion-inner p,
+    .info-area.speaker-profile > [class*=" col-"] .accordion-inner p {
+      font-size: 1em; }
+  .info-area.speaker-overview {
+    padding: 0; }
+    .info-area.speaker-overview > [class^="col-"],
+    .info-area.speaker-overview > [class*=" col-"] {
+      padding: 0;
+      position: relative; }
+      .info-area.speaker-overview > [class^="col-"] img,
+      .info-area.speaker-overview > [class*=" col-"] img {
+        display: block;
+        width: 100%; }
+      .info-area.speaker-overview > [class^="col-"] h3,
+      .info-area.speaker-overview > [class*=" col-"] h3 {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        color: #ffffff;
+        padding: 16px;
+        background: #35a4a3;
+        margin: 0;
+        font-weight: normal; }
   .info-area .boxed-content {
     margin-bottom: 20px;
     padding: 8px; }
@@ -6291,6 +6348,44 @@ input:focus ~ .highlight {
       width: 100%;
       margin-top: 20px;
       text-align: center; }
+  .info-area .visible-xs-block table {
+    margin-bottom: 1.5rem; }
+  .info-area table {
+    width: 100%;
+    font-size: 1.5rem;
+    table-layout: fixed; }
+    .info-area table thead {
+      background: #35a4a3;
+      color: #ffffff; }
+      .info-area table thead th {
+        padding: 8px;
+        font-size: 1.75rem;
+        font-weight: 300;
+        border: 1px solid #35a4a3; }
+        .info-area table thead th:first-child {
+          width: 134px;
+          background: #272c59;
+          border-color: #272c59;
+          border-bottom: 1px solid #ffffff; }
+    .info-area table tbody tr td {
+      padding: 8px;
+      border: 1px solid #35a4a3; }
+      .info-area table tbody tr td[colspan] {
+        text-align: center; }
+      .info-area table tbody tr td > a {
+        color: #35a4a3;
+        text-decoration: none; }
+        .info-area table tbody tr td > a span {
+          display: block;
+          font-size: 2rem;
+          color: #272c59; }
+        .info-area table tbody tr td > a:hover span {
+          color: #35a4a3; }
+      .info-area table tbody tr td:first-child {
+        width: 134px;
+        background: #272c59;
+        border-color: #272c59;
+        color: #ffffff; }
 
 @media (max-width: 719.9px) {
   .info-area .boxed-content:first-child {

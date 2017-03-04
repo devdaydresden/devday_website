@@ -88,15 +88,30 @@ class Speaker(models.Model):
 
 
 @python_2_unicode_compatible
+class Track(TimeStampedModel):
+    name = models.CharField(max_length=100, unique=True, blank=False)
+
+    class Meta:
+        verbose_name = _('Track')
+        verbose_name_plural = _('Tracks')
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+@python_2_unicode_compatible
 class Talk(models.Model):
     speaker = models.ForeignKey(Speaker)
     title = models.CharField(verbose_name=_("Session title"), max_length=255)
     abstract = models.TextField(verbose_name=_("Abstract"))
     remarks = models.TextField(verbose_name=_("Remarks"), blank=True)
+    track = models.ForeignKey(Track, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Session")
         verbose_name_plural = _("Sessions")
+        ordering = ['title']
 
     def __str__(self):
         return "%s - %s" % (self.speaker, self.title)
@@ -131,12 +146,31 @@ class TalkComment(TimeStampedModel):
             self.commenter, self.comment, self.talk.title, self.talk.speaker)
 
 
+@python_2_unicode_compatible
 class Room(TimeStampedModel):
-    name = models.CharField(max_length=100, unique=True, blank=False)
+    name = models.CharField(verbose_name=_('Name'), max_length=100, unique=True, blank=False)
+    priority = models.PositiveSmallIntegerField(verbose_name=_('Priority'), default=0)
+
+    class Meta:
+        verbose_name = _('Room')
+        verbose_name_plural = _('Rooms')
+        ordering = ['priority', 'name']
+
+    def __str__(self):
+        return self.name
 
 
+@python_2_unicode_compatible
 class TimeSlot(TimeStampedModel):
     name = models.CharField(max_length=40, unique=True, blank=False)
+
+    class Meta:
+        verbose_name = _('Time slot')
+        verbose_name_plural = _('Time slots')
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 class TalkSlot(TimeStampedModel):

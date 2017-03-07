@@ -1,0 +1,21 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Speaker Linup" %}{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area speaker-overview" id="info-area">
+            {% if speaker_list %}
+                {% for speaker in speaker_list %}
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <a href="{% url "public_speaker_profile" pk=speaker.pk %}">
+                            <img src="{{ speaker.thumbnail.url }}" alt="{{ speaker }}">
+                            <h3>{{ speaker }}</h3>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% trans "Session selection is not done yet. No speaker list for you." %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

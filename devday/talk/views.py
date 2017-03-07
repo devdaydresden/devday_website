@@ -281,7 +281,7 @@ class SpeakerPublic(DetailView):
     template_name_suffix = '_public'
 
     def get_queryset(self):
-        return super(SpeakerPublic, self).get_queryset().filter(talk__talkslot__isnull=False)
+        return super(SpeakerPublic, self).get_queryset().filter(talk__track__isnull=False).prefetch_related('talk_set')
 
 
 class TalkDetails(CommitteeRequiredMixin, DetailView):
@@ -472,3 +472,11 @@ class TalkSpeakerCommentDelete(SpeakerRequiredMixin, SingleObjectMixin, View):
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
         return JsonResponse({'message': 'comment deleted'})
+
+
+class SpeakerListView(ListView):
+    model = Speaker
+
+    def get_queryset(self):
+        return super(SpeakerListView, self).get_queryset().filter(talk__track__isnull=False).order_by(
+            'user__user__last_name', 'user__user__first_name').prefetch_related('user', 'user__user')

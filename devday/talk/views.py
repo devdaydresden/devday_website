@@ -189,7 +189,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
 
     @atomic
     def form_valid(self, form):
-        send_mail = False
+        do_send_mail = False
         if self.auth_level == 'anonymous':
             email = form.cleaned_data['email']
             first_name = form.cleaned_data['firstname']
@@ -204,7 +204,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
                 signals.user_registered.send(sender=self.__class__,
                                              user=user,
                                              request=self.request)
-                send_mail = True
+                do_send_mail = True
         else:
             user = self.request.user
 
@@ -225,7 +225,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
             # may be Windows error on Windows when file is locked by another process
             logger.warning("Error deleting temporary files: %s", e)
 
-        if send_mail:
+        if do_send_mail:
             self.send_activation_email(user)
 
         return redirect(self.success_url)

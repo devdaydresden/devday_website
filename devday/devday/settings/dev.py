@@ -71,6 +71,8 @@ LOGGING = {
     },
 }
 
+TALK_SUBMISSION_OPEN = False
+
 TWITTERFEED_PROXIES = {
     'http': 'http://proxy.mms-dresden.de:8080/',
     'https': 'http://proxy.mms-dresden.de:8080/',

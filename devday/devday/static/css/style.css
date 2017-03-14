@@ -1,5 +1,5 @@
 /**
- * Build on 2017-1-30
+ * Build on 2017-3-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -5527,6 +5527,12 @@ html {
 body {
   overflow: hidden; }
 
+a {
+  color: #35a4a3; }
+  a:hover, a:focus {
+    color: #488483;
+    text-decoration: none; }
+
 .error-404 {
   min-height: 620px;
   background-color: #272c59 !important;
@@ -6107,6 +6113,11 @@ fieldset {
     min-height: 480px; }
   .promo.cover {
     background-size: cover; }
+  .promo a {
+    color: #ffffff; }
+    .promo a:hover, .promo a:focus {
+      color: #35a4a3;
+      text-decoration: none; }
   .promo .call-to-action img {
     display: inherit;
     width: 512px;
@@ -6122,6 +6133,15 @@ fieldset {
     text-align: center;
     color: #35a4a3;
     text-shadow: 2px 2px 3px #121212; }
+  .promo .call-to-action > p {
+    font-size: 22px;
+    display: inherit;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 12px;
+    text-align: center;
+    color: #35a4a3;
+    text-shadow: 2px 2px 3px #121212; }
   .promo .call-to-action .btn {
     display: inline-block !important;
     margin: 8px auto;
@@ -6129,6 +6149,10 @@ fieldset {
     position: relative;
     -webkit-transform: translateX(-50%);
             transform: translateX(-50%); }
+    .promo .call-to-action .btn:hover, .promo .call-to-action .btn:focus {
+      color: #ffffff;
+      background: #3f8b89;
+      border: none; }
 
 @media (max-width: 995.9px) {
   .promo .call-to-action img {
@@ -6421,6 +6445,8 @@ input:focus ~ .highlight {
   .twitter-area .tweet-box {
     padding: 0;
     background: #272c59; }
+    .twitter-area .tweet-box > div.carousel {
+      min-height: 235px; }
     .twitter-area .tweet-box .user-row {
       display: block;
       float: none;
@@ -6471,11 +6497,24 @@ input:focus ~ .highlight {
     margin: 0 20px; }
 
 .session-entry-area {
-  background: #f0efef; }
-  .session-entry-area h2 {
+  background: #f0efef;
+  padding: 0 10px; }
+  .session-entry-area h2,
+  .session-entry-area h1 {
+    font-size: 30px;
     text-align: center;
     color: #272c59;
-    with: 100%; }
+    width: 100%; }
+  .session-entry-area h1 {
+    margin: 32px 0 24px; }
+  .session-entry-area p,
+  .session-entry-area ul {
+    width: 50%;
+    left: 50%;
+    position: relative;
+    margin-left: -25%; }
+  .session-entry-area ul li {
+    padding: 8px 0px; }
   .session-entry-area .btn {
     position: relative;
     left: 50%;

@@ -7,6 +7,7 @@ from PIL import Image
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -163,18 +164,20 @@ class Room(TimeStampedModel):
 @python_2_unicode_compatible
 class TimeSlot(TimeStampedModel):
     name = models.CharField(max_length=40, unique=True, blank=False)
+    start_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(default=timezone.now)
 
     class Meta:
         verbose_name = _('Time slot')
         verbose_name_plural = _('Time slots')
-        ordering = ['name']
+        ordering = ['start_time', 'end_time', 'name']
 
     def __str__(self):
         return self.name
 
 
 class TalkSlot(TimeStampedModel):
-    talk = models.ForeignKey(Talk)
+    talk = models.OneToOneField(Talk)
     room = models.ForeignKey(Room)
     time = models.ForeignKey(TimeSlot)
 

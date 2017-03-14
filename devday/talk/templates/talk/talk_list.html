@@ -1,0 +1,16 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Schedule" %}{% endblock %}
+{% block content_body %}
+    {% if talk_list %}
+        <ul>
+            {% for talk in talk_list %}
+                <li>{% if talk.talkslot %}
+                    {{ talk.talkslot.time.name }} // {{ talk.talkslot.room.name }} //
+                {% endif %}{{ talk }} // {{ talk.track.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>{% trans "no schedule defined yet" %}</p>
+    {% endif %}
+{% endblock %}

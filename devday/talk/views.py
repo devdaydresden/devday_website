@@ -284,6 +284,17 @@ class SpeakerPublic(DetailView):
         return super(SpeakerPublic, self).get_queryset().filter(talk__track__isnull=False).prefetch_related('talk_set')
 
 
+class TalkListView(ListView):
+    model = Talk
+
+    def get_queryset(self):
+        return super(TalkListView, self).get_queryset().filter(track__isnull=False).select_related(
+            'track',
+            'speaker', 'speaker__user', 'speaker__user__user',
+            'talkslot', 'talkslot__time', 'talkslot__room'
+        ).order_by('talkslot__time__start_time', 'talkslot__room__name')
+
+
 class TalkDetails(CommitteeRequiredMixin, DetailView):
     model = Talk
     template_name_suffix = '_details'

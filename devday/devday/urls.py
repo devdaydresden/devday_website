@@ -11,7 +11,7 @@ from django.views.static import serve as serve_static
 
 from attendee.views import AttendeeProfileView
 from devday.views import ImprintView, exception_test_view
-from talk.views import SpeakerProfileView, SpeakerListView
+from talk.views import SpeakerProfileView, SpeakerListView, TalkListView
 
 admin.autodiscover()
 
@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^accounts/', include('devday.registration_urls')),
     url(r'^accounts/profile/$', AttendeeProfileView.as_view(), name='user_profile'),
     url(r'^speakers/$', SpeakerListView.as_view(), name='speaker_list'),
+    url(r'^schedule/$', TalkListView.as_view(), name='session_list'),
     url(r'^speaker/profile/(?P<pk>\d+)/$', SpeakerProfileView.as_view(), name='speaker_profile'),
     url(r'^upload/', include('django_file_form.urls')),
     url(r'^session/', include('talk.urls')),

@@ -166,6 +166,7 @@ class TimeSlot(TimeStampedModel):
     name = models.CharField(max_length=40, unique=True, blank=False)
     start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(default=timezone.now)
+    text_body = models.TextField(blank=True, default="")
 
     class Meta:
         verbose_name = _('Time slot')

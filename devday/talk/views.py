@@ -29,7 +29,7 @@ from registration.backends.hmac.views import RegistrationView
 from attendee.models import Attendee
 from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm, \
     EditTalkForm, TalkCommentForm, TalkVoteForm, TalkSpeakerCommentForm, EditSpeakerForm
-from talk.models import Speaker, Talk, Vote, TalkComment
+from talk.models import Speaker, Talk, Vote, TalkComment, Room, TimeSlot, TalkSlot
 
 logger = logging.getLogger('talk')
 
@@ -293,6 +293,31 @@ class TalkListView(ListView):
             'speaker', 'speaker__user', 'speaker__user__user',
             'talkslot', 'talkslot__time', 'talkslot__room'
         ).order_by('talkslot__time__start_time', 'talkslot__room__name')
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkListView, self).get_context_data(**kwargs)
+        talks = context.get('talk_list', [])
+        talks_by_time_and_room = {}
+        talks_by_room_and_time = {}
+        unscheduled = []
+        for talk in talks:
+            try:
+                # build dictionary grouped by time and room (md and lg display)
+                talks_by_time_and_room.setdefault(talk.talkslot.time, []).append(talk)
+                # build dictionary grouped by room and time (sm and xs display)
+                talks_by_room_and_time.setdefault(talk.talkslot.room, []).append(talk)
+            except TalkSlot.DoesNotExist:
+                unscheduled.append(talk)
+        context.update(
+            {
+                'talks_by_time_and_room': talks_by_time_and_room,
+                'talks_by_room_and_time': talks_by_room_and_time,
+                'unscheduled': unscheduled,
+                'rooms': Room.objects.all(),
+                'times': TimeSlot.objects.all()
+            }
+        )
+        return context
 
 
 class TalkDetails(CommitteeRequiredMixin, DetailView):

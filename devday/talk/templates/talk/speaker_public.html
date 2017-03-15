@@ -23,7 +23,7 @@
                             </div>
                         </div>
                     </div>
-                    {% for talk in speaker.talk_set.all %}
+                    {% for talk in speaker.talk_set.all %}{# TODO: display talks with track only #}
                         {% if talk.track %}
                             <div class="accordion-group">
                                 <div class="accordion-heading">

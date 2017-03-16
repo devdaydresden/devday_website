@@ -283,6 +283,11 @@ class SpeakerPublic(DetailView):
     def get_queryset(self):
         return super(SpeakerPublic, self).get_queryset().filter(talk__track__isnull=False).prefetch_related('talk_set')
 
+    def get_context_data(self, **kwargs):
+        context = super(SpeakerPublic, self).get_context_data(**kwargs)
+        context['talks'] = context['speaker'].talk_set.filter(track__isnull=False)
+        return context
+
 
 class TalkListView(ListView):
     model = Talk

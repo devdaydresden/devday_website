@@ -6,9 +6,10 @@
         <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area speaker-profile" id="info-area">
             <h3>{{ speaker }}{% if speaker.user.organization %} // {{ speaker.user.organization }}{% endif %}
                 {% if speaker.user.user.twitter_handle %} //
-                    <a href="https://www.twitter.com/{{ speaker.user.user.twitter_handle }}">@{{ speaker.user.user.twitter_handle }}</a>{% endif %}</h3>
+                    <a href="https://www.twitter.com/{{ speaker.user.user.twitter_handle }}">@{{ speaker.user.user.twitter_handle }}</a>{% endif %}
+            </h3>
             <div class="col-xs-12 col-sm-4">
-                <img src="{{ speaker.thumbnail.url }}" alt="{{ speaker }}">
+                <img src="{{ speaker.public_image.url }}" alt="{{ speaker }}">
             </div>
             <div class="col-xs-12 col-sm-8">
                 <div class="accordion" id="accordion2">
@@ -23,20 +24,18 @@
                             </div>
                         </div>
                     </div>
-                    {% for talk in speaker.talk_set.all %}{# TODO: display talks with track only #}
-                        {% if talk.track %}
-                            <div class="accordion-group">
-                                <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse"
-                                       data-parent="#accordion2"
-                                       href="#collapseTwo{{ forloop.counter }}">{% trans "Session information" %}
-                                        // {{ talk.title }}</a>
-                                </div>
-                                <div id="collapseTwo{{ forloop.counter }}" class="accordion-body collapse">
-                                    <div class="accordion-inner"><p>{{ talk.abstract|linebreaksbr }}</p></div>
-                                </div>
+                    {% for talk in talks %}
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle collapsed" data-toggle="collapse"
+                                   data-parent="#accordion2"
+                                   href="#collapseTwo{{ forloop.counter }}">{% trans "Session information" %}
+                                    // {{ talk.title }}</a>
                             </div>
-                        {% endif %}
+                            <div id="collapseTwo{{ forloop.counter }}" class="accordion-body collapse">
+                                <div class="accordion-inner"><p>{{ talk.abstract|linebreaksbr }}</p></div>
+                            </div>
+                        </div>
                     {% endfor %}
                 </div>
             </div>

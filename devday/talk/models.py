@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
 
+import logging
 import os
 from mimetypes import MimeTypes
 
 from PIL import Image
+from PIL import ImageOps
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
@@ -25,6 +27,8 @@ T_SHIRT_SIZES = (
     (7, _("XXXL")),
 )
 
+log = logging.getLogger(__name__)
+
 
 @python_2_unicode_compatible
 class Speaker(models.Model):
@@ -42,6 +46,9 @@ class Speaker(models.Model):
     thumbnail = models.ImageField(
         verbose_name=_("Speaker image thumbnail"), upload_to='speaker_thumbs',
         max_length=500, null=True, blank=True)
+    public_image = models.ImageField(
+        verbose_name=_("Public speaker image"), upload_to='speaker_public',
+        max_length=500, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Speaker")
@@ -50,24 +57,48 @@ class Speaker(models.Model):
     def __str__(self):
         return "%s" % self.user
 
+    def _get_pil_type_and_extension(self):
+        mime = MimeTypes()
+        django_type = mime.guess_type(self.portrait.name)[0]
+
+        if django_type == 'image/jpeg':
+            return 'jpeg', 'jpg', django_type
+        elif django_type == 'image/png':
+            return 'png', 'png', django_type
+        raise ValueError("unsupported file type")
+
+    def create_public_image(self):
+        """
+        This method creates a public version of the speaker image for display on the speaker lineup page. Speaker
+        images with inappropriate aspect ratio may be cropped unfavourably.
+        """
+        if not self.portrait:
+            return
+
+        public_image_width = settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH
+        public_image_height = settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT
+        pil_type, file_extension, django_type = self._get_pil_type_and_extension()
+
+        self.portrait.seek(0)
+        image = Image.open(BytesIO(self.portrait.read()))
+        scaled = ImageOps.fit(image, (public_image_width, public_image_height))
+
+        temp_handle = BytesIO()
+        scaled.save(temp_handle, pil_type)
+        temp_handle.seek(0)
+
+        suf = SimpleUploadedFile(os.path.split(self.portrait.name)[-1],
+                                 temp_handle.read(), content_type=django_type)
+        self.public_image.save("%s_public.%s" % (os.path.splitext(suf.name)[0], file_extension), suf, save=False)
+
     def create_thumbnail(self):
         if not self.portrait:
             return
 
         thumbnail_height = settings.TALK_THUMBNAIL_HEIGHT
+        pil_type, file_extension, django_type = self._get_pil_type_and_extension()
 
-        mime = MimeTypes()
-        django_type = mime.guess_type(self.portrait.name)[0]
-
-        if django_type == 'image/jpeg':
-            pil_type = 'jpeg'
-            file_extension = 'jpg'
-        elif django_type == 'image/png':
-            pil_type = 'png'
-            file_extension = 'png'
-        else:
-            return
-
+        self.portrait.seek(0)
         image = Image.open(BytesIO(self.portrait.read()))
         thumbnail_size = (int(thumbnail_height * image.width / image.height), thumbnail_height)
         image.thumbnail(thumbnail_size, Image.ANTIALIAS)
@@ -81,7 +112,11 @@ class Speaker(models.Model):
         self.thumbnail.save("%s_thumbnail.%s" % (os.path.splitext(suf.name)[0], file_extension), suf, save=False)
 
     def save(self, **kwargs):
-        self.create_thumbnail()
+        try:
+            self.create_thumbnail()
+            self.create_public_image()
+        except ValueError:
+            log.debug("unsupported image type for speaker portrait")
         force_update = False
         if self.id:
             force_update = True

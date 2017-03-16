@@ -8,7 +8,7 @@
                 {% for speaker in speaker_list %}
                     <div class="col-xs-12 col-sm-6 col-md-4">
                         <a href="{% url "public_speaker_profile" pk=speaker.pk %}">
-                            <img src="{{ speaker.thumbnail.url }}" alt="{{ speaker }}">
+                            <img src="{{ speaker.public_image.url }}" alt="{{ speaker }}">
                             <h3>{{ speaker }}</h3>
                         </a>
                     </div>

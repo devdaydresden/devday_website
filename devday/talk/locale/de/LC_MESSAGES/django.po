@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-28 12:30+0100\n"
-"PO-Revision-Date: 2017-01-28 12:30+0100\n"
+"POT-Creation-Date: 2017-03-16 16:07+0100\n"
+"PO-Revision-Date: 2017-03-16 16:11+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 1.8.12\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: talk/forms.py:29 talk/templates/talk/speaker_details.html:16
@@ -80,43 +80,43 @@ msgstr "E-Mail"
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
-#: talk/models.py:18
+#: talk/models.py:21
 msgid "XS"
 msgstr "XS"
 
-#: talk/models.py:19
+#: talk/models.py:22
 msgid "S"
 msgstr "S"
 
-#: talk/models.py:20
+#: talk/models.py:23
 msgid "M"
 msgstr "M"
 
-#: talk/models.py:21
+#: talk/models.py:24
 msgid "L"
 msgstr "L"
 
-#: talk/models.py:22
+#: talk/models.py:25
 msgid "XL"
 msgstr "XL"
 
-#: talk/models.py:23
+#: talk/models.py:26
 msgid "XXL"
 msgstr "XXL"
 
-#: talk/models.py:24
+#: talk/models.py:27
 msgid "XXXL"
 msgstr "XXXL"
 
-#: talk/models.py:31
+#: talk/models.py:36
 msgid "T-shirt size"
 msgstr "T-Shirtgröße"
 
-#: talk/models.py:33
+#: talk/models.py:38
 msgid "Video permitted"
 msgstr "Videofreigabe erteilt"
 
-#: talk/models.py:34
+#: talk/models.py:39
 msgid ""
 "I hereby agree that audio and visual recordings of me and my session can be "
 "published on the social media channels of the event organizer and the "
@@ -126,58 +126,94 @@ msgstr ""
 "Session auf den Social-Media-Kanälen des Veranstalters und auf der Webseite "
 "devday.de verwendet werden dürfen."
 
-#: talk/models.py:39 talk/templates/talk/speaker_details.html:22
+#: talk/models.py:44 talk/templates/talk/speaker_details.html:22
 msgid "Short biography"
 msgstr "Kurzvita"
 
-#: talk/models.py:40 talk/templates/talk/speaker_details.html:25
+#: talk/models.py:45 talk/templates/talk/speaker_details.html:25
 #: talk/templates/talk/speaker_profile.html:19
 msgid "Speaker image"
 msgstr "Speakerbild"
 
-#: talk/models.py:42
+#: talk/models.py:47
 msgid "Speaker image thumbnail"
 msgstr "Vorschau Speakerbild"
 
-#: talk/models.py:46 talk/templates/talk/talk_overview.html:19
+#: talk/models.py:50
+msgid "Public speaker image"
+msgstr "Öffentliches Speakerbild"
+
+#: talk/models.py:54 talk/templates/talk/talk_overview.html:19
 msgid "Speaker"
 msgstr "Sprecher"
 
-#: talk/models.py:47
+#: talk/models.py:55
 msgid "Speakers"
 msgstr "Sprecher"
 
-#: talk/models.py:93 talk/templates/talk/talk_overview.html:20
+#: talk/models.py:131
+msgid "Track"
+msgstr "Track"
+
+#: talk/models.py:132
+msgid "Tracks"
+msgstr "Tracks"
+
+#: talk/models.py:142 talk/templates/talk/talk_overview.html:20
 msgid "Session title"
 msgstr "Sessionname"
 
-#: talk/models.py:94 talk/templates/talk/talk_details.html:33
+#: talk/models.py:143 talk/templates/talk/talk_details.html:33
 msgid "Abstract"
 msgstr "Kurzbeschreibung"
 
-#: talk/models.py:95 talk/templates/talk/talk_details.html:35
+#: talk/models.py:144 talk/templates/talk/talk_details.html:35
 msgid "Remarks"
 msgstr "Anmerkungen"
 
-#: talk/models.py:98
+#: talk/models.py:148
 msgid "Session"
 msgstr "Session"
 
-#: talk/models.py:99
+#: talk/models.py:149
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:123
+#: talk/models.py:174
 msgid "Comment"
 msgstr "Kommentar"
 
-#: talk/models.py:125
+#: talk/models.py:176
 msgid "Visible for Speaker"
 msgstr "Sichtbar für den Sprecher"
 
-#: talk/models.py:127
+#: talk/models.py:178
 msgid "Indicates whether the comment is visible to the speaker."
 msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
+
+#: talk/models.py:187
+msgid "Name"
+msgstr "Name"
+
+#: talk/models.py:188
+msgid "Priority"
+msgstr "Priorität"
+
+#: talk/models.py:191
+msgid "Room"
+msgstr "Raum"
+
+#: talk/models.py:192
+msgid "Rooms"
+msgstr "Räume"
+
+#: talk/models.py:207
+msgid "Time slot"
+msgstr "Zeitslot"
+
+#: talk/models.py:208
+msgid "Time slots"
+msgstr "Zeitslots"
 
 #: talk/templates/talk/create_talk.html:3
 #: talk/templates/talk/speaker_profile.html:49
@@ -262,6 +298,16 @@ msgstr "Sprecherprofil für %(username)s"
 msgid "Email address"
 msgstr "E-Mailadresse"
 
+#: talk/templates/talk/speaker_list.html:3
+msgid "Speaker Linup"
+msgstr "Sprecher"
+
+#: talk/templates/talk/speaker_list.html:17
+msgid "Session selection is not done yet. No speaker list for you."
+msgstr ""
+"Die Sessionauswahl ist noch nicht abgeschlossen. Es ist noch keine "
+"Sprecherliste verfügbar."
+
 #: talk/templates/talk/speaker_profile.html:8
 #: talk/templates/talk/speaker_profile.html:10
 #, python-format
@@ -288,6 +334,14 @@ msgstr "Weitere Session einreichen"
 #: talk/templates/talk/speaker_profile.html:51
 msgid "Change password"
 msgstr "Passwort ändern"
+
+#: talk/templates/talk/speaker_public.html:19
+msgid "Speaker information"
+msgstr "Sprecherinformationen"
+
+#: talk/templates/talk/speaker_public.html:32
+msgid "Session information"
+msgstr "Sessioninformationen"
 
 #: talk/templates/talk/speaker_registered.html:3
 msgid "Successfully registered as a speaker"
@@ -452,6 +506,26 @@ msgstr "Zurück zur Session-Liste"
 msgid "Edit session"
 msgstr "Session bearbeiten"
 
+#: talk/templates/talk/talk_list.html:3
+msgid "Schedule"
+msgstr "Sessionplan"
+
+#: talk/templates/talk/talk_list.html:10 talk/templates/talk/talk_list.html:50
+msgid "Time"
+msgstr "Zeit"
+
+#: talk/templates/talk/talk_list.html:39
+msgid "Nothing scheduled here"
+msgstr "Hier ist noch nichts geplant"
+
+#: talk/templates/talk/talk_list.html:70
+msgid "no schedule defined yet"
+msgstr "Es wurde noch kein Sessionplan definiert"
+
+#: talk/templates/talk/talk_list.html:73
+msgid "Unscheduled talks"
+msgstr "Sessions ohne Zuordnung"
+
 #: talk/templates/talk/talk_overview.html:3
 #: talk/templates/talk/talk_overview.html:7
 msgid "List of sessions"
@@ -476,8 +550,8 @@ msgstr[1] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimmen)"
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
-#: talk/tests/test_views.py:546 talk/tests/test_views.py:625
-#: talk/tests/test_views.py:892
+#: talk/tests/test_views.py:576 talk/tests/test_views.py:655
+#: talk/tests/test_views.py:922
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 

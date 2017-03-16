@@ -4,7 +4,8 @@ from talk.views import (
     CreateTalkView, TalkSubmittedView, handle_upload, ExistingFileView, CreateSpeakerView,
     submit_session_view,
     SpeakerRegisteredView, TalkOverview, SpeakerDetails, TalkDetails, TalkVote, SubmitTalkComment, TalkVoteClear,
-    TalkCommentDelete, SpeakerTalkDetails, TalkSpeakerCommentDelete, SubmitTalkSpeakerComment, TalkSubmissionClosed)
+    TalkCommentDelete, SpeakerTalkDetails, TalkSpeakerCommentDelete, SubmitTalkSpeakerComment, TalkSubmissionClosed,
+    SpeakerPublic)
 
 urlpatterns = [
     url(r'^submit-session/$', submit_session_view, name='submit_session'),
@@ -15,6 +16,7 @@ urlpatterns = [
     url(r'^submitted/$', TalkSubmittedView.as_view(), name='talk_submitted'),
     url(r'^existing/(?P<id>\d+)/$', ExistingFileView.as_view(), name='talk_existing'),
     url(r'^handle_upload/$', handle_upload, name='talk_handle_upload'),
+    url(r'^speaker/(?P<pk>\d+)/$', SpeakerPublic.as_view(), name='public_speaker_profile'),
     url(r'^speaker/talks/(?P<pk>\d+)/$', SpeakerTalkDetails.as_view(), name='speaker_talk_details'),
     url(r'^speaker/talks/(?P<pk>\d+)/comment/$', SubmitTalkSpeakerComment.as_view(), name='talk_speaker_comment'),
     url(r'^speaker/talks/delete_comment/(?P<pk>\d+)/$', TalkSpeakerCommentDelete.as_view(),

@@ -1,0 +1,81 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Schedule" %}{% endblock %}
+{% block content %}
+    <div class="col-md-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">
+        {% if talk_list %}
+            <table class="hidden-xs hidden-sm">
+                <thead>
+                <tr>
+                    <th>{% trans "Time" %}</th>
+                    {% for room in rooms %}
+                        <th>{{ room.name }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for timeslot in times %}
+                    <tr>
+                        <td>{{ timeslot.name }}</td>
+                        {% for talk_time, talks in talks_by_time_and_room.items %}
+                            {% if talk_time == timeslot %}
+                                {% if talks|length == 1 %}
+                                    {% with talk=talks|first %}
+                                        <td colspan="{{ rooms|length }}"
+                                            class="track-{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a></td>
+                                    {% endwith %}
+                                {% else %}
+                                    {% for room in rooms %}
+                                        {% for talk in talks %}
+                                            {% if talk.talkslot.room == room %}
+                                                <td class="track-{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a></td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if timeslot not in talks_by_time_and_room %}
+                            <td class="{% if timeslot.text_body %}no-talk{% else %}text-warning{% endif %}" colspan="{{ rooms|length }}">{% if timeslot.text_body %}{{ timeslot.text_body }}{% else %}{% trans "Nothing scheduled here" %}{% endif %}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="visible-xs-block visible-sm-block">
+                {% for room in rooms %}
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>{% trans "Time" %}</th>
+                            <th>{{ room.name }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for talk_room, talks in talks_by_room_and_time.items %}
+                            {% if talk_room == room %}
+                                {% for talk in talks %}
+                                <tr>
+                                    <td>{{ talk.talkslot.time.name }}</td>
+                                    <td class="{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a></td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>{% trans "no schedule defined yet" %}</p>
+        {% endif %}
+        {% if unscheduled %}
+            <h2>{% trans "Unscheduled talks" %}</h2>
+            <ul>
+                {% for talk in unscheduled %}
+                    <li class="track-{{ talk.track }}">{{ talk }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,8 +1,11 @@
 # DevDay website
 
+The DevDay website is built using [Django CMS](https://www.django-cms.org/).
+And consists of a Django CMS content management part and some custom Django
+apps for talk, attendee and speaker management.
+
 ## use Vagrant for local development
 
-The DevDay website is built using [Django CMS](https://www.django-cms.org/).
 For easy local development and deployment testing a
 [Vagrant](https://vagrantup.com/)/[VirtualBox](https://www.virtualbox.org/)
 setup is provided that builds two local virtual machines:
@@ -38,7 +41,7 @@ to stop a running virtual machine use
 vagrant halt <boxname>
 ```
 
-> All testing has been done using Vagrant 1.8.5 with VirtualBox 5.1.4, if you
+> All testing has been done using Vagrant 1.9.2 with VirtualBox 5.1.14, if you
 > experience issues please update to this versions first.
 
 To run the Django application for local development you can do the following:

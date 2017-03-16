@@ -1,12 +1,15 @@
 from __future__ import unicode_literals
 
+import logging
 import os
 from mimetypes import MimeTypes
 
 from PIL import Image
+from PIL import ImageOps
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -23,6 +26,8 @@ T_SHIRT_SIZES = (
     (6, _("XXL")),
     (7, _("XXXL")),
 )
+
+log = logging.getLogger(__name__)
 
 
 @python_2_unicode_compatible
@@ -41,6 +46,9 @@ class Speaker(models.Model):
     thumbnail = models.ImageField(
         verbose_name=_("Speaker image thumbnail"), upload_to='speaker_thumbs',
         max_length=500, null=True, blank=True)
+    public_image = models.ImageField(
+        verbose_name=_("Public speaker image"), upload_to='speaker_public',
+        max_length=500, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Speaker")
@@ -49,24 +57,48 @@ class Speaker(models.Model):
     def __str__(self):
         return "%s" % self.user
 
+    def _get_pil_type_and_extension(self):
+        mime = MimeTypes()
+        django_type = mime.guess_type(self.portrait.name)[0]
+
+        if django_type == 'image/jpeg':
+            return 'jpeg', 'jpg', django_type
+        elif django_type == 'image/png':
+            return 'png', 'png', django_type
+        raise ValueError("unsupported file type")
+
+    def create_public_image(self):
+        """
+        This method creates a public version of the speaker image for display on the speaker lineup page. Speaker
+        images with inappropriate aspect ratio may be cropped unfavourably.
+        """
+        if not self.portrait:
+            return
+
+        public_image_width = settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH
+        public_image_height = settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT
+        pil_type, file_extension, django_type = self._get_pil_type_and_extension()
+
+        self.portrait.seek(0)
+        image = Image.open(BytesIO(self.portrait.read()))
+        scaled = ImageOps.fit(image, (public_image_width, public_image_height))
+
+        temp_handle = BytesIO()
+        scaled.save(temp_handle, pil_type)
+        temp_handle.seek(0)
+
+        suf = SimpleUploadedFile(os.path.split(self.portrait.name)[-1],
+                                 temp_handle.read(), content_type=django_type)
+        self.public_image.save("%s_public.%s" % (os.path.splitext(suf.name)[0], file_extension), suf, save=False)
+
     def create_thumbnail(self):
         if not self.portrait:
             return
 
         thumbnail_height = settings.TALK_THUMBNAIL_HEIGHT
+        pil_type, file_extension, django_type = self._get_pil_type_and_extension()
 
-        mime = MimeTypes()
-        django_type = mime.guess_type(self.portrait.name)[0]
-
-        if django_type == 'image/jpeg':
-            pil_type = 'jpeg'
-            file_extension = 'jpg'
-        elif django_type == 'image/png':
-            pil_type = 'png'
-            file_extension = 'png'
-        else:
-            return
-
+        self.portrait.seek(0)
         image = Image.open(BytesIO(self.portrait.read()))
         thumbnail_size = (int(thumbnail_height * image.width / image.height), thumbnail_height)
         image.thumbnail(thumbnail_size, Image.ANTIALIAS)
@@ -80,11 +112,28 @@ class Speaker(models.Model):
         self.thumbnail.save("%s_thumbnail.%s" % (os.path.splitext(suf.name)[0], file_extension), suf, save=False)
 
     def save(self, **kwargs):
-        self.create_thumbnail()
+        try:
+            self.create_thumbnail()
+            self.create_public_image()
+        except ValueError:
+            log.debug("unsupported image type for speaker portrait")
         force_update = False
         if self.id:
             force_update = True
         super(Speaker, self).save(force_update=force_update, **kwargs)
+
+
+@python_2_unicode_compatible
+class Track(TimeStampedModel):
+    name = models.CharField(max_length=100, unique=True, blank=False)
+
+    class Meta:
+        verbose_name = _('Track')
+        verbose_name_plural = _('Tracks')
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 @python_2_unicode_compatible
@@ -93,10 +142,12 @@ class Talk(models.Model):
     title = models.CharField(verbose_name=_("Session title"), max_length=255)
     abstract = models.TextField(verbose_name=_("Abstract"))
     remarks = models.TextField(verbose_name=_("Remarks"), blank=True)
+    track = models.ForeignKey(Track, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Session")
         verbose_name_plural = _("Sessions")
+        ordering = ['title']
 
     def __str__(self):
         return "%s - %s" % (self.speaker, self.title)
@@ -129,3 +180,42 @@ class TalkComment(TimeStampedModel):
     def __str__(self):
         return '{} commented {} for {} by {}'.format(
             self.commenter, self.comment, self.talk.title, self.talk.speaker)
+
+
+@python_2_unicode_compatible
+class Room(TimeStampedModel):
+    name = models.CharField(verbose_name=_('Name'), max_length=100, unique=True, blank=False)
+    priority = models.PositiveSmallIntegerField(verbose_name=_('Priority'), default=0)
+
+    class Meta:
+        verbose_name = _('Room')
+        verbose_name_plural = _('Rooms')
+        ordering = ['priority', 'name']
+
+    def __str__(self):
+        return self.name
+
+
+@python_2_unicode_compatible
+class TimeSlot(TimeStampedModel):
+    name = models.CharField(max_length=40, unique=True, blank=False)
+    start_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(default=timezone.now)
+    text_body = models.TextField(blank=True, default="")
+
+    class Meta:
+        verbose_name = _('Time slot')
+        verbose_name_plural = _('Time slots')
+        ordering = ['start_time', 'end_time', 'name']
+
+    def __str__(self):
+        return self.name
+
+
+class TalkSlot(TimeStampedModel):
+    talk = models.OneToOneField(Talk)
+    room = models.ForeignKey(Room)
+    time = models.ForeignKey(TimeSlot)
+
+    class Meta:
+        unique_together = (('room', 'time'),)

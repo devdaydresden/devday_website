@@ -1,5 +1,5 @@
 /**
- * Build on 2016-12-19
+ * Build on 2017-3-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -5527,6 +5527,12 @@ html {
 body {
   overflow: hidden; }
 
+a {
+  color: #35a4a3; }
+  a:hover, a:focus {
+    color: #488483;
+    text-decoration: none; }
+
 .error-404 {
   min-height: 620px;
   background-color: #272c59 !important;
@@ -6107,6 +6113,11 @@ fieldset {
     min-height: 480px; }
   .promo.cover {
     background-size: cover; }
+  .promo a {
+    color: #ffffff; }
+    .promo a:hover, .promo a:focus {
+      color: #35a4a3;
+      text-decoration: none; }
   .promo .call-to-action img {
     display: inherit;
     width: 512px;
@@ -6122,6 +6133,15 @@ fieldset {
     text-align: center;
     color: #35a4a3;
     text-shadow: 2px 2px 3px #121212; }
+  .promo .call-to-action > p {
+    font-size: 22px;
+    display: inherit;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 12px;
+    text-align: center;
+    color: #35a4a3;
+    text-shadow: 2px 2px 3px #121212; }
   .promo .call-to-action .btn {
     display: inline-block !important;
     margin: 8px auto;
@@ -6129,6 +6149,10 @@ fieldset {
     position: relative;
     -webkit-transform: translateX(-50%);
             transform: translateX(-50%); }
+    .promo .call-to-action .btn:hover, .promo .call-to-action .btn:focus {
+      color: #ffffff;
+      background: #3f8b89;
+      border: none; }
 
 @media (max-width: 995.9px) {
   .promo .call-to-action img {
@@ -6265,6 +6289,63 @@ input:focus ~ .highlight {
   border-radius: 1px;
   background: #ffffff;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12); }
+  .info-area.speaker-profile h3 {
+    font-size: 3.5rem;
+    margin-bottom: 2rem;
+    color: #272c59; }
+    .info-area.speaker-profile h3 a {
+      color: #272c59;
+      text-decoration: none; }
+      .info-area.speaker-profile h3 a:hover {
+        color: #35a4a3; }
+  .info-area.speaker-profile > [class^="col-"] img,
+  .info-area.speaker-profile > [class*=" col-"] img {
+    width: 100%; }
+  .info-area.speaker-profile > [class^="col-"] .accordion-heading,
+  .info-area.speaker-profile > [class*=" col-"] .accordion-heading {
+    margin-bottom: 8px; }
+  .info-area.speaker-profile > [class^="col-"] .accordion-toggle,
+  .info-area.speaker-profile > [class*=" col-"] .accordion-toggle {
+    display: block;
+    background: #35a4a3;
+    color: #ffffff;
+    padding: 5px 10px;
+    font-size: 2rem; }
+    .info-area.speaker-profile > [class^="col-"] .accordion-toggle.collapsed:before,
+    .info-area.speaker-profile > [class*=" col-"] .accordion-toggle.collapsed:before {
+      content: "+ ";
+      display: inline; }
+    .info-area.speaker-profile > [class^="col-"] .accordion-toggle:not(.collapsed):before,
+    .info-area.speaker-profile > [class*=" col-"] .accordion-toggle:not(.collapsed):before {
+      content: "- ";
+      display: inline; }
+  .info-area.speaker-profile > [class^="col-"] .accordion-inner,
+  .info-area.speaker-profile > [class*=" col-"] .accordion-inner {
+    padding: 8px;
+    font-size: 1em; }
+    .info-area.speaker-profile > [class^="col-"] .accordion-inner p,
+    .info-area.speaker-profile > [class*=" col-"] .accordion-inner p {
+      font-size: 1em; }
+  .info-area.speaker-overview {
+    padding: 0; }
+    .info-area.speaker-overview > [class^="col-"],
+    .info-area.speaker-overview > [class*=" col-"] {
+      padding: 0;
+      position: relative; }
+      .info-area.speaker-overview > [class^="col-"] img,
+      .info-area.speaker-overview > [class*=" col-"] img {
+        display: block;
+        width: 100%; }
+      .info-area.speaker-overview > [class^="col-"] h3,
+      .info-area.speaker-overview > [class*=" col-"] h3 {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        color: #ffffff;
+        padding: 16px;
+        background: #35a4a3;
+        margin: 0;
+        font-weight: normal; }
   .info-area .boxed-content {
     margin-bottom: 20px;
     padding: 8px; }
@@ -6291,6 +6372,44 @@ input:focus ~ .highlight {
       width: 100%;
       margin-top: 20px;
       text-align: center; }
+  .info-area .visible-xs-block table {
+    margin-bottom: 1.5rem; }
+  .info-area table {
+    width: 100%;
+    font-size: 1.5rem;
+    table-layout: fixed; }
+    .info-area table thead {
+      background: #35a4a3;
+      color: #ffffff; }
+      .info-area table thead th {
+        padding: 8px;
+        font-size: 1.75rem;
+        font-weight: 300;
+        border: 1px solid #35a4a3; }
+        .info-area table thead th:first-child {
+          width: 134px;
+          background: #272c59;
+          border-color: #272c59;
+          border-bottom: 1px solid #ffffff; }
+    .info-area table tbody tr td {
+      padding: 8px;
+      border: 1px solid #35a4a3; }
+      .info-area table tbody tr td[colspan] {
+        text-align: center; }
+      .info-area table tbody tr td > a {
+        color: #35a4a3;
+        text-decoration: none; }
+        .info-area table tbody tr td > a span {
+          display: block;
+          font-size: 2rem;
+          color: #272c59; }
+        .info-area table tbody tr td > a:hover span {
+          color: #35a4a3; }
+      .info-area table tbody tr td:first-child {
+        width: 134px;
+        background: #272c59;
+        border-color: #272c59;
+        color: #ffffff; }
 
 @media (max-width: 719.9px) {
   .info-area .boxed-content:first-child {
@@ -6326,6 +6445,8 @@ input:focus ~ .highlight {
   .twitter-area .tweet-box {
     padding: 0;
     background: #272c59; }
+    .twitter-area .tweet-box > div.carousel {
+      min-height: 235px; }
     .twitter-area .tweet-box .user-row {
       display: block;
       float: none;
@@ -6376,11 +6497,24 @@ input:focus ~ .highlight {
     margin: 0 20px; }
 
 .session-entry-area {
-  background: #f0efef; }
-  .session-entry-area h2 {
+  background: #f0efef;
+  padding: 0 10px; }
+  .session-entry-area h2,
+  .session-entry-area h1 {
+    font-size: 30px;
     text-align: center;
     color: #272c59;
-    with: 100%; }
+    width: 100%; }
+  .session-entry-area h1 {
+    margin: 32px 0 24px; }
+  .session-entry-area p,
+  .session-entry-area ul {
+    width: 50%;
+    left: 50%;
+    position: relative;
+    margin-left: -25%; }
+  .session-entry-area ul li {
+    padding: 8px 0px; }
   .session-entry-area .btn {
     position: relative;
     left: 50%;

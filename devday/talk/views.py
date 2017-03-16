@@ -29,7 +29,7 @@ from registration.backends.hmac.views import RegistrationView
 from attendee.models import Attendee
 from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm, \
     EditTalkForm, TalkCommentForm, TalkVoteForm, TalkSpeakerCommentForm, EditSpeakerForm
-from talk.models import Speaker, Talk, Vote, TalkComment
+from talk.models import Speaker, Talk, Vote, TalkComment, Room, TimeSlot, TalkSlot
 
 logger = logging.getLogger('talk')
 
@@ -189,7 +189,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
 
     @atomic
     def form_valid(self, form):
-        send_mail = False
+        do_send_mail = False
         if self.auth_level == 'anonymous':
             email = form.cleaned_data['email']
             first_name = form.cleaned_data['firstname']
@@ -204,7 +204,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
                 signals.user_registered.send(sender=self.__class__,
                                              user=user,
                                              request=self.request)
-                send_mail = True
+                do_send_mail = True
         else:
             user = self.request.user
 
@@ -225,7 +225,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
             # may be Windows error on Windows when file is locked by another process
             logger.warning("Error deleting temporary files: %s", e)
 
-        if send_mail:
+        if do_send_mail:
             self.send_activation_email(user)
 
         return redirect(self.success_url)
@@ -274,6 +274,55 @@ class TalkOverview(CommitteeRequiredMixin, ListView):
 class SpeakerDetails(CommitteeRequiredMixin, DetailView):
     model = Speaker
     template_name_suffix = '_details'
+
+
+class SpeakerPublic(DetailView):
+    model = Speaker
+    template_name_suffix = '_public'
+
+    def get_queryset(self):
+        return super(SpeakerPublic, self).get_queryset().filter(talk__track__isnull=False).prefetch_related('talk_set')
+
+    def get_context_data(self, **kwargs):
+        context = super(SpeakerPublic, self).get_context_data(**kwargs)
+        context['talks'] = context['speaker'].talk_set.filter(track__isnull=False)
+        return context
+
+
+class TalkListView(ListView):
+    model = Talk
+
+    def get_queryset(self):
+        return super(TalkListView, self).get_queryset().filter(track__isnull=False).select_related(
+            'track',
+            'speaker', 'speaker__user', 'speaker__user__user',
+            'talkslot', 'talkslot__time', 'talkslot__room'
+        ).order_by('talkslot__time__start_time', 'talkslot__room__name')
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkListView, self).get_context_data(**kwargs)
+        talks = context.get('talk_list', [])
+        talks_by_time_and_room = {}
+        talks_by_room_and_time = {}
+        unscheduled = []
+        for talk in talks:
+            try:
+                # build dictionary grouped by time and room (md and lg display)
+                talks_by_time_and_room.setdefault(talk.talkslot.time, []).append(talk)
+                # build dictionary grouped by room and time (sm and xs display)
+                talks_by_room_and_time.setdefault(talk.talkslot.room, []).append(talk)
+            except TalkSlot.DoesNotExist:
+                unscheduled.append(talk)
+        context.update(
+            {
+                'talks_by_time_and_room': talks_by_time_and_room,
+                'talks_by_room_and_time': talks_by_room_and_time,
+                'unscheduled': unscheduled,
+                'rooms': Room.objects.all(),
+                'times': TimeSlot.objects.all()
+            }
+        )
+        return context
 
 
 class TalkDetails(CommitteeRequiredMixin, DetailView):
@@ -464,3 +513,11 @@ class TalkSpeakerCommentDelete(SpeakerRequiredMixin, SingleObjectMixin, View):
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
         return JsonResponse({'message': 'comment deleted'})
+
+
+class SpeakerListView(ListView):
+    model = Speaker
+
+    def get_queryset(self):
+        return super(SpeakerListView, self).get_queryset().filter(talk__track__isnull=False).order_by(
+            'user__user__last_name', 'user__user__first_name').prefetch_related('user', 'user__user')

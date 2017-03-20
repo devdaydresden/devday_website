@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import logging
+import xml.etree.ElementTree as ET
 
 from django.conf import settings
 from django.contrib import messages
@@ -10,8 +11,9 @@ from django.contrib.auth.views import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Avg, Count, Sum
+from django.db.models import Avg, Count, Sum, Min, Max
 from django.db.transaction import atomic
+from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
@@ -20,6 +22,7 @@ from django.views.generic import TemplateView
 from django.views.generic import View
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import BaseFormView, UpdateView, CreateView, FormView
+from django.views.generic.list import BaseListView
 from django_file_form.forms import ExistingFile
 from django_file_form.uploader import FileFormUploader
 from pathlib import Path
@@ -323,6 +326,80 @@ class TalkListView(ListView):
             }
         )
         return context
+
+
+def to_xml_timestamp(timestamp):
+    XML_TIMESTAMP = '%Y-%m-%dT%H:%M:%S%z'
+    formatted = timestamp.strftime(XML_TIMESTAMP)
+    return "%s:%s" % (formatted[:-2], formatted[-2:])
+
+
+class InfoBeamerXMLView(BaseListView):
+    model = Talk
+
+    def get_queryset(self):
+        return super(InfoBeamerXMLView, self).get_queryset().filter(track__isnull=False).select_related(
+            'track',
+            'speaker', 'speaker__user', 'speaker__user__user',
+            'talkslot', 'talkslot__time', 'talkslot__room'
+        ).order_by('talkslot__time__start_time', 'talkslot__room__name')
+
+    def get_context_data(self, **kwargs):
+        context = super(InfoBeamerXMLView, self).get_context_data(**kwargs)
+        time_range = TimeSlot.objects.aggregate(Min('start_time'), Max('end_time'))
+        context['min_time'] = time_range['start_time__min']
+        context['max_time'] = time_range['end_time__max']
+        talks = context.get('talk_list', [])
+        talks_by_room_and_time = {}
+        for talk in talks:
+            try:
+                # build dictionary grouped by room and time (sm and xs display)
+                talks_by_room_and_time.setdefault(talk.talkslot.room, []).append(talk)
+            except TalkSlot.DoesNotExist:
+                continue
+        context.update(
+            {
+                'talks_by_room_and_time': talks_by_room_and_time,
+                'rooms': Room.objects.all(),
+                'times': TimeSlot.objects.all()
+            }
+        )
+        return context
+
+    def render_to_response(self, context, **response_kwargs):
+        schedule_xml = ET.Element('schedule')
+        ET.SubElement(schedule_xml, 'version').text = 'DevDay 2017'
+        conference = ET.SubElement(schedule_xml, 'conference')
+        ET.SubElement(conference, 'acronym').text = 'DD.17'
+        ET.SubElement(conference, 'title').text = 'DevDay 17 Dresden'
+        ET.SubElement(conference, 'start').text = '2017-04-04'
+        ET.SubElement(conference, 'end').text = '2017-04-04'
+        ET.SubElement(conference, 'days').text = '1'
+        ET.SubElement(conference, 'timeslot_duration').text = '00:15'
+        day_xml = ET.SubElement(schedule_xml, 'day', index='1', date='2017-04-04',
+                                start=to_xml_timestamp(context['min_time']),
+                                end=to_xml_timestamp(context['max_time']))
+        for room in context['rooms']:
+            room_xml = ET.SubElement(day_xml, 'room', name=room.name)
+            room_talks = context['talks_by_room_and_time']
+            for talk in room_talks[room]:
+                event_xml = ET.SubElement(room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
+                start_time = talk.talkslot.time.start_time
+                duration = talk.talkslot.time.end_time - start_time
+                ET.SubElement(event_xml, 'date').text = to_xml_timestamp(start_time)
+                ET.SubElement(event_xml, 'start').text = start_time.strftime("%H:%M")
+                ET.SubElement(event_xml, 'duration').text = "%02d:%02d" % (
+                    duration.seconds / 3600, duration.seconds % 3600 / 60)
+                ET.SubElement(event_xml, 'room').text = room.name
+                ET.SubElement(event_xml, 'title').text = talk.title
+                ET.SubElement(event_xml, 'abstract').text = talk.abstract
+                ET.SubElement(event_xml, 'language').text = 'de'
+                persons_xml = ET.SubElement(event_xml, 'persons')
+                ET.SubElement(persons_xml, 'person', id=str(talk.speaker_id)).text = \
+                    talk.speaker.user.user.get_full_name()
+
+        response_kwargs.setdefault('content_type', 'application/xml')
+        return HttpResponse(content=ET.tostring(schedule_xml, 'utf-8'), **response_kwargs)
 
 
 class TalkDetails(CommitteeRequiredMixin, DetailView):

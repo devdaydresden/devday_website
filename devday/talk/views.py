@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import logging
 import xml.etree.ElementTree as ET
+from datetime import date, timedelta
 
 from django.conf import settings
 from django.contrib import messages
@@ -331,14 +332,28 @@ class TalkListView(ListView):
         return context
 
 
-def to_xml_timestamp(timestamp):
-    tz = timezone.get_default_timezone()
-    formatted = timezone.localtime(timestamp, tz).strftime(XML_TIMESTAMP_FORMAT)
-    return "%s:%s" % (formatted[:-2], formatted[-2:])
-
-
 class InfoBeamerXMLView(BaseListView):
     model = Talk
+
+    def recalculate_timestamp(self, timestamp, context):
+        if 'starttoday' in self.request.GET:
+            start_time = context.get('min_time')
+            delta = date.today() - start_time.date()
+        else:
+            delta = timedelta()
+        delta += timedelta(hours=int(self.request.GET.get('offsethours', '0')))
+        local_time = timezone.localtime(timestamp + delta, timezone.get_default_timezone())
+        return local_time
+
+    def to_xml_timestamp(self, timestamp, context):
+        formatted = self.recalculate_timestamp(timestamp, context).strftime(XML_TIMESTAMP_FORMAT)
+        return "%s:%s" % (formatted[:-2], formatted[-2:])
+
+    def to_xml_localtime(self, timestamp, context):
+        return self.recalculate_timestamp(timestamp, context).strftime("%H:%M")
+
+    def to_xml_date(self, timestamp, context):
+        return self.recalculate_timestamp(timestamp, context).strftime("%Y-%m-%d")
 
     def get_queryset(self):
         return super(InfoBeamerXMLView, self).get_queryset().filter(track__isnull=False).select_related(
@@ -375,13 +390,14 @@ class InfoBeamerXMLView(BaseListView):
         conference = ET.SubElement(schedule_xml, 'conference')
         ET.SubElement(conference, 'acronym').text = 'DD.17'
         ET.SubElement(conference, 'title').text = 'DevDay 17 Dresden'
-        ET.SubElement(conference, 'start').text = '2017-04-04'
-        ET.SubElement(conference, 'end').text = '2017-04-04'
+        ET.SubElement(conference, 'start').text = self.to_xml_date(context['min_time'], context)
+        ET.SubElement(conference, 'end').text = self.to_xml_date(context['max_time'], context)
         ET.SubElement(conference, 'days').text = '1'
         ET.SubElement(conference, 'timeslot_duration').text = '00:15'
-        day_xml = ET.SubElement(schedule_xml, 'day', index='1', date='2017-04-04',
-                                start=to_xml_timestamp(context['min_time']),
-                                end=to_xml_timestamp(context['max_time']))
+        day_xml = ET.SubElement(schedule_xml, 'day', index='1',
+                                date=self.to_xml_date(context['min_time'], context),
+                                start=self.to_xml_timestamp(context['min_time'], context),
+                                end=self.to_xml_timestamp(context['max_time'], context))
         for room in context['rooms']:
             room_xml = ET.SubElement(day_xml, 'room', name=room.name)
             room_talks = context['talks_by_room_and_time']
@@ -389,8 +405,8 @@ class InfoBeamerXMLView(BaseListView):
                 event_xml = ET.SubElement(room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
                 start_time = talk.talkslot.time.start_time
                 duration = talk.talkslot.time.end_time - start_time
-                ET.SubElement(event_xml, 'date').text = to_xml_timestamp(start_time)
-                ET.SubElement(event_xml, 'start').text = start_time.strftime("%H:%M")
+                ET.SubElement(event_xml, 'date').text = self.to_xml_timestamp(start_time, context)
+                ET.SubElement(event_xml, 'start').text = self.to_xml_localtime(start_time, context)
                 ET.SubElement(event_xml, 'duration').text = "%02d:%02d" % (
                     duration.seconds / 3600, duration.seconds % 3600 / 60)
                 ET.SubElement(event_xml, 'room').text = room.name

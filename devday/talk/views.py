@@ -17,6 +17,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic import View
@@ -37,6 +38,8 @@ from talk.models import Speaker, Talk, Vote, TalkComment, Room, TimeSlot, TalkSl
 logger = logging.getLogger('talk')
 
 User = get_user_model()
+
+XML_TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 
 
 def submit_session_view(request):
@@ -329,8 +332,8 @@ class TalkListView(ListView):
 
 
 def to_xml_timestamp(timestamp):
-    XML_TIMESTAMP = '%Y-%m-%dT%H:%M:%S%z'
-    formatted = timestamp.strftime(XML_TIMESTAMP)
+    tz = timezone.get_default_timezone()
+    formatted = timezone.localtime(timestamp, tz).strftime(XML_TIMESTAMP_FORMAT)
     return "%s:%s" % (formatted[:-2], formatted[-2:])
 
 

@@ -92,3 +92,5 @@ TWITTERFEED_PROXIES = {
     'http': 'http://iproxy.mms-dresden.de:8080/',
     'https': 'http://iproxy.mms-dresden.de:8080/',
 }
+
+REGISTRATION_OPEN = False

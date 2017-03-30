@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-29 13:11+0100\n"
-"PO-Revision-Date: 2017-01-29 13:13+0100\n"
+"POT-Creation-Date: 2017-03-30 17:33+0200\n"
+"PO-Revision-Date: 2017-03-30 17:35+0200\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: devday/cms_menus.py:9
@@ -319,6 +319,20 @@ msgstr ""
 #, python-format
 msgid "Password reset on %(site_name)s"
 msgstr "Passwortrücksetzung auf %(site_name)s"
+
+#: devday/templates/registration/registration_closed.html:3
+#: devday/templates/registration/registration_closed.html:5
+msgid "Registration closed"
+msgstr "Anmeldung geschlossen"
+
+#: devday/templates/registration/registration_closed.html:6
+msgid ""
+"Our registration is closed. Thanks for your interest. Unfortunately we "
+"cannot accept more\n"
+"        attendees."
+msgstr ""
+"Unsere Anmeldung ist geschlossen. Danke für dein Interesse. Leider können "
+"wir keine weiteren Teilnehmer annehmen."
 
 #: devday/templates/registration/registration_complete.html:3
 msgid "Registration successful"

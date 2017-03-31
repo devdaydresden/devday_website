@@ -9,7 +9,9 @@
         <a class="btn" href="{% url "submit_session" %}" role="button">{% trans "Submit session" %}</a>
     {% else %}
         {% placeholder '' %}
-        <a class="btn" href="{% url "registration_register" %}" role="button">{% trans "Be part of it!" %}</a>
+        {% if attendee_registration_open %}
+            <a class="btn" href="{% url "registration_register" %}" role="button">{% trans "Be part of it!" %}</a>
+        {% endif %}
     {% endif %}
 {% endblock %}
 {% block content %}
@@ -22,7 +24,9 @@
             <div class="col-xs-12 col-sm-6 boxed-content">
                 <i class="icon-user"></i>
                 {% placeholder "audience" %}
-                <a href="{% url 'registration_register' %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "I want to be part of it!" %}</a>
+                {% if attendee_registration_open %}
+                    <a href="{% url 'registration_register' %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "I want to be part of it!" %}</a>
+                {% endif %}
             </div>
         </div>
     </div>

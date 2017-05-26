@@ -1,5 +1,5 @@
 /**
- * Build on 2017-3-8
+ * Build on 2017-5-26
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -5533,6 +5533,28 @@ a {
     color: #488483;
     text-decoration: none; }
 
+.accordion .accordion-heading {
+  margin-bottom: 8px; }
+
+.accordion .accordion-toggle {
+  display: block;
+  background: #35a4a3;
+  color: #ffffff;
+  padding: 5px 10px;
+  font-size: 2rem; }
+  .accordion .accordion-toggle.collapsed:before {
+    content: "+ ";
+    display: inline; }
+  .accordion .accordion-toggle:not(.collapsed):before {
+    content: "- ";
+    display: inline; }
+
+.accordion .accordion-inner {
+  padding: 8px;
+  font-size: 1em; }
+  .accordion .accordion-inner p {
+    font-size: 1em; }
+
 .error-404 {
   min-height: 620px;
   background-color: #272c59 !important;
@@ -6301,31 +6323,6 @@ input:focus ~ .highlight {
   .info-area.speaker-profile > [class^="col-"] img,
   .info-area.speaker-profile > [class*=" col-"] img {
     width: 100%; }
-  .info-area.speaker-profile > [class^="col-"] .accordion-heading,
-  .info-area.speaker-profile > [class*=" col-"] .accordion-heading {
-    margin-bottom: 8px; }
-  .info-area.speaker-profile > [class^="col-"] .accordion-toggle,
-  .info-area.speaker-profile > [class*=" col-"] .accordion-toggle {
-    display: block;
-    background: #35a4a3;
-    color: #ffffff;
-    padding: 5px 10px;
-    font-size: 2rem; }
-    .info-area.speaker-profile > [class^="col-"] .accordion-toggle.collapsed:before,
-    .info-area.speaker-profile > [class*=" col-"] .accordion-toggle.collapsed:before {
-      content: "+ ";
-      display: inline; }
-    .info-area.speaker-profile > [class^="col-"] .accordion-toggle:not(.collapsed):before,
-    .info-area.speaker-profile > [class*=" col-"] .accordion-toggle:not(.collapsed):before {
-      content: "- ";
-      display: inline; }
-  .info-area.speaker-profile > [class^="col-"] .accordion-inner,
-  .info-area.speaker-profile > [class*=" col-"] .accordion-inner {
-    padding: 8px;
-    font-size: 1em; }
-    .info-area.speaker-profile > [class^="col-"] .accordion-inner p,
-    .info-area.speaker-profile > [class*=" col-"] .accordion-inner p {
-      font-size: 1em; }
   .info-area.speaker-overview {
     padding: 0; }
     .info-area.speaker-overview > [class^="col-"],
@@ -6495,6 +6492,12 @@ input:focus ~ .highlight {
     display: inline;
     float: left;
     margin: 0 20px; }
+
+.session-video .accordion .accordion-inner {
+  display: inline-block; }
+  .session-video .accordion .accordion-inner iframe {
+    width: 100%;
+    min-height: 450px; }
 
 .session-entry-area {
   background: #f0efef;

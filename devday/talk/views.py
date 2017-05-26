@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 import logging
 import xml.etree.ElementTree as ET
-from datetime import date, timedelta
 
+from datetime import date, timedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -330,6 +330,17 @@ class TalkListView(ListView):
             }
         )
         return context
+
+
+class TalkVideoView(ListView):
+    model = Talk
+    template_name_suffix = '_videos'
+
+    def get_queryset(self):
+        return super(TalkVideoView, self).get_queryset().filter(
+            track__isnull=False).filter(media__isnull=False).select_related(
+            'speaker', 'speaker__user', 'speaker__user__user', 'media'
+        ).order_by('title')
 
 
 class InfoBeamerXMLView(BaseListView):

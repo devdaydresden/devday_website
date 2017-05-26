@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 16:07+0100\n"
-"PO-Revision-Date: 2017-03-16 16:11+0100\n"
+"POT-Creation-Date: 2017-05-26 11:24+0200\n"
+"PO-Revision-Date: 2017-05-26 11:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 2.0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: talk/forms.py:29 talk/templates/talk/speaker_details.html:16
@@ -179,39 +179,47 @@ msgstr "Session"
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:174
+#: talk/models.py:158
+msgid "Youtube video id"
+msgstr "Youtube-Video-ID"
+
+#: talk/models.py:159
+msgid "Slideshare id"
+msgstr "Slideshare-ID"
+
+#: talk/models.py:180
 msgid "Comment"
 msgstr "Kommentar"
 
-#: talk/models.py:176
+#: talk/models.py:182
 msgid "Visible for Speaker"
 msgstr "Sichtbar für den Sprecher"
 
-#: talk/models.py:178
+#: talk/models.py:184
 msgid "Indicates whether the comment is visible to the speaker."
 msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
 
-#: talk/models.py:187
+#: talk/models.py:193
 msgid "Name"
 msgstr "Name"
 
-#: talk/models.py:188
+#: talk/models.py:194
 msgid "Priority"
 msgstr "Priorität"
 
-#: talk/models.py:191
+#: talk/models.py:197
 msgid "Room"
 msgstr "Raum"
 
-#: talk/models.py:192
+#: talk/models.py:198
 msgid "Rooms"
 msgstr "Räume"
 
-#: talk/models.py:207
+#: talk/models.py:213
 msgid "Time slot"
 msgstr "Zeitslot"
 
-#: talk/models.py:208
+#: talk/models.py:214
 msgid "Time slots"
 msgstr "Zeitslots"
 
@@ -550,8 +558,13 @@ msgstr[1] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimmen)"
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
-#: talk/tests/test_views.py:576 talk/tests/test_views.py:655
-#: talk/tests/test_views.py:922
+#: talk/templates/talk/talk_videos.html:3
+#: talk/templates/talk/talk_videos.html:6
+msgid "Videos and Slides"
+msgstr "Videos und Folien"
+
+#: talk/tests/test_views.py:578 talk/tests/test_views.py:657
+#: talk/tests/test_views.py:924
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 

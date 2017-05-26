@@ -1,0 +1,38 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Videos and Slides" %}{% endblock %}
+{% block content %}
+    <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area session-video" id="info-area">
+        <h3>{% trans "Videos and Slides" %}</h3>
+        <div class="col-xs-12">
+            <div class="accordion" id="accordion2">
+                {% for talk in talk_list %}
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion2"
+                               href="#collapseOne{{ forloop.counter }}">{{ talk.title }}</a>
+                        </div>
+                        <div id="collapseOne{{ forloop.counter }}" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <h4><a href="{% url "public_speaker_profile" pk=talk.speaker_id %}">{{ talk.speaker.user.user.get_full_name }}</a></h4>
+                                <p>{{ talk.speaker.shortbio }}</p>
+                                <h4>Abstract</h4>
+                                <p>{{ talk.abstract }}</p>
+                                {% if talk.media.youtube %}
+                                    <div class="col-sm-6 col-xs-12">
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ talk.media.youtube }}" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                {% endif %}
+                                {% if talk.media.slideshare %}
+                                    <div class="col-sm-6 col-xs-12">
+                                        <iframe width="595" height="485" src="https://www.slideshare.net/slideshow/embed_code/key/{{ talk.media.slideshare }}" frameborder="0" marginwidth="0" scrolling="no" style="" allowfullscreen></iframe>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

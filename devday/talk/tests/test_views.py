@@ -106,6 +106,7 @@ class TestTalkSubmittedView(TestCase):
         self.assertEqual(response.context[u'speaker'], speaker)
 
 
+@override_settings(TALK_SUBMISSION_OPEN=True)
 class TestCreateTalkView(TestCase):
     def setUp(self):
         self.url = u'/session/create-session/'
@@ -275,6 +276,7 @@ class TestSpeakerProfileView(TestCase):
         self.assertEqual(self.speaker.shortbio, 'A nice guy from high above the sky')
 
 
+@override_settings(TALK_SUBMISSION_OPEN=True, REGISTRATION_OPEN=True)
 class TestCreateSpeakerView(TestCase):
     def setUp(self):
         self.url = u'/session/new-speaker/'

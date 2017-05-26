@@ -40,16 +40,6 @@ class SpeakerTest(TestCase):
         speaker.create_thumbnail()
         self.assertIsNotNone(speaker.thumbnail.name)
 
-    def test_create_thumbnail_other(self):
-        speaker = Speaker.objects.create(
-            user=self.attendee, videopermission=True, shirt_size=1)
-        speaker.portrait = SimpleUploadedFile(
-            name='mu_at_mil_house.svg',
-            content=open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.svg'), 'rb').read(),
-            content_type='application/xml+svg')
-        speaker.create_thumbnail()
-        self.assertIsNone(speaker.thumbnail.name)
-
     def test_save_creates_thumbnail(self):
         speaker = Speaker.objects.create(
             user=self.attendee, videopermission=True, shirt_size=1)

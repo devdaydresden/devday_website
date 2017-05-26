@@ -153,6 +153,12 @@ class Talk(models.Model):
         return "%s - %s" % (self.speaker, self.title)
 
 
+class TalkMedia(models.Model):
+    talk = models.OneToOneField(Talk, related_name='media')
+    youtube = models.CharField(verbose_name=_("Youtube video id"), max_length=64, blank=True)
+    slideshare = models.CharField(verbose_name=_("Slideshare id"), max_length=64, blank=True)
+
+
 @python_2_unicode_compatible
 class Vote(models.Model):
     voter = models.ForeignKey(settings.AUTH_USER_MODEL)

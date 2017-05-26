@@ -1,10 +1,17 @@
 from django.contrib import admin
 
-from .models import Speaker, Talk, Track, Room, TimeSlot, TalkSlot
+from .models import Speaker, Talk, Track, Room, TimeSlot, TalkSlot, TalkMedia
+
+
+class TalkMediaInline(admin.StackedInline):
+    model = TalkMedia
 
 
 class TalkAdmin(admin.ModelAdmin):
     list_display = ['title', 'track', 'speaker']
+    inlines = [
+        TalkMediaInline,
+    ]
 
 
 class TalkSlotAdmin(admin.ModelAdmin):

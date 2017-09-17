@@ -68,6 +68,10 @@ STATICFILES_DIRS = (
 )
 SITE_ID = 1
 
+EVENT_ID = 1
+EVENT_TITLE = "DevDay 2017"
+EVENT_SLUG = "devday17"
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -124,6 +128,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.messages',
     'devday',
+    'event.apps.EventsConfig',
     'attendee.apps.AttendeeConfig',
     'talk.apps.SessionsConfig',
     'cms',

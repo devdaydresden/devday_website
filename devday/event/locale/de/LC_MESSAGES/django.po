@@ -1,0 +1,56 @@
+# German translation for the devday website event app.
+# Copyright (C) 2017 Jan Dittberner
+# This file is distributed under the same license as the devday package.
+# Jan Dittberner <jan.dittberner@t-systems.com>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: devday website\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-17 12:28+0200\n"
+"PO-Revision-Date: 2017-09-17 12:25+0200\n"
+"Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
+"Language-Team: jan.dittberner@t-systems.com\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: event/apps.py:13 event/models.py:20
+msgid "Events"
+msgstr "Veranstaltungen"
+
+#: event/models.py:10
+msgid "Event title"
+msgstr "Veranstaltungsname"
+
+#: event/models.py:11
+msgid "Short name for URLs"
+msgstr "Kurzname für URLs"
+
+#: event/models.py:12
+msgid "Description"
+msgstr "Beschreibung"
+
+#: event/models.py:13
+msgid "Location"
+msgstr "Veranstaltungsort"
+
+#: event/models.py:14
+msgid "Full day event"
+msgstr "Ganztagsveranstaltung"
+
+#: event/models.py:15
+msgid "Start time"
+msgstr "Beginn"
+
+#: event/models.py:16
+msgid "End time"
+msgstr "Ende"
+
+#: event/models.py:19
+msgid "Event"
+msgstr "Veranstaltung"

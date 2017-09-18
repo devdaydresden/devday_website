@@ -32,6 +32,7 @@ from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
 from attendee.models import Attendee
+from event.models import Event
 from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm, \
     EditTalkForm, TalkCommentForm, TalkVoteForm, TalkSpeakerCommentForm, EditSpeakerForm
 from talk.models import Speaker, Talk, Vote, TalkComment, Room, TimeSlot, TalkSlot
@@ -172,10 +173,11 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
+        event = Event.objects.get(pk=settings.EVENT_ID)
         if user.is_authenticated():
             try:
                 # noinspection PyStatementEffect
-                user.attendee and user.attendee.speaker
+                user.attendees.get(event=event) and user.attendees.get(event=event).speaker
                 return redirect(self.success_url)
             except Speaker.DoesNotExist:
                 self.auth_level = 'attendee'
@@ -218,6 +220,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         if self.auth_level in ('user', 'anonymous'):
             user.first_name = form.cleaned_data['firstname']
             user.last_name = form.cleaned_data['lastname']
+            user.phone = form.cleaned_data['phone']
             user.save()
             attendee = Attendee.objects.create(user=user)
         else:

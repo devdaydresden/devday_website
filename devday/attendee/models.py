@@ -64,6 +64,7 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     twitter_handle = models.CharField(_('twitter handle'), blank=True, max_length=64)
+    phone = models.CharField(verbose_name=_("Phone"), blank=True, max_length=32)
     contact_permission_date = models.DateTimeField(null=True)
 
     objects = DevDayUserManager()

@@ -29,6 +29,7 @@ class SpeakerForm(FileFormMixin, forms.models.ModelForm):
     firstname = forms.fields.CharField(label=_("Firstname"), max_length=64)
     lastname = forms.fields.CharField(label=_("Lastname"), max_length=64)
     uploaded_image = UploadedFileField(label=_("Speaker portrait"))
+    phone = forms.fields.CharField(label=_("Phone"), max_length=32)
 
     class Meta:
         model = Speaker
@@ -247,6 +248,7 @@ class CreateSpeakerForm(CombinedFormBase):
                 'lastname',
                 'password1',
                 'password2',
+                'phone',
                 css_class='col-md-12 col-lg-offset-2 col-lg-4'
             ),
             Div(

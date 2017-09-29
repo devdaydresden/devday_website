@@ -8,3 +8,4 @@ media/
 routing.bat
 __pycache__/
 dumps/
+devday/devday.log

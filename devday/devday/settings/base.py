@@ -70,7 +70,7 @@ SITE_ID = 1
 
 EVENT_ID = 1
 EVENT_TITLE = "DevDay 2017"
-EVENT_SLUG = "devday17"
+EVENT_SLUG = "devday.17"
 
 TEMPLATES = [
     {

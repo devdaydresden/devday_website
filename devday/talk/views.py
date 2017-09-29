@@ -14,11 +14,11 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Avg, Count, Sum, Min, Max
 from django.db.transaction import atomic
-from django.http import HttpResponse
-from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.text import slugify
 from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic import View
@@ -245,9 +245,31 @@ class CommitteeRequiredMixin(PermissionRequiredMixin):
     permission_required = ('talk.add_vote', 'talk.add_talkcomment')
 
 
-class TalkOverview(CommitteeRequiredMixin, ListView):
+class TalkDetails(DetailView):
     model = Talk
-    template_name_suffix = '_overview'
+    template_name_suffix = '_details'
+
+    def dispatch(self, request, *args, **kwargs):
+        talk = get_object_or_404(Talk, pk=self.kwargs.get('pk'))
+        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+
+        print("slug URL: {}".format(kwargs.get('slug')))
+        print("slug db:  {}".format(slugify(talk.title)))
+        if slugify(talk.title) != kwargs.get('slug') or event != talk.event:
+            return HttpResponseRedirect('/{}/session/talk/{}/{}'.format(event.slug, slugify(talk.title), talk.id))
+        return super(TalkDetails, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkDetails, self).get_context_data(**kwargs)
+        context.update({
+            'speaker': context['talk'].speaker,
+        })
+        return context
+
+
+class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
+    model = Talk
+    template_name_suffix = '_committee_overview'
 
     ORDER_MAP = {
         'speaker': 'speaker__user__user__first_name',
@@ -256,19 +278,19 @@ class TalkOverview(CommitteeRequiredMixin, ListView):
     }
 
     def get_queryset(self):
-        qs = super(TalkOverview, self).get_queryset().annotate(
+        qs = super(CommitteeTalkOverview, self).get_queryset().annotate(
             average_score=Avg('vote__score'),
             vote_sum=Sum('vote__score'),
             vote_count=Count('vote__id')).select_related(
             'speaker', 'speaker__user', 'speaker__user__user').order_by('title')
         sort_order = self.request.GET.get('sort_order', 'title')
-        sort_order = TalkOverview.ORDER_MAP.get(sort_order, sort_order)
+        sort_order = CommitteeTalkOverview.ORDER_MAP.get(sort_order, sort_order)
         if self.request.GET.get('sort_dir') == 'desc':
             sort_order = '-{}'.format(sort_order)
         return qs.order_by(sort_order)
 
     def get_context_data(self, **kwargs):
-        context = super(TalkOverview, self).get_context_data(**kwargs)
+        context = super(CommitteeTalkOverview, self).get_context_data(**kwargs)
         talk_list = context['talk_list']
         for item in Talk.objects.values('id').annotate(comment_count=Count('talkcomment__id')).all():
             for talk in talk_list:
@@ -281,7 +303,7 @@ class TalkOverview(CommitteeRequiredMixin, ListView):
         return context
 
 
-class SpeakerDetails(CommitteeRequiredMixin, DetailView):
+class CommitteeSpeakerDetails(CommitteeRequiredMixin, DetailView):
     model = Speaker
     template_name_suffix = '_details'
 
@@ -302,8 +324,17 @@ class SpeakerPublic(DetailView):
 class TalkListView(ListView):
     model = Talk
 
+    def dispatch(self, request, *args, **kwargs):
+        event = self.kwargs.get('event')
+        if not event:
+            event = Event.objects.get(pk=settings.EVENT_ID)
+            return HttpResponseRedirect('/{}/schedule'.format(event.slug))
+        return super(TalkListView, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
-        return super(TalkListView, self).get_queryset().filter(track__isnull=False).select_related(
+        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super(TalkListView, self).get_queryset().filter(track__isnull=False, event=event).select_related(
+            'event', 'event__slug',
             'track',
             'speaker', 'speaker__user', 'speaker__user__user',
             'talkslot', 'talkslot__time', 'talkslot__room'
@@ -435,19 +466,19 @@ class InfoBeamerXMLView(BaseListView):
         return HttpResponse(content=ET.tostring(schedule_xml, 'utf-8'), **response_kwargs)
 
 
-class TalkDetails(CommitteeRequiredMixin, DetailView):
+class CommitteeTalkDetails(CommitteeRequiredMixin, DetailView):
     model = Talk
-    template_name_suffix = '_details'
+    template_name_suffix = '_committee_details'
 
     def get_queryset(self):
-        return super(TalkDetails, self).get_queryset().select_related(
+        return super(CommitteeTalkDetails, self).get_queryset().select_related(
             'speaker', 'speaker__user', 'speaker__user__user'
         ).annotate(
             average_score=Avg('vote__score')
         )
 
     def get_context_data(self, **kwargs):
-        context = super(TalkDetails, self).get_context_data(**kwargs)
+        context = super(CommitteeTalkDetails, self).get_context_data(**kwargs)
         talk = context['talk']
         try:
             user_vote = talk.vote_set.get(voter=self.request.user)
@@ -463,7 +494,7 @@ class TalkDetails(CommitteeRequiredMixin, DetailView):
         return context
 
 
-class SubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, FormView):
+class CommitteeSubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, FormView):
     model = Talk
     form_class = TalkCommentForm
     http_method_names = ['post']
@@ -506,19 +537,19 @@ class SubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, FormView):
                 self.get_email_text_body(),
                 settings.DEFAULT_FROM_EMAIL,
                 [recipient])
-        return super(SubmitTalkComment, self).form_valid(form)
+        return super(CommitteeSubmitTalkComment, self).form_valid(form)
 
     def get_success_url(self):
         talk = self.get_object()
         return reverse_lazy('talk_details', kwargs={'pk': talk.pk})
 
     def get_form_kwargs(self):
-        kwargs = super(SubmitTalkComment, self).get_form_kwargs()
+        kwargs = super(CommitteeSubmitTalkComment, self).get_form_kwargs()
         kwargs['instance'] = self.get_object()
         return kwargs
 
 
-class TalkVote(CommitteeRequiredMixin, UpdateView):
+class CommitteeTalkVote(CommitteeRequiredMixin, UpdateView):
     model = Talk
     http_method_names = ['post']
     form_class = TalkVoteForm
@@ -538,7 +569,7 @@ class TalkVote(CommitteeRequiredMixin, UpdateView):
         return JsonResponse({'message': 'ok'})
 
 
-class TalkVoteClear(CommitteeRequiredMixin, SingleObjectMixin, View):
+class CommitteeTalkVoteClear(CommitteeRequiredMixin, SingleObjectMixin, View):
     model = Talk
     http_method_names = ['post']
 
@@ -549,12 +580,12 @@ class TalkVoteClear(CommitteeRequiredMixin, SingleObjectMixin, View):
         return JsonResponse({'message': 'vote deleted'})
 
 
-class TalkCommentDelete(CommitteeRequiredMixin, SingleObjectMixin, View):
+class CommitteeTalkCommentDelete(CommitteeRequiredMixin, SingleObjectMixin, View):
     model = TalkComment
     http_method_names = ['post']
 
     def get_queryset(self):
-        return super(TalkCommentDelete, self).get_queryset().filter(commenter=self.request.user)
+        return super(CommitteeTalkCommentDelete, self).get_queryset().filter(commenter=self.request.user)
 
     # noinspection PyUnusedLocal
     def post(self, request, *args, **kwargs):

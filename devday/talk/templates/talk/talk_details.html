@@ -3,27 +3,7 @@
 {% block title %}{% trans "Talk" %} - {{ talk.title }}{% endblock %}
 {% block content_body %}
     {% addtoblock "css" %}
-        <link rel="stylesheet" href="{% static "css/star-rating.css" %}">
         <link rel="stylesheet" href="{% static "css/theme-krajee-svg.css" %}">
-    {% endaddtoblock %}
-    {% addtoblock "js" %}
-        <script src="{% static "js/star-rating.js" %}" type="text/javascript"></script>
-        <script type="text/javascript">
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie != '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = jQuery.trim(cookies[i]);
-                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-        </script>
     {% endaddtoblock %}
     <div class="col-lg-offset-2 col-lg-8 col-md-12">
         <h1>{% spaceless %}{{ talk.title }}{% endspaceless %}</h1>
@@ -37,106 +17,20 @@
         </dl>
     </div>
     <div class="col-lg-offset-2 col-lg-8 col-md-12">
-        <h2>{% trans "Votes" %}</h2>
-        <p>{% if average_votes %}
-            {% trans "Average vote" %}:
-            <input title="{% trans 'average vote' %}" id="talk-average-id" name="talk-average" type="number"
-                   class="rating-loading" value="{{ average_votes|unlocalize }}"><br>
-        {% else %}
-            {% trans "No votes yet" %}{% endif %}
-        </p>
-        {% trans "Your vote" %}: <input title="{% trans "your vote" %}" id="talk-vote-id" name="talk-vote" type="number"
-                                        class="rating-loading" value="{{ user_vote }}">
-        {% addtoblock "js" %}
-            <script type="text/javascript">
-                $(document).on('ready', function () {
-                    $('#talk-average-id').rating({
-                        theme: 'krajee-svg',
-                        filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
-                        emptyStar: '<span class="krajee-icon krajee-icon-star"></span>',
-                        showCaption: false,
-                        showClear: false,
-                        displayOnly: true,
-                        readOnly: true,
-                        step: 0.1,
-                        min: 0,
-                        max: 5
-                    });
-                    $('#talk-vote-id').rating({
-                        theme: 'krajee-svg',
-                        filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
-                        emptyStar: '<span class="krajee-icon krajee-icon-star"></span>',
-                        clearButton: '<a class="btn">{% trans "Delete" %}</span>',
-                        showCaption: false,
-                        step: 1,
-                    }).on('rating.clear', function (event) {
-                        $.ajax(
-                            "{% url 'talk_vote_clear' pk=talk.pk %}",
-                            {
-                                data: {"score": null},
-                                headers: {
-                                    "X-CSRFToken": getCookie('csrftoken')
-                                },
-                                method: 'POST'
-                            }
-                        );
-                    }).on('rating.change', function (event, value, caption) {
-                        $.ajax(
-                            "{% url 'talk_vote' pk=talk.pk %}",
-                            {
-                                data: {"score": value},
-                                headers: {
-                                    "X-CSRFToken": getCookie('csrftoken')
-                                },
-                                method: 'POST'
-                            }
-                        );
-                    });
-                });
-            </script>
-        {% endaddtoblock %}
-        <h2>{% trans "Comments" %}</h2>
-        {% if comments %}
-            {% for comment in comments %}
-                <div id="comment-{{ comment.pk }}" class="panel panel-default">
-                    <p class="panel-body">{{ comment.comment }}</p>
-                    <p class="panel-footer text-right">{{ comment.created }} {{ comment.commenter.get_full_name }}
-                        {% if comment.is_visible %}{% trans "visible" %}{% else %}{% trans "private" %}{% endif %}
-                        {% if comment.commenter == request.user %}
-                            <a class="delete-comment-link" href="#"
-                               data-url="{% url "delete_talk_comment" pk=comment.pk %}"
-                               data-comment-id="comment-{{ comment.pk }}">{% trans "delete" %}</a>
-                        {% endif %}
-                    </p>
-                </div>
-            {% endfor %}
-            {% addtoblock "js" %}
-                <script type="text/javascript">
-                    $(document).on('ready', function () {
-                        $('.delete-comment-link').on('click', function () {
-                            var comment_paragraph_id = $(this).data('comment-id');
-                            $.ajax(
-                                $(this).data('url'),
-                                {
-                                    headers: {
-                                        "X-CSRFToken": getCookie('csrftoken')
-                                    },
-                                    method: 'POST',
-                                    success: function (data, textStatus, jqXHR) {
-                                        $('#' + comment_paragraph_id).remove();
-                                    }
-                                }
-                            );
-                        });
-                    });
-                </script>
-            {% endaddtoblock %}
-        {% else %}
-            <p>{% trans "No comments yet" %}</p>
-        {% endif %}
-        {% crispy comment_form %}
-    </div>
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+      <h3>{{ speaker }}{% if speaker.user.organization %} // {{ speaker.user.organization }}{% endif %}
+          {% if speaker.user.user.twitter_handle %} //
+              <a href="https://www.twitter.com/{{ speaker.user.user.twitter_handle }}">@{{ speaker.user.user.twitter_handle }}</a>{% endif %}
+      </h3>
+      {% if speaker.public_image %}
+      <div class="col-xs-12 col-sm-4">
+          <img src="{{ speaker.public_image.url }}" alt="{{ speaker }}" style="width:100%">
+      </div>
+      {% endif %}
+      <div class="col-xs-12 col-sm-8">
+        <p>{{ speaker.shortbio|linebreaksbr }}</p>
+      </div>
+{% comment %}
         <a class="btn" href="{% url 'talk_overview' %}">{% trans "Back to list of sessions" %}</a>
+{% endcomment %}
     </div>
 {% endblock %}

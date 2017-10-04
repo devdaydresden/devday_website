@@ -9,7 +9,7 @@ from django.contrib.sitemaps.views import sitemap as sitemap_view
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve as serve_static
 
-from attendee.views import AttendeeProfileView
+from attendee.views import AttendeeProfileView, AttendeeRegistrationView
 from devday.views import ImprintView, exception_test_view
 from talk.views import SpeakerProfileView, SpeakerListView, TalkDetails, TalkListView, InfoBeamerXMLView, TalkVideoView
 
@@ -20,6 +20,9 @@ urlpatterns = [
     url(r'^sitemap\.xml$', sitemap_view,
         {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),
+    url(r'^(?P<event>[^/]+)/register/$',
+        AttendeeRegistrationView.as_view(),
+        name='registration_register'),
     url(r'^accounts/', include('devday.registration_urls')),
     url(r'^accounts/profile/$', AttendeeProfileView.as_view(), name='user_profile'),
     url(r'^speakers/$', SpeakerListView.as_view(), name='speaker_list'),

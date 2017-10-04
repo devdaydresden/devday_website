@@ -25,7 +25,7 @@
                 <i class="icon-user"></i>
                 {% placeholder "audience" %}
                 {% if attendee_registration_open %}
-                    <a href="{% url 'registration_register' %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "I want to be part of it!" %}</a>
+                    <a href="{% url 'registration_register' event='devday-17' %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "I want to be part of it!" %}</a>
                 {% endif %}
             </div>
         </div>

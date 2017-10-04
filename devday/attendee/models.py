@@ -106,12 +106,12 @@ class Attendee(models.Model):
     """
     This is a model class for an attendee.
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="attendees")
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="attendee")
     position = models.CharField(_('job or study subject'), blank=True, max_length=128)
     organization = models.CharField(_('company or institution'), blank=True, max_length=128)
     contact_permission_date = models.DateTimeField(null=True)
     source = models.TextField(_('source'), help_text=_('How have you become aware of DevDay 2017?'), blank=True)
-    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
+    event = models.ForeignKey(Event, verbose_name=_("Event"))
 
     class Meta:
         verbose_name = _("Attendee")

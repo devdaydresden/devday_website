@@ -181,6 +181,7 @@ class BecomeSpeakerForm(CombinedFormBase):
             Div(
                 Field("firstname", template='devday/form/field.html', autofocus='autofocus'),
                 "lastname",
+                "phone",
                 "shirt_size",
                 css_class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-12",
             ),

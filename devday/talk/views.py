@@ -54,7 +54,7 @@ def submit_session_view(request):
     if not request.user.is_anonymous() and not "edit" in request.GET:
         try:
             # noinspection PyStatementEffect
-            request.user.attendee and request.user.attendee.speaker
+            #request.user.attendee and request.user.attendee.speaker
             return redirect(reverse('create_session'))
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
             pass
@@ -86,7 +86,7 @@ class SpeakerRequiredMixin(AccessMixin):
         try:
             user.attendee and user.attendee.speaker
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
-            return self.handle_no_permission()
+            return redirect(reverse('create_speaker'))
         # noinspection PyUnresolvedReferences
         return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
 
@@ -107,7 +107,8 @@ class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         form_kwargs = super(CreateTalkView, self).get_form_kwargs()
-        form_kwargs['speaker'] = self.request.user.attendee.speaker
+        attendee = Attendee.objects.get(user=self.request.user, event=1)
+        form_kwargs['speaker'] = attendee.speaker
         return form_kwargs
 
 
@@ -172,12 +173,14 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
     success_url = reverse_lazy('speaker_registered')
 
     def dispatch(self, *args, **kwargs):
+        print "#### dispatch"
         user = self.request.user
         event = Event.objects.get(pk=settings.EVENT_ID)
         if user.is_authenticated():
             try:
                 # noinspection PyStatementEffect
-                user.attendees.get(event=event) and user.attendees.get(event=event).speaker
+                user.attendee and user.attendee.speaker
+                # need seperate success page, since user is already activated
                 return redirect(self.success_url)
             except Speaker.DoesNotExist:
                 self.auth_level = 'attendee'
@@ -196,8 +199,22 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         context.update({'request': self.request})
         return context
 
+    def register(self, form):
+        print "#### registration in"
+        r = super(CreateSpeakerView, self).register(form)
+        print "#### registration out: {}".format(r)
+        return r
+
+    def form_invalid(self, form):
+        print "#### form_invalid in"
+        r = super(CreateSpeakerView, self).form_invalid(form)
+        print "#### form_invalid out: {}".format(self)
+        print "    form_class={}".format(form.errors)
+        return r
+
     @atomic
     def form_valid(self, form):
+        print "#### form_valid"
         do_send_mail = False
         if self.auth_level == 'anonymous':
             email = form.cleaned_data['email']
@@ -222,7 +239,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
             user.last_name = form.cleaned_data['lastname']
             user.phone = form.cleaned_data['phone']
             user.save()
-            attendee = Attendee.objects.create(user=user)
+            attendee = Attendee.objects.create(user=user, event_id=1)
         else:
             attendee = user.attendee
 
@@ -256,7 +273,7 @@ class TalkDetails(DetailView):
         print("slug URL: {}".format(kwargs.get('slug')))
         print("slug db:  {}".format(slugify(talk.title)))
         if slugify(talk.title) != kwargs.get('slug') or event != talk.event:
-            return HttpResponseRedirect('/{}/session/talk/{}/{}'.format(event.slug, slugify(talk.title), talk.id))
+            return HttpResponseRedirect('/{}/talk/{}/{}'.format(event.slug, slugify(talk.title), talk.id))
         return super(TalkDetails, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -328,7 +345,7 @@ class TalkListView(ListView):
         event = self.kwargs.get('event')
         if not event:
             event = Event.objects.get(pk=settings.EVENT_ID)
-            return HttpResponseRedirect('/{}/schedule'.format(event.slug))
+            return HttpResponseRedirect('/{}/talk/'.format(event.slug))
         return super(TalkListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):

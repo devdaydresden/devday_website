@@ -26,16 +26,23 @@ class CombinedFormBase(forms.Form):
     Idea from http://stackoverflow.com/a/24349234
     """
     form_classes = []
+    form_models = {}
 
     def __init__(self, *args, **kwargs):
         super(CombinedFormBase, self).__init__(*args, **kwargs)
         for f in self.form_classes:
             name = f.__name__.lower()
-            setattr(self, name, f(*args, **kwargs))
+            print '#### {}'.format(name)
+            if self.form_models.get(name):
+                a = self.form_models.get(name)
+                setattr(self, name, f(*a['args'], **a['kwargs']))
+            else:
+                setattr(self, name, f(*args, **kwargs))
             form = getattr(self, name)
             self.fields.update(form.fields)
             self.files.update(form.files)
             self.initial.update(form.initial)
+        print '#### done instatiating forms'
 
     def is_valid(self):
         isValid = True
@@ -61,4 +68,5 @@ class CombinedFormBase(forms.Form):
         for f in self.form_classes:
             name = f.__name__.lower()
             form = getattr(self, name)
-            cleaned_data.update(form.cleaned_data)
+            if hasattr(form, 'cleaned_data'):
+                cleaned_data.update(form.cleaned_data)

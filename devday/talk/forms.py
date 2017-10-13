@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_file_form.forms import FileFormMixin, UploadedFileField
 from registration.forms import RegistrationFormUniqueEmail
 
+from attendee.forms import DevDayUserForm
 from devday.utils.forms import CombinedFormBase, DevDayFormHelper
 from talk.models import Talk, Speaker, TalkComment, Vote
 
@@ -26,8 +27,6 @@ class TalkForm(forms.models.ModelForm):
 
 
 class SpeakerForm(FileFormMixin, forms.models.ModelForm):
-    firstname = forms.fields.CharField(label=_("Firstname"), max_length=64)
-    lastname = forms.fields.CharField(label=_("Lastname"), max_length=64)
     uploaded_image = UploadedFileField(label=_("Speaker portrait"))
     phone = forms.fields.CharField(label=_("Phone"), max_length=32)
 
@@ -164,9 +163,19 @@ class TalkAuthenticationForm(AuthenticationForm):
 
 
 class BecomeSpeakerForm(CombinedFormBase):
-    form_classes = [SpeakerForm]
+    form_classes = [DevDayUserForm, SpeakerForm]
 
     def __init__(self, *args, **kwargs):
+        self.form_models = {}
+        m = kwargs.pop('devdayuserform_model')
+        if m:
+            print '---- {}'.format(m)
+            self.form_models['devdayuserform'] = {
+                'args': [],
+                'kwargs': {
+                    'instance': m
+                }
+            }
         super(BecomeSpeakerForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = 'create_speaker'
@@ -179,15 +188,16 @@ class BecomeSpeakerForm(CombinedFormBase):
             "delete_url",
             "form_id",
             Div(
-                Field("firstname", template='devday/form/field.html', autofocus='autofocus'),
-                "lastname",
+                Field("first_name", template='devday/form/field.html', autofocus='autofocus'),
+                "last_name",
                 "phone",
-                "shirt_size",
+                "twitter_handle",
                 css_class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-12",
             ),
             Div(
                 Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
                 Field("shortbio", rows=2, template="devday/form/field.html"),
+                "shirt_size",
                 Field("videopermission", template="talk/form/videopermission-field.html"),
                 css_class="col-lg-4 col-md-6 col-sm-12",
             ),
@@ -227,6 +237,16 @@ class CreateSpeakerForm(CombinedFormBase):
     form_classes = [DevDayRegistrationForm, SpeakerForm]
 
     def __init__(self, *args, **kwargs):
+        self.form_models = {}
+        m = kwargs.pop('devdayuserform_model')
+        if m:
+            print '---- {}'.format(m)
+            self.form_models['devdayuserform'] = {
+                'args': [],
+                'kwargs': {
+                    'instance': m
+                }
+            }
         super(CreateSpeakerForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = 'create_speaker'
@@ -245,8 +265,8 @@ class CreateSpeakerForm(CombinedFormBase):
             'form_id',
             Div(
                 Field('email', template='devday/form/field.html', autofocus='autofocus'),
-                'firstname',
-                'lastname',
+                'first_name',
+                'last_name',
                 'password1',
                 'password2',
                 'phone',

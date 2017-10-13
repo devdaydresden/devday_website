@@ -83,9 +83,7 @@ class SpeakerRequiredMixin(AccessMixin):
         user = request.user
         if not user.is_authenticated():
             return self.handle_no_permission()
-        try:
-            user.attendee and user.attendee.speaker
-        except (Attendee.DoesNotExist, Speaker.DoesNotExist):
+        if not user.get_speaker():
             return redirect(reverse('create_speaker'))
         # noinspection PyUnresolvedReferences
         return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
@@ -96,7 +94,7 @@ class TalkSubmittedView(SpeakerRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TalkSubmittedView, self).get_context_data(**kwargs)
-        context['speaker'] = self.request.user.attendee.speaker
+        context['speaker'] = self.request.user.get_speaker()
         return context
 
 
@@ -107,8 +105,7 @@ class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         form_kwargs = super(CreateTalkView, self).get_form_kwargs()
-        attendee = Attendee.objects.get(user=self.request.user, event=1)
-        form_kwargs['speaker'] = attendee.speaker
+        form_kwargs['speaker'] = self.request.user.get_speaker()
         return form_kwargs
 
 
@@ -175,15 +172,12 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         user = self.request.user
         event = Event.objects.get(pk=settings.EVENT_ID)
         if user.is_authenticated():
-            try:
-                # noinspection PyStatementEffect
-                user.attendee and user.attendee.speaker
-                # need seperate success page, since user is already activated
-                return redirect(self.success_url)
-            except Speaker.DoesNotExist:
-                self.auth_level = 'attendee'
-            except Attendee.DoesNotExist:
+            if not user.get_attendee():
                 self.auth_level = 'user'
+            elif not user.get_speaker():
+                self.auth_level = 'attendee'
+            else:
+                return redirect(self.get_success_url())
         else:
             # noinspection PyAttributeOutsideInit
             self.auth_level = 'anonymous'
@@ -191,6 +185,11 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
 
     def get_form_class(self):
         return self.form_classes.get(self.auth_level, None)
+
+    def get_form_kwargs(self):
+        kw = super(CreateSpeakerView, self).get_form_kwargs()
+        kw['devdayuserform_model'] = self.request.user
+        return kw
 
     def get_email_context(self, activation_key):
         context = super(CreateSpeakerView, self).get_email_context(activation_key)
@@ -206,9 +205,12 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
             return reverse('create_session')
         return reverse_lazy('speaker_registered')
 
+    def form_invalid(self, form):
+        print "#### form {} invalid".format(form.errors)
+        return super(CreateSpeakerView, self).form_invalid(form)
+
     @atomic
     def form_valid(self, form):
-        print "#### form_valid"
         do_send_mail = False
         if self.auth_level == 'anonymous':
             email = form.cleaned_data['email']
@@ -229,10 +231,11 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
             user = self.request.user
 
         if self.auth_level in ('user', 'anonymous'):
-            user.first_name = form.cleaned_data['firstname']
-            user.last_name = form.cleaned_data['lastname']
-            user.phone = form.cleaned_data['phone']
-            user.save()
+            # user.first_name = form.cleaned_data['firstname']
+            # user.last_name = form.cleaned_data['lastname']
+            # user.phone = form.cleaned_data['phone']
+            # user.save()
+            form.becomespeakerform.save()
             attendee = Attendee.objects.create(user=user, event_id=1)
         else:
             attendee = user.attendee

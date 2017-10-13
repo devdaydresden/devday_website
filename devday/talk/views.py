@@ -212,6 +212,9 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         print "    form_class={}".format(form.errors)
         return r
 
+    #def get_success_url(self):
+    #    return ...
+
     @atomic
     def form_valid(self, form):
         print "#### form_valid"

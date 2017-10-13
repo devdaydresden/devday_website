@@ -110,7 +110,7 @@ class Attendee(models.Model):
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="attendees")
     source = models.TextField(_('source'), help_text=_('How have you become aware of this event?'), blank=True)
-    event = models.OneToOneField(Event, verbose_name=_("Event"))
+    event = models.ForeignKey(Event, verbose_name=_("Event"))
 
     class Meta:
         verbose_name = _("Attendee")

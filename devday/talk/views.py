@@ -170,10 +170,8 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         'user': BecomeSpeakerForm,
         'attendee': BecomeSpeakerForm,
     }
-    success_url = reverse_lazy('speaker_registered')
 
     def dispatch(self, *args, **kwargs):
-        print "#### dispatch"
         user = self.request.user
         event = Event.objects.get(pk=settings.EVENT_ID)
         if user.is_authenticated():
@@ -200,20 +198,13 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         return context
 
     def register(self, form):
-        print "#### registration in"
         r = super(CreateSpeakerView, self).register(form)
-        print "#### registration out: {}".format(r)
         return r
 
-    def form_invalid(self, form):
-        print "#### form_invalid in"
-        r = super(CreateSpeakerView, self).form_invalid(form)
-        print "#### form_invalid out: {}".format(self)
-        print "    form_class={}".format(form.errors)
-        return r
-
-    #def get_success_url(self):
-    #    return ...
+    def get_success_url(self):
+        if self.request.user.is_active:
+            return reverse('create_session')
+        return reverse_lazy('speaker_registered')
 
     @atomic
     def form_valid(self, form):
@@ -258,7 +249,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         if do_send_mail:
             self.send_activation_email(user)
 
-        return redirect(self.success_url)
+        return redirect(self.get_success_url())
 
 
 class CommitteeRequiredMixin(PermissionRequiredMixin):

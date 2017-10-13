@@ -18,7 +18,6 @@ class AttendeeProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(AttendeeProfileView, self).get_context_data(**kwargs)
-        context['attendees'] = Attendee.objects.filter(user=self.request.user)
         return context
 
 class AttendeeRegistrationView(RegistrationView):

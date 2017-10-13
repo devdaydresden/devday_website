@@ -10,21 +10,14 @@
             <dt>{% trans "Lastname" %}</dt>
             <dd>{{ user.last_name|default:"-" }}</dd>
         </dl>
-        <p><a href="{% url "auth_password_change" %}">{% trans "Change password" %}</a></p>
+        <p><a class="btn btn-primary" href="{% url "auth_password_change" %}">{% trans "Change password" %}</a></p>
     </div>
-    {% for attendee in attendees %}
+    {% for event in user.attendee.events %}
     <div class="col-lg-offset-2 col-lg-8 col-md-12">
-        <h1>{% blocktrans with event=attendee.event %}Attendee Information for {{ event }}{% endblocktrans %}</h1>
+        <h1>{% blocktrans with event=event %}Attendee Information for {{ event }}{% endblocktrans %}</h1>
         <dl>
             <dt>{% trans "Foo" %}</dt>
-            <dd>{{ attendee.contact_permission_date }}</dd>
-        </dl>
-    </div>
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
-        <h1>{% trans "Speaker Bio" %}</h1>
-        <dl>
-            <dt>{% trans "T-Shirt Size" %}</dt>
-            <dd>{{ attendee.speaker.shirt_size }}</dd>
+            <dd>{{ event }}</dd>
         </dl>
     </div>
     {% endfor %}

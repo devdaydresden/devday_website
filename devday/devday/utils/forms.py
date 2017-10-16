@@ -45,10 +45,13 @@ class CombinedFormBase(forms.Form):
         print '#### done instatiating forms'
 
     def is_valid(self):
+        #import pdb; pdb.set_trace()
+
         isValid = True
         for f in self.form_classes:
             name = f.__name__.lower()
             form = getattr(self, name)
+            print 'form {} is_valid {}: {}'.format(f, form.is_valid(), form.errors)
             if not form.is_valid():
                 isValid = False
             self.files.update(form.files)

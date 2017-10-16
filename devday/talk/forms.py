@@ -192,6 +192,8 @@ class BecomeSpeakerForm(CombinedFormBase):
                 "last_name",
                 "phone",
                 "twitter_handle",
+                "position",
+                "organization",
                 css_class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-12",
             ),
             Div(

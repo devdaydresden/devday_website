@@ -79,6 +79,11 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('users')
         abstract = False
 
+    def clean(self):
+        r = super(DevDayUser, self).clean()
+        print 'clean {}'.format(r)
+        return r
+
     def get_full_name(self):
         """
         Returns the first_name plus the last_name, with a space in between.

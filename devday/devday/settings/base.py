@@ -70,9 +70,9 @@ STATICFILES_DIRS = (
 )
 SITE_ID = 1
 
-EVENT_ID = 1
-EVENT_TITLE = "DevDay 2017"
-EVENT_SLUG = "devday.17"
+EVENT_ID = 2
+EVENT_TITLE = "DevDay 2018"
+EVENT_SLUG = "devday-18"
 
 TEMPLATES = [
     {

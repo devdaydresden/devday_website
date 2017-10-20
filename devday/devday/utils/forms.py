@@ -32,7 +32,6 @@ class CombinedFormBase(forms.Form):
         super(CombinedFormBase, self).__init__(*args, **kwargs)
         for f in self.form_classes:
             name = f.__name__.lower()
-            print '#### {}'.format(name)
             form_model = self.form_models.get(name)
             if form_model:
                 form_kwargs = form_model['kwargs']
@@ -44,7 +43,6 @@ class CombinedFormBase(forms.Form):
             self.fields.update(form.fields)
             self.files.update(form.files)
             self.initial.update(form.initial)
-        print '#### done instantiating forms'
 
     def is_valid(self):
         #import pdb; pdb.set_trace()
@@ -53,7 +51,6 @@ class CombinedFormBase(forms.Form):
         for f in self.form_classes:
             name = f.__name__.lower()
             form = getattr(self, name)
-            print 'form {} is_valid {}: {}'.format(f, form.is_valid(), form.errors)
             if not form.is_valid():
                 isValid = False
             self.files.update(form.files)

@@ -205,10 +205,6 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
             return reverse('create_session')
         return reverse_lazy('speaker_registered')
 
-    def form_invalid(self, form):
-        print "#### form {} invalid".format(form.errors)
-        return super(CreateSpeakerView, self).form_invalid(form)
-
     @atomic
     def form_valid(self, form):
         do_send_mail = False
@@ -267,8 +263,6 @@ class TalkDetails(DetailView):
         talk = get_object_or_404(Talk, pk=self.kwargs.get('pk'))
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
 
-        print("slug URL: {}".format(kwargs.get('slug')))
-        print("slug db:  {}".format(slugify(talk.title)))
         if slugify(talk.title) != kwargs.get('slug') or event != talk.event:
             return HttpResponseRedirect('/{}/talk/{}/{}'.format(event.slug, slugify(talk.title), talk.id))
         return super(TalkDetails, self).dispatch(request, *args, **kwargs)

@@ -169,7 +169,6 @@ class BecomeSpeakerForm(CombinedFormBase):
         self.form_models = {}
         m = kwargs.pop('devdayuserform_model')
         if m:
-            print '---- {}'.format(m)
             self.form_models['devdayuserform'] = {
                 'args': [],
                 'kwargs': {
@@ -242,7 +241,6 @@ class CreateSpeakerForm(CombinedFormBase):
         self.form_models = {}
         m = kwargs.pop('devdayuserform_model')
         if m:
-            print '---- {}'.format(m)
             self.form_models['devdayuserform'] = {
                 'args': [],
                 'kwargs': {

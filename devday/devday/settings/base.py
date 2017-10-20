@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 import os
+import mimetypes
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -29,6 +30,7 @@ def get_env_variable(var_name):
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
 
+mimetypes.add_type("image/svg+xml", ".svg", True)
 
 DEBUG = False
 
@@ -67,6 +69,10 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'devday', 'static'),
 )
 SITE_ID = 1
+
+EVENT_ID = 2
+EVENT_TITLE = "DevDay 2018"
+EVENT_SLUG = "devday-18"
 
 TEMPLATES = [
     {
@@ -124,6 +130,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.messages',
     'devday',
+    'event.apps.EventsConfig',
     'attendee.apps.AttendeeConfig',
     'talk.apps.SessionsConfig',
     'cms',

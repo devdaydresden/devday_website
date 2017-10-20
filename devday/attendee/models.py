@@ -9,6 +9,8 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
+from event.models import Event
+
 
 class DevDayUserManager(BaseUserManager):
     use_in_migrations = True
@@ -62,6 +64,9 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     twitter_handle = models.CharField(_('twitter handle'), blank=True, max_length=64)
+    phone = models.CharField(verbose_name=_("Phone"), blank=True, max_length=32)
+    position = models.CharField(_('job or study subject'), blank=True, max_length=128)
+    organization = models.CharField(_('company or institution'), blank=True, max_length=128)
     contact_permission_date = models.DateTimeField(null=True)
 
     objects = DevDayUserManager()
@@ -91,6 +96,31 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def get_attendee(self, event=None):
+        '''
+        Return the attendee object for this user and the given event.  If event
+        is None, use settings.EVENT_ID.  If no attendee object exists, return
+        None.
+        '''
+        if not event:
+            event = Event.objects.filter(id=settings.EVENT_ID).first()
+        return Attendee.objects.filter(user=self, event=event).first()
+
+    def get_speaker(self, event=None):
+        '''
+        Return the speaker object for this user and the given event.  If event
+        is None, use settings.EVENT_ID.  If no attendee or speaker object
+        exists, return None.
+        '''
+        attendee = self.get_attendee(event)
+        if attendee:
+            try:
+                return attendee.speaker
+            except Attendee.speaker.RelatedObjectDoesNotExist:
+                return None
+        return None
+
+
     def __str__(self):
         full_name = self.get_full_name()
         if full_name:
@@ -103,15 +133,14 @@ class Attendee(models.Model):
     """
     This is a model class for an attendee.
     """
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="attendee")
-    position = models.CharField(_('job or study subject'), blank=True, max_length=128)
-    organization = models.CharField(_('company or institution'), blank=True, max_length=128)
-    contact_permission_date = models.DateTimeField(null=True)
-    source = models.TextField(_('source'), help_text=_('How have you become aware of DevDay 2017?'), blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="attendees")
+    source = models.TextField(_('source'), help_text=_('How have you become aware of this event?'), blank=True)
+    event = models.ForeignKey(Event, verbose_name=_("Event"))
 
     class Meta:
         verbose_name = _("Attendee")
         verbose_name_plural = _("Attendees")
+        unique_together = [('user', 'event')]
 
     def __str__(self):
-        return self.user.get_full_name()
+        return "{} / {}".format(self.user.get_full_name(), self.event)

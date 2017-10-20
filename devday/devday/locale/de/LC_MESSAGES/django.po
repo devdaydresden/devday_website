@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-30 17:33+0200\n"
+"POT-Creation-Date: 2017-09-17 12:28+0200\n"
 "PO-Revision-Date: 2017-03-30 17:35+0200\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -31,23 +31,23 @@ msgstr "Mein Passwort ändern"
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
-#: devday/settings/base.py:153 devday/settings/base.py:160
+#: devday/settings/base.py:158 devday/settings/base.py:165
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:196
+#: devday/settings/base.py:201
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:197
+#: devday/settings/base.py:202
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:198
+#: devday/settings/base.py:203
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:199
+#: devday/settings/base.py:204
 msgid "col-md-12"
 msgstr "col-md-12"
 
@@ -79,15 +79,15 @@ msgstr "Login"
 msgid "Submit session"
 msgstr "Session einreichen"
 
-#: devday/templates/devday_index.html:12
+#: devday/templates/devday_index.html:13
 msgid "Be part of it!"
 msgstr "Sei dabei!"
 
-#: devday/templates/devday_index.html:25
+#: devday/templates/devday_index.html:28
 msgid "I want to be part of it!"
 msgstr "Ich will dabei sein!"
 
-#: devday/templates/devday_index.html:35
+#: devday/templates/devday_index.html:39
 msgid "Follow us!"
 msgstr "Folge uns!"
 

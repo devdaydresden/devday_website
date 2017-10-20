@@ -16,6 +16,7 @@ from model_utils.models import TimeStampedModel
 from six import BytesIO
 
 from attendee.models import Attendee
+from event.models import Event
 
 T_SHIRT_SIZES = (
     (1, _("XS")),
@@ -49,6 +50,7 @@ class Speaker(models.Model):
     public_image = models.ImageField(
         verbose_name=_("Public speaker image"), upload_to='speaker_public',
         max_length=500, null=True, blank=True)
+    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
 
     class Meta:
         verbose_name = _("Speaker")
@@ -126,6 +128,7 @@ class Speaker(models.Model):
 @python_2_unicode_compatible
 class Track(TimeStampedModel):
     name = models.CharField(max_length=100, unique=True, blank=False)
+    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
 
     class Meta:
         verbose_name = _('Track')
@@ -143,6 +146,7 @@ class Talk(models.Model):
     abstract = models.TextField(verbose_name=_("Abstract"))
     remarks = models.TextField(verbose_name=_("Remarks"), blank=True)
     track = models.ForeignKey(Track, null=True, blank=True)
+    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
 
     class Meta:
         verbose_name = _("Session")
@@ -192,6 +196,7 @@ class TalkComment(TimeStampedModel):
 class Room(TimeStampedModel):
     name = models.CharField(verbose_name=_('Name'), max_length=100, unique=True, blank=False)
     priority = models.PositiveSmallIntegerField(verbose_name=_('Priority'), default=0)
+    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
 
     class Meta:
         verbose_name = _('Room')
@@ -208,6 +213,7 @@ class TimeSlot(TimeStampedModel):
     start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(default=timezone.now)
     text_body = models.TextField(blank=True, default="")
+    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
 
     class Meta:
         verbose_name = _('Time slot')

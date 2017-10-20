@@ -21,7 +21,7 @@
         <div class="{% block promo_classes %}row promo site{% endblock %}">
             <nav class="navbar navbar-default">
                 <div class="navbar-header">
-                    <a href="{% url "pages-root" %}"><img src="{% static "images/logo.png" %}" alt="DevDay 2017"></a>
+                    <a href="{% url "pages-root" %}"><img src="{% static "images/logo-2018.png" %}" alt="DevDay 2017"></a>
                 </div>
                 <div class="collapse navbar-collapse navbar-desktop">
                     <ul class="nav navbar-nav navbar-right">
@@ -41,7 +41,7 @@
             </nav>
             <div class="col-xs-12 call-to-action">
                 {% block promo_content %}
-                    <img src="{% static "images/claim-2x.png" %}" alt="Let Code Rule" />
+                    <img src="{% static "images/digital-reality-claim-2x.png" %}" alt="Let Code Rule" />
                     {% if talk_submission_open %}
                         {% static_placeholder "call-for-papers-date" %}
                     {% else %}

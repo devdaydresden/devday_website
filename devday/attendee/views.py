@@ -8,12 +8,17 @@ from registration.backends.hmac.views import RegistrationView
 
 from attendee.forms import AttendeeRegistrationForm
 
+from talk.models import Attendee
+
 User = get_user_model()
 
 
 class AttendeeProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'attendee/profile.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(AttendeeProfileView, self).get_context_data(**kwargs)
+        return context
 
 class AttendeeRegistrationView(RegistrationView):
     form_class = AttendeeRegistrationForm

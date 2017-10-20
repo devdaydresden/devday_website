@@ -5,7 +5,7 @@ from .models import Attendee, DevDayUser
 
 
 class AttendeeAdmin(ModelAdmin):
-    list_display = ('__str__', 'position', 'organization')
+    list_display = ['__str__']
 
 
 admin.site.register(DevDayUser)

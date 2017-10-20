@@ -28,7 +28,7 @@
                                     {% for room in rooms %}
                                         {% for talk in talks %}
                                             {% if talk.talkslot.room == room %}
-                                                <td class="track-{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a></td>
+                                                <td class="track-{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a><td>
                                             {% endif %}
                                         {% endfor %}
                                     {% endfor %}

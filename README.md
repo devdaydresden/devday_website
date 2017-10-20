@@ -89,3 +89,33 @@ There is a [Docker](https://docker.io/) based script for building an archive wit
 site including all required native code with CentOS 7 dependencies in [devday/deployment](). The deployment process
 could be improved by using the result of the build script instead of installing the dependencies directly on the target
 machine.
+
+# URL Structure of the DevDay Website
+
+The site has been restructured to allow multiple events to be served concurrently.  Most URLs have been updated, and many of the existing views have been refactored.
+
+## Public Information
+
+* **/** Redirect to current event (as determined by devday/devday/settings/base.py EVENT_ID)
+* **/`event`/** Homepage, managed by DjangoCMS
+* **/`event`/talk/** List of accepted talks for this event.  Once all accepted talks have been assigned a slot, this will show the session grid.
+* **/`event`/talk/*slug*/`ID`** Detail page for an accepted talk, including speaker bio.
+
+## Attendee And Speaker Management
+
+Attendees, including speakers, can review and update their personal information.  People submitting a proposed talk will complete their attendee registration as part of the speaker registration, if they have not registered yet.
+
+* **/account** Attendee account information.
+
+## Speaker And Talk Information
+
+* **/account/speaker** Speaker information; all registered users can input data here, but this is only required if the user wants to submit a talk proposal. The page also lists all talk proposals the user has made, and includes a link to submitting a new talk.  Talks are filtered by the current event (no past talks are shown).
+
+## Committee Members
+
+* **/committee/talks** Overview of all submitted talks, including links to speakers, talks.  The talks pages have the voting and comment functions.
+(defined in `devday/talk/url-committee.py`)
+
+## Special URLS
+
+* **/schedule.xml** InfoBeamer data URL.

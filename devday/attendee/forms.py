@@ -7,7 +7,7 @@ from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 from registration.forms import RegistrationFormUniqueEmail
 
-from attendee.models import Attendee
+from attendee.models import Attendee, DevDayUser
 from devday.utils.forms import CombinedFormBase, DevDayFormHelper, DevDayField, DevDayContactField
 
 User = get_user_model()
@@ -15,7 +15,7 @@ User = get_user_model()
 
 class AttendeeInformationForm(ModelForm):
     accept_devday_contact = forms.BooleanField(
-        label=_('Accept DevDay 17 contact'),
+        label=_('Accept DevDay contact'),
         help_text=_(
             'I hereby agree to be contacted by the DevDay 17 organization team.'
         ),
@@ -24,7 +24,7 @@ class AttendeeInformationForm(ModelForm):
 
     class Meta:
         model = Attendee
-        fields = ['position', 'organization', 'source']
+        fields = ['source']
 
 
 class DevDayRegistrationForm(RegistrationFormUniqueEmail):
@@ -45,6 +45,21 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
             'first_name',
             'last_name',
             'twitter_handle',
+            'phone',
+            'position',
+            'organization',
+        ]
+
+
+class DevDayUserForm(ModelForm):
+    class Meta:
+        model = DevDayUser
+        fields = ['first_name',
+            'last_name',
+            'twitter_handle',
+            'phone',
+            'position',
+            'organization'
         ]
 
 

@@ -50,6 +50,7 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
             'organization',
         ]
 
+
 class DevDayUserForm(ModelForm):
     class Meta:
         model = DevDayUser
@@ -60,6 +61,7 @@ class DevDayUserForm(ModelForm):
             'position',
             'organization'
         ]
+
 
 class AttendeeRegistrationForm(CombinedFormBase):
     form_classes = [DevDayRegistrationForm, AttendeeInformationForm]

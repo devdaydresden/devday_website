@@ -35,14 +35,13 @@ class CombinedFormBase(forms.Form):
             print '#### {}'.format(name)
             if self.form_models.get(name):
                 a = self.form_models.get(name)
-                setattr(self, name, f(*a['args'], **a['kwargs']))
-            else:
-                setattr(self, name, f(*args, **kwargs))
+                kwargs.update(a['kwargs'])
+            setattr(self, name, f(*args, **kwargs))
             form = getattr(self, name)
             self.fields.update(form.fields)
             self.files.update(form.files)
             self.initial.update(form.initial)
-        print '#### done instatiating forms'
+        print '#### done instantiating forms'
 
     def is_valid(self):
         #import pdb; pdb.set_trace()

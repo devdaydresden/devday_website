@@ -235,10 +235,10 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
             # user.last_name = form.cleaned_data['lastname']
             # user.phone = form.cleaned_data['phone']
             # user.save()
-            form.becomespeakerform.save()
-            attendee = Attendee.objects.create(user=user, event_id=1)
+            user = form.devdayuserform.save()
+            attendee = Attendee.objects.create(user=user, event_id=settings.EVENT_ID)
         else:
-            attendee = user.attendee
+            attendee = user.attendees.get(event_id=settings.EVENT_ID)
 
         speaker = form.speakerform.save(commit=False)
         speaker.user = attendee

@@ -72,7 +72,9 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
         fields = [
             'email',
             'password1',
-            'password2'
+            'password2',
+            'first_name',
+            'last_name'
         ]
 
     def clean_accept_contact(self):
@@ -240,13 +242,6 @@ class CreateSpeakerForm(CombinedFormBase):
     def __init__(self, *args, **kwargs):
         self.form_models = {}
         m = kwargs.pop('devdayuserform_model')
-        if m:
-            self.form_models['devdayuserform'] = {
-                'args': [],
-                'kwargs': {
-                    'instance': m
-                }
-            }
         super(CreateSpeakerForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = 'create_speaker'
@@ -258,6 +253,10 @@ class CreateSpeakerForm(CombinedFormBase):
         self.fields['email'].label = _('E-Mail')
         self.fields['password1'].help_text = None
         self.fields['password2'].help_text = None
+        self.fields['first_name'].help_text = None
+        self.fields['first_name'].label = _('First name')
+        self.fields['last_name'].help_text = None
+        self.fields['last_name'].label = _('Last name')
 
         self.helper.layout = Layout(
             'upload_url',

@@ -209,29 +209,23 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
     def form_valid(self, form):
         do_send_mail = False
         if self.auth_level == 'anonymous':
+            #import pdb; pdb.set_trace()
             email = form.cleaned_data['email']
-            first_name = form.cleaned_data['firstname']
-            last_name = form.cleaned_data['lastname']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
 
-            try:
-                user = User.objects.get(email=email)
-            except User.DoesNotExist:
-                user = User.objects.create_user(
-                    email=email, first_name=first_name, last_name=last_name, is_active=False)
-                user.set_password(form.cleaned_data['password1'])
-                signals.user_registered.send(sender=self.__class__,
-                                             user=user,
-                                             request=self.request)
-                do_send_mail = True
+            user = User.objects.create_user(
+                email=email, first_name=first_name, last_name=last_name, is_active=False)
+            user.set_password(form.cleaned_data['password1'])
+            signals.user_registered.send(sender=self.__class__,
+                                         user=user,
+                                         request=self.request)
+            do_send_mail = True
         else:
             user = self.request.user
-
-        if self.auth_level in ('user', 'anonymous'):
-            # user.first_name = form.cleaned_data['firstname']
-            # user.last_name = form.cleaned_data['lastname']
-            # user.phone = form.cleaned_data['phone']
-            # user.save()
+        if self.auth_level == 'user':
             user = form.devdayuserform.save()
+        if self.auth_level in ('user', 'anonymous'):
             attendee = Attendee.objects.create(user=user, event_id=settings.EVENT_ID)
         else:
             attendee = user.attendees.get(event_id=settings.EVENT_ID)

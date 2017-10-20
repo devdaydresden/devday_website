@@ -3,21 +3,24 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+from django.utils.timezone import datetime
+
+
+def create_devday_17_fwd(apps, schema_manager):
+    Event = apps.get_model("event", "Event")
+    event = Event(id=1, title='devday.17', slug='devday-17',
+                  description='DevDay.17 am 4.4. in Dresden', location='Dresden',
+                  full_day=False, start_time=datetime(2017, 4, 4, 13, 0),
+                  end_time=datetime(2017, 4, 4, 20, 0))
+    event.save()
+
+
+def create_devday_17_rev(apps, schema_manager):
+    Event = apps.get_model("event", "Event")
+    Event.objects.filter(pk=1).delete()
 
 
 class Migration(migrations.Migration):
-
-    def create_devday_17_fwd(self, schema_manager):
-        Event = apps.get_model("event", "Event")
-        event = Event(id=1, title='devday.17', slug='devday-17',
-            description='DevDay.17 am 4.4. in Dresden', location='Dresden',
-            full_day=False, start_time=datetime(2017, 4, 4, 13, 0),
-            end_time=datetime(2017, 4, 4, 20, 0))
-        event.save()
-
-    def create_devday_17_rev(self, schema_manager):
-        Event = apps.get_model("event", "Event")
-        Event.objects.filter(pk=1).delete()
 
     initial = True
 

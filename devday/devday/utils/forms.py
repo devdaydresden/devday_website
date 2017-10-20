@@ -33,10 +33,13 @@ class CombinedFormBase(forms.Form):
         for f in self.form_classes:
             name = f.__name__.lower()
             print '#### {}'.format(name)
-            if self.form_models.get(name):
-                a = self.form_models.get(name)
-                kwargs.update(a['kwargs'])
-            setattr(self, name, f(*args, **kwargs))
+            form_model = self.form_models.get(name)
+            if form_model:
+                form_kwargs = form_model['kwargs']
+                form_kwargs.update(kwargs)
+                setattr(self, name, f(*args, **form_kwargs))
+            else:
+                setattr(self, name, f(*args, **kwargs))
             form = getattr(self, name)
             self.fields.update(form.fields)
             self.files.update(form.files)

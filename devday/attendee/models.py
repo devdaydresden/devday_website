@@ -67,7 +67,7 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(verbose_name=_("Phone"), blank=True, max_length=32)
     position = models.CharField(_('job or study subject'), blank=True, max_length=128)
     organization = models.CharField(_('company or institution'), blank=True, max_length=128)
-    contact_permission_date = models.DateTimeField(null=True)
+    contact_permission_date = models.DateTimeField(null=True, blank=True)
 
     objects = DevDayUserManager()
 

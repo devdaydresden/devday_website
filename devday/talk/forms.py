@@ -28,7 +28,6 @@ class TalkForm(forms.models.ModelForm):
 
 class SpeakerForm(FileFormMixin, forms.models.ModelForm):
     uploaded_image = UploadedFileField(label=_("Speaker portrait"))
-    phone = forms.fields.CharField(label=_("Phone"), max_length=32)
 
     class Meta:
         model = Speaker
@@ -66,13 +65,20 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
             'to get informed about future events and for requests related to '  # \
             'my session proposals.'),
         required=False,
+        initial=True
     )
+    phone = forms.fields.CharField(label=_("Phone"), max_length=32)
+    twitter_handle = forms.fields.CharField(required=False)
+    organization = forms.fields.CharField(required=False)
+    position = forms.fields.CharField(required=False)
 
     class Meta(RegistrationFormUniqueEmail.Meta):
         fields = [
             'email',
             'password1',
-            'password2'
+            'password2',
+            'first_name',
+            'last_name'
         ]
 
     def clean_accept_contact(self):
@@ -240,13 +246,6 @@ class CreateSpeakerForm(CombinedFormBase):
     def __init__(self, *args, **kwargs):
         self.form_models = {}
         m = kwargs.pop('devdayuserform_model')
-        if m:
-            self.form_models['devdayuserform'] = {
-                'args': [],
-                'kwargs': {
-                    'instance': m
-                }
-            }
         super(CreateSpeakerForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = 'create_speaker'
@@ -270,6 +269,9 @@ class CreateSpeakerForm(CombinedFormBase):
                 'password1',
                 'password2',
                 'phone',
+                'twitter_handle',
+                'organization',
+                'position',
                 css_class='col-md-12 col-lg-offset-2 col-lg-4'
             ),
             Div(

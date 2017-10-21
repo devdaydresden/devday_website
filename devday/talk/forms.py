@@ -28,7 +28,6 @@ class TalkForm(forms.models.ModelForm):
 
 class SpeakerForm(FileFormMixin, forms.models.ModelForm):
     uploaded_image = UploadedFileField(label=_("Speaker portrait"))
-    phone = forms.fields.CharField(label=_("Phone"), max_length=32)
 
     class Meta:
         model = Speaker
@@ -66,7 +65,12 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
             'to get informed about future events and for requests related to '  # \
             'my session proposals.'),
         required=False,
+        initial=True
     )
+    phone = forms.fields.CharField(label=_("Phone"), max_length=32)
+    twitter_handle = forms.fields.CharField(required=False)
+    organization = forms.fields.CharField(required=False)
+    position = forms.fields.CharField(required=False)
 
     class Meta(RegistrationFormUniqueEmail.Meta):
         fields = [
@@ -265,6 +269,9 @@ class CreateSpeakerForm(CombinedFormBase):
                 'password1',
                 'password2',
                 'phone',
+                'twitter_handle',
+                'organization',
+                'position',
                 css_class='col-md-12 col-lg-offset-2 col-lg-4'
             ),
             Div(

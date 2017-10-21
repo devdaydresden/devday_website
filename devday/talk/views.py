@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import logging
 import xml.etree.ElementTree as ET
 
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -209,23 +209,28 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
     def form_valid(self, form):
         do_send_mail = False
         if self.auth_level == 'anonymous':
-            #import pdb; pdb.set_trace()
-            email = form.cleaned_data['email']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-
+            if form.cleaned_data['contact_permission_date']:
+                contact_permission_date = datetime.now()
+            else:
+                contact_permission_date = None
             user = User.objects.create_user(
-                email=email, first_name=first_name, last_name=last_name, is_active=False)
-            user.set_password(form.cleaned_data['password1'])
+                email=form.cleaned_data['email'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+                phone=form.cleaned_data['phone'],
+                password=form.cleaned_data['password1'],
+                contact_permission_date=contact_permission_date,
+                is_active=False)
             signals.user_registered.send(sender=self.__class__,
                                          user=user,
                                          request=self.request)
             do_send_mail = True
+        elif self.auth_level in ('user', 'attendee'):
+            user = form.devdayuserform.save()
         else:
             user = self.request.user
-        if self.auth_level == 'user':
-            user = form.devdayuserform.save()
-        if self.auth_level in ('user', 'anonymous'):
+
+        if self.auth_level in ('anonymous', 'user'):
             attendee = Attendee.objects.create(user=user, event_id=settings.EVENT_ID)
         else:
             attendee = user.attendees.get(event_id=settings.EVENT_ID)

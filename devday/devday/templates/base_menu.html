@@ -6,7 +6,7 @@
     {% endif %}
     <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
     <li><a href="
-            {% if user.attendee.speaker %}{% url 'speaker_profile' pk=user.attendee.speaker.pk %}{% else %}{% url 'user_profile' %}{% endif %}">{% trans "Profile" %}</a>
+            {% if user.get_speaker %}{% url 'speaker_profile' pk=user.get_speaker.pk %}{% else %}{% url 'user_profile' %}{% endif %}">{% trans "Profile" %}</a>
     </li>
 {% else %}
     <li><a href="{% url 'auth_login' %}">{% trans "Login" %}</a></li>

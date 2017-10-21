@@ -12,6 +12,7 @@ STATIC_ROOT = os.path.join(DATA_DIR, 'static')
 
 ADMINS = [
     ('Jan Dittberner', 'jan.dittberner@t-systems.com'),
+    ('Stefan Bethke', 'stefan.bethke@t-systems.com'),
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

@@ -86,11 +86,11 @@ LOGGING = {
     },
 }
 
-TALK_SUBMISSION_OPEN = False
 
 TWITTERFEED_PROXIES = {
     'http': 'http://iproxy.mms-dresden.de:8080/',
     'https': 'http://iproxy.mms-dresden.de:8080/',
 }
 
-REGISTRATION_OPEN = False
+REGISTRATION_OPEN = True
+TALK_SUBMISSION_OPEN = True

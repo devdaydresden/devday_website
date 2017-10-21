@@ -253,10 +253,6 @@ class CreateSpeakerForm(CombinedFormBase):
         self.fields['email'].label = _('E-Mail')
         self.fields['password1'].help_text = None
         self.fields['password2'].help_text = None
-        self.fields['first_name'].help_text = None
-        self.fields['first_name'].label = _('First name')
-        self.fields['last_name'].help_text = None
-        self.fields['last_name'].label = _('Last name')
 
         self.helper.layout = Layout(
             'upload_url',

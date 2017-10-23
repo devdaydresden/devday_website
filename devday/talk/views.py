@@ -209,17 +209,13 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
     def form_valid(self, form):
         do_send_mail = False
         if self.auth_level == 'anonymous':
-            if form.cleaned_data['accept_contact']:
-                contact_permission_date = datetime.now()
-            else:
-                contact_permission_date = None
             user = User.objects.create_user(
                 email=form.cleaned_data['email'],
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
                 phone=form.cleaned_data['phone'],
                 password=form.cleaned_data['password1'],
-                contact_permission_date=contact_permission_date,
+                contact_permission_date=datetime.now(),
                 is_active=False)
             signals.user_registered.send(sender=self.__class__,
                                          user=user,

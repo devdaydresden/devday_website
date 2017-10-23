@@ -24,14 +24,13 @@ msgid "Attendee management"
 msgstr "Teilnehmerverwaltung"
 
 #: attendee/forms.py:18
-msgid "Accept DevDay 17 contact"
-msgstr "Kontaktaufnahme zum Dev Day 17"
+msgid "Accept DevDay contact"
+msgstr "Kontaktaufnahme zum Dev Day"
 
 #: attendee/forms.py:20
-msgid "I hereby agree to be contacted by the DevDay 17 organization team."
+msgid "I hereby agree to be contacted by the DevDay organization team about DevDay 2018."
 msgstr ""
-"Ich erlaube hiermit, dass das Dev Day 17 Organisationsteam Kontakt zu mir "
-"aufnehmen darf."
+"Mit meiner Anmeldung akzeptiere ich, dass das Dev Day-Organisationsteam mich zum Dev Day 2018 per Email kontaktieren darf."
 
 #: attendee/forms.py:32
 msgid "Contact for other events"
@@ -112,8 +111,8 @@ msgid "source"
 msgstr "Informationsquelle"
 
 #: attendee/models.py:110
-msgid "How have you become aware of DevDay 2017?"
-msgstr "Wie bist du auf den Dev Day 2017 aufmerksam geworden?"
+msgid "How have you become aware of DevDay?"
+msgstr "Wie bist du auf den Dev Day aufmerksam geworden?"
 
 #: attendee/models.py:113
 msgid "Attendee"

@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Layout, Field, Submit, Hidden
+from crispy_forms.layout import Div, Layout, Field, Submit, Hidden, HTML
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
@@ -58,15 +58,6 @@ class ExistingFileForm(SpeakerForm):
 
 
 class DevDayRegistrationForm(RegistrationFormUniqueEmail):
-    accept_contact = forms.BooleanField(
-        label=_('Accept contact'),
-        help_text=_(
-            'I hereby agree to be contacted by the DevDay organization team '  # \
-            'to get informed about future events and for requests related to '  # \
-            'my session proposals.'),
-        required=False,
-        initial=True
-    )
     phone = forms.fields.CharField(label=_("Phone"), max_length=32)
     twitter_handle = forms.fields.CharField(required=False)
     organization = forms.fields.CharField(required=False)
@@ -206,6 +197,10 @@ class BecomeSpeakerForm(CombinedFormBase):
                 Field("shortbio", rows=2, template="devday/form/field.html"),
                 "shirt_size",
                 Field("videopermission", template="talk/form/videopermission-field.html"),
+                Div(
+                    HTML(_('<label><p class="help-block">By registering as a speaker, I agree to be contacted by the DevDay organizers about conference details and my talk submissions.</p></label>')),
+                    css_class='checkbox'
+                ),
                 css_class="col-lg-4 col-md-6 col-sm-12",
             ),
             Div(
@@ -278,8 +273,11 @@ class CreateSpeakerForm(CombinedFormBase):
                 Field('uploaded_image', template='talk/form/speakerportrait-field.html'),
                 'shirt_size',
                 Field('shortbio', rows=2, template='devday/form/field.html'),
+                Div(
+                    HTML(_('<label><p class="help-block">By registering as a speaker, I agree to be contacted by the DevDay organizers about conference details and my talk submissions.</p></label>')),
+                    css_class='checkbox'
+                ),
                 Field('videopermission', template='talk/form/videopermission-field.html'),
-                Field('accept_contact', template='devday/form/accept_contact-field.html'),
                 css_class='col-md-12 col-lg-4'
             ),
             Div(

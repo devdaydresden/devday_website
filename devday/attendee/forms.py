@@ -17,7 +17,7 @@ class AttendeeInformationForm(ModelForm):
     accept_devday_contact = forms.BooleanField(
         label=_('Accept DevDay contact'),
         help_text=_(
-            'I hereby agree to be contacted by the DevDay 17 organization team.'
+            'I hereby agree to be contacted by the DevDay organization team about DevDay 2018.'
         ),
         required=False
     )

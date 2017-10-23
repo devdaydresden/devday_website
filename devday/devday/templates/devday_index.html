@@ -20,13 +20,18 @@
             <div class="col-xs-12 col-sm-6 boxed-content">
                 <i class="icon-rocket"></i>
                 {% placeholder "eventinfo" %}
+                {% if talk_submission_open %}
+                    <a class="btn" href="{% url "submit_session" %}" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "Submit session" %}</a>
+                {% endif %}
             </div>
             <div class="col-xs-12 col-sm-6 boxed-content">
                 <i class="icon-user"></i>
                 {% placeholder "audience" %}
+                {% comment "registration is open so speakers can register, but we don't want attendees to register yet, so comment this out" %}
                 {% if attendee_registration_open %}
                     <a href="{% url 'registration_register' event='devday-17' %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "I want to be part of it!" %}</a>
                 {% endif %}
+                {% endcomment %}
             </div>
         </div>
     </div>

@@ -281,7 +281,7 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
     }
 
     def get_queryset(self):
-        qs = super(CommitteeTalkOverview, self).get_queryset().annotate(
+        qs = super(CommitteeTalkOverview, self).get_queryset().filter(speaker__user__event_id=settings.EVENT_ID).annotate(
             average_score=Avg('vote__score'),
             vote_sum=Sum('vote__score'),
             vote_count=Count('vote__id')).select_related(

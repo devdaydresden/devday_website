@@ -60,7 +60,7 @@ cd /vagrant
 /srv/devday/devday.sh runserver 0.0.0.0:8000
 ```
 
-You should be able to access the application at [http://127.0.0.1:8000/]() now.
+You should be able to access the application at [http://127.0.0.1:8000/](http://127.0.0.1:8000/) now.
 
 ## Running the application locally
 

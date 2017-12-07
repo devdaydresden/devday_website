@@ -8,10 +8,12 @@ class TalkMediaInline(admin.StackedInline):
 
 
 class TalkAdmin(admin.ModelAdmin):
-    list_display = ['title', 'track', 'speaker']
+    list_display = ('title', 'speaker', 'event', 'track')
     inlines = [
         TalkMediaInline,
     ]
+    def event(self, obj):
+        return obj.speaker.user.event
 
 
 class TalkSlotAdmin(admin.ModelAdmin):

@@ -143,4 +143,4 @@ class Attendee(models.Model):
         unique_together = [('user', 'event')]
 
     def __str__(self):
-        return "{} / {}".format(self.user.get_full_name(), self.event)
+        return self.user.get_full_name()

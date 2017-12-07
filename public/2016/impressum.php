@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"><!-- this is only for responsive design to zoom 100%-->
     <meta name="description" content="A great developer conference from developers for developers">
     <meta name="author" content="Jeremias Arnstadt">
-    <title>DevDay 2016</title>
+    <title>Dev Day 2016</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,600,700' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/png" href="favicon.png" />

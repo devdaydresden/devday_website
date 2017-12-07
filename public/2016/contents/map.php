@@ -8,7 +8,7 @@
     <div id="infobox">
       <h5>Veranstaltungsort</h5>
       <article>
-        <p>Hier fand der DevDay 2016 statt</p>
+        <p>Hier fand der Dev Day 2016 statt</p>
         <h5><a href="https://www.google.com/maps/d/edit?mid=zBfktBmVT9XI.kY8LsPwquYbs" target="_blank">Veranstaltungsort in Google Maps anzeigen</a></h5>
       </article>
       <article>
@@ -22,7 +22,7 @@
   <div class="show-mob">
     <article class="left">
       <h2>Veranstaltungsort</h2>
-      <h4>Hier fand der DevDay 2016 statt</h4>
+      <h4>Hier fand der Dev Day 2016 statt</h4>
       <h5><a href="https://www.google.com/maps/d/edit?mid=zBfktBmVT9XI.kY8LsPwquYbs" target="_blank">Veranstaltungsort in Google Maps anzeigen</a></h5>
     </article>
     <article class="left">

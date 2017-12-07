@@ -50,7 +50,6 @@ class Speaker(models.Model):
     public_image = models.ImageField(
         verbose_name=_("Public speaker image"), upload_to='speaker_public',
         max_length=500, null=True, blank=True)
-    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
 
     class Meta:
         verbose_name = _("Speaker")
@@ -146,7 +145,6 @@ class Talk(models.Model):
     abstract = models.TextField(verbose_name=_("Abstract"))
     remarks = models.TextField(verbose_name=_("Remarks"), blank=True)
     track = models.ForeignKey(Track, null=True, blank=True)
-    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
 
     class Meta:
         verbose_name = _("Session")
@@ -155,7 +153,6 @@ class Talk(models.Model):
 
     def __str__(self):
         return "%s - %s" % (self.speaker, self.title)
-
 
 class TalkMedia(models.Model):
     talk = models.OneToOneField(Talk, related_name='media')

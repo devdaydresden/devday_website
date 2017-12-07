@@ -1,6 +1,6 @@
-# DevDay website
+# Dev Day website
 
-The DevDay website is built using [Django CMS](https://www.django-cms.org/).
+The Dev Day website is built using [Django CMS](https://www.django-cms.org/).
 And consists of a Django CMS content management part and some custom Django
 apps for talk, attendee and speaker management.
 
@@ -47,7 +47,7 @@ vagrant halt <boxname>
 ## Services provided by runbox
 
 The runbox provides a PostgreSQL database that is exposed at 192.168.199.200:5432 as well as an Apache httpd running the
-DevDay application using mod_wsgi as it is done in the production environment. The running DevDay site is available at
+Dev Day application using mod_wsgi as it is done in the production environment. The running Dev Day site is available at
 [http://127.0.0.1:8080/]() (forwarded from Port 80 inside the VM).
 
 ## Running the application in devbox
@@ -60,7 +60,7 @@ cd /vagrant
 /srv/devday/devday.sh runserver 0.0.0.0:8000
 ```
 
-You should be able to access the application at [http://127.0.0.1:8000/]() now.
+You should be able to access the application at [http://127.0.0.1:8000/](http://127.0.0.1:8000/) now.
 
 ## Running the application locally
 
@@ -90,7 +90,32 @@ site including all required native code with CentOS 7 dependencies in [devday/de
 could be improved by using the result of the build script instead of installing the dependencies directly on the target
 machine.
 
-# URL Structure of the DevDay Website
+## Creating a data dump
+
+On the production system:
+
+```
+sudo -iu devdayprod
+mkdir -p dump/devday/fixtures
+/srv/devday/devday.sh dumpdata >dump/devday/fixtures/data_dump.json
+tar czf content_dump-20171207.tar.gz -C dump devday -C /var/www/html devday
+```
+
+
+## Importing a data dump
+
+On the local laptop:
+
+```
+cd .../devday_hp
+tar xzf ../content_dump-20171207.tar.gz -C devday
+vagrant ssh runbox
+cd /vagrant/devday
+/srv/devday/devday.sh sqlflush | /srv/devday/devday.sh dbshell   # Daten wegwerfen
+/srv/devday/devday.sh loaddata --app devday data_dump
+```
+
+# URL Structure of the Dev Day Website
 
 The site has been restructured to allow multiple events to be served concurrently.  Most URLs have been updated, and many of the existing views have been refactored.
 

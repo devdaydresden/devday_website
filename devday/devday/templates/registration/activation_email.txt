@@ -1,6 +1,6 @@
 {% load i18n %}{% blocktrans with shortname=user.get_short_name %}Hello {{ shortname }},
 
-thank you for your interest to join us at DevDay 2017.
+thank you for your interest to join us at Dev Day 2017.
 
 To finish your registration please click the following link to verify your email address.
 {% endblocktrans %}
@@ -10,11 +10,11 @@ The link is valid for one day.
 {% plural %}
 The link is valid for {{ days }} days.
 {% endblocktrans %}{% blocktrans %}
-You will be able to use your account to get information about the DevDay or to submit own
+You will be able to use your account to get information about the Dev Day or to submit own
 sessions.
 
 
-The DevDay team
+The Dev Day team
 
 --
 https://www.devday.de/{% endblocktrans %}

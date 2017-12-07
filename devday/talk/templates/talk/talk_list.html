@@ -3,6 +3,7 @@
 {% block title %}{% trans "Schedule" %}{% endblock %}
 {% block content %}
     <div class="col-md-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">
+      <h1>{% trans "Schedule" %} {{ event.title }}</h1>
         {% if talk_list %}
             <table class="hidden-xs hidden-sm">
                 <thead>
@@ -28,7 +29,7 @@
                                     {% for room in rooms %}
                                         {% for talk in talks %}
                                             {% if talk.talkslot.room == room %}
-                                                <td class="track-{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a><td>
+                                                <td class="track-{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a></td>
                                             {% endif %}
                                         {% endfor %}
                                     {% endfor %}

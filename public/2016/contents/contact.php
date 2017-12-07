@@ -72,7 +72,7 @@
             <label>
               <input type="text" maxlength="255" name="inp_56724" value="<?= isset($inp_56724) ? $inp_56724 : ""; ?>">
               <i><svg role="img" fill="currentColor"><use xlink:href="svgicons/icons.svg#text-icon"></use></svg></i>
-              <span>Wie bist Du auf den DevDay aufmerksam geworden?</span>
+              <span>Wie bist Du auf den Dev Day aufmerksam geworden?</span>
             </label>
           </div>
         </div>

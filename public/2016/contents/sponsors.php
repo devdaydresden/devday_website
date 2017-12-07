@@ -8,7 +8,7 @@
       <li><a href="#"><img src="images/saec.jpg" alt="SAEC DD"></a></li>
     </ul>
     <h3>Unsere Partner</h3>
-    <p class="mb25">Ein Dank geht an unsere Partner ohne die der DevDay 2016 nicht möglich gewesen wäre.</p>
+    <p class="mb25">Ein Dank geht an unsere Partner ohne die der Dev Day 2016 nicht möglich gewesen wäre.</p>
     <ul class="center list-inline">
       <li><a href="https://lineupr.com"><img src="images/lineupr.png" alt="LINEUPR"></a></li>
       <li><a href="https://devopenspace.de"><img src="images/DOS-Logo-56-Pixelbild-Transform.png" alt="Developer Open Space" ></a></li>

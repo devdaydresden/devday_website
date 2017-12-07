@@ -36,18 +36,6 @@ def set_default_event(verbosity=2, **kwargs):
         print("Found %d rooms" % rooms.count())
     rooms.update(event=default_event)
 
-    Talk = apps.get_model('talk', 'Talk')
-    talks = Talk.objects.filter(event=None)
-    if verbosity >= 2:
-        print("Found %d talks" % talks.count())
-    talks.update(event=default_event)
-
-    Speaker = apps.get_model('talk', 'Speaker')
-    speakers = Speaker.objects.filter(event=None)
-    if verbosity >= 2:
-        print("Found %d speakers" % speakers.count())
-    speakers.update(event=default_event)
-
     Track = apps.get_model('talk', 'Track')
     tracks = Track.objects.filter(event=None)
     if verbosity >= 2:

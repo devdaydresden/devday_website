@@ -281,7 +281,7 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
     }
 
     def get_queryset(self):
-        qs = super(CommitteeTalkOverview, self).get_queryset().annotate(
+        qs = super(CommitteeTalkOverview, self).get_queryset().filter(speaker__user__event_id=settings.EVENT_ID).annotate(
             average_score=Avg('vote__score'),
             vote_sum=Sum('vote__score'),
             vote_count=Count('vote__id')).select_related(
@@ -336,8 +336,8 @@ class TalkListView(ListView):
 
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        return super(TalkListView, self).get_queryset().filter(track__isnull=False, event=event).select_related(
-            'event', 'event__slug',
+        return super(TalkListView, self).get_queryset().filter(track__isnull=False, speaker__user__event=event).select_related(
+            'speaker__user__event', 'speaker__user__event__slug',
             'track',
             'speaker', 'speaker__user', 'speaker__user__user',
             'talkslot', 'talkslot__time', 'talkslot__room'
@@ -345,6 +345,7 @@ class TalkListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(TalkListView, self).get_context_data(**kwargs)
+        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
         talks = context.get('talk_list', [])
         talks_by_time_and_room = {}
         talks_by_room_and_time = {}
@@ -359,6 +360,7 @@ class TalkListView(ListView):
                 unscheduled.append(talk)
         context.update(
             {
+                'event': event,
                 'talks_by_time_and_room': talks_by_time_and_room,
                 'talks_by_room_and_time': talks_by_room_and_time,
                 'unscheduled': unscheduled,
@@ -434,10 +436,10 @@ class InfoBeamerXMLView(BaseListView):
 
     def render_to_response(self, context, **response_kwargs):
         schedule_xml = ET.Element('schedule')
-        ET.SubElement(schedule_xml, 'version').text = 'DevDay 2017'
+        ET.SubElement(schedule_xml, 'version').text = 'Dev Day 2017'
         conference = ET.SubElement(schedule_xml, 'conference')
         ET.SubElement(conference, 'acronym').text = 'DD.17'
-        ET.SubElement(conference, 'title').text = 'DevDay 17 Dresden'
+        ET.SubElement(conference, 'title').text = 'Dev Day 17 Dresden'
         ET.SubElement(conference, 'start').text = self.to_xml_date(context['min_time'], context)
         ET.SubElement(conference, 'end').text = self.to_xml_date(context['max_time'], context)
         ET.SubElement(conference, 'days').text = '1'

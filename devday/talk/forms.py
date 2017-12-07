@@ -198,7 +198,7 @@ class BecomeSpeakerForm(CombinedFormBase):
                 "shirt_size",
                 Field("videopermission", template="talk/form/videopermission-field.html"),
                 Div(
-                    HTML(_('<label><p class="help-block">By registering as a speaker, I agree to be contacted by the DevDay organizers about conference details and my talk submissions.</p></label>')),
+                    HTML(_('<label><p class="help-block">By registering as a speaker, I agree to be contacted by the Dev Day organizers about conference details and my talk submissions.</p></label>')),
                     css_class='checkbox'
                 ),
                 css_class="col-lg-4 col-md-6 col-sm-12",
@@ -274,7 +274,7 @@ class CreateSpeakerForm(CombinedFormBase):
                 'shirt_size',
                 Field('shortbio', rows=2, template='devday/form/field.html'),
                 Div(
-                    HTML(_('<label><p class="help-block">By registering as a speaker, I agree to be contacted by the DevDay organizers about conference details and my talk submissions.</p></label>')),
+                    HTML(_('<label><p class="help-block">By registering as a speaker, I agree to be contacted by the Dev Day organizers about conference details and my talk submissions.</p></label>')),
                     css_class='checkbox'
                 ),
                 Field('videopermission', template='talk/form/videopermission-field.html'),

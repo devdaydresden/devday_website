@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.transaction import atomic
@@ -7,7 +8,7 @@ from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
 from attendee.forms import AttendeeRegistrationForm
-
+from event.models import Event
 from talk.models import Attendee
 
 User = get_user_model()
@@ -41,6 +42,7 @@ class AttendeeRegistrationView(RegistrationView):
 
         attendee = form.get_attendee_form().save(commit=False)
         attendee.user = user
+        attendee.event = Event.objects.filter(id=settings.EVENT_ID).first()
         if form.cleaned_data.get('accept_devday_contact'):
             attendee.contact_permission_date = timezone.now()
         attendee.save()

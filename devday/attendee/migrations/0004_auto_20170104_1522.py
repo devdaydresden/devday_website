@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='attendee',
             name='source',
-            field=models.TextField(blank=True, help_text='How have you become aware of DevDay 2017?', verbose_name='source'),
+            field=models.TextField(blank=True, help_text='How have you become aware of Dev Day 2017?', verbose_name='source'),
         ),
     ]

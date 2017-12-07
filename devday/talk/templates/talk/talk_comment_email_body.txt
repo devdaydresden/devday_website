@@ -13,7 +13,7 @@ You may respond to this comment by visiting
 
 {% blocktrans %}
 
-The DevDay team
+The Dev Day team
 
 --
 https://www.devday.de/{% endblocktrans %}

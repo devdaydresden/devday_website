@@ -4,7 +4,7 @@
 {% block content_body %}
     <div class="row">
         <div class="col-lg-offset-1 col-lg-10 col-md-12">
-            <h1>{% trans "List of sessions" %}</h1>
+            <h1>{% trans "List of sessions" %}: {{ talk_list|length }}</h1>
             {% if talk_list %}
                 {% addtoblock "css" %}
                     <link rel="stylesheet" href="{% static "css/star-rating.css" %}">

@@ -90,6 +90,31 @@ site including all required native code with CentOS 7 dependencies in [devday/de
 could be improved by using the result of the build script instead of installing the dependencies directly on the target
 machine.
 
+## Creating a data dump
+
+On the production system:
+
+```
+sudo -iu devdayprod
+mkdir -p dump/devday/fixtures
+/srv/devday/devday.sh dumpdata >dump/devday/fixtures/data_dump.json
+tar czf content_dump-20171207.tar.gz -C dump devday -C /var/www/html devday
+```
+
+
+## Importing a data dump
+
+On the local laptop:
+
+```
+cd .../devday_hp
+tar xzf ../content_dump-20171207.tar.gz -C devday
+vagrant ssh runbox
+cd /vagrant/devday
+/srv/devday/devday.sh sqlflush | /srv/devday/devday.sh dbshell   # Daten wegwerfen
+/srv/devday/devday.sh loaddata --app devday data_dump
+```
+
 # URL Structure of the DevDay Website
 
 The site has been restructured to allow multiple events to be served concurrently.  Most URLs have been updated, and many of the existing views have been refactored.

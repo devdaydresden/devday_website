@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^sitemap\.xml$', sitemap_view,
         {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),
-    url(r'^(?P<event>[^/]+)/register/$',
+    url(r'^register/$',
         AttendeeRegistrationView.as_view(),
         name='registration_register'),
     url(r'^accounts/', include('devday.registration_urls')),

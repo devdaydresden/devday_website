@@ -85,6 +85,8 @@ class AttendeeRegistrationForm(CombinedFormBase):
         self.fields['email'].label = _('E-Mail')
         self.fields['password1'].help_text = None
         self.fields['password2'].help_text = None
+        self.fields['accept_devday_contact'].initial = True
+        self.fields['accept_general_contact'].initial = True
 
         self.helper.layout = Layout(
             Div(

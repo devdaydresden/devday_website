@@ -24,23 +24,25 @@ msgid "Attendee management"
 msgstr "Teilnehmerverwaltung"
 
 #: attendee/forms.py:18
-msgid "Accept DevDay contact"
+msgid "Accept Dev Day contact"
 msgstr "Kontaktaufnahme zum Dev Day"
 
 #: attendee/forms.py:20
-msgid "I hereby agree to be contacted by the DevDay organization team about DevDay 2018."
+msgid "I would like to receive updates about Dev Day by email."
 msgstr ""
-"Mit meiner Anmeldung akzeptiere ich, dass das Dev Day-Organisationsteam mich zum Dev Day 2018 per Email kontaktieren darf."
+"Ich möchte Updates zum Dev Day per E-Mail erhalten."
 
 #: attendee/forms.py:32
 msgid "Contact for other events"
 msgstr "Kontaktaufnahme zu weiteren Veranstaltungen"
 
 #: attendee/forms.py:34
-msgid "I hereby agree to be contacted for other SECO events."
+msgid ""
+"I would like to receive updates about T-Systems Multimedia"
+" Solutions GmbH Software Engineering Community by email."
 msgstr ""
-"Ich möchte zu weiteren Veranstaltungen der Software Engineering Community "
-"der T-Systems Multimedia Solutions GmbH informiert werden."
+"Ich möchte Updates zu Veranstaltungen der T-Systems Multimedia"
+" Solutions GmbH Software Engineering Community per E-Mail erhalten."
 
 #: attendee/forms.py:70
 msgid "E-Mail"
@@ -111,7 +113,7 @@ msgid "source"
 msgstr "Informationsquelle"
 
 #: attendee/models.py:110
-msgid "How have you become aware of DevDay?"
+msgid "How have you become aware of Dev Day?"
 msgstr "Wie bist du auf den Dev Day aufmerksam geworden?"
 
 #: attendee/models.py:113

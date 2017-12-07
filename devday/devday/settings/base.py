@@ -71,7 +71,7 @@ STATICFILES_DIRS = (
 SITE_ID = 1
 
 EVENT_ID = 2
-EVENT_TITLE = "DevDay 2018"
+EVENT_TITLE = "Dev Day 2018"
 EVENT_SLUG = "devday-18"
 
 TEMPLATES = [
@@ -179,7 +179,7 @@ CMS_LANGUAGES = {
 }
 
 CMS_TEMPLATES = (
-    ('devday_index.html', 'DevDay Startseite'),
+    ('devday_index.html', 'Dev Day Startseite'),
     ('devday.html', 'Devday'),
 )
 

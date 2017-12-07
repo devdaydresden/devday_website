@@ -4,7 +4,7 @@ function slideshare_url($link, $user) {
     return sprintf("//www.slideshare.net/%s/%s", $user, $link);
 }
 
-function slideshare_iframe($key, $link, $title, $width=595, $height=485, $user = "devday-dd", $usertitle="DevDay Dresden") {
+function slideshare_iframe($key, $link, $title, $width=595, $height=485, $user = "devday-dd", $usertitle="Dev Day Dresden") {
   return sprintf(
     '<iframe src="//www.slideshare.net/slideshow/embed_code/key/%s" width="%d" height="%d" frameborder="0" marginwidth="0" ' .
     'marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%%;" ' .
@@ -79,7 +79,7 @@ foreach ($session_data as $time => $talks) {
   <div class="container">
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
-        <h4>Hier findet ihr die Vortragsfolien und Videos zu den DevDay 2016-Vorträgen:</h4>
+        <h4>Hier findet ihr die Vortragsfolien und Videos zu den Dev Day 2016-Vorträgen:</h4>
         <div class="slider-wrap-slides">
           <div id="owl3" class="owl-carousel owl-theme"><?php
 foreach ($session_data as $time => $talks) {

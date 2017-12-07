@@ -1,6 +1,6 @@
-# DevDay website
+# Dev Day website
 
-The DevDay website is built using [Django CMS](https://www.django-cms.org/).
+The Dev Day website is built using [Django CMS](https://www.django-cms.org/).
 And consists of a Django CMS content management part and some custom Django
 apps for talk, attendee and speaker management.
 
@@ -47,7 +47,7 @@ vagrant halt <boxname>
 ## Services provided by runbox
 
 The runbox provides a PostgreSQL database that is exposed at 192.168.199.200:5432 as well as an Apache httpd running the
-DevDay application using mod_wsgi as it is done in the production environment. The running DevDay site is available at
+Dev Day application using mod_wsgi as it is done in the production environment. The running Dev Day site is available at
 [http://127.0.0.1:8080/]() (forwarded from Port 80 inside the VM).
 
 ## Running the application in devbox
@@ -115,7 +115,7 @@ cd /vagrant/devday
 /srv/devday/devday.sh loaddata --app devday data_dump
 ```
 
-# URL Structure of the DevDay Website
+# URL Structure of the Dev Day Website
 
 The site has been restructured to allow multiple events to be served concurrently.  Most URLs have been updated, and many of the existing views have been refactored.
 

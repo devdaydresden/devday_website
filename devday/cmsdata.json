@@ -1218,28 +1218,28 @@
     "model": "djangocms_text_ckeditor.text",
     "pk": 6,
     "fields": {
-      "body": "<i class=\"icon-rocket\"></i>\n<h4>Infos zur Veranstaltung</h4>\n\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite DevDay in der B\u00f6rse Dresden statt. Veranstalter ist die Software-Architektur-Entwickler-Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Softwarearchitekten und -Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
+      "body": "<i class=\"icon-rocket\"></i>\n<h4>Infos zur Veranstaltung</h4>\n\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite Dev Day in der B\u00f6rse Dresden statt. Veranstalter ist die Software-Architektur-Entwickler-Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Softwarearchitekten und -Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
     }
   },
   {
     "model": "djangocms_text_ckeditor.text",
     "pk": 7,
     "fields": {
-      "body": "<h2>F\u00fcr wen ist der DevDay?</h2>\n\n<p>Der DevDay ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</p>"
+      "body": "<h2>F\u00fcr wen ist der Dev Day?</h2>\n\n<p>Der Dev Day ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</p>"
     }
   },
   {
     "model": "djangocms_text_ckeditor.text",
     "pk": 28,
     "fields": {
-      "body": "<h1>Vielen Dank!</h1>\n\n<p>Sie haben erfolgreich eine Session f\u00fcr den DevDay 2017 eingereicht.</p>"
+      "body": "<h1>Vielen Dank!</h1>\n\n<p>Sie haben erfolgreich eine Session f\u00fcr den Dev Day 2017 eingereicht.</p>"
     }
   },
   {
     "model": "djangocms_text_ckeditor.text",
     "pk": 29,
     "fields": {
-      "body": "<h1>Vielen Dank!</h1>\n\n<p>Sie haben erfolgreich eine Session f\u00fcr den DevDay 2017 eingereicht.</p>"
+      "body": "<h1>Vielen Dank!</h1>\n\n<p>Sie haben erfolgreich eine Session f\u00fcr den Dev Day 2017 eingereicht.</p>"
     }
   },
   {
@@ -1253,14 +1253,14 @@
     "model": "djangocms_text_ckeditor.text",
     "pk": 129,
     "fields": {
-      "body": "<h4>INFOS ZUR VERANSTALTUNG</h4>\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite DevDay in der B\u00f6rse Dresden statt. Veranstalter ist die Software Architektur Entwickler Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Software Architekten und Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
+      "body": "<h4>INFOS ZUR VERANSTALTUNG</h4>\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite Dev Day in der B\u00f6rse Dresden statt. Veranstalter ist die Software Architektur Entwickler Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Software Architekten und Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
     }
   },
   {
     "model": "djangocms_text_ckeditor.text",
     "pk": 130,
     "fields": {
-      "body": "<h4>F\u00dcR WEN IST DER DEV DAY?</h4>\n<span>Der DevDay ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</span>"
+      "body": "<h4>F\u00dcR WEN IST DER DEV DAY?</h4>\n<span>Der Dev Day ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</span>"
     }
   },
   {
@@ -1274,14 +1274,14 @@
     "model": "djangocms_text_ckeditor.text",
     "pk": 137,
     "fields": {
-      "body": "<h2>F\u00fcr wen ist der DevDay?</h2>\n\n<p>Der DevDay ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</p>"
+      "body": "<h2>F\u00fcr wen ist der Dev Day?</h2>\n\n<p>Der Dev Day ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</p>"
     }
   },
   {
     "model": "djangocms_text_ckeditor.text",
     "pk": 139,
     "fields": {
-      "body": "<i class=\"icon-rocket\"></i>\n<h4>Infos zur Veranstaltung</h4>\n\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite DevDay in der B\u00f6rse Dresden statt. Veranstalter ist die Software-Architektur-Entwickler-Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Softwarearchitekten und -Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
+      "body": "<i class=\"icon-rocket\"></i>\n<h4>Infos zur Veranstaltung</h4>\n\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite Dev Day in der B\u00f6rse Dresden statt. Veranstalter ist die Software-Architektur-Entwickler-Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Softwarearchitekten und -Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
     }
   },
   {
@@ -1302,14 +1302,14 @@
     "model": "djangocms_text_ckeditor.text",
     "pk": 147,
     "fields": {
-      "body": "<h4>INFOS ZUR VERANSTALTUNG</h4>\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite DevDay in der B\u00f6rse Dresden statt. Veranstalter ist die Software Architektur Entwickler Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Software Architekten und Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
+      "body": "<h4>INFOS ZUR VERANSTALTUNG</h4>\n<span>Unter dem Motto \"Code your World\" fand am 12.04.2016 der zweite Dev Day in der B\u00f6rse Dresden statt. Veranstalter ist die Software Architektur Entwickler Community (SAEC) der T-Systems Multimedia Solutions GmbH. Die Community besteht im Kern aus einem ca. 10 k\u00f6pfigen Team aus Software Architekten und Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden voranzubringen.</span>"
     }
   },
   {
     "model": "djangocms_text_ckeditor.text",
     "pk": 148,
     "fields": {
-      "body": "<h4>F\u00dcR WEN IST DER DEV DAY?</h4>\n<span>Der DevDay ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</span>"
+      "body": "<h4>F\u00dcR WEN IST DER DEV DAY?</h4>\n<span>Der Dev Day ist eine Veranstaltung f\u00fcr alle Software-Architekten, Software-Entwickler und Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Berufseinsteiger oder Professionals waren herzlich eingeladen, neue Erfahrungen zu sammeln und sich zu verschiedenen Trends und Themen der IT-Branche auszutauschen. Wie schon 2015 begr\u00fc\u00dften wir mehr als 300 G\u00e4ste aus \u00fcber 70 verschiedenen Firmen.</span>"
     }
   },
   {

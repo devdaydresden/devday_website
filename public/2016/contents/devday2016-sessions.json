@@ -147,7 +147,7 @@
             "feedback": "<p>Die Cloud bietet Infrastruktur für jedermann. Selbst kleine Projekte können zu geringen Preisen umfangreiche Systeme betreiben. Sascha Askani demonstrierte in seinem Vortrag eindrucksvoll, wie sich solche, zuweilen komplexe, Infrastrukturen in der Cloud mit <a href=\"https://www.terraform.io/\">Hashicorps Terraform</a> schnell und komfortabel als Infrastructure as Code entwickeln lassen. Ein Befehl und binnen weniger Minuten waren in der AWS VMs gestartet, miteinander vernetzt und fertig deployt. Einen weiteren Befehl später, war alles wieder abgebaut, um Kosten zu sparen.</p>"
         },
         {
-            "description": "Zukunft des DevDay",
+            "description": "Zukunft des Dev Day",
             "speaker": "Oliver Guhr",
             "room": "St. Petersburg"
         }

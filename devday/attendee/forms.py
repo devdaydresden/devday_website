@@ -15,9 +15,9 @@ User = get_user_model()
 
 class AttendeeInformationForm(ModelForm):
     accept_devday_contact = forms.BooleanField(
-        label=_('Accept DevDay contact'),
+        label=_('Accept Dev Day contact'),
         help_text=_(
-            'I hereby agree to be contacted by the DevDay organization team about DevDay 2018.'
+            'I would like to receive updates about Dev Day by email.'
         ),
         required=False
     )
@@ -31,7 +31,7 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
     accept_general_contact = forms.BooleanField(
         label=_('Contact for other events'),
         help_text=_(
-            'I hereby agree to be contacted for other SECO events.'
+            'I would like to receive updates about T-Systems Multimedia Solutions GmbH Software Engineering Community by email.'
         ),
         required=False
     )

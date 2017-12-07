@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='attendee',
             name='source',
-            field=models.TextField(blank=True, help_text='How have you become aware of DevDay?', verbose_name='contact source'),
+            field=models.TextField(blank=True, help_text='How have you become aware of Dev Day?', verbose_name='contact source'),
         ),
         migrations.AddField(
             model_name='devdayuser',

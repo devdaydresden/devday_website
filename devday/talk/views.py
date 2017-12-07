@@ -434,10 +434,10 @@ class InfoBeamerXMLView(BaseListView):
 
     def render_to_response(self, context, **response_kwargs):
         schedule_xml = ET.Element('schedule')
-        ET.SubElement(schedule_xml, 'version').text = 'DevDay 2017'
+        ET.SubElement(schedule_xml, 'version').text = 'Dev Day 2017'
         conference = ET.SubElement(schedule_xml, 'conference')
         ET.SubElement(conference, 'acronym').text = 'DD.17'
-        ET.SubElement(conference, 'title').text = 'DevDay 17 Dresden'
+        ET.SubElement(conference, 'title').text = 'Dev Day 17 Dresden'
         ET.SubElement(conference, 'start').text = self.to_xml_date(context['min_time'], context)
         ET.SubElement(conference, 'end').text = self.to_xml_date(context['max_time'], context)
         ET.SubElement(conference, 'days').text = '1'

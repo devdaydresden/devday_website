@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-17 12:28+0200\n"
+"POT-Creation-Date: 2018-01-05 17:23+0100\n"
 "PO-Revision-Date: 2017-03-30 17:35+0200\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -31,23 +31,23 @@ msgstr "Mein Passwort ändern"
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
-#: devday/settings/base.py:158 devday/settings/base.py:165
+#: devday/settings/base.py:160 devday/settings/base.py:167
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:201
+#: devday/settings/base.py:203
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:202
+#: devday/settings/base.py:204
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:203
+#: devday/settings/base.py:205
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:204
+#: devday/settings/base.py:206
 msgid "col-md-12"
 msgstr "col-md-12"
 
@@ -75,7 +75,7 @@ msgstr "Profil"
 msgid "Login"
 msgstr "Login"
 
-#: devday/templates/devday_index.html:9
+#: devday/templates/devday_index.html:9 devday/templates/devday_index.html:24
 msgid "Submit session"
 msgstr "Session einreichen"
 
@@ -83,11 +83,11 @@ msgstr "Session einreichen"
 msgid "Be part of it!"
 msgstr "Sei dabei!"
 
-#: devday/templates/devday_index.html:28
+#: devday/templates/devday_index.html:32
 msgid "I want to be part of it!"
 msgstr "Ich will dabei sein!"
 
-#: devday/templates/devday_index.html:39
+#: devday/templates/devday_index.html:44
 msgid "Follow us!"
 msgstr "Folge uns!"
 
@@ -142,15 +142,15 @@ msgid ""
 "\n"
 "thank you for registering for Dev Day!\n"
 "\n"
-"To complete your registration please confirm your email address by clicking"
-" the following link.\n"
+"To complete your registration please confirm your email address by clicking "
+"the following link.\n"
 msgstr ""
 "Hallo %(shortname)s,\n"
 "\n"
 "danke für deine Anmeldung zum Dev Day!\n"
 "\n"
-"Um deine Anmeldung abzuschließen, verifiziere bitte deine Email-Adresse"
-" durch Klick auf diesen Link:\n"
+"Um deine Anmeldung abzuschließen, verifiziere bitte deine Email-Adresse "
+"durch Klick auf diesen Link:\n"
 
 #: devday/templates/registration/activation_email.txt:8
 #, python-format
@@ -167,7 +167,7 @@ msgstr[1] ""
 "\n"
 "Der Link ist für %(days)s Tage gültig.\n"
 
-#: devday/templates/registration/activation_email.txt:12
+#: devday/templates/registration/activation_email.txt:14
 msgid "The Dev Day team\n"
 msgstr "Das Dev Day Team\n"
 
@@ -318,8 +318,13 @@ msgid "Registration: confirm email address"
 msgstr "Anmeldung: Email-Adresse bestätigen"
 
 #: devday/templates/registration/registration_complete.html:5
-msgid "Thank you for registering for Dev Day. To complete registration, please click on the confirmation link we just sent you by email!"
-msgstr "Vielen Dank, das du dich für den Dev Day angemeldet hast! Um die Anmeldung abzuschließen, klicke bitte den Bestätigungslink, den wir dir gerade per Email geschickt haben!"
+msgid ""
+"Thank you for registering for Dev Day. To complete registration, please "
+"click on the confirmation link we just sent you by email!"
+msgstr ""
+"Vielen Dank, das du dich für den Dev Day angemeldet hast! Um die Anmeldung "
+"abzuschließen, klicke bitte den Bestätigungslink, den wir dir gerade per "
+"Email geschickt haben!"
 
 #: devday/templates/registration/registration_form.html:3
 msgid "Register for Dev Day"

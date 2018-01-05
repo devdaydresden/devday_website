@@ -106,6 +106,12 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
             event = Event.objects.filter(id=settings.EVENT_ID).first()
         return Attendee.objects.filter(user=self, event=event).first()
 
+    def get_events(self):
+        '''
+        Return all events based on the attendee records of this user.
+        '''
+        return Event.objects.filter(attendee__user=self)
+
     def get_speaker(self, event=None):
         '''
         Return the speaker object for this user and the given event.  If event

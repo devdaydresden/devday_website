@@ -9,16 +9,33 @@
             <dd>{{ user.first_name|default:"-" }}</dd>
             <dt>{% trans "Lastname" %}</dt>
             <dd>{{ user.last_name|default:"-" }}</dd>
+            <dt>{% trans "Position" %}</dt>
+            <dd>{{ user.position|default:"-" }}</dd>
+            <dt>{% trans "Organization" %}</dt>
+            <dd>{{ user.organization|default:"-" }}</dd>
+            <dt>{% trans "Twitter Handle" %}</dt>
+            <dd>{{ user.twitter_handle|default:"-" }}</dd>
+            <dt>{% trans "Phone" %}</dt>
+            <dd>{{ user.phone|default:"-" }}</dd>
         </dl>
         <p><a class="btn btn-primary" href="{% url "auth_password_change" %}">{% trans "Change password" %}</a></p>
     </div>
-    {% for event in user.attendee.events %}
     <div class="col-lg-offset-2 col-lg-8 col-md-12">
-        <h1>{% blocktrans with event=event %}Attendee Information for {{ event }}{% endblocktrans %}</h1>
-        <dl>
-            <dt>{% trans "Foo" %}</dt>
-            <dd>{{ event }}</dd>
-        </dl>
-    </div>
-    {% endfor %}
+      {% if events %}
+        <h1>{% blocktrans %}You are registered for these events{% endblocktrans %}</h1>
+        <table>
+        {% for event in events %}
+          <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.description }}</td>
+            <td>{% if event.id == event_id %}
+              <p><a class="btn btn-primary" href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a></p>
+            {% endif %}</td>
+          </tr>
+        {% endfor %}
+      </table>
+      {% else %}
+      <p>{% blocktrans %}You are not currently registered to participate in any event.{% endblocktrans %}</p>
+      {% endif %}
+  </div>
 {% endblock %}

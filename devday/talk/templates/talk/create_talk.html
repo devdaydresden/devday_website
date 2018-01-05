@@ -3,6 +3,12 @@
 {% block title %}{% trans "Submit a session" %}{% endblock %}
 {% block content_body %}
     <div class="row">
+      {% if request.user.is_staff %}
+        <div class="col-lg-offset-2 col-lg-8 col-md-12 hide">
+            {% static_placeholder "submit-session-introtext" %}
+            {% static_placeholder "submit-session-introtext-authenticated" %}
+        </div>
+      {% endif %}
         <div class="col-lg-offset-2 col-lg-8 col-md-12">
             {% static_placeholder "create-talk-introtext" %}
         </div>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-05 11:14+0100\n"
+"POT-Creation-Date: 2018-01-05 12:27+0100\n"
 "PO-Revision-Date: 2016-12-20 13:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -168,10 +168,14 @@ msgstr "Twitter-Name"
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: attendee/templates/attendee/profile.html:24
+#: attendee/templates/attendee/profile.html:25
 msgid "You are registered for these events"
 msgstr "Du bist angemeldet für diese Veranstaltungen"
 
 #: attendee/templates/attendee/profile.html:31
+msgid "Cancel Registration"
+msgstr "Anmeldung stornieren"
+
+#: attendee/templates/attendee/profile.html:36
 msgid "You are not currently registered to participate in any event."
 msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."

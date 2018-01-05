@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
 from django.utils import timezone
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
+from django.http import HttpResponseRedirect
 from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
@@ -51,3 +53,9 @@ class AttendeeRegistrationView(RegistrationView):
         self.send_activation_email(user)
 
         return user
+
+class AttendeeCancelView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        # remove attendee for user, event tuple
+        Attendee.objects.filter(user=self.request.user, event_id=kwargs['event']).delete()
+        return HttpResponseRedirect(reverse('user_profile'))

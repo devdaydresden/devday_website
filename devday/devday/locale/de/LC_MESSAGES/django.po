@@ -140,18 +140,17 @@ msgstr "Zurück zur <a href=\"%(root_page)s\">Startseite</a>"
 msgid ""
 "Hello %(shortname)s,\n"
 "\n"
-"thank you for your interest to join us at Dev Day.\n"
+"thank you for registering for Dev Day!\n"
 "\n"
-"To finish your registration please click the following link to verify your "
-"email address.\n"
+"To complete your registration please confirm your email address by clicking"
+" the following link.\n"
 msgstr ""
 "Hallo %(shortname)s,\n"
 "\n"
-"danke, dass du dich für den Dev Day interessierst.\n"
+"danke für deine Anmeldung zum Dev Day!\n"
 "\n"
-"Um dein Benutzerkonto zu aktivieren, klicke bitte folgenden Link, um deine E-"
-"Mailadresse\n"
-"zu verifizieren.\n"
+"Um deine Anmeldung abzuschließen, verifiziere bitte deine Email-Adresse"
+" durch Klick auf diesen Link:\n"
 
 #: devday/templates/registration/activation_email.txt:8
 #, python-format
@@ -169,32 +168,12 @@ msgstr[1] ""
 "Der Link ist für %(days)s Tage gültig.\n"
 
 #: devday/templates/registration/activation_email.txt:12
-msgid ""
-"\n"
-"You will be able to use your account to get information about the Dev Day or "
-"to submit own\n"
-"sessions.\n"
-"\n"
-"\n"
-"The Dev Day team\n"
-"\n"
-"--\n"
-"https://www.devday.de/"
-msgstr ""
-"\n"
-"Du kannst dein Benutzerkonto verwenden, um Informationen zum Dev Day zu "
-"erhalten und\n"
-"um eigene Sessions einzureichen.\n"
-"\n"
-"\n"
-"Das Dev Day-Team\n"
-"\n"
-"-- \n"
-"https://www.devday.de/"
+msgid "The Dev Day team\n"
+msgstr "Das Dev Day Team\n"
 
 #: devday/templates/registration/activation_email_subject.txt:1
 msgid "Confirm your registration"
-msgstr "Bestätige deine Registrierung"
+msgstr "Bestätige deine Anmeldung"
 
 #: devday/templates/registration/login.html:8
 #: devday/templates/registration/password_reset_complete.html:8
@@ -335,12 +314,12 @@ msgstr ""
 "wir keine weiteren Teilnehmer annehmen."
 
 #: devday/templates/registration/registration_complete.html:3
-msgid "Registration successful"
-msgstr "Anmeldung erfolgreich"
+msgid "Registration: confirm email address"
+msgstr "Anmeldung: Email-Adresse bestätigen"
 
 #: devday/templates/registration/registration_complete.html:5
-msgid "Registration successful."
-msgstr "Anmeldung erfolgreich."
+msgid "Thank you for registering for Dev Day. To complete registration, please click on the confirmation link we just sent you by email!"
+msgstr "Vielen Dank, das du dich für den Dev Day angemeldet hast! Um die Anmeldung abzuschließen, klicke bitte den Bestätigungslink, den wir dir gerade per Email geschickt haben!"
 
 #: devday/templates/registration/registration_form.html:3
 msgid "Register for Dev Day"

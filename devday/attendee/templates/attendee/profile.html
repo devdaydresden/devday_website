@@ -28,7 +28,7 @@
           <tr>
             <td>{{ event.title }}</td>
             <td>{{ event.description }}</td>
-            <td>{% if event.id == event_id %}
+            <td>{% if event.id == event_id and not user.get_speaker %}
               <p><a class="btn btn-primary" href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a></p>
             {% endif %}</td>
           </tr>

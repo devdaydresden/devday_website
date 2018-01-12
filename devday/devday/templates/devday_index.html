@@ -5,13 +5,11 @@
 {% block description %}Dev Day{% endblock %}
 {% block promo_classes %}row promo{% endblock %}
 {% block promo_content %}{{ block.super }}
+    {% if attendee_registration_open %}
+        <a class="btn" href="{% url "login_or_register_attendee" %}" role="button">{% trans "Be part of it!" %}</a><br>
+    {% endif %}
     {% if talk_submission_open %}
         <a class="btn" href="{% url "submit_session" %}" role="button">{% trans "Submit session" %}</a>
-    {% else %}
-        {% placeholder '' %}
-        {% if attendee_registration_open %}
-            <a class="btn" href="{% url "registration_register" %}" role="button">{% trans "Be part of it!" %}</a>
-        {% endif %}
     {% endif %}
 {% endblock %}
 {% block content %}
@@ -27,11 +25,9 @@
             <div class="col-xs-12 col-sm-6 boxed-content">
                 <i class="icon-user"></i>
                 {% placeholder "audience" %}
-                {% comment "registration is open so speakers can register, but we don't want attendees to register yet, so comment this out" %}
                 {% if attendee_registration_open %}
-                    <a href="{% url 'registration_register' event='devday-17' %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "I want to be part of it!" %}</a>
+                    <a href="{% url 'login_or_register_attendee' %}" class="btn" style="position:relative; left:50%; transform:translate(-50%,0); margin:25px 0;" role="button">{% trans "I want to be part of it!" %}</a>
                 {% endif %}
-                {% endcomment %}
             </div>
         </div>
     </div>

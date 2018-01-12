@@ -217,14 +217,16 @@ ACCOUNT_ACTIVATION_DAYS = 14
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 TALK_THUMBNAIL_HEIGHT = 320
-TALK_SUBMISSION_OPEN = True
 
 TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT = 960
 TALK_PUBLIC_SPEAKER_IMAGE_WIDTH = 636
 
-DEVDAY_TWITTER_URL = 'https://twitter.com/devdaydresden'
-DEVDAY_XING_URL = 'https://www.xing.com/events/devday-let-code-rule-1769237'
-DEVDAY_FACEBOOK_URL = 'https://www.facebook.com/events/1265093543555722/'
-
 TWITTERFEED_PROXIES = {}
 TWITTERFEED_PATHS = ['/']
+
+REGISTRATION_OPEN = True
+TALK_SUBMISSION_OPEN = True
+
+DEVDAY_TWITTER_URL = 'https://twitter.com/devdaydresden'
+DEVDAY_XING_URL = 'https://www.xing.com/events/dev-day-2018-1897927'
+DEVDAY_FACEBOOK_URL = 'https://www.facebook.com/events/193156441425350/'

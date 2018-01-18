@@ -10,9 +10,11 @@ class TalkMediaInline(admin.StackedInline):
 class TalkAdmin(admin.ModelAdmin):
     list_display = ('title', 'speaker', 'event', 'track')
     search_fields = ('title', 'speaker', 'event', 'track')
+    list_filter = ['speaker__user__event']
     inlines = [
         TalkMediaInline,
     ]
+
     def event(self, obj):
         return obj.speaker.user.event
 

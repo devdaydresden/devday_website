@@ -9,6 +9,7 @@ class TalkMediaInline(admin.StackedInline):
 
 class TalkAdmin(admin.ModelAdmin):
     list_display = ('title', 'speaker', 'event', 'track')
+    search_fields = ('title', 'speaker', 'event', 'track')
     inlines = [
         TalkMediaInline,
     ]

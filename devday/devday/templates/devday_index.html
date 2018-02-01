@@ -12,6 +12,9 @@
         <a class="btn" href="{% url "submit_session" %}" role="button">{% trans "Submit session" %}</a>
     {% endif %}
 {% endblock %}
+{% block read_more %}
+<a href="#info-area" class="read-more"><span></span>{% trans "more info" %}</a>
+{% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">

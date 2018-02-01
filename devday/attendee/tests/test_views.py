@@ -48,9 +48,11 @@ class AttendeeRegistrationViewTest(TestCase):
         self.assertIsNone(user.contact_permission_date)
         self.assertFalse(user.is_active)
 
-        attendee = user.attendee
+        attendees = user.attendees
+        self.assertEqual(attendees.count(), 1)
+        attendee = attendees.first()
         self.assertIsInstance(attendee, Attendee)
-        self.assertIsNone(attendee.contact_permission_date)
+        self.assertIsNotNone(attendee.event)
 
         self.assertEqual(len(mail.outbox), 1)
 
@@ -71,9 +73,10 @@ class AttendeeRegistrationViewTest(TestCase):
         self.assertLessEqual(user.contact_permission_date, now)
         self.assertFalse(user.is_active)
 
-        attendee = user.attendee
+        attendees = user.attendees
+        self.assertEqual(attendees.count(), 1)
+
+        attendee = attendees.first()
         self.assertIsInstance(attendee, Attendee)
-        self.assertIsNotNone(attendee.contact_permission_date)
-        self.assertLessEqual(attendee.contact_permission_date, now)
 
         self.assertEqual(len(mail.outbox), 1)

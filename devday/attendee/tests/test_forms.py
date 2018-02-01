@@ -4,22 +4,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from django.test import TestCase
 
-from attendee.forms import AttendeeInformationForm, DevDayRegistrationForm, AttendeeRegistrationForm
+from attendee.forms import DevDayRegistrationForm, AttendeeRegistrationForm
 from attendee.models import Attendee, DevDayUser
-
-
-class AttendeeInformationFormTest(TestCase):
-    def test_fields(self):
-        form = AttendeeInformationForm()
-        self.assertListEqual(
-            list(form.fields.keys()),
-            ['position', 'organization', 'source', 'accept_devday_contact']
-        )
-
-    def test_model(self):
-        form = AttendeeInformationForm()
-        attendee = form.save(commit=False)
-        self.assertIsInstance(attendee, Attendee)
 
 
 class DevDayRegistrationFormTest(TestCase):
@@ -28,7 +14,8 @@ class DevDayRegistrationFormTest(TestCase):
         self.assertListEqual(
             list(form.fields.keys()),
             ['email', 'password1', 'password2', 'first_name', 'last_name',
-             'twitter_handle', 'accept_general_contact']
+             'twitter_handle', 'phone', 'position', 'organization', 'accept_devday_contact',
+             'accept_general_contact']
         )
 
     def test_model(self):
@@ -49,14 +36,10 @@ class AttendeeRegistrationFormTest(TestCase):
         form = AttendeeRegistrationForm()
         self.assertIsInstance(form.get_user_form(), DevDayRegistrationForm)
 
-    def test_get_attendee_form(self):
-        form = AttendeeRegistrationForm()
-        self.assertIsInstance(form.get_attendee_form(), AttendeeInformationForm)
-
     def test_init_creates_form_helper(self):
         form = AttendeeRegistrationForm()
         self.assertIsInstance(form.helper, FormHelper)
-        self.assertEqual(form.helper.form_action, '/accounts/register/')
+        self.assertEqual(form.helper.form_action, '/attendee/register/')
         self.assertEqual(form.helper.form_method, 'post')
         self.assertTrue(form.helper.html5_required)
 
@@ -68,5 +51,5 @@ class AttendeeRegistrationFormTest(TestCase):
             layout_fields,
             ['email', 'first_name', 'last_name', 'password1', 'password2',
              'position', 'organization', 'twitter_handle', 'source',
-             'accept_devday_contact', 'accept_general_contact']
+             'accept_general_contact']
         )

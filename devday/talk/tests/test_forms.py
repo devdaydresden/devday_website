@@ -8,10 +8,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.test import SimpleTestCase
 from django.test import TestCase
+from django.utils.timezone import now
 from django_file_form.uploader import FileFormUploadBackend
 
 from attendee.models import Attendee
 from devday.utils.forms import DevDayFormHelper
+from event.models import Event
 from talk.forms import TalkForm, SpeakerForm, ExistingFileForm, DevDayRegistrationForm, CreateTalkForm, \
     TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm, EditTalkForm, TalkCommentForm, TalkVoteForm, \
     TalkSpeakerCommentForm
@@ -47,9 +49,7 @@ class SpeakerFormTest(TestCase):
         form = SpeakerForm()
         self.assertListEqual(
             list(form.fields.keys()),
-            ['shortbio', 'videopermission', 'shirt_size', 'firstname',
-             'lastname', 'uploaded_image', 'form_id', 'upload_url',
-             'delete_url']
+            ['shortbio', 'videopermission', 'shirt_size', 'uploaded_image', 'form_id', 'upload_url', 'delete_url']
         )
 
     def test_save_uncommitted(self):
@@ -62,7 +62,6 @@ class SpeakerFormTest(TestCase):
         backend.upload_chunk(open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb').read())
         uploaded_file = backend.upload_complete(request=request, filename='testfile.jpg', file_id='0815')
         data = {
-            'firstname': 'Example', 'lastname': 'Tester',
             'shortbio': 'A short epic praising the glorious achievements of Example Tester.',
             'shirt_size': '3', 'form_id': 'a_test_speaker_form'
         }
@@ -83,9 +82,9 @@ class SpeakerFormTest(TestCase):
         backend.upload_chunk(open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb').read())
         uploaded_file = backend.upload_complete(request=request, filename='testfile.jpg', file_id='0815')
         user = User.objects.create_user(email='test@example.org')
-        attendee = Attendee.objects.create(user=user)
+        event = Event.objects.create(title="Test event", slug="test_event", start_time=now(), end_time=now())
+        attendee = Attendee.objects.create(user=user, event=event)
         data = {
-            'firstname': 'Example', 'lastname': 'Tester',
             'shortbio': 'A short epic praising the glorious achievements of Example Tester.',
             'shirt_size': '3', 'form_id': 'a_test_speaker_form',
         }
@@ -112,43 +111,15 @@ class DevDayRegistrationFormTest(TestCase):
         form = DevDayRegistrationForm()
         self.assertListEqual(
             list(form.fields.keys()),
-            ['email', 'password1', 'password2', 'accept_contact']
+            ['email', 'password1', 'password2', 'first_name', 'last_name', 'phone', 'twitter_handle', 'organization',
+             'position']
         )
-
-    def test_clean_accept_contact_missing(self):
-        form = DevDayRegistrationForm(data={
-            'email': 'test@example.org',
-            'password1': 's3cr3t',
-            'password2': 's3cr3t',
-        })
-        form.full_clean()
-        self.assertIn('accept_contact', form.errors)
-
-    def test_clean_accept_contact_unchecked(self):
-        form = DevDayRegistrationForm(data={
-            'email': 'test@example.org',
-            'password1': 's3cr3t',
-            'password2': 's3cr3t',
-        })
-        form.full_clean()
-        self.assertIn('accept_contact', form.errors)
-
-    def test_clean_accept_contact_checked(self):
-        form = DevDayRegistrationForm(data={
-            'email': 'test@example.org',
-            'password1': 's3cr3t',
-            'password2': 's3cr3t',
-            'accept_contact': 'checked',
-        })
-        form.full_clean()
-        self.assertEqual(len(form.errors), 0)
-        self.assertTrue(form.cleaned_data.get('accept_contact'))
 
     def test_clean_no_email(self):
         form = DevDayRegistrationForm(data={
             'password1': 's3cr3t',
             'password2': 's3cr3t',
-            'accept_contact': 'checked',
+            'phone': '+49-815-1234567'
         })
         form.full_clean()
         self.assertIn('email', form.errors)
@@ -158,7 +129,7 @@ class DevDayRegistrationFormTest(TestCase):
             'email': 'test@example.org',
             'password1': 's3cr3t',
             'password2': 's3cr3t',
-            'accept_contact': 'checked',
+            'phone': '+49-815-1234567'
         })
         form.full_clean()
         self.assertEqual(len(form.errors), 0)
@@ -188,7 +159,8 @@ class CreateTalkFormTest(TestCase):
 
     def test_save(self):
         user = User.objects.create_user(email='test@example.org')
-        attendee = Attendee.objects.create(user=user)
+        event = Event.objects.create(title="Test event", slug="test_event", start_time=now(), end_time=now())
+        attendee = Attendee.objects.create(user=user, event=event)
         speaker = Speaker.objects.create(
             videopermission=True, user=attendee, shirt_size=1)
         form = CreateTalkForm(speaker=speaker, data={
@@ -292,7 +264,7 @@ class TalkCommentFormTest(TestCase):
         form = TalkCommentForm(instance=mock.MagicMock(pk=1))
         self.assertIsInstance(form.helper, DevDayFormHelper)
         self.assertEqual(form.fields['comment'].widget.attrs['rows'], 2)
-        self.assertEqual(form.helper.form_action, '/session/committee/talks/1/comment/')
+        self.assertEqual(form.helper.form_action, '/committee/talks/1/comment/')
 
     def test_init_creates_layout(self):
         form = TalkCommentForm(instance=mock.MagicMock(pk=1))

@@ -1,5 +1,5 @@
 /**
- * Build on 2017-9-5
+ * Build on 2018-2-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -6941,21 +6941,21 @@ fieldset {
   background-position: right top;
   background-size: cover; }
   .dd-2018 .promo .head-svg {
+    display: inline-block;
     position: absolute;
     width: 50%;
-    display: inline-block;
     height: 90vh;
+    background: url("../images/head_animated.svg") no-repeat;
     bottom: 0;
     z-index: 3;
     left: -150px;
     opacity: 0.55;
-    background: url("../images/head_animated.svg") no-repeat;
     background-size: contain; }
 
 .promo {
+  min-height: 700px;
   z-index: 1;
   box-sizing: border-box;
-  min-height: 700px;
   border-bottom: 3px solid #35a4a3;
   background-image: url("../images/hero-bg-2x.png");
   background-image: url("../images/hero-bg-2x.png"), -webkit-linear-gradient(319deg, #3a3f69 0%, #272c59 100%);
@@ -6979,34 +6979,84 @@ fieldset {
     .promo .call-to-action > span,
     .promo .call-to-action > p,
     .promo .call-to-action > .cms-plugin {
-      font-size: 22px;
       display: inherit;
       width: 100%;
       margin: 0 auto;
+      color: #35a4a3;
+      font-size: 22px;
       margin-top: 12px;
       text-align: center;
-      color: #35a4a3;
       text-shadow: 2px 2px 3px #121212; }
     .promo .call-to-action > p {
-      font-size: 22px;
       display: inherit;
       width: 100%;
       margin: 0 auto;
+      color: #35a4a3;
+      font-size: 22px;
       margin-top: 12px;
       text-align: center;
-      color: #35a4a3;
       text-shadow: 2px 2px 3px #121212; }
     .promo .call-to-action .btn {
       display: inline-block !important;
+      position: relative;
       margin: 8px auto;
       left: 50%;
-      position: relative;
       -webkit-transform: translateX(-50%);
               transform: translateX(-50%); }
       .promo .call-to-action .btn:hover, .promo .call-to-action .btn:focus {
-        color: #ffffff;
+        border: none;
         background: #3f8b89;
-        border: none; }
+        color: #ffffff; }
+  .promo a.read-more {
+    display: inline-block;
+    position: absolute;
+    font: normal 400 20px/1 'Josefin Sans', sans-serif;
+    color: #fff;
+    bottom: 20px;
+    left: 50%;
+    z-index: 2;
+    padding-top: 60px;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    letter-spacing: .1em;
+    text-decoration: none;
+    -webkit-transition: opacity .3s;
+    transition: opacity .3s; }
+    .promo a.read-more:hover {
+      opacity: .5; }
+    .promo a.read-more span {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 24px;
+      height: 24px;
+      margin-left: -12px;
+      border-left: 1px solid #fff;
+      border-bottom: 1px solid #fff;
+      -webkit-transform: rotate(-45deg);
+      transform: rotate(-45deg);
+      -webkit-animation: sdb04 2s infinite;
+      animation: sdb04 2s infinite;
+      box-sizing: border-box; }
+
+@-webkit-keyframes sdb04 {
+  0% {
+    -webkit-transform: rotate(-45deg) translate(0, 0); }
+  20% {
+    -webkit-transform: rotate(-45deg) translate(-10px, 10px); }
+  40% {
+    -webkit-transform: rotate(-45deg) translate(0, 0); } }
+
+@keyframes sdb04 {
+  0% {
+    -webkit-transform: rotate(-45deg) translate(0, 0);
+            transform: rotate(-45deg) translate(0, 0); }
+  20% {
+    -webkit-transform: rotate(-45deg) translate(-10px, 10px);
+            transform: rotate(-45deg) translate(-10px, 10px); }
+  40% {
+    -webkit-transform: rotate(-45deg) translate(0, 0);
+            transform: rotate(-45deg) translate(0, 0); } }
 
 @media (max-width: 995.9px) {
   .promo .call-to-action img {

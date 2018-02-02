@@ -436,6 +436,7 @@ class InfoBeamerXMLView(BaseListView):
 
     def render_to_response(self, context, **response_kwargs):
         schedule_xml = ET.Element('schedule')
+        # TODO: use event argument and render proper event title
         ET.SubElement(schedule_xml, 'version').text = 'Dev Day 2017'
         conference = ET.SubElement(schedule_xml, 'conference')
         ET.SubElement(conference, 'acronym').text = 'DD.17'

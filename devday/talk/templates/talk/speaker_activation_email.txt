@@ -1,6 +1,6 @@
 {% load i18n %}{% blocktrans with shortname=user.get_short_name %}Hello {{ shortname }},
 
-thank you for your interest to speak at Dev Day 2017.
+thank you for your interest to speak at Dev Day 2018.
 
 To finish your registration please click the following link to verify your email address.
 {% endblocktrans %}

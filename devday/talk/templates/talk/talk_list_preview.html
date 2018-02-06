@@ -1,0 +1,22 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Schedule" %}{% endblock %}
+{% block content %}
+    <div class="col-md-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">
+        <h1>{% trans "Schedule Preview" %} {{ event.title }}</h1>
+        {% if talk_list %}
+            <h2>{% trans "Planned talks" %}</h2>
+            <table>
+                <tbody>
+                {% for talk in talk_list %}
+                    <tr>
+                        <td></td>
+                        <td class="track-{{ talk.track.name|slugify }}"><span>{{ talk.title }}</span> {{ talk.speaker }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}

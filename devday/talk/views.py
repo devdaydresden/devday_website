@@ -371,6 +371,19 @@ class TalkListView(ListView):
         return context
 
 
+class TalkListPreviewView(ListView):
+    model = Talk
+    template_name_suffix = "_list_preview"
+
+    def get_queryset(self):
+        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super(TalkListPreviewView, self).get_queryset().filter(track__isnull=False, speaker__user__event=event).select_related(
+            'speaker__user__event', 'speaker__user__event__slug',
+            'track',
+            'speaker', 'speaker__user', 'speaker__user__user'
+        ).order_by('title')
+
+
 class TalkVideoView(ListView):
     model = Talk
     template_name_suffix = '_videos'

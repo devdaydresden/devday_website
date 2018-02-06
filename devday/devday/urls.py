@@ -14,7 +14,7 @@ from attendee.views import (AttendeeCancelView, AttendeeProfileView,
                             login_or_register_attendee_view)
 from devday.views import ImprintView, exception_test_view
 from talk.views import (SpeakerProfileView, SpeakerListView, TalkDetails,
-                        TalkListView, InfoBeamerXMLView, TalkVideoView)
+                        TalkListView, InfoBeamerXMLView, TalkVideoView, TalkListPreviewView)
 
 admin.autodiscover()
 
@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^committee/', include('talk.urls_committee')),
     url(r'^imprint/$', ImprintView.as_view(), name='imprint'),
     url(r'^synthetic_server_error/$', exception_test_view),
+    url(r'^(?P<event>[^/]+)/talk-preview/$', TalkListPreviewView.as_view(), name='session_list_preview'),
     url(r'^(?P<event>[^/]+)/talk/$', TalkListView.as_view(), name='session_list'),
     url(r'^(?P<event>[^/]+)/talk/((?P<slug>[-\w]+)/)*(?P<pk>\d+)', TalkDetails.as_view(), name='talk_details'),
     url(r'^', include('cms.urls')),

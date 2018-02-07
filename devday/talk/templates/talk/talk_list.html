@@ -74,7 +74,7 @@
             <h2>{% trans "Unscheduled talks" %}</h2>
             <ul>
                 {% for talk in unscheduled %}
-                    <li class="track-{{ talk.track }}">{{ talk }}</li>
+                    <li class="track-{{ talk.track.name|slugify }}">{{ talk }}</li>
                 {% endfor %}
             </ul>
         {% endif %}

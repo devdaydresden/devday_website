@@ -35,13 +35,19 @@ class TalkAdmin(admin.ModelAdmin):
 class TalkSlotAdmin(admin.ModelAdmin):
     list_display = ['time', 'room', 'talk']
 
+
 class TimeSlotAdmin(admin.ModelAdmin):
-    list_display = ['name', 'event' ]
+    list_display = ['name', 'event']
+
+
+class TrackAdmin(admin.ModelAdmin):
+    list_display = ['name', 'event']
+    list_filter = ['event']
 
 
 admin.site.register(Speaker, SpeakerAdmin)
 admin.site.register(Talk, TalkAdmin)
-admin.site.register(Track)
+admin.site.register(Track, TrackAdmin)
 admin.site.register(Room)
 admin.site.register(TimeSlot, TimeSlotAdmin)
 admin.site.register(TalkSlot, TalkSlotAdmin)

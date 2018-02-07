@@ -126,16 +126,17 @@ class Speaker(models.Model):
 
 @python_2_unicode_compatible
 class Track(TimeStampedModel):
-    name = models.CharField(max_length=100, unique=True, blank=False)
+    name = models.CharField(max_length=100, blank=False)
     event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
 
     class Meta:
         verbose_name = _('Track')
         verbose_name_plural = _('Tracks')
         ordering = ['name']
+        unique_together = ('name', 'event')
 
     def __str__(self):
-        return self.name
+        return "{} ({})".format(self.name, self.event)
 
 
 @python_2_unicode_compatible
@@ -153,6 +154,7 @@ class Talk(models.Model):
 
     def __str__(self):
         return "%s - %s" % (self.speaker, self.title)
+
 
 class TalkMedia(models.Model):
     talk = models.OneToOneField(Talk, related_name='media')

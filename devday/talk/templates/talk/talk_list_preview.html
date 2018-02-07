@@ -11,7 +11,7 @@
                 {% for talk in talk_list %}
                     <tr>
                         <td></td>
-                        <td class="track-{{ talk.track.name|slugify }}"><span>{{ talk.title }}</span> {{ talk.speaker }}
+                        <td class="track-{{ talk.track.name|slugify }}"><span>{{ talk.title }}</span>, {{ talk.speaker }}
                         </td>
                     </tr>
                 {% endfor %}

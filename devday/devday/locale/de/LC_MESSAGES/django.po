@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-01 13:10+0100\n"
+"POT-Creation-Date: 2018-02-15 22:42+0100\n"
 "PO-Revision-Date: 2018-01-08 10:40+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -76,8 +76,8 @@ msgid "Login"
 msgstr "Login"
 
 #: devday/templates/devday_index.html:9
-msgid "Be part of it!"
-msgstr "Sei dabei!"
+msgid "Sign up now - Be part of it!"
+msgstr "Jetzt anmelden - Sei dabei!"
 
 #: devday/templates/devday_index.html:12 devday/templates/devday_index.html:25
 msgid "Submit session"
@@ -182,7 +182,7 @@ msgstr "Bestätige deine Anmeldung"
 #: devday/templates/registration/login.html:8
 #: devday/templates/registration/password_reset_complete.html:8
 msgid "Log in"
-msgstr "Anmelden"
+msgstr "Login"
 
 #: devday/templates/registration/login.html:11
 msgid "Forgot password"

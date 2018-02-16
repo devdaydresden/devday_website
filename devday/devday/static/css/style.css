@@ -1,5 +1,5 @@
 /**
- * Build on 2018-2-1
+ * Build on 2018-2-9
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -5598,11 +5598,6 @@ button.close {
 .visible-lg-inline-block {
   display: none !important; }
 
-th > a {
-  color: white;
-  font-weight: bold;
-}
-
 @media (max-width: 767px) {
   .visible-xs {
     display: block !important; }
@@ -7209,6 +7204,28 @@ input:focus ~ .highlight {
   border-radius: 1px;
   background: #ffffff;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12); }
+  .info-area .session-item {
+    margin-bottom: 16px;
+    display: block; }
+    .info-area .session-item .session-title {
+      padding: 12px;
+      background: #f0efef;
+      color: #374970; }
+      .info-area .session-item .session-title:hover {
+        background: #35a4a3;
+        color: #ffffff; }
+        .info-area .session-item .session-title:hover h4 {
+          color: #ffffff;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+      .info-area .session-item .session-title h3 {
+        margin: 0;
+        text-align: center; }
+      .info-area .session-item .session-title h4 {
+        margin-top: 0;
+        text-align: center;
+        color: #35a4a3;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px; }
   .info-area.speaker-profile h3 {
     font-size: 3.5rem;
     margin-bottom: 2rem;

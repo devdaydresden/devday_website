@@ -6,7 +6,7 @@
 {% block promo_classes %}row promo{% endblock %}
 {% block promo_content %}{{ block.super }}
     {% if attendee_registration_open %}
-        <a class="btn" href="{% url "login_or_register_attendee" %}" role="button">{% trans "Be part of it!" %}</a><br>
+        <a class="btn" href="{% url "login_or_register_attendee" %}" role="button">{% trans "Sign up now - Be part of it!" %}</a><br>
     {% endif %}
     {% if talk_submission_open %}
         <a class="btn" href="{% url "submit_session" %}" role="button">{% trans "Submit session" %}</a>

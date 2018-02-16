@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-05 17:23+0100\n"
+"POT-Creation-Date: 2018-02-15 22:42+0100\n"
 "PO-Revision-Date: 2016-12-20 13:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -145,30 +145,27 @@ msgid "Attendees"
 msgstr "Teilnehmer"
 
 #: attendee/templates/attendee/login_or_register.html:23
-msgid "You already have an account"
-msgstr "Du hast schon einen Account"
+msgid "Register now for Dev Day"
+msgstr "Registrier dich jetzt für den Dev Day"
 
 #: attendee/templates/attendee/login_or_register.html:25
+#: attendee/templates/attendee/login_or_register.html:43
+msgid "Register"
+msgstr "Anmelden"
+
+#: attendee/templates/attendee/login_or_register.html:29
+msgid "Have you ever attended Dev Day? Use your old credentials!"
+msgstr "Du warst schon mal beim Dev Day? Dann nutze deine alten Anmeldedaten!"
+
+#: attendee/templates/attendee/login_or_register.html:31
 #, fuzzy
 #| msgid "Change password"
 msgid "Forgot password"
 msgstr "Passwort ändern"
 
-#: attendee/templates/attendee/login_or_register.html:26
+#: attendee/templates/attendee/login_or_register.html:32
 msgid "Reset it"
 msgstr ""
-
-#: attendee/templates/attendee/login_or_register.html:29
-msgid "You have no account yet?"
-msgstr ""
-
-#: attendee/templates/attendee/login_or_register.html:31
-msgid "Create Account And Register"
-msgstr "Account anlegen und anmelden"
-
-#: attendee/templates/attendee/login_or_register.html:43
-msgid "Register"
-msgstr "Anmelden"
 
 #: attendee/templates/attendee/profile.html:3
 #: attendee/templates/attendee/register_success.html:3

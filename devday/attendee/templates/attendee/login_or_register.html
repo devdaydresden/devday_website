@@ -20,16 +20,16 @@
         </div>
         <div class="row">
             <div class="col-lg-offset-2 col-lg-4 col-md-12">
-                <h2>{% trans "You already have an account" %}</h2>
+                <h2>{% trans "Register now for Dev Day" %}</h2>
+                <p class="text-center">
+                    <a class="btn btn-primary" href="{% url "registration_register" %}">{% trans "Register" %}</a>
+                </p>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <h3>{% trans "Have you ever attended Dev Day? Use your old credentials!" %}</h3>
                 {% crispy form %}
                 <p style="margin-top: 1em;">{% trans "Forgot password" %}? <a
                         href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
-            </div>
-            <div class="col-lg-4 col-md-12">
-                <h2>{% trans "You have no account yet?" %}</h2>
-                <p class="text-center">
-                    <a class="btn btn-primary" href="{% url "registration_register" %}">{% trans "Create Account And Register" %}</a>
-                </p>
             </div>
         </div>
     {% else %}

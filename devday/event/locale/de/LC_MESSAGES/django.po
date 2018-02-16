@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-12 13:52+0100\n"
+"POT-Creation-Date: 2018-02-15 22:42+0100\n"
 "PO-Revision-Date: 2017-09-17 12:25+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: jan.dittberner@t-systems.com\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 2.0.3\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: event/apps.py:13 event/models.py:27
+#: event/apps.py:13 event/models.py:26
 msgid "Events"
 msgstr "Veranstaltungen"
 
@@ -51,10 +51,10 @@ msgstr "Beginn"
 msgid "End time"
 msgstr "Ende"
 
-#: event/models.py:23
+#: event/models.py:22
 msgid "Registration Count"
 msgstr "Anmeldungen"
 
-#: event/models.py:26
+#: event/models.py:25
 msgid "Event"
 msgstr "Veranstaltung"

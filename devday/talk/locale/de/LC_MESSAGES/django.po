@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-15 22:42+0100\n"
+"POT-Creation-Date: 2018-02-22 08:12+0100\n"
 "PO-Revision-Date: 2018-02-07 10:48+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -54,7 +54,7 @@ msgstr ""
 "zu meinen Vortragsvorschlägen kontaktieren dürfen.</p></label>"
 
 #: talk/forms.py:207 talk/forms.py:284
-#: talk/templates/talk/submit_session.html:24
+#: talk/templates/talk/submit_session.html:30
 msgid "Register as speaker"
 msgstr "Als Sprecher registrieren"
 
@@ -372,20 +372,20 @@ msgid "You cannot submit new sessions currently."
 msgstr "Zur Zeit können keine weiteren Sessions eingereicht werden."
 
 #: talk/templates/talk/submit_session.html:22
-msgid "You have no account yet?"
-msgstr "Du hast noch kein Benutzerkonto?"
-
-#: talk/templates/talk/submit_session.html:28
 msgid "You already have an account"
 msgstr "Du hast bereits ein Benutzerkonto"
 
-#: talk/templates/talk/submit_session.html:30
+#: talk/templates/talk/submit_session.html:24
 msgid "Forgot password"
 msgstr "Passwort vergessen?"
 
-#: talk/templates/talk/submit_session.html:31
+#: talk/templates/talk/submit_session.html:25
 msgid "Reset it"
 msgstr "Passwort zurücksetzen"
+
+#: talk/templates/talk/submit_session.html:28
+msgid "You have no account yet?"
+msgstr "Du hast noch kein Benutzerkonto?"
 
 #: talk/templates/talk/submit_session.html:42
 msgid "Become a speaker"
@@ -567,13 +567,19 @@ msgstr "Es wurde noch kein Sessionplan definiert"
 msgid "Unscheduled talks"
 msgstr "Sessions ohne Zuordnung"
 
-#: talk/templates/talk/talk_list_preview.html:6
+#: talk/templates/talk/talk_list_preview.html:7
 msgid "Schedule Preview"
 msgstr "Sessionvorschau"
 
-#: talk/templates/talk/talk_list_preview.html:8
+#: talk/templates/talk/talk_list_preview.html:9
 msgid "Planned talks"
 msgstr "Geplante Sessions"
+
+#: talk/templates/talk/talk_list_preview.html:17
+#, fuzzy
+#| msgid "List of sessions"
+msgid "Vote now for sessions!"
+msgstr "Jetzt für Sessions voten!"
 
 #: talk/templates/talk/talk_videos.html:3
 #: talk/templates/talk/talk_videos.html:6

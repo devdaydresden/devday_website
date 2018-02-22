@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-15 22:42+0100\n"
+"POT-Creation-Date: 2018-02-22 08:06+0100\n"
 "PO-Revision-Date: 2018-01-08 10:40+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -79,19 +79,23 @@ msgstr "Login"
 msgid "Sign up now - Be part of it!"
 msgstr "Jetzt anmelden - Sei dabei!"
 
-#: devday/templates/devday_index.html:12 devday/templates/devday_index.html:25
+#: devday/templates/devday_index.html:12 devday/templates/devday_index.html:26
 msgid "Submit session"
 msgstr "Session einreichen"
 
-#: devday/templates/devday_index.html:16
+#: devday/templates/devday_index.html:14
+msgid "Vote now for sessions!"
+msgstr "Jetzt für Sessions voten!"
+
+#: devday/templates/devday_index.html:17
 msgid "more info"
 msgstr "Mehr Infos"
 
-#: devday/templates/devday_index.html:32
+#: devday/templates/devday_index.html:33
 msgid "I want to be part of it!"
 msgstr "Ich will dabei sein!"
 
-#: devday/templates/devday_index.html:43
+#: devday/templates/devday_index.html:44
 msgid "Follow us!"
 msgstr "Folge uns!"
 

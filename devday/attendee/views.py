@@ -1,13 +1,17 @@
+import csv
+from StringIO import StringIO
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import login
 from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import redirect
 from django.utils import timezone
-from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, View
-from django.http import HttpResponseRedirect
+from django.views.generic.list import BaseListView
 from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
@@ -104,9 +108,93 @@ def login_or_register_attendee_view(request):
     if not request.user.is_anonymous() and "edit" not in request.GET:
         try:
             # noinspection PyStatementEffect
-            #request.user.attendee and request.user.attendee.speaker
+            # request.user.attendee and request.user.attendee.speaker
             return redirect(reverse('registration_register'))
-        except (Attendee.DoesNotExist):
+        except Attendee.DoesNotExist:
             pass
 
     return login(request, template_name=template_name, authentication_form=RegistrationAuthenticationForm)
+
+
+class StaffUserMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
+
+
+class InactiveAttendeeView(StaffUserMixin, BaseListView):
+    model = User
+
+    def get_queryset(self):
+        return super(InactiveAttendeeView, self).get_queryset().filter(is_active=False).order_by('email')
+
+    def render_to_response(self, context):
+        output = StringIO()
+        try:
+            writer = csv.writer(output, delimiter=';')
+            writer.writerow(('Firstname', 'Lastname', 'Email', 'Date joined'))
+            writer.writerows([(u.first_name.encode('utf8'), u.last_name.encode('utf8'), u.email.encode('utf8'),
+                               u.date_joined.strftime("%Y-%m-%d %H:%M:%S"))
+                              for u in context.get('object_list', [])])
+            response = HttpResponse(output.getvalue(), content_type="txt/csv; charset=utf-8")
+            response['Content-Disposition'] = 'attachment; filename=inactive.csv'
+            return response
+        finally:
+            output.close()
+
+
+class ContactableAttendeeView(StaffUserMixin, BaseListView):
+    model = User
+
+    def get_queryset(self):
+        return super(ContactableAttendeeView, self).get_queryset().raw(
+            '''
+SELECT * FROM attendee_devdayuser WHERE contact_permission_date IS NOT NULL OR EXISTS (
+  SELECT id FROM attendee_attendee WHERE event_id={:d} AND attendee_attendee.user_id=attendee_devdayuser.id
+) ORDER BY email
+'''.format(settings.EVENT_ID)
+        )
+
+    def render_to_response(self, context):
+        output = StringIO()
+        try:
+            writer = csv.writer(output, delimiter=';')
+            writer.writerow(('Email',))
+            writer.writerows([(u.email.encode('utf8'),) for u in context.get('object_list', [])])
+            response = HttpResponse(output.getvalue(), content_type="txt/csv; charset=utf-8")
+            response['Content-Disposition'] = 'attachment; filename=contactable.csv'
+            return response
+        finally:
+            output.close()
+
+
+class AttendeeListView(StaffUserMixin, BaseListView):
+    model = Attendee
+
+    def get_queryset(self):
+        return super(AttendeeListView, self).get_queryset().filter(
+            event_id=settings.EVENT_ID).order_by("user__last_name", "user__first_name")
+
+    def render_to_response(self, context):
+        output = StringIO()
+        try:
+            writer = csv.writer(output, delimiter=';')
+            writer.writerow(('Lastname', 'Firstname', 'Email', 'Date joined', 'Twitter', 'Phone', 'Position',
+                             'Organization', 'Contact permission date', 'Info source'))
+            writer.writerows([(
+                attendee.user.last_name.encode('utf8'),
+                attendee.user.first_name.encode('utf8'),
+                attendee.user.email.encode('utf8'),
+                attendee.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
+                attendee.user.twitter_handle.encode('utf8'),
+                attendee.user.phone.encode('utf8'),
+                attendee.user.position.encode('utf8'),
+                attendee.user.organization.encode('utf8'),
+                attendee.user.contact_permission_date.strftime(
+                    "%Y-%m-%d %H:%M:%S") if attendee.user.contact_permission_date else "",
+                attendee.source.encode('utf8'),
+            ) for attendee in context.get('object_list', [])])
+            response = HttpResponse(output.getvalue(), content_type="txt/csv; charset=utf-8")
+            response['Content-Disposition'] = 'attachment; filename=attendees.csv'
+            return response
+        finally:
+            output.close()

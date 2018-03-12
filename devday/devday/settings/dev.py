@@ -72,7 +72,7 @@ LOGGING = {
 }
 
 #EVENT_ID = 1
-TALK_SUBMISSION_OPEN = True
+TALK_SUBMISSION_OPEN = False
 
 TWITTERFEED_PROXIES = {
     'http': 'http://proxy.mms-dresden.de:8080/',

@@ -146,15 +146,13 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
     model = User
 
     def get_queryset(self):
-        q = super(ContactableAttendeeView, self).get_queryset().raw(
+        return super(ContactableAttendeeView, self).get_queryset().raw(
             '''
 SELECT * FROM attendee_devdayuser WHERE contact_permission_date IS NOT NULL OR EXISTS (
   SELECT id FROM attendee_attendee WHERE event_id={:d} AND attendee_attendee.user_id=attendee_devdayuser.id
 ) ORDER BY email
 '''.format(settings.EVENT_ID)
         )
-        print(q.query)
-        return q
 
     def render_to_response(self, context):
         output = StringIO()

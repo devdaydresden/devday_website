@@ -165,3 +165,36 @@ SELECT * FROM attendee_devdayuser WHERE contact_permission_date IS NOT NULL OR E
             return response
         finally:
             output.close()
+
+
+class AttendeeListView(StaffUserMixin, BaseListView):
+    model = Attendee
+
+    def get_queryset(self):
+        return super(AttendeeListView, self).get_queryset().filter(
+            event_id=settings.EVENT_ID).order_by("user__last_name", "user__first_name")
+
+    def render_to_response(self, context):
+        output = StringIO()
+        try:
+            writer = csv.writer(output, delimiter=';')
+            writer.writerow(('Lastname', 'Firstname', 'Email', 'Date joined', 'Twitter', 'Phone', 'Position',
+                             'Organization', 'Contact permission date', 'Info source'))
+            writer.writerows([(
+                attendee.user.last_name.encode('utf8'),
+                attendee.user.first_name.encode('utf8'),
+                attendee.user.email.encode('utf8'),
+                attendee.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
+                attendee.user.twitter_handle.encode('utf8'),
+                attendee.user.phone.encode('utf8'),
+                attendee.user.position.encode('utf8'),
+                attendee.user.organization.encode('utf8'),
+                attendee.user.contact_permission_date.strftime(
+                    "%Y-%m-%d %H:%M:%S") if attendee.user.contact_permission_date else "",
+                attendee.source.encode('utf8'),
+            ) for attendee in context.get('object_list', [])])
+            response = HttpResponse(output.getvalue(), content_type="txt/csv; charset=utf-8")
+            response['Content-Disposition'] = 'attachment; filename=attendees.csv'
+            return response
+        finally:
+            output.close()

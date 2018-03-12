@@ -1,5 +1,5 @@
-from StringIO import StringIO
 import csv
+from StringIO import StringIO
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -116,10 +116,12 @@ def login_or_register_attendee_view(request):
     return login(request, template_name=template_name, authentication_form=RegistrationAuthenticationForm)
 
 
-class InactiveAttendeeView(UserPassesTestMixin, BaseListView):
+class StaffUserMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff
 
+
+class InactiveAttendeeView(StaffUserMixin, BaseListView):
     model = User
 
     def get_queryset(self):
@@ -135,6 +137,33 @@ class InactiveAttendeeView(UserPassesTestMixin, BaseListView):
                               for u in context.get('object_list', [])])
             response = HttpResponse(output.getvalue(), content_type="txt/csv; charset=utf-8")
             response['Content-Disposition'] = 'attachment; filename=inactive.csv'
+            return response
+        finally:
+            output.close()
+
+
+class ContactableAttendeeView(StaffUserMixin, BaseListView):
+    model = User
+
+    def get_queryset(self):
+        q = super(ContactableAttendeeView, self).get_queryset().raw(
+            '''
+SELECT * FROM attendee_devdayuser WHERE contact_permission_date IS NOT NULL OR EXISTS (
+  SELECT id FROM attendee_attendee WHERE event_id={:d} AND attendee_attendee.user_id=attendee_devdayuser.id
+) ORDER BY email
+'''.format(settings.EVENT_ID)
+        )
+        print(q.query)
+        return q
+
+    def render_to_response(self, context):
+        output = StringIO()
+        try:
+            writer = csv.writer(output, delimiter=';')
+            writer.writerow(('Email',))
+            writer.writerows([(u.email.encode('utf8'),) for u in context.get('object_list', [])])
+            response = HttpResponse(output.getvalue(), content_type="txt/csv; charset=utf-8")
+            response['Content-Disposition'] = 'attachment; filename=contactable.csv'
             return response
         finally:
             output.close()

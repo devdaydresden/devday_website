@@ -1,13 +1,17 @@
+from StringIO import StringIO
+import csv
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import login
 from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import redirect
 from django.utils import timezone
-from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, View
-from django.http import HttpResponseRedirect
+from django.views.generic.list import BaseListView
 from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
@@ -104,9 +108,33 @@ def login_or_register_attendee_view(request):
     if not request.user.is_anonymous() and "edit" not in request.GET:
         try:
             # noinspection PyStatementEffect
-            #request.user.attendee and request.user.attendee.speaker
+            # request.user.attendee and request.user.attendee.speaker
             return redirect(reverse('registration_register'))
-        except (Attendee.DoesNotExist):
+        except Attendee.DoesNotExist:
             pass
 
     return login(request, template_name=template_name, authentication_form=RegistrationAuthenticationForm)
+
+
+class InactiveAttendeeView(UserPassesTestMixin, BaseListView):
+    def test_func(self):
+        return self.request.user.is_staff
+
+    model = User
+
+    def get_queryset(self):
+        return super(InactiveAttendeeView, self).get_queryset().filter(is_active=False).order_by('email')
+
+    def render_to_response(self, context):
+        output = StringIO()
+        try:
+            writer = csv.writer(output, delimiter=';')
+            writer.writerow(('Firstname', 'Lastname', 'Email', 'Date joined'))
+            writer.writerows([(u.first_name.encode('utf8'), u.last_name.encode('utf8'), u.email.encode('utf8'),
+                               u.date_joined.strftime("%Y-%m-%d %H:%M:%S"))
+                              for u in context.get('object_list', [])])
+            response = HttpResponse(output.getvalue(), content_type="txt/csv; charset=utf-8")
+            response['Content-Disposition'] = 'attachment; filename=inactive.csv'
+            return response
+        finally:
+            output.close()

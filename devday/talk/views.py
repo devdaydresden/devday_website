@@ -336,10 +336,11 @@ class TalkListView(ListView):
 
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        return super(TalkListView, self).get_queryset().filter(track__isnull=False, speaker__user__event=event).select_related(
-            'speaker__user__event', 'speaker__user__event__slug',
+        return super(TalkListView, self).get_queryset().filter(track__isnull=False,
+            speaker__user__event=event, talkslot__time__event=event).select_related(
             'track',
-            'speaker', 'speaker__user', 'speaker__user__user',
+            'speaker', 'speaker__user', 'speaker__user__event',
+                'speaker__user__user', 'speaker__user__event__slug',
             'talkslot', 'talkslot__time', 'talkslot__room'
         ).order_by('talkslot__time__start_time', 'talkslot__room__name')
 
@@ -365,7 +366,7 @@ class TalkListView(ListView):
                 'talks_by_room_and_time': talks_by_room_and_time,
                 'unscheduled': unscheduled,
                 'rooms': Room.objects.all(),
-                'times': TimeSlot.objects.all()
+                'times': TimeSlot.objects.filter(event=event)
             }
         )
         return context

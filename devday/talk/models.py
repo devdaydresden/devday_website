@@ -220,7 +220,7 @@ class TimeSlot(TimeStampedModel):
         ordering = ['start_time', 'end_time', 'name']
 
     def __str__(self):
-        return self.name
+        return "{} ({})".format(self.name, self.event)
 
 
 class TalkSlot(TimeStampedModel):

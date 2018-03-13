@@ -34,10 +34,17 @@ class TalkAdmin(admin.ModelAdmin):
 
 class TalkSlotAdmin(admin.ModelAdmin):
     list_display = ['time', 'room', 'talk']
+    list_filter = ['time__event']
+    # NOTYET autocomplete_fields = list_display
+
+    def event(self, obj):
+        return obj.time.event
+
 
 
 class TimeSlotAdmin(admin.ModelAdmin):
     list_display = ['name', 'event']
+    list_filter = ['event']
 
 
 class TrackAdmin(admin.ModelAdmin):

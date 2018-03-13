@@ -9,3 +9,15 @@ routing.bat
 __pycache__/
 dumps/
 devday/devday.log
+
+# static files that get uploaded independently from this repo
+devday/devday/static/admin/
+devday/devday/static/ajaxuploader/
+devday/devday/static/cms/
+devday/devday/static/djangocms_admin_style/
+devday/devday/static/djangocms_googlemap/
+devday/devday/static/djangocms_text_ckeditor/
+devday/devday/static/preview_images/
+devday/devday/static/schedule_static.xml
+devday/devday/static/sortedm2m/
+devday/devday/static/treebeard/

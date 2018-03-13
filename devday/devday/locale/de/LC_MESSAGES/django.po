@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-22 08:06+0100\n"
+"POT-Creation-Date: 2018-03-13 00:57+0100\n"
 "PO-Revision-Date: 2018-01-08 10:40+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -79,23 +79,19 @@ msgstr "Login"
 msgid "Sign up now - Be part of it!"
 msgstr "Jetzt anmelden - Sei dabei!"
 
-#: devday/templates/devday_index.html:12 devday/templates/devday_index.html:26
+#: devday/templates/devday_index.html:12 devday/templates/devday_index.html:25
 msgid "Submit session"
 msgstr "Session einreichen"
 
-#: devday/templates/devday_index.html:14
-msgid "Vote now for sessions!"
-msgstr "Jetzt für Sessions voten!"
-
-#: devday/templates/devday_index.html:17
+#: devday/templates/devday_index.html:16
 msgid "more info"
 msgstr "Mehr Infos"
 
-#: devday/templates/devday_index.html:33
+#: devday/templates/devday_index.html:32
 msgid "I want to be part of it!"
 msgstr "Ich will dabei sein!"
 
-#: devday/templates/devday_index.html:44
+#: devday/templates/devday_index.html:43
 msgid "Follow us!"
 msgstr "Folge uns!"
 
@@ -337,6 +333,9 @@ msgstr ""
 #: devday/templates/registration/registration_form.html:3
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
+
+#~ msgid "Vote now for sessions!"
+#~ msgstr "Jetzt für Sessions voten!"
 
 #~ msgid "Register"
 #~ msgstr "Anmelden"

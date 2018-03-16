@@ -438,7 +438,7 @@ class InfoBeamerXMLView(BaseListView):
     def get_context_data(self, **kwargs):
         context = super(InfoBeamerXMLView, self).get_context_data(**kwargs)
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        time_range = TimeSlot.objects.aggregate(Min('start_time'), Max('end_time'))
+        time_range = TimeSlot.objects.filter(event=event).aggregate(Min('start_time'), Max('end_time'))
         context['min_time'] = time_range['start_time__min']
         context['max_time'] = time_range['end_time__max']
         talks = context.get('talk_list', [])

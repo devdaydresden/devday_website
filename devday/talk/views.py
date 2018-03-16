@@ -399,6 +399,13 @@ class TalkVideoView(ListView):
 class InfoBeamerXMLView(BaseListView):
     model = Talk
 
+    def dispatch(self, request, *args, **kwargs):
+        event = self.kwargs.get('event')
+        if not event:
+            event = Event.objects.get(pk=settings.EVENT_ID)
+            return HttpResponseRedirect('/{}/schedule.xml'.format(event.slug))
+        return super(InfoBeamerXMLView, self).dispatch(request, *args, **kwargs)
+
     def recalculate_timestamp(self, timestamp, context):
         if 'starttoday' in self.request.GET:
             start_time = context.get('min_time')
@@ -420,7 +427,9 @@ class InfoBeamerXMLView(BaseListView):
         return self.recalculate_timestamp(timestamp, context).strftime("%Y-%m-%d")
 
     def get_queryset(self):
-        return super(InfoBeamerXMLView, self).get_queryset().filter(track__isnull=False).select_related(
+        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super(InfoBeamerXMLView, self).get_queryset().filter(track__isnull=False,
+            speaker__user__event=event, talkslot__time__event=event).select_related(
             'track',
             'speaker', 'speaker__user', 'speaker__user__user',
             'talkslot', 'talkslot__time', 'talkslot__room'
@@ -428,6 +437,7 @@ class InfoBeamerXMLView(BaseListView):
 
     def get_context_data(self, **kwargs):
         context = super(InfoBeamerXMLView, self).get_context_data(**kwargs)
+        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
         time_range = TimeSlot.objects.aggregate(Min('start_time'), Max('end_time'))
         context['min_time'] = time_range['start_time__min']
         context['max_time'] = time_range['end_time__max']
@@ -441,23 +451,25 @@ class InfoBeamerXMLView(BaseListView):
                 continue
         context.update(
             {
+                'event': event,
                 'talks_by_room_and_time': talks_by_room_and_time,
                 'rooms': Room.objects.all(),
-                'times': TimeSlot.objects.all()
+                'times': TimeSlot.objects.filter(event=event)
             }
         )
         return context
 
     def render_to_response(self, context, **response_kwargs):
+        event = context['event']
         schedule_xml = ET.Element('schedule')
         # TODO: use event argument and render proper event title
-        ET.SubElement(schedule_xml, 'version').text = 'Dev Day 2017'
+        ET.SubElement(schedule_xml, 'version').text = event.title
         conference = ET.SubElement(schedule_xml, 'conference')
-        ET.SubElement(conference, 'acronym').text = 'DD.17'
-        ET.SubElement(conference, 'title').text = 'Dev Day 17 Dresden'
-        ET.SubElement(conference, 'start').text = self.to_xml_date(context['min_time'], context)
-        ET.SubElement(conference, 'end').text = self.to_xml_date(context['max_time'], context)
-        ET.SubElement(conference, 'days').text = '1'
+        ET.SubElement(conference, 'acronym').text = 'DevDay'
+        ET.SubElement(conference, 'title').text = event.title
+        ET.SubElement(conference, 'start').text = self.to_xml_date(event.start_time, context)
+        ET.SubElement(conference, 'end').text = self.to_xml_date(event.end_time, context)
+        ET.SubElement(conference, 'days').text = '1' # FIXME compute days
         ET.SubElement(conference, 'timeslot_duration').text = '00:15'
         day_xml = ET.SubElement(schedule_xml, 'day', index='1',
                                 date=self.to_xml_date(context['min_time'], context),
@@ -466,21 +478,22 @@ class InfoBeamerXMLView(BaseListView):
         for room in context['rooms']:
             room_xml = ET.SubElement(day_xml, 'room', name=room.name)
             room_talks = context['talks_by_room_and_time']
-            for talk in room_talks[room]:
-                event_xml = ET.SubElement(room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
-                start_time = talk.talkslot.time.start_time
-                duration = talk.talkslot.time.end_time - start_time
-                ET.SubElement(event_xml, 'date').text = self.to_xml_timestamp(start_time, context)
-                ET.SubElement(event_xml, 'start').text = self.to_xml_localtime(start_time, context)
-                ET.SubElement(event_xml, 'duration').text = "%02d:%02d" % (
-                    duration.seconds / 3600, duration.seconds % 3600 / 60)
-                ET.SubElement(event_xml, 'room').text = room.name
-                ET.SubElement(event_xml, 'title').text = talk.title
-                ET.SubElement(event_xml, 'abstract').text = talk.abstract
-                ET.SubElement(event_xml, 'language').text = 'de'
-                persons_xml = ET.SubElement(event_xml, 'persons')
-                ET.SubElement(persons_xml, 'person', id=str(talk.speaker_id)).text = \
-                    talk.speaker.user.user.get_full_name()
+            if room in room_talks:
+                for talk in room_talks[room]:
+                    event_xml = ET.SubElement(room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
+                    start_time = talk.talkslot.time.start_time
+                    duration = talk.talkslot.time.end_time - start_time
+                    ET.SubElement(event_xml, 'date').text = self.to_xml_timestamp(start_time, context)
+                    ET.SubElement(event_xml, 'start').text = self.to_xml_localtime(start_time, context)
+                    ET.SubElement(event_xml, 'duration').text = "%02d:%02d" % (
+                        duration.seconds / 3600, duration.seconds % 3600 / 60)
+                    ET.SubElement(event_xml, 'room').text = room.name
+                    ET.SubElement(event_xml, 'title').text = talk.title
+                    ET.SubElement(event_xml, 'abstract').text = talk.abstract
+                    ET.SubElement(event_xml, 'language').text = 'de'
+                    persons_xml = ET.SubElement(event_xml, 'persons')
+                    ET.SubElement(persons_xml, 'person', id=str(talk.speaker_id)).text = \
+                        talk.speaker.user.user.get_full_name()
 
         response_kwargs.setdefault('content_type', 'application/xml')
         return HttpResponse(content=ET.tostring(schedule_xml, 'utf-8'), **response_kwargs)

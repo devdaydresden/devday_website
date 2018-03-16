@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-13 00:57+0100\n"
-"PO-Revision-Date: 2018-01-08 10:40+0100\n"
+"POT-Creation-Date: 2018-03-15 17:13+0100\n"
+"PO-Revision-Date: 2018-03-15 17:16+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.5\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: devday/cms_menus.py:9
@@ -58,6 +58,43 @@ msgstr "Ungültige Anfrage"
 #: devday/templates/404.html:3 devday/templates/404.html:28
 msgid "Page not found"
 msgstr "Seite nicht gefunden"
+
+#: devday/templates/admin/inc/branding.html:6
+#: devday/templates/admin/inc/branding.html:9
+msgid "Django Administration"
+msgstr "Django-Verwaltung"
+
+#: devday/templates/admin/inc/branding.html:15
+msgid "Documentation"
+msgstr "Dokumentation"
+
+#: devday/templates/admin/inc/branding.html:19
+msgid "Inactive users"
+msgstr "Inaktive Benutzer"
+
+#: devday/templates/admin/inc/branding.html:20
+msgid "Users we may contact"
+msgstr "Benutzer, die kontaktiert werden dürfen"
+
+#: devday/templates/admin/inc/branding.html:21
+msgid "Current event attendees"
+msgstr "Teilnehmer der aktuellen Veranstaltung"
+
+#: devday/templates/admin/inc/branding.html:26
+msgid "Change password"
+msgstr "Passwort ändern"
+
+#: devday/templates/admin/inc/branding.html:32
+msgid "Log out"
+msgstr "Ausloggen"
+
+#: devday/templates/admin/inc/branding.html:40
+msgid "Open"
+msgstr "Öffne"
+
+#: devday/templates/admin/inc/branding.html:40
+msgid "my site"
+msgstr "meine Seite"
 
 #: devday/templates/base_menu.html:5
 msgid "Session selection"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-05 14:44+0200\n"
+"POT-Creation-Date: 2018-04-05 18:32+0200\n"
 "PO-Revision-Date: 2018-03-15 17:16+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -129,8 +129,6 @@ msgid "more info"
 msgstr "Mehr Infos"
 
 #: devday/templates/devday_index.html:27
-#, fuzzy
-#| msgid "Our event on your mobile in the webapp"
 msgid "Our event on your mobile in the webapp"
 msgstr "Unser Event mobil in der WebApp"
 

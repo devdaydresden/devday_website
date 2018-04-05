@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-15 17:13+0100\n"
+"POT-Creation-Date: 2018-04-05 14:44+0200\n"
 "PO-Revision-Date: 2018-03-15 17:16+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -22,6 +22,22 @@ msgstr ""
 #: devday/cms_menus.py:9
 msgid "2016"
 msgstr "2016"
+
+#: devday/cms_toolbars.py:11
+msgid "DevDay"
+msgstr ""
+
+#: devday/cms_toolbars.py:13 devday/templates/admin/inc/branding.html:19
+msgid "Inactive users"
+msgstr "Inaktive Benutzer"
+
+#: devday/cms_toolbars.py:15 devday/templates/admin/inc/branding.html:20
+msgid "Users we may contact"
+msgstr "Benutzer, die kontaktiert werden dürfen"
+
+#: devday/cms_toolbars.py:17 devday/templates/admin/inc/branding.html:21
+msgid "Current event attendees"
+msgstr "Teilnehmer der aktuellen Veranstaltung"
 
 #: devday/forms.py:31 devday/forms.py:55
 msgid "Change my password"
@@ -68,18 +84,6 @@ msgstr "Django-Verwaltung"
 msgid "Documentation"
 msgstr "Dokumentation"
 
-#: devday/templates/admin/inc/branding.html:19
-msgid "Inactive users"
-msgstr "Inaktive Benutzer"
-
-#: devday/templates/admin/inc/branding.html:20
-msgid "Users we may contact"
-msgstr "Benutzer, die kontaktiert werden dürfen"
-
-#: devday/templates/admin/inc/branding.html:21
-msgid "Current event attendees"
-msgstr "Teilnehmer der aktuellen Veranstaltung"
-
 #: devday/templates/admin/inc/branding.html:26
 msgid "Change password"
 msgstr "Passwort ändern"
@@ -124,11 +128,17 @@ msgstr "Session einreichen"
 msgid "more info"
 msgstr "Mehr Infos"
 
-#: devday/templates/devday_index.html:32
+#: devday/templates/devday_index.html:27
+#, fuzzy
+#| msgid "Our event on your mobile in the webapp"
+msgid "Our event on your mobile in the webapp"
+msgstr "Unser Event mobil in der WebApp"
+
+#: devday/templates/devday_index.html:33
 msgid "I want to be part of it!"
 msgstr "Ich will dabei sein!"
 
-#: devday/templates/devday_index.html:43
+#: devday/templates/devday_index.html:44
 msgid "Follow us!"
 msgstr "Folge uns!"
 

@@ -1,0 +1,2 @@
+{% load i18n %}
+<a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}">{% trans "Track" %} «{{ talk.track.name }}» <span>{{ talk.title }}</span> {{ talk.speaker }}</a>

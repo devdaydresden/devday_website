@@ -23,13 +23,13 @@
                                 {% if talks|length == 1 %}
                                     {% with talk=talks|first %}
                                         <td colspan="{{ rooms|length }}"
-                                            class="track-{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a></td>
+                                            class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
                                     {% endwith %}
                                 {% else %}
                                     {% for room in rooms %}
                                         {% for talk in talks %}
                                             {% if talk.talkslot.room == room %}
-                                                <td class="track-{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a></td>
+                                                <td class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
                                             {% endif %}
                                         {% endfor %}
                                     {% endfor %}
@@ -58,7 +58,7 @@
                                 {% for talk in talks %}
                                 <tr>
                                     <td>{{ talk.talkslot.time.name }}</td>
-                                    <td class="{{ talk.track.name|slugify }}"><a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}"><span>{{ talk.title }}</span> {{ talk.speaker }}</a></td>
+                                    <td class="{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
                                 </tr>
                                 {% endfor %}
                             {% endif %}

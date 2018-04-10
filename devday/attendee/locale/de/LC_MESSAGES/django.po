@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-15 22:42+0100\n"
-"PO-Revision-Date: 2016-12-20 13:45+0100\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2018-04-10 15:39+0200\n"
+"PO-Revision-Date: 2018-04-10 15:39+0200\n"
+"Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: attendee/apps.py:11 attendee/tests/test_appconfig.py:10
@@ -43,7 +43,15 @@ msgstr ""
 "Ich möchte Updates zu Veranstaltungen der T-Systems Multimedia Solutions "
 "GmbH Software Engineering Community per E-Mail erhalten."
 
-#: attendee/forms.py:73 attendee/forms.py:149
+#: attendee/forms.py:94
+msgid "Update your profile"
+msgstr "Profil aktualisieren"
+
+#: attendee/forms.py:95
+msgid "Change password"
+msgstr "Passwort ändern"
+
+#: attendee/forms.py:111 attendee/forms.py:187
 msgid ""
 "<label><p class=\"help-block\">By registering as an attendee, I agree to be "
 "contacted by the Dev Day organizers about conference details.</p></label>"
@@ -52,15 +60,15 @@ msgstr ""
 "stimme ich zu, dass mich die Dev Day-Organisatoren über Details zur "
 "Konferenz kontaktieren dürfen.</p></label>"
 
-#: attendee/forms.py:76 attendee/forms.py:154
+#: attendee/forms.py:114 attendee/forms.py:192
 msgid "Register as attendee"
 msgstr "Als Teilnehmer anmelden"
 
-#: attendee/forms.py:103
+#: attendee/forms.py:141
 msgid "Login"
 msgstr ""
 
-#: attendee/forms.py:125
+#: attendee/forms.py:163
 msgid "E-Mail"
 msgstr "E-Mail"
 
@@ -97,6 +105,7 @@ msgstr ""
 "anstatt Nutzer zu löschen."
 
 #: attendee/models.py:65
+msgctxt "devday website"
 msgid "date joined"
 msgstr "Anmeldedatum"
 
@@ -104,7 +113,7 @@ msgstr "Anmeldedatum"
 msgid "twitter handle"
 msgstr "Twitter-Name"
 
-#: attendee/models.py:67 attendee/templates/attendee/profile.html:18
+#: attendee/models.py:67
 msgid "Phone"
 msgstr "Telefon"
 
@@ -115,6 +124,10 @@ msgstr "Position oder Studiengang"
 #: attendee/models.py:69
 msgid "company or institution"
 msgstr "Firma oder Bildungseinrichtung"
+
+#: attendee/models.py:70
+msgid "contact permission date"
+msgstr "Kontaktaufnahme erteilt"
 
 #: attendee/models.py:78
 msgid "user"
@@ -158,8 +171,6 @@ msgid "Have you ever attended Dev Day? Use your old credentials!"
 msgstr "Du warst schon mal beim Dev Day? Dann nutze deine alten Anmeldedaten!"
 
 #: attendee/templates/attendee/login_or_register.html:31
-#, fuzzy
-#| msgid "Change password"
 msgid "Forgot password"
 msgstr "Passwort ändern"
 
@@ -177,40 +188,34 @@ msgstr "Teilnehmerprofil"
 msgid "User profile for %(username)s"
 msgstr "Nutzerprofil für %(username)s"
 
-#: attendee/templates/attendee/profile.html:8
-msgid "Firstname"
-msgstr "Vorname"
-
-#: attendee/templates/attendee/profile.html:10
-msgid "Lastname"
-msgstr "Nachname"
-
 #: attendee/templates/attendee/profile.html:12
-msgid "Position"
-msgstr "Position"
-
-#: attendee/templates/attendee/profile.html:14
-msgid "Organization"
-msgstr "Organisation"
-
-#: attendee/templates/attendee/profile.html:16
-#, fuzzy
-#| msgid "twitter handle"
-msgid "Twitter Handle"
-msgstr "Twitter-Name"
-
-#: attendee/templates/attendee/profile.html:21
-msgid "Change password"
-msgstr "Passwort ändern"
-
-#: attendee/templates/attendee/profile.html:25
 msgid "You are registered for these events"
 msgstr "Du bist angemeldet für diese Veranstaltungen"
 
-#: attendee/templates/attendee/profile.html:32
+#: attendee/templates/attendee/profile.html:19
 msgid "Cancel Registration"
 msgstr "Anmeldung stornieren"
 
-#: attendee/templates/attendee/profile.html:38
+#: attendee/templates/attendee/profile.html:25
 msgid "You are not currently registered to participate in any event."
 msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."
+
+#~ msgid "Date joined"
+#~ msgstr "Angemeldet seit"
+
+#~ msgid "Firstname"
+#~ msgstr "Vorname"
+
+#~ msgid "Lastname"
+#~ msgstr "Nachname"
+
+#~ msgid "Position"
+#~ msgstr "Position"
+
+#~ msgid "Organization"
+#~ msgstr "Organisation"
+
+#, fuzzy
+#~| msgid "twitter handle"
+#~ msgid "Twitter Handle"
+#~ msgstr "Twitter-Name"

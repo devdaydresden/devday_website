@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 
 from event.models import Event
 
@@ -62,12 +62,12 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
             "Unselect this instead of deleting accounts."
         ),
     )
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    date_joined = models.DateTimeField(pgettext_lazy('devday website', 'date joined'), default=timezone.now)
     twitter_handle = models.CharField(_('twitter handle'), blank=True, max_length=64)
     phone = models.CharField(verbose_name=_("Phone"), blank=True, max_length=32)
     position = models.CharField(_('job or study subject'), blank=True, max_length=128)
     organization = models.CharField(_('company or institution'), blank=True, max_length=128)
-    contact_permission_date = models.DateTimeField(null=True, blank=True)
+    contact_permission_date = models.DateTimeField(_('contact permission date'), null=True, blank=True)
 
     objects = DevDayUserManager()
 

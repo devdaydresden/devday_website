@@ -5,26 +5,32 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import login
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.transaction import atomic
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, View, UpdateView
 from django.views.generic.list import BaseListView
 from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
 from attendee.forms import (AttendeeRegistrationForm, EventRegistrationForm,
-                            RegistrationAuthenticationForm)
+                            RegistrationAuthenticationForm, AttendeeProfileForm)
 from event.models import Event
 from talk.models import Attendee
 
 User = get_user_model()
 
 
-class AttendeeProfileView(LoginRequiredMixin, TemplateView):
+class AttendeeProfileView(LoginRequiredMixin, UpdateView):
+    model = User
     template_name = 'attendee/profile.html'
+    form_class = AttendeeProfileForm
+    success_url = reverse_lazy('user_profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super(AttendeeProfileView, self).get_context_data(**kwargs)

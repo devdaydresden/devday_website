@@ -19,7 +19,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.text import slugify
-from django.views.generic import ListView
+from django.views.generic import ListView, RedirectView
 from django.views.generic import TemplateView
 from django.views.generic import View
 from django.views.generic.detail import DetailView, SingleObjectMixin
@@ -54,7 +54,7 @@ def submit_session_view(request):
     if not request.user.is_anonymous() and not "edit" in request.GET:
         try:
             # noinspection PyStatementEffect
-            #request.user.attendee and request.user.attendee.speaker
+            # request.user.attendee and request.user.attendee.speaker
             return redirect(reverse('create_session'))
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
             pass
@@ -281,7 +281,8 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
     }
 
     def get_queryset(self):
-        qs = super(CommitteeTalkOverview, self).get_queryset().filter(speaker__user__event_id=settings.EVENT_ID).annotate(
+        qs = super(CommitteeTalkOverview, self).get_queryset().filter(
+            speaker__user__event_id=settings.EVENT_ID).annotate(
             average_score=Avg('vote__score'),
             vote_sum=Sum('vote__score'),
             vote_count=Count('vote__id')).select_related(
@@ -337,10 +338,11 @@ class TalkListView(ListView):
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
         return super(TalkListView, self).get_queryset().filter(track__isnull=False,
-            speaker__user__event=event, talkslot__time__event=event).select_related(
+                                                               speaker__user__event=event,
+                                                               talkslot__time__event=event).select_related(
             'track',
             'speaker', 'speaker__user', 'speaker__user__event',
-                'speaker__user__user', 'speaker__user__event__slug',
+            'speaker__user__user', 'speaker__user__event__slug',
             'talkslot', 'talkslot__time', 'talkslot__room'
         ).order_by('talkslot__time__start_time', 'talkslot__room__name')
 
@@ -378,7 +380,8 @@ class TalkListPreviewView(ListView):
 
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        return super(TalkListPreviewView, self).get_queryset().filter(track__isnull=False, speaker__user__event=event).select_related(
+        return super(TalkListPreviewView, self).get_queryset().filter(track__isnull=False,
+                                                                      speaker__user__event=event).select_related(
             'speaker__user__event', 'speaker__user__event__slug',
             'track',
             'speaker', 'speaker__user', 'speaker__user__user'
@@ -389,11 +392,25 @@ class TalkVideoView(ListView):
     model = Talk
     template_name_suffix = '_videos'
 
+    def __init__(self, *args, **kwargs):
+        self._event = None
+        super(TalkVideoView, self).__init__(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self._event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super(TalkVideoView, self).get(request, *args, **kwargs)
+
     def get_queryset(self):
         return super(TalkVideoView, self).get_queryset().filter(
+            speaker__user__event=self._event,
             track__isnull=False).filter(media__isnull=False).select_related(
             'speaker', 'speaker__user', 'speaker__user__user', 'media'
         ).order_by('title')
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkVideoView, self).get_context_data(**kwargs)
+        context['event'] = self._event.title
+        return context
 
 
 class InfoBeamerXMLView(BaseListView):
@@ -429,7 +446,8 @@ class InfoBeamerXMLView(BaseListView):
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
         return super(InfoBeamerXMLView, self).get_queryset().filter(track__isnull=False,
-            speaker__user__event=event, talkslot__time__event=event).select_related(
+                                                                    speaker__user__event=event,
+                                                                    talkslot__time__event=event).select_related(
             'track',
             'speaker', 'speaker__user', 'speaker__user__user',
             'talkslot', 'talkslot__time', 'talkslot__room'
@@ -469,7 +487,7 @@ class InfoBeamerXMLView(BaseListView):
         ET.SubElement(conference, 'title').text = event.title
         ET.SubElement(conference, 'start').text = self.to_xml_date(event.start_time, context)
         ET.SubElement(conference, 'end').text = self.to_xml_date(event.end_time, context)
-        ET.SubElement(conference, 'days').text = '1' # FIXME compute days
+        ET.SubElement(conference, 'days').text = '1'  # FIXME compute days
         ET.SubElement(conference, 'timeslot_duration').text = '00:15'
         day_xml = ET.SubElement(schedule_xml, 'day', index='1',
                                 date=self.to_xml_date(context['min_time'], context),
@@ -695,3 +713,8 @@ class SpeakerListView(ListView):
     def get_queryset(self):
         return super(SpeakerListView, self).get_queryset().filter(talk__track__isnull=False).order_by(
             'user__user__last_name', 'user__user__first_name').prefetch_related('user', 'user__user')
+
+
+class RedirectVideoView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        return reverse('video_list', kwargs={'event': get_object_or_404(Event, pk=settings.EVENT_ID).slug})

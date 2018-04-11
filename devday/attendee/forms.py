@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Layout, Field, Submit, Hidden, HTML
+from crispy_forms.layout import Div, Layout, Field, Submit, Hidden, HTML, Button
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
@@ -58,6 +58,44 @@ class DevDayUserForm(ModelForm):
                   'position',
                   'organization'
                   ]
+
+
+class AttendeeProfileForm(ModelForm):
+    class Meta:
+        model = DevDayUser
+        fields = ['first_name',
+                  'last_name',
+                  'twitter_handle',
+                  'phone',
+                  'position',
+                  'organization',
+                  'contact_permission_date',
+                  'date_joined'
+                  ]
+
+    def __init__(self, *args, **kwargs):
+        super(AttendeeProfileForm, self).__init__(*args, **kwargs)
+        self.helper = DevDayFormHelper()
+        self.helper.form_action = 'user_profile'
+        self.helper.form_method = 'post'
+        self.helper.html5_required = True
+        self.helper.layout = Layout(
+            Div(
+                Div(
+                    DevDayField('first_name', autofocus="autofocus"),
+                    'last_name',
+                    'twitter_handle',
+                    'phone',
+                    'position',
+                    'organization',
+                    DevDayField('contact_permission_date', readonly="readonly"),
+                    DevDayField('date_joined', readonly="readonly"),
+                ),
+                Submit('submit', _('Update your profile')),
+                HTML('<a href="{}" class="btn">{}</a>'.format(reverse('auth_password_change'), _('Change password'))),
+                css_class='col-md-12 profile-form',
+            )
+        )
 
 
 class EventRegistrationForm(FormView):

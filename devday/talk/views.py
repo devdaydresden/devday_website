@@ -353,6 +353,11 @@ class TalkListView(ListView):
         talks_by_time_and_room = {}
         talks_by_room_and_time = {}
         unscheduled = []
+        has_footage = Talk.objects.filter(
+            speaker__user__event=event,
+            track__isnull=False).filter(media__isnull=False).select_related(
+            'speaker', 'speaker__user', 'speaker__user__user', 'media'
+        ).count() > 0
         for talk in talks:
             try:
                 # build dictionary grouped by time and room (md and lg display)
@@ -368,7 +373,8 @@ class TalkListView(ListView):
                 'talks_by_room_and_time': talks_by_room_and_time,
                 'unscheduled': unscheduled,
                 'rooms': Room.objects.all(),
-                'times': TimeSlot.objects.filter(event=event)
+                'times': TimeSlot.objects.filter(event=event),
+                'has_footage': has_footage,
             }
         )
         return context

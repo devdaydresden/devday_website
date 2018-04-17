@@ -223,6 +223,7 @@ class TimeSlot(TimeStampedModel):
         return "{} ({})".format(self.name, self.event)
 
 
+@python_2_unicode_compatible
 class TalkSlot(TimeStampedModel):
     talk = models.OneToOneField(Talk)
     room = models.ForeignKey(Room)
@@ -230,3 +231,6 @@ class TalkSlot(TimeStampedModel):
 
     class Meta:
         unique_together = (('room', 'time'),)
+
+    def __str__(self):
+        return "{} {}".format(self.room, self.time)

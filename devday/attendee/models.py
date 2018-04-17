@@ -97,27 +97,27 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def get_attendee(self, event=None):
-        '''
+        """
         Return the attendee object for this user and the given event.  If event
         is None, use settings.EVENT_ID.  If no attendee object exists, return
         None.
-        '''
+        """
         if not event:
             event = Event.objects.filter(id=settings.EVENT_ID).first()
         return Attendee.objects.filter(user=self, event=event).first()
 
     def get_events(self):
-        '''
+        """
         Return all events based on the attendee records of this user.
-        '''
+        """
         return Event.objects.filter(attendee__user=self)
 
     def get_speaker(self, event=None):
-        '''
+        """
         Return the speaker object for this user and the given event.  If event
         is None, use settings.EVENT_ID.  If no attendee or speaker object
         exists, return None.
-        '''
+        """
         attendee = self.get_attendee(event)
         if attendee:
             try:
@@ -125,7 +125,6 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
             except Attendee.speaker.RelatedObjectDoesNotExist:
                 return None
         return None
-
 
     def __str__(self):
         full_name = self.get_full_name()
@@ -149,4 +148,4 @@ class Attendee(models.Model):
         unique_together = [('user', 'event')]
 
     def __str__(self):
-        return self.user.get_full_name()
+        return self.user.get_full_name() or self.user.email

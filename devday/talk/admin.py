@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.forms import ModelChoiceField
+from django.utils.translation import gettext_lazy as _
 
 from attendee.models import Attendee
 from .models import Speaker, Talk, Track, Room, TimeSlot, TalkSlot, TalkMedia
@@ -20,10 +21,12 @@ class SpeakerAdmin(admin.ModelAdmin):
 
     def event(self, obj):
         return obj.user.event
+    event.short_description = _("Event")
 
     def fullname(self, obj):
         obj = obj.user.user
         return u"{} {} <{}>".format(obj.first_name, obj.last_name, obj.email)
+    fullname.short_description = _("Fullname")
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == 'user':
@@ -50,33 +53,40 @@ class SpeakerModelChoiceField(ModelChoiceField):
 
 class TalkAdmin(admin.ModelAdmin):
     list_display = ('title', 'speaker', 'event', 'track')
-    search_fields = ('title', 'speaker', 'event', 'track')
-    list_filter = ['speaker__user__event']
+    search_fields = (
+        'title', 'speaker__user__user__first_name', 'speaker__user__user__last_name', 'speaker__user__event__title',
+        'track__name')
+    list_filter = ['speaker__user__event', 'track']
     inlines = [
         TalkMediaInline,
         TalkSlotInline,
     ]
     ordering = ['title']
+    list_select_related = ['speaker', 'speaker__user', 'speaker__user__event', 'speaker__user__user', 'track']
 
     def event(self, obj):
         return obj.speaker.user.event
 
+    event.short_description = _('Event')
+
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == 'speaker':
-            kwargs['queryset'] = Speaker.objects.select_related('user', 'user__user').order_by(
+            kwargs['queryset'] = Speaker.objects.select_related('user', 'user__user', 'user__event').order_by(
                 'user__user__first_name', 'user__user__last_name')
             kwargs['form_class'] = SpeakerModelChoiceField
         return super(TalkAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class TalkSlotAdmin(admin.ModelAdmin):
-    list_display = ['time', 'room', 'talk']
+    list_display = ['time', 'event', 'room', 'talk']
     list_filter = ['time__event']
 
     # NOTYET autocomplete_fields = list_display
 
     def event(self, obj):
         return obj.time.event
+
+    event.short_desription = _('Event')
 
 
 class TimeSlotAdmin(admin.ModelAdmin):

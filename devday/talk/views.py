@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import logging
 import xml.etree.ElementTree as ET
+from datetime import date, timedelta
 
 from django.conf import settings
 from django.contrib import messages
@@ -212,7 +213,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
                 last_name=form.cleaned_data['last_name'],
                 phone=form.cleaned_data['phone'],
                 password=form.cleaned_data['password1'],
-                contact_permission_date=datetime.now(),
+                contact_permission_date=timezone.now(),
                 is_active=False)
             signals.user_registered.send(sender=self.__class__,
                                          user=user,

@@ -96,14 +96,12 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
-    def get_attendee(self, event=None):
+    def get_attendee(self, event):
         """
         Return the attendee object for this user and the given event.  If event
         is None, use settings.EVENT_ID.  If no attendee object exists, return
         None.
         """
-        if not event:
-            event = Event.objects.filter(id=settings.EVENT_ID).first()
         return Attendee.objects.filter(user=self, event=event).first()
 
     def get_events(self):
@@ -112,7 +110,7 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         """
         return Event.objects.filter(attendee__user=self)
 
-    def get_speaker(self, event=None):
+    def get_speaker(self, event):
         """
         Return the speaker object for this user and the given event.  If event
         is None, use settings.EVENT_ID.  If no attendee or speaker object

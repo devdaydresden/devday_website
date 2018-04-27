@@ -210,7 +210,7 @@ class TalkAuthenticationFormTest(SimpleTestCase):
 
 class BecomeSpeakerFormTest(SimpleTestCase):
     def test_init_creates_form_helper(self):
-        form = BecomeSpeakerForm()
+        form = BecomeSpeakerForm(devdayuserform_model=[])
         self.assertIsInstance(form.helper, FormHelper)
         self.assertEqual(form.helper.form_action, reverse('create_speaker'))
         self.assertEqual(form.helper.form_method, 'post')
@@ -219,12 +219,13 @@ class BecomeSpeakerFormTest(SimpleTestCase):
         self.assertTrue(form.helper.html5_required)
 
     def test_init_creates_layout(self):
-        form = BecomeSpeakerForm()
+        form = BecomeSpeakerForm(devdayuserform_model=[])
         self.assertIsInstance(form.helper.layout, Layout)
         layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
         expected_fields = [
-            'upload_url', 'delete_url', 'form_id', 'firstname', 'lastname',
-            'shirt_size', 'uploaded_image', 'shortbio', 'videopermission'
+            'upload_url', 'delete_url', 'form_id', 'first_name', 'last_name',
+            'phone', 'twitter_handle', 'shirt_size', 'uploaded_image', 'shortbio', 'videopermission',
+            'organization', 'position',
         ]
         self.assertEqual(len(layout_fields), len(expected_fields))
         for field in expected_fields:
@@ -233,7 +234,7 @@ class BecomeSpeakerFormTest(SimpleTestCase):
 
 class CreateSpeakerFormTest(SimpleTestCase):
     def test_init_creates_form_helper(self):
-        form = CreateSpeakerForm()
+        form = CreateSpeakerForm(devdayuserform_model=[])
         self.assertIsInstance(form.helper, FormHelper)
         self.assertEqual(form.helper.form_action, reverse('create_speaker'))
         self.assertEqual(form.helper.form_method, 'post')
@@ -242,14 +243,13 @@ class CreateSpeakerFormTest(SimpleTestCase):
         self.assertTrue(form.helper.html5_required)
 
     def test_init_creates_layout(self):
-        form = CreateSpeakerForm()
+        form = CreateSpeakerForm(devdayuserform_model=[])
         self.assertIsInstance(form.helper.layout, Layout)
         layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
         expected_fields = [
-            'upload_url', 'delete_url', 'form_id', 'email', 'firstname', 'lastname',
-            'password1', 'password2', 'uploaded_image', 'shirt_size', 'shortbio',
-            'videopermission', 'accept_contact'
-        ]
+            'upload_url', 'delete_url', 'form_id', 'email', 'first_name', 'last_name', 'password1', 'password2',
+            'phone', 'twitter_handle', 'organization', 'position', 'uploaded_image', 'shirt_size', 'shortbio',
+            'videopermission']
         self.assertEqual(len(layout_fields), len(expected_fields))
         for field in expected_fields:
             self.assertIn(field, expected_fields)

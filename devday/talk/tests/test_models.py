@@ -1,10 +1,13 @@
 import os
+from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from django.utils import timezone
 
 from attendee.models import Attendee
+from event.test.testutils import create_test_event
 from talk.models import Speaker, Talk, Vote, TalkComment
 
 User = get_user_model()
@@ -13,7 +16,8 @@ User = get_user_model()
 class SpeakerTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(email='test@example.org')
-        self.attendee = Attendee.objects.create(user=user)
+        event = create_test_event()
+        self.attendee = Attendee.objects.create(user=user, event=event)
 
     def test_str(self):
         speaker = Speaker.objects.create(
@@ -54,7 +58,8 @@ class SpeakerTest(TestCase):
 class TalkTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(email='test@example.org')
-        attendee = Attendee.objects.create(user=user)
+        event = create_test_event()
+        attendee = Attendee.objects.create(user=user, event=event)
         self.speaker = Speaker.objects.create(
             user=attendee, videopermission=True, shirt_size=1)
 
@@ -69,7 +74,8 @@ class TalkTest(TestCase):
 class VoteTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(email='speaker@example.org')
-        attendee = Attendee.objects.create(user=user)
+        event = create_test_event()
+        attendee = Attendee.objects.create(user=user, event=event)
         self.speaker = Speaker.objects.create(
             user=attendee, videopermission=True, shirt_size=1)
         self.talk = Talk.objects.create(
@@ -88,7 +94,8 @@ class VoteTest(TestCase):
 class TalkCommentTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(email='speaker@example.org')
-        attendee = Attendee.objects.create(user=user)
+        event = create_test_event()
+        attendee = Attendee.objects.create(user=user, event=event)
         self.speaker = Speaker.objects.create(
             user=attendee, videopermission=True, shirt_size=1)
         self.talk = Talk.objects.create(

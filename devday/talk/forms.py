@@ -240,7 +240,8 @@ class CreateSpeakerForm(CombinedFormBase):
 
     def __init__(self, *args, **kwargs):
         self.form_models = {}
-        m = kwargs.pop('devdayuserform_model')
+        # consume unused devdayuserform_model shared with BecomeSpeakerForm
+        kwargs.pop('devdayuserform_model')
         super(CreateSpeakerForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = 'create_speaker'

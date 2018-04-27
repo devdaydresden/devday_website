@@ -4,9 +4,9 @@
 {% block content %}
   <div class="col-md-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">
     {% if has_footage %}
-      <h1>{% trans "Videos and Slides" %}</h1>
+      <h1>{% trans "Videos, Slides and Code" %}</h1>
       {% url "video_list" event=event.slug as video_url %}
-      <p>{% blocktrans %}See <a href="{{ video_url }}">Videos and Slides</a> from this event.{% endblocktrans %}</p>
+      <p>{% blocktrans %}See <a href="{{ video_url }}">videos, slides and example code</a> from this event.{% endblocktrans %}</p>
     {% endif %}
     <h1>{% trans "Schedule" %} {{ event.title }}</h1>
     {% if talk_list %}

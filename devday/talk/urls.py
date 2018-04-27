@@ -2,11 +2,8 @@ from django.conf.urls import url
 
 from talk.views import (
     CreateTalkView, TalkSubmittedView, handle_upload, ExistingFileView, CreateSpeakerView,
-    submit_session_view,
-    TalkDetails,
-    SpeakerRegisteredView, CommitteeTalkOverview, CommitteeSpeakerDetails, CommitteeTalkDetails, CommitteeTalkVote, CommitteeSubmitTalkComment, CommitteeTalkVoteClear,
-    CommitteeTalkCommentDelete, SpeakerTalkDetails, TalkSpeakerCommentDelete, SubmitTalkSpeakerComment, TalkSubmissionClosed,
-    SpeakerPublic)
+    submit_session_view, SpeakerRegisteredView, SpeakerTalkDetails, TalkSpeakerCommentDelete, SubmitTalkSpeakerComment,
+    TalkSubmissionClosed, SpeakerPublic)
 
 urlpatterns = [
     url(r'^submit-session/$', submit_session_view, name='submit_session'),

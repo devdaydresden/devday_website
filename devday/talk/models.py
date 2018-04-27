@@ -160,6 +160,7 @@ class TalkMedia(models.Model):
     talk = models.OneToOneField(Talk, related_name='media')
     youtube = models.CharField(verbose_name=_("Youtube video id"), max_length=64, blank=True)
     slideshare = models.CharField(verbose_name=_("Slideshare id"), max_length=64, blank=True)
+    codelink = models.CharField(verbose_name=_("Source code"), max_length=255, blank=True)
 
 
 @python_2_unicode_compatible

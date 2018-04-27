@@ -1,12 +1,8 @@
 from django.conf.urls import url
 
 from talk.views import (
-    CreateTalkView, TalkSubmittedView, handle_upload, ExistingFileView, CreateSpeakerView,
-    submit_session_view,
-    TalkDetails,
-    SpeakerRegisteredView, CommitteeTalkOverview, CommitteeSpeakerDetails, CommitteeTalkDetails, CommitteeTalkVote, CommitteeSubmitTalkComment, CommitteeTalkVoteClear,
-    CommitteeTalkCommentDelete, SpeakerTalkDetails, TalkSpeakerCommentDelete, SubmitTalkSpeakerComment, TalkSubmissionClosed,
-    SpeakerPublic)
+    CommitteeTalkOverview, CommitteeSpeakerDetails, CommitteeTalkDetails, CommitteeTalkVote, CommitteeSubmitTalkComment,
+    CommitteeTalkVoteClear, CommitteeTalkCommentDelete)
 
 urlpatterns = [
     url(r'^speaker/(?P<pk>\d+)/$', CommitteeSpeakerDetails.as_view(), name='speaker_details'),

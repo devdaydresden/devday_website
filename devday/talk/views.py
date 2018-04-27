@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 import logging
 import xml.etree.ElementTree as ET
+from datetime import date, timedelta
 
-from datetime import datetime, date, timedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -51,10 +51,8 @@ def submit_session_view(request):
     """
     template_name = 'talk/submit_session.html'
 
-    if not request.user.is_anonymous() and not "edit" in request.GET:
+    if not request.user.is_anonymous() and "edit" not in request.GET:
         try:
-            # noinspection PyStatementEffect
-            # request.user.attendee and request.user.attendee.speaker
             return redirect(reverse('create_session'))
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
             pass
@@ -83,7 +81,7 @@ class SpeakerRequiredMixin(AccessMixin):
         user = request.user
         if not user.is_authenticated():
             return self.handle_no_permission()
-        if not user.get_speaker():
+        if not user.get_speaker(get_object_or_404(Event, pk=settings.EVENT_ID)):
             return redirect(reverse('create_speaker'))
         # noinspection PyUnresolvedReferences
         return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
@@ -94,7 +92,7 @@ class TalkSubmittedView(SpeakerRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TalkSubmittedView, self).get_context_data(**kwargs)
-        context['speaker'] = self.request.user.get_speaker()
+        context['speaker'] = self.request.user.get_speaker(get_object_or_404(Event, pk=settings.EVENT_ID))
         return context
 
 
@@ -105,7 +103,7 @@ class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         form_kwargs = super(CreateTalkView, self).get_form_kwargs()
-        form_kwargs['speaker'] = self.request.user.get_speaker()
+        form_kwargs['speaker'] = self.request.user.get_speaker(get_object_or_404(Event, pk=settings.EVENT_ID))
         return form_kwargs
 
 
@@ -172,7 +170,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         user = self.request.user
         event = Event.objects.get(pk=settings.EVENT_ID)
         if user.is_authenticated():
-            if not user.get_attendee():
+            if not user.get_attendee(event):
                 self.auth_level = 'user'
             elif not user.get_speaker():
                 self.auth_level = 'attendee'
@@ -200,7 +198,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         r = super(CreateSpeakerView, self).register(form)
         return r
 
-    def get_success_url(self):
+    def get_success_url(self, **kwargs):
         if self.request.user.is_active:
             return reverse('create_session')
         return reverse_lazy('speaker_registered')
@@ -215,7 +213,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
                 last_name=form.cleaned_data['last_name'],
                 phone=form.cleaned_data['phone'],
                 password=form.cleaned_data['password1'],
-                contact_permission_date=datetime.now(),
+                contact_permission_date=timezone.now(),
                 is_active=False)
             signals.user_registered.send(sender=self.__class__,
                                          user=user,

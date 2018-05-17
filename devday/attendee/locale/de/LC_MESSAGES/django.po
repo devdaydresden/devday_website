@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-10 15:39+0200\n"
-"PO-Revision-Date: 2018-04-10 15:39+0200\n"
+"POT-Creation-Date: 2018-05-17 21:37+0200\n"
+"PO-Revision-Date: 2018-05-17 21:41+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.7\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: attendee/apps.py:11 attendee/tests/test_appconfig.py:10
@@ -137,25 +137,52 @@ msgstr "Nutzer"
 msgid "users"
 msgstr "Nutzer"
 
-#: attendee/models.py:143
+#: attendee/models.py:140
 msgid "source"
 msgstr "Informationsquelle"
 
-#: attendee/models.py:143
+#: attendee/models.py:140
 msgid "How have you become aware of this event?"
 msgstr "Wie bist du auf den Dev Day aufmerksam geworden?"
 
-#: attendee/models.py:144
+#: attendee/models.py:141
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: attendee/models.py:147
+#: attendee/models.py:144
 msgid "Attendee"
 msgstr "Teilnehmer"
 
-#: attendee/models.py:148
+#: attendee/models.py:145
 msgid "Attendees"
 msgstr "Teilnehmer"
+
+#: attendee/templates/attendee/devdayuser_confirm_delete.html:3
+msgid "Delete profile"
+msgstr "Teilnehmerprofil löschen"
+
+#: attendee/templates/attendee/devdayuser_confirm_delete.html:6
+#, python-format
+msgid "Delete your profile %(username)s"
+msgstr "Dein Teilnehmerprofil %(username)s löschen"
+
+#: attendee/templates/attendee/devdayuser_confirm_delete.html:9
+msgid ""
+"Do you really want to delete your profile? You will not get information "
+"related to current and\n"
+"        future events and you will have to register again if you choose to "
+"attend one of our future\n"
+"        events."
+msgstr ""
+"Willst du dein Teilnehmerprofil wirklich löschen? Die Löschung hat zur "
+"Folge, dass du keine Informationen zu aktuellen und zukünftigen "
+"Verantstaltungen mehr von uns bekommen wirst. Du wirst dich neu anmelden "
+"müssen, wenn du dich zukünftig entscheidest wieder an einer unserer "
+"Veranstaltungen teilzunehmen."
+
+#: attendee/templates/attendee/devdayuser_confirm_delete.html:12
+msgid "Confirm"
+msgstr "Bestätigen"
 
 #: attendee/templates/attendee/login_or_register.html:23
 msgid "Register now for Dev Day"
@@ -192,13 +219,17 @@ msgstr "Nutzerprofil für %(username)s"
 msgid "You are registered for these events"
 msgstr "Du bist angemeldet für diese Veranstaltungen"
 
-#: attendee/templates/attendee/profile.html:19
+#: attendee/templates/attendee/profile.html:20
 msgid "Cancel Registration"
 msgstr "Anmeldung stornieren"
 
-#: attendee/templates/attendee/profile.html:25
+#: attendee/templates/attendee/profile.html:26
 msgid "You are not currently registered to participate in any event."
 msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."
+
+#: attendee/templates/attendee/profile.html:31
+msgid "Delete your account"
+msgstr "Dein Teilnehmerprofil löschen"
 
 #~ msgid "Date joined"
 #~ msgstr "Angemeldet seit"

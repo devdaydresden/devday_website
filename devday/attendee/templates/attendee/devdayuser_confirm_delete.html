@@ -1,0 +1,15 @@
+{% extends "devday_site.html" %}
+{% load i18n cms_tags crispy_forms_tags %}
+{% block title %}{% trans "Delete profile" %}{% endblock %}
+{% block content_body %}
+  <div class="col-lg-offset-2 col-lg-8 col-md-12">
+    <h1>{% blocktrans with username=user.get_username %}Delete your profile {{ username }}{% endblocktrans %}</h1>
+    <form method="post">
+      {% csrf_token %}
+      <p>{% blocktrans %}Do you really want to delete your profile? You will not get information related to current and
+        future events and you will have to register again if you choose to attend one of our future
+        events.{% endblocktrans %}</p>
+      <input class="btn btn-primary" type="submit" value="{% trans "Confirm" %}"/>
+    </form>
+  </div>
+{% endblock %}

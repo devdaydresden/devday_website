@@ -10,15 +10,16 @@ from django.db.transaction import atomic
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.views.generic import TemplateView, View, UpdateView
+from django.views.generic import TemplateView, View, UpdateView, DeleteView
 from django.views.generic.list import BaseListView
 from registration import signals
 from registration.backends.hmac.views import RegistrationView
 
 from attendee.forms import (AttendeeRegistrationForm, EventRegistrationForm,
                             RegistrationAuthenticationForm, AttendeeProfileForm)
+from attendee.models import DevDayUser
 from event.models import Event
-from talk.models import Attendee
+from talk.models import Attendee, Talk
 
 User = get_user_model()
 
@@ -36,6 +37,7 @@ class AttendeeProfileView(LoginRequiredMixin, UpdateView):
         context = super(AttendeeProfileView, self).get_context_data(**kwargs)
         context['events'] = self.request.user.get_events().order_by('id')
         context['event_id'] = settings.EVENT_ID
+        context['has_talks'] = Talk.objects.filter(speaker__user__user=context['object']).count() > 0
         return context
 
 
@@ -204,3 +206,19 @@ class AttendeeListView(StaffUserMixin, BaseListView):
             return response
         finally:
             output.close()
+
+
+class AttendeeDeleteView(LoginRequiredMixin, DeleteView):
+    model = DevDayUser
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def delete(self, request, *args, **kwargs):
+        user = self.get_object()
+        if Talk.objects.filter(speaker__user__user=user).count() > 0:
+            return HttpResponse(status=409)
+        return super(AttendeeDeleteView, self).delete(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('pages-root')

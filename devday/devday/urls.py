@@ -11,7 +11,7 @@ from django.views.static import serve as serve_static
 
 from attendee.views import (AttendeeCancelView, AttendeeProfileView,
                             AttendeeRegistrationView, RegisterSuccessView,
-                            login_or_register_attendee_view)
+                            login_or_register_attendee_view, AttendeeDeleteView)
 from devday.views import ImprintView, exception_test_view
 from talk.views import (SpeakerProfileView, SpeakerListView, TalkDetails,
                         TalkListView, InfoBeamerXMLView, TalkVideoView, TalkListPreviewView, RedirectVideoView)
@@ -19,17 +19,15 @@ from talk.views import (SpeakerProfileView, SpeakerListView, TalkDetails,
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),  # NOQA
-    url(r'^sitemap\.xml$', sitemap_view,
-        {'sitemaps': {'cmspages': CMSSitemap}}),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^sitemap\.xml$', sitemap_view, {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),
-    url(r'^attendee/register/$',
-        AttendeeRegistrationView.as_view(),
-        name='registration_register'),
+    url(r'^attendee/register/$', AttendeeRegistrationView.as_view(), name='registration_register'),
     url(r'^attendee/cancel/(?P<event>\d+)$', AttendeeCancelView.as_view(), name='attendee_cancel'),
     url(r'^register/$', login_or_register_attendee_view, name='login_or_register_attendee'),
     url(r'^register/success/$', RegisterSuccessView.as_view(), name='register_success'),
     url(r'^accounts/', include('devday.registration_urls')),
+    url(r'^accounts/delete/$', AttendeeDeleteView.as_view(), name='attendee_delete'),
     url(r'^accounts/profile/$', AttendeeProfileView.as_view(), name='user_profile'),
     url(r'^speakers/$', SpeakerListView.as_view(), name='speaker_list'),
     url(r'^schedule\.xml$', InfoBeamerXMLView.as_view()),

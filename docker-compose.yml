@@ -1,0 +1,37 @@
+version: '3'
+services:
+  db:
+    build:
+      context: docker/db
+    ports:
+      - "15432:5432"
+    restart: always
+    volumes:
+      - "pg_data:/var/lib/postgresql/data"
+  app:
+    build:
+      context: .
+      dockerfile: docker/devday/Dockerfile
+    ports:
+      - "18000:8000"
+    depends_on:
+      - db
+    volumes:
+      - "devday_media:/srv/devday/media"
+      - "devday_static:/srv/devday/static"
+      - "./devday:/srv/devday/devday"
+  revproxy:
+    build:
+      context: docker/revproxy
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+    volumes:
+      - "devday_media:/usr/local/apache2/htdocs/media"
+      - "devday_static:/usr/local/apache2/htdocs/static"
+
+volumes:
+  devday_media:
+  devday_static:
+  pg_data:

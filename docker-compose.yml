@@ -17,9 +17,9 @@ services:
     depends_on:
       - db
     volumes:
+      - "./devday:/srv/devday/devday"
       - "devday_media:/srv/devday/media"
       - "devday_static:/srv/devday/static"
-      - "./devday:/srv/devday/devday"
   revproxy:
     build:
       context: docker/revproxy

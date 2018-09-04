@@ -29,7 +29,7 @@ RUN apt-get update && \
     ln -fs /usr/lib/python2.7/plat-x86_64-linux-gnu/_sysconfigdata_nd.py /usr/lib/python2.7/ && \
     mkdir -p /srv/devday
 
-VOLUME /srv/devday/media /srv/devday/static
+VOLUME /srv/devday/devday /srv/devday/media /srv/devday/static
 WORKDIR /srv/devday
 
 ADD devday/dev_requirements.txt devday/requirements.txt /srv/devday/
@@ -38,7 +38,7 @@ RUN pip install --upgrade pip && \
 
 ADD devday /srv/devday/
 ADD docker/devday/uwsgi.ini /srv/devday/
-ADD docker/devday/devday.wsgi /srv/devday/devday/
+ADD docker/devday/devday.wsgi /srv/devday/
 RUN python manage.py collectstatic --noinput
 
 CMD ["uwsgi", "--ini", "/srv/devday/uwsgi.ini"]

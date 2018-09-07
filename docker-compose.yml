@@ -18,8 +18,8 @@ services:
       - db
     volumes:
       - "./devday:/srv/devday/devday"
-      - "devday_media:/srv/devday/media"
-      - "devday_static:/srv/devday/static"
+      - "devday_media:/srv/devday/devday/media"
+      - "devday_static:/srv/devday/devday/static"
   revproxy:
     build:
       context: docker/revproxy

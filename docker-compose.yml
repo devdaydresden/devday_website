@@ -13,7 +13,8 @@ services:
       context: .
       dockerfile: docker/devday/Dockerfile
     ports:
-      - "18000:8000"
+      - "8000:8000"
+      - "18080:7000"
     depends_on:
       - db
     volumes:

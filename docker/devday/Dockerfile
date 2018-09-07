@@ -21,6 +21,7 @@ ENV DEVDAY_PG_PASSWORD ${DEVDAY_POSTGRES_PASSWORD}
 ENV DEVDAY_SECRET ${DEVDAY_SECRET}
 
 EXPOSE 8000
+EXPOSE 7000
 
 RUN apt-get update && \
     apt-get install -y uwsgi-plugin-python uwsgi && \

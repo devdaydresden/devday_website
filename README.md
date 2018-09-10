@@ -144,3 +144,15 @@ Attendees, including speakers, can review and update their personal information.
 ## Special URLS
 
 * **/schedule.xml** InfoBeamer data URL.
+
+
+# New local development setup with docker-compose
+
+* install docker
+* install Python 2.x (apt install python, brew install python2)
+* pip install docker-compose
+* docker-compose up --build
+* take dump from existing system
+  * gunzip -c $dump/db-20180904-133216.sql.gz | docker-compose exec -T db psql -U devday devday
+* run missing migrations on database
+  * docker-compose exec app python devday/manage.py migrate

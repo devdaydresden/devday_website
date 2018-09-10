@@ -13,13 +13,14 @@ services:
       context: .
       dockerfile: docker/devday/Dockerfile
     ports:
-      - "18000:8000"
+      - "8000:8000"
+      - "18080:7000"
     depends_on:
       - db
     volumes:
       - "./devday:/srv/devday/devday"
-      - "devday_media:/srv/devday/media"
-      - "devday_static:/srv/devday/static"
+      - "devday_media:/srv/devday/devday/media"
+      - "devday_static:/srv/devday/devday/static"
   revproxy:
     build:
       context: docker/revproxy

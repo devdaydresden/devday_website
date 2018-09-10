@@ -1,0 +1,50 @@
+{
+  "name": "devday17-frontend",
+  "description": "Frontend for the devday17 site",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "autoprefixer": "^6.0.3",
+    "browser-sync": "^2.12.3",
+    "browserify": "^13.0.0",
+    "del": "^2.2.0",
+    "graceful-fs": "^4.1.3",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-changed": "^1.3.0",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-cssnano": "^2.1.1",
+    "gulp-file-include": "0.11.x",
+    "gulp-header": "^1.7.1",
+    "gulp-if": "^2.0.0",
+    "gulp-jshint": "^2.0.0",
+    "gulp-jshint-xml-file-reporter": "^0.5.1",
+    "gulp-plumber": "^1.1.0",
+    "gulp-print": "^2.0.1",
+    "gulp-replace-task": "^0.11.0",
+    "gulp-sass": "^2.3.1",
+    "gulp-scss-lint": "^0.3.9",
+    "gulp-sftp": "^0.1.5",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.7",
+    "gulp-zip": "^3.2.0",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.1.0",
+    "minimist": "^1.2.0",
+    "mustache": "^2.2.1",
+    "node-sass": "^3.6.0",
+    "node-syntaxhighlighter": "^0.8.1",
+    "require-dir": "^0.3.0",
+    "run-sequence": "^1.1.5",
+    "through": "^2.3.8"
+  },
+  "engines": {
+    "node": "~8.11.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
+  }
+}

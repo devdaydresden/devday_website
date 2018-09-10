@@ -9,6 +9,7 @@ routing.bat
 __pycache__/
 dumps/
 devday/devday.log
+.DS_Store
 
 # static files that get uploaded independently from this repo
 devday/devday/static/admin/
@@ -21,3 +22,5 @@ devday/devday/static/preview_images/
 devday/devday/static/schedule_static.xml
 devday/devday/static/sortedm2m/
 devday/devday/static/treebeard/
+
+node_modules/

@@ -21,6 +21,7 @@ ENV DEVDAY_PG_PASSWORD ${DEVDAY_POSTGRES_PASSWORD}
 ENV DEVDAY_SECRET ${DEVDAY_SECRET}
 
 EXPOSE 8000
+EXPOSE 7000
 
 RUN apt-get update && \
     apt-get install -y uwsgi-plugin-python uwsgi && \
@@ -29,16 +30,15 @@ RUN apt-get update && \
     ln -fs /usr/lib/python2.7/plat-x86_64-linux-gnu/_sysconfigdata_nd.py /usr/lib/python2.7/ && \
     mkdir -p /srv/devday
 
-VOLUME /srv/devday/devday /srv/devday/media /srv/devday/static
+VOLUME /srv/devday/devday /srv/devday/devday/media /srv/devday/devday/static
 WORKDIR /srv/devday
 
 ADD devday/dev_requirements.txt devday/requirements.txt /srv/devday/
 RUN pip install --upgrade pip && \
     pip install -r dev_requirements.txt
 
-ADD devday /srv/devday/
 ADD docker/devday/uwsgi.ini /srv/devday/
 ADD docker/devday/devday.wsgi /srv/devday/
-RUN python manage.py collectstatic --noinput
 
+WORKDIR /srv/devday/devday
 CMD ["uwsgi", "--ini", "/srv/devday/uwsgi.ini"]

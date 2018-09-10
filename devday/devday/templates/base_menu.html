@@ -2,12 +2,12 @@
 {% show_menu 0 100 100 100 %}
 {% if user.is_authenticated %}
     {% if is_committee_member %}
-        <li><a href="{% url 'talk_overview' %}">{% trans "Session selection" %}</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'talk_overview' %}">{% trans "Session selection" %}</a></li>
     {% endif %}
-    <li><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
-    <li><a href="
+    <li class="nav-item"><a class="nav-link" href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="
             {% if user.get_speaker %}{% url 'speaker_profile' pk=user.get_speaker.pk %}{% else %}{% url 'user_profile' %}{% endif %}">{% trans "Profile" %}</a>
     </li>
 {% else %}
-    <li><a href="{% url 'auth_login' %}">{% trans "Login" %}</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'auth_login' %}">{% trans "Login" %}</a></li>
 {% endif %}

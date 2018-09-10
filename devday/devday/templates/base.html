@@ -17,12 +17,24 @@
 <body class="{% block body_classes %}site-template{% endblock %}">
     {% cms_toolbar %}
     {% block navigation %}
+
     <div class="container-fluid">
+        <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-dark">
+            <a href="{% url "pages-root" %}" class="navbar-brand"><img src="{% static "images/logo-2018.png" %}" alt="Dev Day 2018"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    {% include "base_menu.html" %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+
         <div class="{% block promo_classes %}row promo site{% endblock %}">
             <nav class="navbar navbar-default">
-                <div class="navbar-header">
-                    <a href="{% url "pages-root" %}"><img src="{% static "images/logo-2018.png" %}" alt="Dev Day 2018"></a>
-                </div>
+
                 <div class="collapse navbar-collapse navbar-desktop">
                     <ul class="nav navbar-nav navbar-right">
                         {% include "base_menu.html" %}

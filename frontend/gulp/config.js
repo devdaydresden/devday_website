@@ -9,7 +9,7 @@
 var basepath           = './';
 var assets             = '../devday/devday/static';
 var srcDir             = 'src';
-var bower              = 'bower_components';
+var nodemodules              = 'node_modules';
 var srcTest            = 'src-test';
 var fs                 = require('fs');
 var pkg                = JSON.parse(fs.readFileSync('./package.json'));
@@ -71,16 +71,18 @@ module.exports = {
 
     js: {
         src:  [
-            bower  + '/jquery/dist/jquery.js',
-            bower  + '/bootstrap-sass-official/assets/javascripts/bootstrap.min.js',
-            srcDir + '/js/libs/detectizr.min.js',
-            srcDir + '/js/libs/modernizr.min.js',
-            srcDir + '/js/libs/tether.min.js',
-            srcDir + '/js/libs/twitterFetcher_min.js',
-            srcDir + '/js/libs/jquery.bsPhotoGallery.js',
-            srcDir + '/js/core/layer.js',
-            srcDir + '/js/core/files.js',
-            srcDir + '/js/core/js-registry.js'
+            nodemodules + '/jquery/dist/jquery.js',
+            nodemodules + '/popper.js/dist/umd/popper.js',
+            nodemodules + '/popper.js/dist/umd/popper-utils.js',
+            nodemodules + '/bootstrap/dist/js/bootstrap.js',
+            nodemodules + '/truncate.js/dist/truncate.js',
+            srcDir + '/js/core/class-instance-manager.js',
+            srcDir + '/js/core/event-handler.js',
+            srcDir + '/js/core/csrf-handler.js',
+            srcDir + '/js/core/resize-listener.js',
+            srcDir + '/js/core/viewport-listener.js',
+            srcDir + '/js/components/collapse.js',
+            srcDir + '/js/core/devday-registry.js',
         ],
         dest: assets + '/js',
         filename: 'main.js',

@@ -1,5 +1,79 @@
-$testvar: #000;
 
-body {
-    background: $testvar;
-}
+@import 'variables.scss';
+
+// Core variables and mixins
+@import '../../node_modules/bootstrap/scss/functions.scss';
+
+@import '../../node_modules/bootstrap/scss/variables.scss';
+
+@import '../../node_modules/bootstrap/scss/mixins.scss';
+
+//@import '../../node_modules/bootstrap/scss/custom.scss';
+// Reset and dependencies
+@import '../../node_modules/bootstrap/scss/bootstrap-reboot.scss';
+
+@import '../../node_modules/bootstrap/scss/print.scss';
+
+// Core CSS
+@import '../../node_modules/bootstrap/scss/reboot.scss';
+
+@import '../../node_modules/bootstrap/scss/type.scss';
+
+@import '../../node_modules/bootstrap/scss/images.scss';
+
+@import '../../node_modules/bootstrap/scss/code.scss';
+
+@import '../../node_modules/bootstrap/scss/grid.scss';
+
+@import '../../node_modules/bootstrap/scss/tables.scss';
+
+@import '../../node_modules/bootstrap/scss/forms.scss';
+
+@import '../../node_modules/bootstrap/scss/buttons.scss';
+
+// Components
+@import '../../node_modules/bootstrap/scss/transitions.scss';
+
+@import '../../node_modules/bootstrap/scss/dropdown.scss';
+
+@import '../../node_modules/bootstrap/scss/button-group.scss';
+
+@import '../../node_modules/bootstrap/scss/input-group.scss';
+
+@import '../../node_modules/bootstrap/scss/custom-forms.scss';
+
+@import '../../node_modules/bootstrap/scss/nav.scss';
+
+@import '../../node_modules/bootstrap/scss/navbar.scss';
+
+@import '../../node_modules/bootstrap/scss/card.scss';
+
+@import '../../node_modules/bootstrap/scss/breadcrumb.scss';
+
+@import '../../node_modules/bootstrap/scss/pagination.scss';
+
+@import '../../node_modules/bootstrap/scss/badge.scss';
+
+@import '../../node_modules/bootstrap/scss/jumbotron.scss';
+
+@import '../../node_modules/bootstrap/scss/alert.scss';
+
+@import '../../node_modules/bootstrap/scss/progress.scss';
+
+@import '../../node_modules/bootstrap/scss/media.scss';
+
+@import '../../node_modules/bootstrap/scss/list-group.scss';
+
+@import '../../node_modules/bootstrap/scss/close.scss';
+
+// Components w/ JavaScript
+@import '../../node_modules/bootstrap/scss/modal.scss';
+
+@import '../../node_modules/bootstrap/scss/tooltip.scss';
+
+@import '../../node_modules/bootstrap/scss/popover.scss';
+
+@import '../../node_modules/bootstrap/scss/carousel.scss';
+
+// Utility classes
+@import '../../node_modules/bootstrap/scss/utilities.scss';

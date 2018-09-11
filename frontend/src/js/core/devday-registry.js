@@ -25,7 +25,6 @@ var devdayUIRegistry = function () {
         window.devdayUI = that;
 
         // init core classes
-        that.Viewport = new ViewportListener();
         that.Events = new EventHandler();
         that.Resize = new ResizeListener();
 
@@ -34,25 +33,13 @@ var devdayUIRegistry = function () {
 
         // init single class instances
         that.collapse = new ClassInstanceManager('.collapse', 'Collapse');
+        that.navbar = new ClassInstanceManager('[data-ui-navbar]', 'Navbar');
     };
 
     that.addInstances = function ($container) {
 
         var start = Date.now();
 
-        that.tabbed.addInstances($container);
-        that.FormValidate.addInstances($container);
-        that.tableResponsive.addInstances($container);
-        that.advancedTableResponsive.addInstances($container);
-        that.teaserCarousel.addInstances($container);
-        that.responsiveImage.addInstances($container);
-        that.navigationElementlist.addInstances($container);
-        that.navigationElementlistButtons.addInstances($container);
-        that.carousel.addInstances($container);
-        that.maps.addInstances($container);
-        that.slider.addInstances($container);
-        that.instantSubmit.addInstances($container);
-        that.autocomplete.addInstances($container);
         that.collapse.addInstances($container);
         //that.technicalParameterSearch.addInstances($container);
 

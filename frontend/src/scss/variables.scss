@@ -1,5 +1,7 @@
 $highlight: #35a4a3;
-$base: #272c59;
+$base: #171034;
+$base-v2: #2A2D49;
+$base-v3: #171034;
 $white: #ffffff;
 $promogradient-bright: #3a3f69;
 $promogradient-dark: #272c59;
@@ -11,6 +13,7 @@ $highlight-dark: #488483;
 $highlight-darker: #3f8b89;
 $black: #000000;
 $black-20: rgba(0, 0, 0, 0.2);
+$black-50: rgba(0, 0, 0, 0.5);
 $white-20: rgba(255, 255, 255, 0.2);
 $black-80: rgba(0, 0, 0, 0.8);
 
@@ -84,3 +87,5 @@ $mf-focus-color: $highlight !default;
 $mf-error-color: #d9534f !default;
 
 $mf-transition-speed: 0.28s !default;
+
+$primary: $highlight;

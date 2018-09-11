@@ -80,8 +80,8 @@ module.exports = {
             srcDir + '/js/core/event-handler.js',
             srcDir + '/js/core/csrf-handler.js',
             srcDir + '/js/core/resize-listener.js',
-            srcDir + '/js/core/viewport-listener.js',
             srcDir + '/js/components/collapse.js',
+            srcDir + '/js/components/navbar.js',
             srcDir + '/js/core/devday-registry.js',
         ],
         dest: assets + '/js',
@@ -109,19 +109,16 @@ module.exports = {
 
     images: {
         src:  [
-            srcDir + '/images/*.*',
-            srcDir + '/images/sponsors/*.*',
-            srcDir + '/images/gallery/*.*'
+            srcDir + '/assets/img/*.*'
         ],
-        dest: assets + '/images'
+        dest: assets + '/img'
     },
 
     fonts: {
         src:  [
-            srcDir + '/fonts/*.*',
-            'bower_components/simple-line-icons/fonts/*.*'
+            srcDir + '/assets/fonts/**/*'
         ],
-        dest: assets + '/fonts'
+        dest: assets + '/fonts/'
     },
 
     browsersync: {

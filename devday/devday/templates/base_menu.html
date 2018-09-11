@@ -1,5 +1,20 @@
 {% load i18n menu_tags  %}
-{% show_menu 0 100 100 100 %}
+{% comment "TODO Refactor Menu to replace static components below" %}
+    {% show_menu 0 100 100 100 %}
+{% endcomment %}
+<li class="nav-item"><a class="nav-link" href="#">Startseite</a></li>
+<li class="nav-item"><a class="nav-link" href="#">Sessions</a></li>
+<li class="nav-item"><a class="nav-link" href="#">Speaker</a></li>
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Archiv
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="#">devday.16</a>
+        <a class="dropdown-item" href="#">devday.17</a>
+        <a class="dropdown-item" href="#">devday.18</a>
+    </div>
+</li>
 {% if user.is_authenticated %}
     {% if is_committee_member %}
         <li class="nav-item"><a class="nav-link" href="{% url 'talk_overview' %}">{% trans "Session selection" %}</a></li>

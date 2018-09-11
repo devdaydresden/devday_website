@@ -1,0 +1,134 @@
+.navbar {
+    border-bottom: 1px solid fade-out($gray-900, 0.9);
+    background-color: $base;
+    @include transition-all;
+
+    .navbar-brand {
+        color: $primary;
+
+        font-weight: 700;
+        text-transform: uppercase;
+
+        &:focus,
+        &:hover {
+            color: darken($primary, 0.1);
+        }
+    }
+
+    .navbar-nav {
+        > li.nav-item {
+            > a.nav-link,
+            > a.nav-link:focus {
+                color: $white;
+
+                font-size: 18px;
+                font-weight: 300;
+                text-shadow: 0 1px 1px $black-20;
+
+                &:hover {
+                    color: $primary;
+                }
+
+                &.active {
+                    color: $highlight !important;
+
+                    background-color: transparent;
+
+                    &:hover {
+                        background-color: transparent;
+                    }
+                }
+            }
+
+            &.dropdown {
+                &.show {
+                    > a {
+                        color: $highlight;
+                    }
+                }
+
+                .dropdown-menu {
+                    padding: 0;
+
+                    background: $base-v2;
+
+                    box-shadow: 0 2px 4px $black-50;
+
+                    &:before {
+                        display: block;
+                        position: relative;
+
+                        width: 0;
+                        height: 0;
+
+                        border-style: solid;
+                        border-width: 0 10px 10px 10px;
+                        border-color: transparent transparent $base-v2 transparent;
+                        content: ' ';
+                        margin-top: -10px;
+                        margin-left: calc(50% - 16px);
+                    }
+
+                    a {
+                        color: $white;
+
+                        font-weight: 200;
+                        text-align: center;
+                        border-bottom: 1px solid $white-20;
+
+                        &:last-child {
+                            border-bottom: 0;
+                        }
+
+                        &:hover {
+                            background: transparent;
+
+                            color: $highlight;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @media (min-width: 992px) {
+        border-color: transparent;
+        background-color: transparent;
+
+        .navbar-brand {
+            color: fade-out($base-v3, 0.3);
+
+            &:focus,
+            &:hover {
+                color: $white;
+            }
+        }
+
+        .navbar-nav > li.nav-item > a.nav-link {
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-nav > li.nav-item > a.nav-link,
+        .navbar-nav > li.nav-item > a.nav-link:focus {
+
+            &:hover {
+                color: $highlight;
+            }
+        }
+
+        &.navbar-shrink {
+            background: linear-gradient(-29deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
+
+            border-bottom: 1px solid $highlight;
+
+            .navbar-brand {
+                color: $primary;
+
+                &:focus,
+                &:hover {
+                    color: darken($primary, 0.1);
+                }
+            }
+        }
+    }
+}

@@ -17,55 +17,40 @@
 <body class="{% block body_classes %}site-template{% endblock %}">
     {% cms_toolbar %}
     {% block navigation %}
-
-    <div class="container-fluid">
-        <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-dark">
-            <a href="{% url "pages-root" %}" class="navbar-brand"><img src="{% static "images/logo-2018.png" %}" alt="Dev Day 2018"></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav mr-auto">
-                    {% include "base_menu.html" %}
-                </ul>
-            </div>
-        </nav>
-    </div>
-
-        <div class="{% block promo_classes %}row promo site{% endblock %}">
-            <nav class="navbar navbar-default">
-
-                <div class="collapse navbar-collapse navbar-desktop">
-                    <ul class="nav navbar-nav navbar-right">
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav" data-ui-navbar>
+            <div class="container">
+                <a href="{% url "pages-root" %}" class="navbar-brand"><img src="{% static "images/logo-2018.png" %}" alt="Dev Day 2018"></a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto">
                         {% include "base_menu.html" %}
                     </ul>
                 </div>
-                <div class="collapse navbar-collapse navbar-mobile">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#" class="menu-trigger"><i class="icon-menu"></i></a>
-                            <ul>
-                                {% include "base_menu.html" %}
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="col-xs-12 call-to-action">
-                {% block promo_content %}
-                    <img src="{% static "images/digital-reality-claim-2x.png" %}" alt="Let Code Rule" />
-                    {% if talk_submission_open %}
-                        {% static_placeholder "call-for-papers-date" %}
-                    {% else %}
-                        {% static_placeholder "event-date" %}
-                    {% endif %}
-                {% endblock %}
             </div>
-            {% block read_more %}
-            {% endblock %}
-        </div>
-    </div>
+        </nav>
     {% endblock navigation %}
+
+    <header class="masthead text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-10 mx-auto call-to-action">
+                    <span class="date">24. April 2019</span>
+                    <span class="venue">Messe Dresden</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {% block promo_content %}
+                        {% if talk_submission_open %}
+                            {% static_placeholder "call-for-papers-date" %}
+                        {% else %}
+                            {% static_placeholder "event-date" %}
+                        {% endif %}
+                    {% endblock %}
+
     {% block content %}
     <div class="row">
         <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">

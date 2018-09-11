@@ -8014,7 +8014,10 @@ var ResizeListener = function () {
 };
 
 /**
+<<<<<<< Updated upstream
  * Build on 2018-9-10
+=======
+ * Build on 2018-9-7
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8045,6 +8048,61 @@ var Collapse = function ($element, args) {
 
     that.initCollapse();
 };
+
+/**
+ * Build on 2018-9-7
+>>>>>>> Stashed changes
+ * @package devday17-frontend
+ * @version v1.0.0
+ */
+/**
+ *
+ * @param  {[Object]} $element The Element the function fires to
+ * @param  {[type]} args     Arguments
+ */
+var Navbar = function ($element, args) {
+
+    'use strict';
+
+    var that = this;
+
+    /**
+     * jQuery and controll Vars
+     */
+    that.$baseElement = $element || $('[data-ui-navbar]');
+    that.$element = that.$baseElement;
+    that.$body = $('body');
+
+
+    /**
+     * Init of the whole function
+     */
+    that.initNavbar = function () {
+        that.$body.scrollspy({
+            target: '#mainNav',
+            offset: 57
+        });
+
+        $(window).on('scroll',function(){that.navbarHandle()});
+
+        that.navbarHandle();
+    };
+
+    that.navbarHandle = function () {
+        if (that.$element.offset().top > 100) {
+            that.$element.addClass("navbar-shrink");
+        } else {
+            that.$element.removeClass("navbar-shrink");
+        }
+    }
+
+
+    that.initNavbar();
+
+};
+
+
+
 
 /**
  * Build on 2018-9-10
@@ -8078,7 +8136,6 @@ var devdayUIRegistry = function () {
         window.devdayUI = that;
 
         // init core classes
-        that.Viewport = new ViewportListener();
         that.Events = new EventHandler();
         that.Resize = new ResizeListener();
 
@@ -8087,25 +8144,13 @@ var devdayUIRegistry = function () {
 
         // init single class instances
         that.collapse = new ClassInstanceManager('.collapse', 'Collapse');
+        that.navbar = new ClassInstanceManager('[data-ui-navbar]', 'Navbar');
     };
 
     that.addInstances = function ($container) {
 
         var start = Date.now();
 
-        that.tabbed.addInstances($container);
-        that.FormValidate.addInstances($container);
-        that.tableResponsive.addInstances($container);
-        that.advancedTableResponsive.addInstances($container);
-        that.teaserCarousel.addInstances($container);
-        that.responsiveImage.addInstances($container);
-        that.navigationElementlist.addInstances($container);
-        that.navigationElementlistButtons.addInstances($container);
-        that.carousel.addInstances($container);
-        that.maps.addInstances($container);
-        that.slider.addInstances($container);
-        that.instantSubmit.addInstances($container);
-        that.autocomplete.addInstances($container);
         that.collapse.addInstances($container);
         //that.technicalParameterSearch.addInstances($container);
 

@@ -1,0 +1,136 @@
+.call-to-action {
+    z-index: 6;
+
+    > * {
+        display: block;
+        position: relative;
+
+        font-size: 24px;
+        float: left;
+        clear: left;
+        left: 50%;
+        transform: translateX(-50%);
+        text-transform: uppercase;
+    }
+
+    > .venue {
+        min-width: 285px;
+
+        padding: 4px;
+
+        background: $base-v3;
+
+        color: $white;
+
+        font-family: 'Source Sans Pro';
+        font-weight: 300;
+        font-size: 20px;
+        top: -4px;
+        z-index: 3;
+        padding-top: 5px;
+
+        &:before,
+        &:after {
+            position: absolute;
+
+            width: 0;
+            height: 0;
+
+            content: ' ';
+            border-style: solid;
+            top: 0;
+        }
+
+        &:before {
+            border-width: 0 0 39px 30px;
+            border-color: transparent transparent $base transparent;
+            left: -29px;
+        }
+
+        &:after {
+            border-width: 39px 0 0 30px;
+            border-color: transparent transparent transparent $base;
+            right: -29px;
+        }
+
+    }
+
+    > .date {
+        min-width: 215px;
+
+        padding: 4px;
+
+        background: $white;
+
+        color: $highlight;
+
+        font-family: 'Source Sans Pro';
+        font-weight: 400;
+        font-size: 24px;
+        z-index: 4;
+        line-height: 29px;
+
+        &:before,
+        &:after {
+            position: absolute;
+
+            width: 0;
+            height: 0;
+
+            content: ' ';
+            border-style: solid;
+            top: 0;
+        }
+
+        &:before {
+            border-width: 0 28px 38px 0;
+            border-color: transparent $white transparent transparent;
+            left: -28px;
+        }
+
+        &:after {
+            border-width: 38px 28px 0 0;
+            border-color: $white transparent transparent transparent;
+            right: -28px;
+        }
+
+    }
+
+    //> span,
+    //> p,
+    //> .cms-plugin {
+    //    margin: 0 auto;
+//
+    //    color: $highlight;
+//
+    //    font-size: 22px;
+    //    margin-top: 12px;
+    //    text-align: center;
+    //}
+
+    > p {
+        color: $highlight;
+
+        font-size: 22px;
+        margin-top: 12px;
+        text-align: center;
+    }
+
+    .btn {
+        display: inline-block !important;
+        position: relative;
+
+        margin: 8px auto;
+
+        left: 50%;
+        transform: translateX(-50%);
+
+        &:hover,
+        &:focus {
+            border: none;
+            background: $highlight-darker;
+
+            color: $white;
+        }
+    }
+}

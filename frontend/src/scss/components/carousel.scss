@@ -2,7 +2,11 @@
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
         width: 30px;
-
         height: 30px;
-     }
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        background: transparent;
+    }
 }

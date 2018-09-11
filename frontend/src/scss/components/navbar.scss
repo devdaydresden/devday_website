@@ -1,7 +1,61 @@
 .navbar {
-    border-bottom: 1px solid fade-out($gray-900, 0.9);
-    background-color: $base;
     @include transition-all;
+    @include media-breakpoint-up(lg) {
+        border-color: transparent;
+        background-color: transparent;
+
+        .navbar-brand {
+            color: fade-out($base-v3, 0.3);
+
+            &:focus,
+            &:hover {
+                color: $white;
+            }
+        }
+
+        .navbar-nav > li.nav-item > a.nav-link {
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-nav > li.nav-item {
+            border-bottom: 0 !important;
+        }
+
+        .navbar-nav > li.nav-item > a.nav-link,
+        .navbar-nav > li.nav-item > a.nav-link:focus {
+
+            &:hover {
+                color: $highlight;
+            }
+        }
+    }
+
+    &.navbar-shrink {
+        background: linear-gradient(-29deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
+
+        border-bottom: 1px solid $highlight;
+
+        .navbar-brand {
+            color: $primary;
+
+            &:focus,
+            &:hover {
+                color: darken($primary, 0.1);
+            }
+        }
+    }
+
+    &.navbar-dark {
+        .navbar-toggler {
+            color: $white;
+
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+    }
 
     .navbar-brand {
         color: $primary;
@@ -17,10 +71,17 @@
 
     .navbar-nav {
         > li.nav-item {
+            border-bottom: 1px solid $white-20;
+
+            &:last-child {
+                border-bottom: 0;
+            }
+
             > a.nav-link,
             > a.nav-link:focus {
                 color: $white;
 
+                text-align: center;
                 font-size: 18px;
                 font-weight: 300;
                 text-shadow: 0 1px 1px $black-20;
@@ -86,47 +147,6 @@
                             color: $highlight;
                         }
                     }
-                }
-            }
-        }
-    }
-
-    @media (min-width: 992px) {
-        border-color: transparent;
-        background-color: transparent;
-
-        .navbar-brand {
-            color: fade-out($base-v3, 0.3);
-
-            &:focus,
-            &:hover {
-                color: $white;
-            }
-        }
-
-        .navbar-nav > li.nav-item > a.nav-link {
-            padding: 0.5rem 1rem;
-        }
-
-        .navbar-nav > li.nav-item > a.nav-link,
-        .navbar-nav > li.nav-item > a.nav-link:focus {
-
-            &:hover {
-                color: $highlight;
-            }
-        }
-
-        &.navbar-shrink {
-            background: linear-gradient(-29deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
-
-            border-bottom: 1px solid $highlight;
-
-            .navbar-brand {
-                color: $primary;
-
-                &:focus,
-                &:hover {
-                    color: darken($primary, 0.1);
                 }
             }
         }

@@ -43,20 +43,36 @@
         </div>
     </header>
 
-    {% block promo_content %}
-                        {% if talk_submission_open %}
-                            {% static_placeholder "call-for-papers-date" %}
-                        {% else %}
-                            {% static_placeholder "event-date" %}
-                        {% endif %}
-                    {% endblock %}
 
-    {% block content %}
-    <div class="row">
-        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">
-            {% block content_body %}{% endblock %}
+
+
+        <div class="container c-white">
+            <div class="row ">
+                <div class="col-12 col-lg-9 order-2 order-lg-1  col-center info">
+                    <div class="content-center">
+                        <h1>INFOS ZUM DEVDAY</h1>
+
+                        <p>Der Dev Day ist eine Veranstaltung für alle IT-Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Professionals sind herzlich eingeladen. Der Dev Day findet 2018 zum vierten Mal statt - bereits 2015, 2016 und 2017 begrüßten wir jeweils über 300 IT-Begeisterte verschiedenster Firmen. Auch 2018 ist die Teilnahme am Dev Day wieder kostenfrei.</p>
+
+                        <p>Wer organisiert den Dev Day? Das sind wir, die Software Engineering Community (SECO) der T-Systems Multimedia Solutions GmbH. Im Kern bestehen wir aus einem ca. 15 köpfigen Team aus Software Architekten und Entwicklern, die sich zum Ziel gesetzt haben, Wissensaustausch und Vernetzung im IT-Bereich in Dresden und darüber hinaus voranzubringen.</p>
+
+                        <p>Der Dev Day findet am 24.04.2018 in der <a href="#">Börse Dresden</a> statt.</p>
+
+                        <p>Ankommen  und Anmeldung ist zwischen 12 und 13 Uhr möglich, Beginn ist 13 Uhr und das Ende gegen 20 Uhr geplant.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-3  order-1 order-lg-2 col-center col-highlight">
+                    <div class="content-center">
+                        <p>Der Dev Day ist eine Veranstaltung für alle IT-Interessierte mit jeglichem Hintergrund. Sowohl Studierende als auch Professionals sind herzlich eingeladen.</p>
+                        <a href="#" class="btn btn-outline btn-call-action m-t-1">JETZT SESSION EINREICHEN</a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
+    <div class="container">
+    {% block content %}
+        {% block content_body %}{% endblock %}
     {% endblock %}
     <div class="row social-area">
         <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1  center">
@@ -67,9 +83,14 @@
             </ul>
         </div>
     </div>
+    {% block promo_content %}
+    {% endblock %}
     <footer>
         <img src="{% static "images/seco-logo.svg" alt="Software Engineering Community" %}"> | <a href="{% url "imprint" %}">IMPRESSUM</a>
     </footer>
+    </div>
+
+
     {% render_block "js" %}
 </body>
 </html>

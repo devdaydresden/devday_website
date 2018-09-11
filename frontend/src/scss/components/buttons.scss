@@ -1,0 +1,19 @@
+.btn {
+    border-radius: 0;
+
+    &.btn-call-action {
+        width: 100%;
+        max-width: 550px;
+        background: transparent;
+        border: 2px solid $white;
+        color: $white;
+        font-size: 18px;
+        text-transform: uppercase;
+        transition: all 250ms;
+
+        &:hover {
+            background: $highlight-dark;
+        }
+
+    }
+}

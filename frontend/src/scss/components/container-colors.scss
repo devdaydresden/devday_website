@@ -1,0 +1,23 @@
+.col-center {
+    text-align:  center;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.col-highlight {
+    color: $white;
+    background: $highlight;
+}
+
+.col-white {
+    background: $white;
+    color: $highlight;
+}
+
+.col-base {
+    background: $base;
+    color: $white;
+}

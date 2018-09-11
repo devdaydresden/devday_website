@@ -1,3 +1,14 @@
 body {
     font-family: 'Source Sans Pro';
 }
+
+.content-center {
+    width: 100%;
+}
+
+@include media-breakpoint-down(lg) {
+    .container {
+        width: 100%;
+        max-width: 100%;
+    }
+}

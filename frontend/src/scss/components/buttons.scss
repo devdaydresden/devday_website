@@ -15,5 +15,14 @@
             background: $highlight-dark;
         }
 
+        &.bright {
+            border-color: $highlight;
+            color:$highlight;
+
+            &:hover {
+                color: $white;
+            }
+        }
+
     }
 }

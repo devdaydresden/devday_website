@@ -8368,6 +8368,12 @@ p {
     color: #171034;
     margin-bottom: 1rem; }
 
+.stripe {
+  width: 100%; }
+  .stripe.c-base {
+    background: #171034;
+    color: #ffffff; }
+
 .col-center {
   text-align: center;
   display: -webkit-box;
@@ -8410,3 +8416,58 @@ p {
     transition: all 250ms; }
     .btn.btn-call-action:hover {
       background: #488483; }
+    .btn.btn-call-action.bright {
+      border-color: #35a4a3;
+      color: #35a4a3; }
+      .btn.btn-call-action.bright:hover {
+        color: #ffffff; }
+
+.carousel .carousel-control-prev-icon,
+.carousel .carousel-control-next-icon {
+  width: 30px;
+  height: 30px; }
+
+.twitter-area {
+  color: #ffffff; }
+  .twitter-area .tweet-box {
+    padding: 0;
+    text-align: left; }
+    .twitter-area .tweet-box .carousel {
+      min-height: 235px;
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -webkit-align-items: center;
+          -ms-flex-align: center;
+              align-items: center; }
+      .twitter-area .tweet-box .carousel .carousel-inner {
+        padding: 0 50px; }
+      .twitter-area .tweet-box .carousel .carousel-control-prev,
+      .twitter-area .tweet-box .carousel .carousel-control-next {
+        width: 30px; }
+    .twitter-area .tweet-box .user-row {
+      display: block;
+      float: none;
+      clear: both;
+      height: 73px;
+      margin-bottom: 12px;
+      width: 100%; }
+      .twitter-area .tweet-box .user-row img {
+        float: left;
+        margin-right: 22px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%; }
+      .twitter-area .tweet-box .user-row .name {
+        font-size: 24px;
+        display: block; }
+      .twitter-area .tweet-box .user-row .username a {
+        font-size: 18px;
+        color: #35a4a3; }
+    .twitter-area .tweet-box .tweet {
+      font-size: 18px;
+      width: 100%; }
+      .twitter-area .tweet-box .tweet a {
+        color: #35a4a3; }

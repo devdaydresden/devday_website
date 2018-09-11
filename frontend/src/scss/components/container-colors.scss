@@ -1,3 +1,14 @@
+
+
+.stripe {
+    width: 100%;
+
+    &.c-base {
+        background: $base;
+        color: $white;
+    }
+}
+
 .col-center {
     text-align:  center;
     display: flex;

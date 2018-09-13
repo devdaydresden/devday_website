@@ -4,91 +4,106 @@ The Dev Day website is built using [Django CMS](https://www.django-cms.org/).
 And consists of a Django CMS content management part and some custom Django
 apps for talk, attendee and speaker management.
 
-## use Vagrant for local development
+## Running the development environment
 
-For easy local development and deployment testing a
-[Vagrant](https://vagrantup.com/)/[VirtualBox](https://www.virtualbox.org/)
-setup is provided that builds two local virtual machines:
+You can run a local development environment easily with Docker and Docker Compose.  Make sure you have a current version both installed.
 
-* ``devbox`` containing development tools and
-* ``runbox`` containing a runtime environment that mimics the production
-  environment
+You can use [rundev.sh](./rundev.sh) to start and stop the Docker containers,
+import a database dump, and purge all local data. The necessary Docker images are built on-demand.
 
-Both virtual machines are provisioned using a shell provisioner (for setting up
-puppet-agent, ruby and librarian-puppet that installs required Puppet modules)
-and [Puppet](https://docs.puppet.com/puppet/) to setup tools, services, users,
-files and so on.
+## `build`: Build the necessary Docker images
 
-To start both boxes use:
+This should only be necessary if Postgres, Django or other service and framework versions change.
 
 ```
-vagrant up
+$ ./rundev.sh build
+Building db
+Step 1/5 : FROM postgres
+ ---> 978b82dc00dc
+
+...
+
+Step 5/5 : COPY httpd.conf /usr/local/apache2/conf/
+ ---> Using cache
+ ---> bb9f9690b35b
+Successfully built bb9f9690b35b
+Successfully tagged devday_hp_revproxy:latest
 ```
 
-If you want to run only one of the virtual machines add the box name to the
-command line. Be aware that devbox requires the PostgreSQL instance running in
-runbox if you want to use Django runserver command described below.
+## `import`: Start the development environment and import a database dump.
 
-To re-run the provisioning later (i.e. for changed Puppet manifests) us
+Any preexisting volumes will be deleted first
+```
+$ ./rundev.sh -d ~/Downloads/devday/db-20180904-133216.sql.gz -m ~/Downloads/devday/media-20180904-133216.tar.gz import
+*** Importing database dump /Users/stbe/Downloads/devday/db-20180904-133216.sql.gz and media dump /Users/stbe/Downloads/devday/media-20180904-133216.tar.gz
+    Deleting all containers and volumes
+Removing network devday_hp_default
+WARNING: Network devday_hp_default not found.
+Removing volume devday_hp_devday_media
+WARNING: Volume devday_hp_devday_media not found.
+
+...
+
+Applying filer.0009_auto_20171220_1635... OK
+Applying filer.0010_auto_20180414_2058... OK
+*** Import completed
+```
+## `start`: Run the Django app
+Start the development environment. Use existing volumes with data, or if they don't exist, with an empty data set, and run the Django app inside.
 
 ```
-vagrant provision <boxname>
+$ ./rundev.sh start
+*** Starting all containers
+Creating network "devday_hp_default" with the default driver
+Creating devday_hp_db_1 ... done
+Creating devday_hp_app_1 ... done
+Creating devday_hp_revproxy_1 ... done
+*** Running django app
+Performing system checks...
+
+System check identified no issues (0 silenced).
+September 13, 2018 - 14:50:50
+Django version 1.9.8, using settings 'devday.settings.dev'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
 ```
 
-to stop a running virtual machine use
+## `stop`: Stop the development environment
 
 ```
-vagrant halt <boxname>
+$ ./rundev.sh stop
+Stopping devday_hp_revproxy_1 ... done
+Stopping devday_hp_app_1      ... done
+Stopping devday_hp_db_1       ... done
+Removing devday_hp_revproxy_1 ... done
+Removing devday_hp_app_1      ... done
+Removing devday_hp_db_1       ... done
+Removing network devday_hp_default
 ```
 
-> All testing has been done using Vagrant 1.9.2 with VirtualBox 5.1.14, if you
-> experience issues please update to this versions first.
-
-## Services provided by runbox
-
-The runbox provides a PostgreSQL database that is exposed at 192.168.199.200:5432 as well as an Apache httpd running the
-Dev Day application using mod_wsgi as it is done in the production environment. The running Dev Day site is available at
-[http://127.0.0.1:8080/]() (forwarded from Port 80 inside the VM).
-
-## Running the application in devbox
-
-To run the Django application for local development you can do the following:
+## `purge`: Purge all containers and volumes
 
 ```
-vagrant ssh devbox
-cd /vagrant
-/srv/devday/devday.sh runserver 0.0.0.0:8000
+$ ./rundev.sh purge
+*** Purge data
+    Deleting all containers and volumes
+Stopping devday_hp_revproxy_1 ... done
+Stopping devday_hp_app_1      ... done
+Stopping devday_hp_db_1       ... done
+Removing devday_hp_revproxy_1 ... done
+Removing devday_hp_app_1      ... done
+Removing devday_hp_db_1       ... done
+Removing network devday_hp_default
+Removing volume devday_hp_devday_media
+Removing volume devday_hp_devday_static
+Removing volume devday_hp_pg_data
+    Deleting media files
 ```
 
-You should be able to access the application at [http://127.0.0.1:8000/](http://127.0.0.1:8000/) now.
 
-## Running the application locally
+# Moving data between systems
 
-You may also run the application from your local machine using the services provided by the runbox. This requires a bit
-more work than using the devbox though. You need to set the environment variables like it is done by the
-`/srv/devday/devday.sh` script before running the application and adapt the variable values.
-
-```
-export DEVDAY_PG_DBNAME="devday"
-export DEVDAY_PG_HOST="127.0.0.1"
-export DEVDAY_PG_PORT="15432"
-export DEVDAY_PG_USER="devday"
-export DEVDAY_PG_PASSWORD="secret"
-export DEVDAY_SECRET="<random_secret_created_during_provisioning>"
-export DJANGO_SETTINGS_MODULE='devday.settings.dev'
-```
-
-You will also need a Python 2.7 virtualenv with all the dependencies. Such a virtualenv can be created using
-[virtualenv](https://virtualenv.pypa.io/en/stable/) or the Virtual Environment support of an IDE (for example PyCharm).
-The requirements are defined  in [devday/requirements.txt]() and can be installed by
-[pip](https://pypi.python.org/pypi/pip).
-
-## Building dependency archive in isolation
-
-There is a [Docker](https://docker.io/) based script for building an archive with all the Python dependencies for the
-site including all required native code with CentOS 7 dependencies in [devday/deployment](). The deployment process
-could be improved by using the result of the build script instead of installing the dependencies directly on the target
-machine.
+The following sections are outdated as of September 2018, and should be deleted once they have been replaced with the current information.
 
 ## Creating a data dump
 
@@ -144,15 +159,3 @@ Attendees, including speakers, can review and update their personal information.
 ## Special URLS
 
 * **/schedule.xml** InfoBeamer data URL.
-
-
-# New local development setup with docker-compose
-
-* install docker
-* install Python 2.x (apt install python, brew install python2)
-* pip install docker-compose
-* docker-compose up --build
-* take dump from existing system
-  * gunzip -c $dump/db-20180904-133216.sql.gz | docker-compose exec -T db psql -U devday devday
-* run missing migrations on database
-  * docker-compose exec app python devday/manage.py migrate

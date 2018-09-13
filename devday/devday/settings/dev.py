@@ -71,7 +71,11 @@ LOGGING = {
     },
 }
 
-#EVENT_ID = 1
+# for a fresh database, we have only event #1
+EVENT_ID = 1
+EVENT_TITLE = "Dev Day 9999"
+EVENT_SLUG = "devday-99"
+
 TALK_SUBMISSION_OPEN = False
 
 TWITTERFEED_PROXIES = {

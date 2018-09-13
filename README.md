@@ -30,6 +30,17 @@ Successfully built bb9f9690b35b
 Successfully tagged devday_hp_revproxy:latest
 ```
 
+## `devdata`: Create database contents suitable for development
+
+```
+$ ./rundev.sh devdata
+    Starting containers
+Creating network "devday_hp_default" with the default driver
+Creating volume "devday_hp_devday_media" with default driver
+Creating volume "devday_hp_devday_static" with default driver
+...
+```
+
 ## `import`: Start the development environment and import a database dump.
 
 Any preexisting volumes will be deleted first
@@ -48,6 +59,34 @@ Applying filer.0009_auto_20171220_1635... OK
 Applying filer.0010_auto_20180414_2058... OK
 *** Import completed
 ```
+
+## `purge`: Purge all containers and volumes
+
+```
+$ ./rundev.sh purge
+*** Purge data
+    Deleting all containers and volumes
+Stopping devday_hp_revproxy_1 ... done
+Stopping devday_hp_app_1      ... done
+Stopping devday_hp_db_1       ... done
+Removing devday_hp_revproxy_1 ... done
+Removing devday_hp_app_1      ... done
+Removing devday_hp_db_1       ... done
+Removing network devday_hp_default
+Removing volume devday_hp_devday_media
+Removing volume devday_hp_devday_static
+Removing volume devday_hp_pg_data
+    Deleting media files
+```
+
+## `manage`: Run Django Admin
+
+For development and maintenance tasks, run the Django Admin command inside the app container. This simply runs `python manage.py $@`.
+
+```
+$ ./rundev.sh manage migrate
+```
+
 ## `start`: Run the Django app
 Start the development environment. Use existing volumes with data, or if they don't exist, with an empty data set, and run the Django app inside.
 
@@ -79,25 +118,6 @@ Removing devday_hp_revproxy_1 ... done
 Removing devday_hp_app_1      ... done
 Removing devday_hp_db_1       ... done
 Removing network devday_hp_default
-```
-
-## `purge`: Purge all containers and volumes
-
-```
-$ ./rundev.sh purge
-*** Purge data
-    Deleting all containers and volumes
-Stopping devday_hp_revproxy_1 ... done
-Stopping devday_hp_app_1      ... done
-Stopping devday_hp_db_1       ... done
-Removing devday_hp_revproxy_1 ... done
-Removing devday_hp_app_1      ... done
-Removing devday_hp_db_1       ... done
-Removing network devday_hp_default
-Removing volume devday_hp_devday_media
-Removing volume devday_hp_devday_static
-Removing volume devday_hp_pg_data
-    Deleting media files
 ```
 
 

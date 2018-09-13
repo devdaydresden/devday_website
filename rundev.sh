@@ -10,6 +10,8 @@ while getopts 'd:m:h?' opt; do
   case "$opt" in
   h|\?)
     echo "usage: rundev.sh -d databasedump.sql.gz -m mediadump.tar.gz import"
+    echo "       rundev.sh manage [...]"
+    echo "       rundev.sh purge"
     echo "       rundev.sh start"
     echo "       rundev.sh stop"
     ;;
@@ -28,10 +30,27 @@ done
 shift $((OPTIND-1))
 [ "${1:-}" = "--" ] && shift
 
-case "$1" in
+cmd="$1"
+shift
+case "$cmd" in
   build)
     echo "*** Building Docker images"
     docker-compose build
+    ;;
+  devdata)
+    echo "    Starting containers"
+    docker-compose up --detach
+    echo "    Running migrations"
+    docker-compose exec app python manage.py migrate
+    echo "    Creating admin user"
+    docker-compose exec -T app python manage.py shell <<EOF
+from django.contrib.auth import get_user_model
+User = get_user_model()
+user=User.objects.create_user('admin', password='admin')
+user.is_superuser=True
+user.is_staff=True
+user.save()
+EOF
     ;;
   import)
     if [ -z "${dbdump}" ]; then
@@ -57,6 +76,9 @@ case "$1" in
     docker-compose exec app python manage.py migrate
     echo "*** Import completed"
     ;;
+  manage)
+    docker-compose exec app python manage.py $@
+    ;;
   purge)
     echo "*** Purge data"
     echo "    Deleting all containers and volumes"
@@ -76,7 +98,7 @@ case "$1" in
     docker-compose down
     ;;
   *)
-    echo "error: unknown action \"$1\": specify one of import, purge, start, stop" >&2
+    echo "error: unknown action \"${cmd}\": specify one of import, manage, purge, start, stop" >&2
     exit 64
     ;;
 esac

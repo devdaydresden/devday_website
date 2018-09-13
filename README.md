@@ -61,7 +61,7 @@ Creating volume "devday_hp_devday_static" with default driver
 
 Any preexisting volumes will be deleted first
 ```
-$ ./run.sh -d ~/Downloads/devday/db-20180904-133216.sql.gz -m ~/Downloads/devday/media-20180904-133216.tar.gz import
+$ ./run.sh -d backup/db-20180904-133216.sql.gz -m backup/media-20180904-133216.tar.gz import
 *** Importing database dump /Users/stbe/Downloads/devday/db-20180904-133216.sql.gz and media dump /Users/stbe/Downloads/devday/media-20180904-133216.tar.gz
     Deleting all containers and volumes
 Removing network devday_hp_default

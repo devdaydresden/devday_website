@@ -17,7 +17,7 @@
 <body class="{% block body_classes %}site-template{% endblock %}">
     {% cms_toolbar %}
     {% block navigation %}
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav" data-ui-navbar>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" data-ui-navbar>
             <div class="container">
                 <a href="{% url "pages-root" %}" class="navbar-brand"><img src="{% static "images/logo-2018.png" %}" alt="Dev Day 2018"></a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -149,25 +149,41 @@
         </div>
     </div>
 
-    <div class="container">
-    {% block content %}
-        {% block content_body %}{% endblock %}
-    {% endblock %}
-    <div class="row social-area">
-        <div class="col-md-12 col-xs-12 col-lg-10 col-lg-offset-1  center">
-            <ul>
-                {% if facebook_url %}<li><a href="{{ facebook_url }}"><img src="{% static "images/facebook.png" %}" alt="Facebook"></a></li>{% endif %}
-                {% if xing_url %}<li><a href="{{ xing_url }}"><img src="{% static "images/xing.png" %}" alt="Xing"></a></li>{% endif %}
-                {% if twitter_url %}<li><a href="{{ twitter_url }}"><img src="{% static "images/twitter.png" %}" alt="Twitter"></a></li>{% endif %}
-            </ul>
+    <div class="stripe c-gray">
+        <div class="container">
+            <div class="row ">
+                <div class="col-12 col-lg-9 order-2 order-lg-1">
+                    <div class="row sponsor">
+                        <div class="col-12">
+                            <a href="#"><img src="/media/cms_page_media/1/Logo_T-Systems_magenta.jpg"/></a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="#"><img src="/media/cms_page_media/1/Saxsys_Corporate.png"/></a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="#"><img src="/media/cms_page_media/1/devboost.png"/></a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="#"><img src="/media/cms_page_media/1/Preh.png"/></a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="#"><img src="/media/cms_page_media/1/eosuptrade_rgb_yyTg8g3.png"/></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-3  order-1 order-lg-2 col-center col-base">
+                    <div class="content-center">
+                        <p>Wollen Sie Sponsoringpartner werden? Schauen Sie sich unsere Sponsoring Optionen an.</p>
+                        <a href="#" class="btn btn-outline btn-call-action m-t-1">Jetzt Sponsor werden</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    {% block promo_content %}
-    {% endblock %}
+
     <footer>
         <img src="{% static "images/seco-logo.svg" alt="Software Engineering Community" %}"> | <a href="{% url "imprint" %}">IMPRESSUM</a>
     </footer>
-    </div>
 
 
     {% render_block "js" %}

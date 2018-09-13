@@ -1,0 +1,27 @@
+.sponsor {
+    border-left: 2px solid $white;
+    border-right: 2px solid $white;
+
+    > div {
+        padding: 20px;
+
+        border: 2px solid $white;
+
+        text-align: center;
+
+        a {
+            display: flex;
+            align-items: center;
+
+            height: 100%;
+
+            text-align: center;
+
+            img {
+                max-width: 100%;
+
+                margin: 0 auto;
+            }
+        }
+    }
+}

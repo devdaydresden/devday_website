@@ -1,0 +1,10 @@
+version: '3'
+services:
+  backup:
+    build:
+      context: docker/backup
+    depends_on:
+      - db
+    volumes:
+      - "devday_media:/srv/devday/media"
+      - "./backup:/srv/devday/backup"

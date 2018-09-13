@@ -4,31 +4,40 @@
     width: 100%;
 
     &.c-base {
-        background: $base;
+        background: $base-v2;
+
         color: $white;
+    }
+
+    &.c-gray {
+        background: $gray-bright;
     }
 }
 
 .col-center {
-    text-align:  center;
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
+    align-items: center;
+
+    text-align:  center;
     padding-top: 15px;
     padding-bottom: 15px;
 }
 
 .col-highlight {
-    color: $white;
     background: $highlight;
+
+    color: $white;
 }
 
 .col-white {
     background: $white;
+
     color: $highlight;
 }
 
 .col-base {
-    background: $base;
+    background: $base-v2;
+
     color: $white;
 }

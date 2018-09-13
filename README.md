@@ -8,15 +8,31 @@ apps for talk, attendee and speaker management.
 
 You can run a local development environment easily with Docker and Docker Compose.  Make sure you have a current version both installed.
 
-You can use [rundev.sh](./rundev.sh) to start and stop the Docker containers,
+You can use [run.sh](./run.sh) to start and stop the Docker containers,
 import a database dump, and purge all local data. The necessary Docker images are built on-demand.
+
+## `backup`: Create a backup
+
+This creates a backup of the database and the media files. It creates a `db-`_timestamp_`.sql.gz` file with the database contents, and a `media-`_timestamp_`.tar.gz` file with the contents of the `devday/media` directory. Both are created in the backup directory; the _timestamp_ is the current date and time.
+
+```
+$ ./run.sh backup
+*** Running backup
+Starting devday_hp_db_1 ... done
++ cd /srv/devday/backup
+++ date +%Y%m%d-%H%M%S%z
++ BACKUPDATE=20180913-141636+0000
++ pg_dump -U devday -h db -p 5432 devday
++ gzip
++ tar czf media-20180913-141636+0000.tar.gz -C /srv/devday/media .
+```
 
 ## `build`: Build the necessary Docker images
 
 This should only be necessary if Postgres, Django or other service and framework versions change.
 
 ```
-$ ./rundev.sh build
+$ ./run.sh build
 Building db
 Step 1/5 : FROM postgres
  ---> 978b82dc00dc
@@ -33,7 +49,7 @@ Successfully tagged devday_hp_revproxy:latest
 ## `devdata`: Create database contents suitable for development
 
 ```
-$ ./rundev.sh devdata
+$ ./run.sh devdata
     Starting containers
 Creating network "devday_hp_default" with the default driver
 Creating volume "devday_hp_devday_media" with default driver
@@ -45,7 +61,7 @@ Creating volume "devday_hp_devday_static" with default driver
 
 Any preexisting volumes will be deleted first
 ```
-$ ./rundev.sh -d ~/Downloads/devday/db-20180904-133216.sql.gz -m ~/Downloads/devday/media-20180904-133216.tar.gz import
+$ ./run.sh -d ~/Downloads/devday/db-20180904-133216.sql.gz -m ~/Downloads/devday/media-20180904-133216.tar.gz import
 *** Importing database dump /Users/stbe/Downloads/devday/db-20180904-133216.sql.gz and media dump /Users/stbe/Downloads/devday/media-20180904-133216.tar.gz
     Deleting all containers and volumes
 Removing network devday_hp_default
@@ -63,7 +79,7 @@ Applying filer.0010_auto_20180414_2058... OK
 ## `purge`: Purge all containers and volumes
 
 ```
-$ ./rundev.sh purge
+$ ./run.sh purge
 *** Purge data
     Deleting all containers and volumes
 Stopping devday_hp_revproxy_1 ... done
@@ -84,14 +100,14 @@ Removing volume devday_hp_pg_data
 For development and maintenance tasks, run the Django Admin command inside the app container. This simply runs `python manage.py $@`.
 
 ```
-$ ./rundev.sh manage migrate
+$ ./run.sh manage migrate
 ```
 
 ## `start`: Run the Django app
 Start the development environment. Use existing volumes with data, or if they don't exist, with an empty data set, and run the Django app inside.
 
 ```
-$ ./rundev.sh start
+$ ./run.sh start
 *** Starting all containers
 Creating network "devday_hp_default" with the default driver
 Creating devday_hp_db_1 ... done
@@ -110,7 +126,7 @@ Quit the server with CONTROL-C.
 ## `stop`: Stop the development environment
 
 ```
-$ ./rundev.sh stop
+$ ./run.sh stop
 Stopping devday_hp_revproxy_1 ... done
 Stopping devday_hp_app_1      ... done
 Stopping devday_hp_db_1       ... done

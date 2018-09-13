@@ -24,3 +24,4 @@ devday/devday/static/sortedm2m/
 devday/devday/static/treebeard/
 
 node_modules/
+/backup/

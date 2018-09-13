@@ -25,3 +25,4 @@ devday/devday/static/treebeard/
 
 node_modules/
 /backup/
+.vscode/

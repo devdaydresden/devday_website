@@ -1,0 +1,17 @@
+{% load menu_tags %}
+{% for child in children %}
+{% if child.is_leaf_node %}
+<li class="nav-item"><a class="nav-link" href="{{ child.attr.redirect_url|default:child.get_absolute_url }}">
+    {{ child.get_menu_title }}</a></li>
+{% else %}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown{{ child.get_slug }}" role="button"
+       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ child.get_menu_title }}</a>
+    {% if child.children %}
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown{{ child.get_slug }}">
+    {% show_menu 0 100 100 100 "menu/dropdown-menu.html" "" "" child %}
+    </div>
+    {% endif %}
+</li>
+{% endif %}
+{% endfor %}

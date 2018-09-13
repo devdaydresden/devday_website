@@ -4,7 +4,7 @@
 {% block title %}{% page_attribute "page_title" %}{% endblock %}
 {% block description %}Dev Day{% endblock %}
 {% block promo_classes %}row promo{% endblock %}
-{% block promo_content %}{{ block.super }}
+{% block promo_content %}
     {% if attendee_registration_open %}
         <a class="btn" href="{% url "login_or_register_attendee" %}" role="button">{% trans "Sign up now - Be part of it!" %}</a><br>
     {% endif %}

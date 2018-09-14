@@ -8,7 +8,7 @@ from django.utils.timezone import datetime
 
 def create_devday_17_fwd(apps, schema_manager):
     Event = apps.get_model("event", "Event")
-    event = Event(id=1, title='devdata.17', slug='devdata-17',
+    event = Event(id=1, title='devdata.17', slug='devdata17',
                   description='Dev Data.17 am 4.4. in Dresden', location='Dresden',
                   full_day=False, start_time=datetime(2017, 4, 4, 13, 0),
                   end_time=datetime(2017, 4, 4, 20, 0))

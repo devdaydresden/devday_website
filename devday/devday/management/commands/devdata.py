@@ -77,12 +77,13 @@ class Command(BaseCommand):
         if nevent > 1:
             print "Creating events: {} events already exist, skipping".format(nevent)
             return
-        event = Event(id=2, title='devdata.18', slug='devdata-18',
+        print "Creating events"
+        event = Event(id=2, title='devdata.18', slug='devdata18',
                       description='Dev Data.18 am 24.4. in Dresden', location='Dresden',
                       full_day=False, start_time=timezone.make_aware(datetime(2018, 4, 24, 13, 0)),
                       end_time=timezone.make_aware(datetime(2018, 4, 24, 20, 0)))
         event.save()
-        event = Event(id=3, title='devdata.19', slug='devdata-19',
+        event = Event(id=3, title='devdata.19', slug='devdata19',
                       description='Dev Data.19 am 21.5. in Dresden', location='Dresden',
                       full_day=False, start_time=timezone.make_aware(datetime(2019, 5, 21, 13, 0)),
                       end_time=timezone.make_aware(datetime(2019, 5, 21, 20, 0)))

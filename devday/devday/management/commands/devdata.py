@@ -70,6 +70,9 @@ class Command(BaseCommand):
         api.create_page(title="Dev Data 2018", language="de",
             template=TEMPLATE_INHERITANCE_MAGIC, redirect="/devdata18/talk",
             in_navigation=True, parent=archive)
+        api.create_page(title="Sponsoring", language="de",
+            template=TEMPLATE_INHERITANCE_MAGIC,
+            reverse_id="sponsoring", parent=None)
 
     def handleCreateEvents(self):
         # The event with ID 1 has already been created by a migration

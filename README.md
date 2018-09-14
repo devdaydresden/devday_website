@@ -8,8 +8,10 @@ apps for talk, attendee and speaker management.
 
 You can run a local development environment easily with Docker and Docker Compose.  Make sure you have a current version both installed.
 
-You can use [run.sh](./run.sh) to start and stop the Docker containers,
-import a database dump, and purge all local data. The necessary Docker images are built on-demand.
+You can use [run.sh](./run.sh) to build, start and stop the Docker containers,
+import a database dump, and purge all local data.
+
+These commands are supported:
 
 ## `backup`: Create a backup
 
@@ -106,6 +108,29 @@ For development and maintenance tasks, run the Django Admin command inside the a
 ```
 $ ./run.sh manage migrate
 ```
+
+## `shell`: Run a shell in the app container
+This command starts an interactive shell inside the app container, which contains the Python environment.
+
+```
+$ ./run.sh shell
+*** Starting shell in app container
+root@d46a19f94493:/srv/devday/devday# ls -l
+total 80
+drwxr-xr-x 20 root root   640 Sep 11 13:10 attendee
+-rw-r--r--  1 root root    88 Sep 14 15:17 dev_requirements.txt
+drwxr-xr-x 26 root root   832 Sep 13 17:00 devday
+-rw-r--r--  1 root root 55935 Sep 14 15:16 devday.log
+drwxr-xr-x 17 root root   544 Sep 14 11:02 event
+-rw-r--r--  1 root root   249 Sep 11 12:55 manage.py
+drwxr-xr-x  7 root root  4096 Sep 14 15:16 media
+-rw-r--r--  1 root root   920 Sep 11 12:55 requirements.txt
+-rw-r--r--  1 root root   206 Sep 11 12:55 setup.cfg
+drwxr-xr-x  2 root root  4096 Sep 14 15:00 static
+drwxr-xr-x 24 root root   768 Sep 11 14:49 talk
+drwxr-xr-x 14 root root   448 Sep 11 14:49 twitterfeed
+```
+
 
 ## `start`: Run the Django app
 Start the development environment. Use existing volumes with data, or if they don't exist, with an empty data set, and run the Django app inside.

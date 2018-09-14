@@ -84,6 +84,10 @@ case "$cmd" in
     docker-compose exec app python manage.py migrate
     echo "*** Import completed"
     ;;
+  shell)
+    echo "*** Starting shell in app container"
+    docker-compose exec app bash
+    ;;
   start|'')
     if [ -z "$(docker-compose ps -q)" ]; then
       echo "*** Starting all containers"

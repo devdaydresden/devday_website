@@ -84,3 +84,6 @@ TWITTERFEED_PROXIES = {
 }
 
 REGISTRATION_OPEN = True
+
+# development-specific settings
+ADMINUSER_EMAIL = 'admin@devday.de'

@@ -181,8 +181,8 @@ CMS_LANGUAGES = {
 }
 
 CMS_TEMPLATES = (
-    ('devday_index.html', 'Dev Day Startseite'),
     ('devday.html', 'Devday'),
+    ('devday_index.html', 'Dev Day Startseite'),
 )
 
 CMS_PERMISSION = True

@@ -46,15 +46,8 @@ case "$cmd" in
     docker-compose up --detach
     echo "    Running migrations"
     docker-compose exec app python manage.py migrate
-    echo "    Creating admin user"
-    docker-compose exec -T app python manage.py shell <<EOF
-from django.contrib.auth import get_user_model
-User = get_user_model()
-user=User.objects.create_user('admin', password='admin')
-user.is_superuser=True
-user.is_staff=True
-user.save()
-EOF
+    echo "    Filling database"
+    docker-compose exec app python manage.py devdata
     ;;
   manage)
     docker-compose exec app python manage.py $@

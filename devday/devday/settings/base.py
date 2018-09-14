@@ -94,11 +94,12 @@ TEMPLATES = [
                 'devday.contextprocessors.devdaysettings_contextprocessor',
                 'talk.context_processors.committee_member_context_processor',
                 'twitterfeed.contextprocessors.twitter_feed_context_processor',
+                'event.contextprocessors.current_event_contextprocessor',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
-                'django.template.loaders.eggs.Loader'
+                'django.template.loaders.eggs.Loader',
             ],
         },
     },

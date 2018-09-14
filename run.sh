@@ -31,7 +31,8 @@ shift $((OPTIND-1))
 [ "${1:-}" = "--" ] && shift
 
 cmd="$1"
-shift
+shift || true
+
 case "$cmd" in
   backup)
     echo "*** Running backup"

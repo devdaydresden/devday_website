@@ -1,10 +1,10 @@
 {% load cms_tags sekizai_tags static i18n %}<!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}Dev Day 2018 // Digital reality{% endblock title %}</title>
+    <title>{% block title %}{% if event %}{{ event.title }}{% if event.slogan %} // {{ event.slogan }}{% endif %}{% else %}{{ current_event.title }}{% if current_event.slogan %} // {{ current_event.slogan }}{% endif %}{% endif %}{% endblock title %}</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="description" content="{% block meta_description %}Dev Day 2018{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{{ event.title }}{% endblock %}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static "favicon.ico" %}">
 {% addtoblock "js" %}
@@ -19,7 +19,7 @@
     {% block navigation %}
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" data-ui-navbar>
             <div class="container">
-                <a href="{% url "pages-root" %}" class="navbar-brand"><img src="{% static "images/logo-2018.png" %}" alt="Dev Day 2018"></a>
+                <a href="{% url "pages-root" %}" class="navbar-brand"><img src="{% static "images/logo-2018.png" %}" alt="{{ event.title }}"></a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -36,14 +36,12 @@
         <div class="container my-auto">
             <div class="row">
                 <div class="col-lg-10 mx-auto call-to-action">
-                    <span class="date">24. April 2019</span>
-                    <span class="venue">Messe Dresden</span>
+                    <span class="date">{{ current_event.start_time|date:"d. E Y" }}</span>
+                    <span class="venue">{{ current_event.location }}</span>
                 </div>
             </div>
         </div>
     </header>
-
-
 
     <div class="stripe c-white">
         <div class="container">

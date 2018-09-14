@@ -1,1 +1,15 @@
 {% extends "base.html" %}
+
+{% block content_block_1 %}
+<div class="stripe c-white">
+    <div class="container">
+        <div class="row ">
+            <div class="col-12 col-lg-12 order-1 order-lg-1  col-center info">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content_block_2 %}{% endblock %}

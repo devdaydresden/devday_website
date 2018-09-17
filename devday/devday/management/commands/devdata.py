@@ -1,6 +1,11 @@
 from datetime import datetime
+from os import makedirs
+from os.path import isfile, join
+from shutil import copyfile
 
+import errno
 import random
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
@@ -19,6 +24,18 @@ from talk.models import Speaker
 
 class Command(BaseCommand):
     help = 'Fill database with data suitable for development'
+    rng = random.Random()
+    rng.seed(1)  # we want reproducable pseudo-random numbers here
+    speaker_placeholder_file = 'icons8-contacts-26.png'
+    speaker_placeholder_source_path = join(settings.STATICFILES_DIRS[0],
+                                           'img', speaker_placeholder_file)
+    speaker_portrait_media_dir = Speaker._meta.get_field('portrait').upload_to
+    speaker_portrait_media_path = join(speaker_portrait_media_dir,
+                                       speaker_placeholder_file)
+    speaker_portrait_dir = join(settings.MEDIA_ROOT,
+                                speaker_portrait_media_dir)
+    speaker_portrait_path = join(settings.MEDIA_ROOT,
+                                 speaker_portrait_media_path)
 
     def handleCreateUser(self):
         User = get_user_model()
@@ -105,7 +122,6 @@ class Command(BaseCommand):
                   .format(nuser)
             return
         events = Event.objects.all()
-        rng = random.SystemRandom()
         first = ["Alexander", "Barbara", "Christian", "Daniela", "Erik",
                  "Fatima", "Georg", "Heike", "Ingo", "Jana", "Klaus", "Lena",
                  "Martin", "Natalie", "Olaf", "Peggy", "Quirin", "Rosa",
@@ -124,7 +140,7 @@ class Command(BaseCommand):
                                                 first_name=f, last_name=l)
                 user.save()
                 for e in events:
-                    if rng.random() < 0.8:
+                    if self.rng.random() < 0.8:
                         a = Attendee(user=user, event=e)
                         a.save()
 
@@ -134,14 +150,26 @@ class Command(BaseCommand):
             print "Create speakers: {} speakers already exist, skipping" \
                   .format(nspeaker)
             return
-        rng = random.Random()
-        rng.seed(1)  # we want reproducable pseudo-random numbers here
-        nspeaker = Event.objects.count() * 50
-        attendees = rng.sample(Attendee.objects.all(), nspeaker)
-        print "Creating {} speakers".format(nspeaker)
+        nspeakerperevent = 50
+        nspeaker = Event.objects.count() * nspeakerperevent
+        attendees = self.rng.sample(Attendee.objects.all(), nspeaker)
+        print "Creating {} speakers for {} events" \
+              .format(nspeakerperevent, Event.objects.count())
+        if not isfile(self.speaker_portrait_path):
+            try:
+                makedirs(self.speaker_portrait_dir)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+            copyfile(self.speaker_placeholder_source_path,
+                     self.speaker_portrait_path)
         for attendee in attendees:
             speaker = Speaker(user=attendee, shirt_size=3,
                               videopermission=True, shortbio="My short bio")
+            # https://stackoverflow.com/a/5256094
+            speaker.portrait = speaker.portrait.field \
+                .attr_class(speaker, speaker.portrait.field,
+                            self.speaker_portrait_media_path)
             speaker.save()
 
     def handle(self, *args, **options):

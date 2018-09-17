@@ -24,8 +24,8 @@ class Command(BaseCommand):
 
         try:
             user = User.objects.get(email=settings.ADMINUSER_EMAIL)
-            print format("Create admin user: {} already present",
-                         settings.ADMINUSER_EMAIL)
+            print "Create admin user: {} already present" \
+                  .format(settings.ADMINUSER_EMAIL)
         except ObjectDoesNotExist:
             print "Create admin user"
             user = User.objects.create_user(settings.ADMINUSER_EMAIL,
@@ -44,8 +44,8 @@ class Command(BaseCommand):
     def handleCreatePages(self):
         npage = len(Page.objects.all())
         if npage > 0:
-            print format(("Create pages: {} page objects already exist,"
-                          " skipping"), npage)
+            print "Create pages: {} page objects already exist, skipping" \
+                  .format(npage)
             return
         print "Creating pages"
         api.create_page(title="Dev Data 2019", language='de',
@@ -75,8 +75,8 @@ class Command(BaseCommand):
         # The event with ID 1 has already been created by a migration
         nevent = len(Event.objects.all())
         if nevent > 1:
-            print format("Creating events: {} events already exist, skipping",
-                         nevent)
+            print "Creating events: {} events already exist, skipping" \
+                  .format(nevent)
             return
         print "Creating events"
         event = Event(id=2, title='devdata.18', slug='devdata18',
@@ -100,8 +100,8 @@ class Command(BaseCommand):
         User = get_user_model()
         nuser = len(User.objects.all())
         if nuser > 3:
-            print format(("Create attendees: {} attendees already exist,"
-                          " skipping"), nuser)
+            print "Create attendees: {} attendees already exist, skipping" \
+                  .format(nuser)
             return
         print "Creating attendees"
         events = Event.objects.all()
@@ -113,10 +113,11 @@ class Command(BaseCommand):
                  "Yannick", "Zahra"]
         last = ["Schneider", "Meier", "Schulze", "Fischer", "Weber",
                 "Becker", "Lehmann", "Koch", "Richter", "Neumann"]
+        print "Creating {:d} attendees".format(len(first) * len(last))
         for f in first:
             for l in last:
-                user = User.objects.create_user(format("{}.{}@example.com",
-                                                       f.lower(), l.lower()),
+                user = User.objects.create_user("{}.{}@example.com"
+                                                .format(f.lower(), l.lower()),
                                                 password='attendee',
                                                 first_name=f, last_name=l)
                 user.save()

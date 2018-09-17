@@ -14,6 +14,7 @@ from cms.models import Page
 
 from attendee.models import Attendee
 from event.models import Event
+from talk.models import Speaker
 
 
 class Command(BaseCommand):
@@ -42,7 +43,7 @@ class Command(BaseCommand):
         site.save()
 
     def handleCreatePages(self):
-        npage = len(Page.objects.all())
+        npage = Page.objects.count()
         if npage > 0:
             print "Create pages: {} page objects already exist, skipping" \
                   .format(npage)
@@ -73,7 +74,7 @@ class Command(BaseCommand):
 
     def handleCreateEvents(self):
         # The event with ID 1 has already been created by a migration
-        nevent = len(Event.objects.all())
+        nevent = Event.objects.count()
         if nevent > 1:
             print "Creating events: {} events already exist, skipping" \
                   .format(nevent)
@@ -98,12 +99,11 @@ class Command(BaseCommand):
 
     def handleCreateAttendees(self):
         User = get_user_model()
-        nuser = len(User.objects.all())
+        nuser = User.objects.count()
         if nuser > 3:
-            print "Create attendees: {} attendees already exist, skipping" \
+            print "Create attendees: {} users already exist, skipping" \
                   .format(nuser)
             return
-        print "Creating attendees"
         events = Event.objects.all()
         rng = random.SystemRandom()
         first = ["Alexander", "Barbara", "Christian", "Daniela", "Erik",
@@ -112,7 +112,9 @@ class Command(BaseCommand):
                  "Sven", "Tanja", "Ulrich", "Veronika", "Werner", "Xena",
                  "Yannick", "Zahra"]
         last = ["Schneider", "Meier", "Schulze", "Fischer", "Weber",
-                "Becker", "Lehmann", "Koch", "Richter", "Neumann"]
+                "Becker", "Lehmann", "Koch", "Richter", "Neumann",
+                "Fuchs", "Vogel", "Keller", "Jung", "Hahn",
+                "Schubert", "Winkler", "Berger", "Lorenz", "Albrecht"]
         print "Creating {:d} attendees".format(len(first) * len(last))
         for f in first:
             for l in last:
@@ -126,9 +128,26 @@ class Command(BaseCommand):
                         a = Attendee(user=user, event=e)
                         a.save()
 
+    def handleCreateSpeakers(self):
+        nspeaker = Speaker.objects.count()
+        if nspeaker > 1:
+            print "Create speakers: {} speakers already exist, skipping" \
+                  .format(nspeaker)
+            return
+        rng = random.Random()
+        rng.seed(1)  # we want reproducable pseudo-random numbers here
+        nspeaker = Event.objects.count() * 50
+        attendees = rng.sample(Attendee.objects.all(), nspeaker)
+        print "Creating {} speakers".format(nspeaker)
+        for attendee in attendees:
+            speaker = Speaker(user=attendee, shirt_size=3,
+                              videopermission=True, shortbio="My short bio")
+            speaker.save()
+
     def handle(self, *args, **options):
         self.handleCreateUser()
         self.handleUpdateSite()
         self.handleCreatePages()
         self.handleCreateEvents()
         self.handleCreateAttendees()
+        self.handleCreateSpeakers()

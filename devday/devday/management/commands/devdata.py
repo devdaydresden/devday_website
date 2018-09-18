@@ -29,7 +29,7 @@ class Command(BaseCommand):
     speaker_placeholder_file = 'icons8-contacts-26.png'
     speaker_placeholder_source_path = join(settings.STATICFILES_DIRS[0],
                                            'img', speaker_placeholder_file)
-    speaker_portrait_media_dir = Speaker._meta.get_field('portrait').upload_to
+    speaker_portrait_media_dir = 'speakers'
     speaker_portrait_media_path = join(speaker_portrait_media_dir,
                                        speaker_placeholder_file)
     speaker_portrait_dir = join(settings.MEDIA_ROOT,

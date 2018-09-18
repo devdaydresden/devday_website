@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
 
 import logging
+import hashlib
 import os
+import random
 from mimetypes import MimeTypes
 
 from PIL import Image
@@ -31,24 +33,44 @@ T_SHIRT_SIZES = (
 log = logging.getLogger(__name__)
 
 
+def imagename_for(dir):
+    def imagename(instance, filename):
+        """
+        Create file path for image upload
+        """
+        rng = random.SystemRandom()
+        ext = os.path.splitext(filename)[1]
+        h = hashlib.sha224()
+        h.update("{:06d}".format(rng.randrange(1000000)))
+        h.update("{:06d}".format(instance.pk))
+        # FIXME: compute ext based on file contents
+        return '{}/{}.{}'.format(dir, h.hexdigest(), ext)
+    return imagename
+
+
 @python_2_unicode_compatible
 class Speaker(models.Model):
     user = models.OneToOneField(Attendee, related_name="speaker")
-    shirt_size = models.PositiveSmallIntegerField(verbose_name=_("T-shirt size"), choices=T_SHIRT_SIZES)
+    shirt_size = models\
+        .PositiveSmallIntegerField(verbose_name=_("T-shirt size"),
+                                   choices=T_SHIRT_SIZES)
     videopermission = models.BooleanField(
         verbose_name=_("Video permitted"),
-        help_text=_("I hereby agree that audio and visual recordings of "  # \
-                    "me and my session can be published on the social media "  # \
-                    "channels of the event organizer and the website "  # \
+        help_text=_("I hereby agree that audio and visual recordings of "
+                    "me and my session can be published on the social media "
+                    "channels of the event organizer and the website "
                     "devday.de.")
     )
     shortbio = models.TextField(verbose_name=_("Short biography"))
-    portrait = models.ImageField(verbose_name=_("Speaker image"), upload_to='speakers')
+    portrait = models.ImageField(verbose_name=_("Speaker image"),
+                                 upload_to=imagename_for('speakers'))
     thumbnail = models.ImageField(
-        verbose_name=_("Speaker image thumbnail"), upload_to='speaker_thumbs',
+        verbose_name=_("Speaker image thumbnail"),
+        upload_to=imagename_for('speaker_thumbs'),
         max_length=500, null=True, blank=True)
     public_image = models.ImageField(
-        verbose_name=_("Public speaker image"), upload_to='speaker_public',
+        verbose_name=_("Public speaker image"),
+        upload_to=imagename_for('speaker_public'),
         max_length=500, null=True, blank=True)
 
     class Meta:

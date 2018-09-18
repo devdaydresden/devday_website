@@ -24,7 +24,7 @@ EXPOSE 8000
 EXPOSE 7000
 
 RUN apt-get update && \
-    apt-get install -y uwsgi-plugin-python uwsgi && \
+    apt-get install -y uwsgi-plugin-python uwsgi gettext && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     ln -fs /usr/lib/python2.7/plat-x86_64-linux-gnu/_sysconfigdata_nd.py /usr/lib/python2.7/ && \

@@ -19,7 +19,9 @@ from cms.models import Page
 
 from attendee.models import Attendee
 from event.models import Event
-from talk.models import Speaker
+from talk.models import Speaker, Talk
+
+from devday.management.commands.words import Words
 
 
 class Command(BaseCommand):
@@ -172,6 +174,19 @@ class Command(BaseCommand):
                             self.speaker_portrait_media_path)
             speaker.save()
 
+    def handleCreateTalk(self):
+        ntalk = Talk.objects.count()
+        if ntalk > 1:
+            print "Create talks: {} talks already exist, skipping" \
+                  .format(ntalk)
+            return
+        print "Creating one talk per speaker"
+        for speaker in Speaker.objects.all():
+            talk = Talk(speaker=speaker, title=Words.sentence(),
+                        abstract='A very short abstract.',
+                        remarks='A very short remark.')
+            talk.save()
+
     def handle(self, *args, **options):
         self.handleCreateUser()
         self.handleUpdateSite()
@@ -179,3 +194,4 @@ class Command(BaseCommand):
         self.handleCreateEvents()
         self.handleCreateAttendees()
         self.handleCreateSpeakers()
+        self.handleCreateTalk()

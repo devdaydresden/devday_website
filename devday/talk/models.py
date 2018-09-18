@@ -18,6 +18,7 @@ from model_utils.models import TimeStampedModel
 from six import BytesIO
 
 from attendee.models import Attendee
+from devday.extras import ValidatedImageField
 from event.models import Event
 
 T_SHIRT_SIZES = (
@@ -31,21 +32,6 @@ T_SHIRT_SIZES = (
 )
 
 log = logging.getLogger(__name__)
-
-
-def imagename_for(dir):
-    def imagename(instance, filename):
-        """
-        Create file path for image upload
-        """
-        rng = random.SystemRandom()
-        ext = os.path.splitext(filename)[1]
-        h = hashlib.sha224()
-        h.update("{:06d}".format(rng.randrange(1000000)))
-        h.update("{:06d}".format(instance.pk))
-        # FIXME: compute ext based on file contents
-        return '{}/{}.{}'.format(dir, h.hexdigest(), ext)
-    return imagename
 
 
 @python_2_unicode_compatible
@@ -62,15 +48,15 @@ class Speaker(models.Model):
                     "devday.de.")
     )
     shortbio = models.TextField(verbose_name=_("Short biography"))
-    portrait = models.ImageField(verbose_name=_("Speaker image"),
-                                 upload_to=imagename_for('speakers'))
+    portrait = ValidatedImageField(verbose_name=_("Speaker image"),
+                                   upload_to='speakers')
     thumbnail = models.ImageField(
         verbose_name=_("Speaker image thumbnail"),
-        upload_to=imagename_for('speaker_thumbs'),
+        upload_to='speaker_thumbs',
         max_length=500, null=True, blank=True)
     public_image = models.ImageField(
         verbose_name=_("Public speaker image"),
-        upload_to=imagename_for('speaker_public'),
+        upload_to='speaker_public',
         max_length=500, null=True, blank=True)
 
     class Meta:

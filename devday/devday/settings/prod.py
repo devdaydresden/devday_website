@@ -5,22 +5,15 @@ Django production settings for devday.
 # noinspection PyUnresolvedReferences
 from .base import *
 
-DATA_DIR = '/var/www/html/devday'
-
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
-STATIC_ROOT = os.path.join(DATA_DIR, 'static')
-
 ADMINS = [
     ('Jan Dittberner', 'jan.dittberner@t-systems.com'),
     ('Stefan Bethke', 'stefan.bethke@t-systems.com'),
 ]
+ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'q4deumsy0dg.mms-at-work.de',
+                 'localhost', 'devday-test.t-systems-mms.eu']
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
+DATA_DIR = '/var/www/html/devday'
 DEFAULT_FROM_EMAIL = 'info@devday.de'
-
-ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'q4deumsy0dg.mms-at-work.de', 'localhost',
-                 'devday-test.t-systems-mms.eu']
 
 LOGGING = {
     'version': 1,
@@ -87,11 +80,16 @@ LOGGING = {
     },
 }
 
+MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+
+REGISTRATION_OPEN = False
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+STATIC_ROOT = os.path.join(DATA_DIR, 'static')
 
 TWITTERFEED_PROXIES = {
     'http': 'http://iproxy.mms-dresden.de:8080/',
     'https': 'http://iproxy.mms-dresden.de:8080/',
 }
 
-REGISTRATION_OPEN = False
 TALK_SUBMISSION_OPEN = False

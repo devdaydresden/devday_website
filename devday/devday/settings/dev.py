@@ -7,25 +7,27 @@ import os
 
 from .base import *
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
+ADMINUSER_EMAIL = 'admin@devday.de'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-MIDDLEWARE_CLASSES = [
-                         'debug_toolbar.middleware.DebugToolbarMiddleware',
-                     ] + MIDDLEWARE_CLASSES
+# see: http://django-debug-toolbar.readthedocs.io/en/stable/installation.html#explicit-setup
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 INSTALLED_APPS += [
     'debug_toolbar',
 ]
 
+MIDDLEWARE_CLASSES = [
+                         'debug_toolbar.middleware.DebugToolbarMiddleware',
+                     ] + MIDDLEWARE_CLASSES
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# for development, we're using the upcoming event. Cf.
+# devday/event/migrations/0001_initial.py
+EVENT_ID = 3
 
 # settings for django-debug-toolbar
-# see: http://django-debug-toolbar.readthedocs.io/en/stable/installation.html#explicit-setup
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
 INTERNAL_IPS = ('127.0.0.1', '::1')
 
 LOGGING = {
@@ -71,19 +73,7 @@ LOGGING = {
     },
 }
 
-# for a fresh database, we have only event #1
-EVENT_ID = 1
-EVENT_TITLE = "Dev Day 9999"
-EVENT_SLUG = "devday-99"
-
-TALK_SUBMISSION_OPEN = False
-
 TWITTERFEED_PROXIES = {
     'http': 'http://proxy.mms-dresden.de:8080/',
     'https': 'http://proxy.mms-dresden.de:8080/',
 }
-
-REGISTRATION_OPEN = True
-
-# development-specific settings
-ADMINUSER_EMAIL = 'admin@devday.de'

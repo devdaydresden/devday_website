@@ -68,53 +68,29 @@ class Command(BaseCommand):
                   .format(npage)
             return
         print "Creating pages"
-        api.create_page(title="Dev Data 2019", language='de',
+        api.create_page(title="Dev Data 2019", language='de', published=True,
                         template='devday_index.html', parent=None)
         api.create_page(title="Deutsche Homepage", language="de",
                         template=TEMPLATE_INHERITANCE_MAGIC, redirect="/",
                         slug="de", in_navigation=False, parent=None)
-        api.create_page(title="Sessions", language="de",
+        api.create_page(title="Sessions", language="de", published=True,
                         template=TEMPLATE_INHERITANCE_MAGIC,
                         in_navigation=True, parent=None)
         archive = api.create_page(title="Archiv", language="de",
+                                  published=True,
                                   template=TEMPLATE_INHERITANCE_MAGIC,
                                   in_navigation=True, parent=None)
-        api.create_page(title="Dev Data 2017", language="de",
+        api.create_page(title="Dev Data 2017", language="de", published=True,
                         template=TEMPLATE_INHERITANCE_MAGIC,
                         redirect="/devdata17/talk", in_navigation=True,
                         parent=archive)
-        api.create_page(title="Dev Data 2018", language="de",
+        api.create_page(title="Dev Data 2018", language="de", published=True,
                         template=TEMPLATE_INHERITANCE_MAGIC,
                         redirect="/devdata18/talk", in_navigation=True,
                         parent=archive)
-        api.create_page(title="Sponsoring", language="de",
+        api.create_page(title="Sponsoring", language="de", published=True,
                         template=TEMPLATE_INHERITANCE_MAGIC,
                         reverse_id="sponsoring", parent=None)
-
-    def handleCreateEvents(self):
-        # The event with ID 1 has already been created by a migration
-        nevent = Event.objects.count()
-        if nevent > 1:
-            print "Creating events: {} events already exist, skipping" \
-                  .format(nevent)
-            return
-        print "Creating events"
-        event = Event(id=2, title='devdata.18', slug='devdata18',
-                      description='Dev Data.18 am 24.4. in Dresden',
-                      location='Dresden', full_day=False,
-                      start_time=timezone.make_aware(datetime(2018, 4, 24,
-                                                              13, 0)),
-                      end_time=timezone.make_aware(datetime(2018, 4, 24,
-                                                            20, 0)))
-        event.save()
-        event = Event(id=3, title='devdata.19', slug='devdata19',
-                      description='Dev Data.19 am 21.5. in Dresden',
-                      location='Dresden', full_day=False,
-                      start_time=timezone.make_aware(datetime(2019, 5, 21,
-                                                              13, 0)),
-                      end_time=timezone.make_aware(datetime(2019, 5, 21,
-                                                            20, 0)))
-        event.save()
 
     def handleCreateAttendees(self):
         User = get_user_model()
@@ -191,7 +167,6 @@ class Command(BaseCommand):
         self.handleCreateUser()
         self.handleUpdateSite()
         self.handleCreatePages()
-        self.handleCreateEvents()
         self.handleCreateAttendees()
         self.handleCreateSpeakers()
         self.handleCreateTalk()

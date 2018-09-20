@@ -5,7 +5,7 @@
     <div class="container">
         <div class="row ">
             <div class="col-12 col-lg-12 order-1 order-lg-1  col-center info">
-                {% block content %}{% endblock %}
+                {% block content_body %}{% block content %}{% endblock %}{% endblock %}
             </div>
         </div>
     </div>

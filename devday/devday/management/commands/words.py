@@ -5216,8 +5216,8 @@ class Words:
     }
 
     @staticmethod
-    def sentence():
-        return random.choice(Words.words['verbs']) + 'ing a ' + \
-            random.choice(Words.words['adverbs']) + ' ' + \
-            random.choice(Words.words['adjectives']) + ' ' + \
-            random.choice(Words.words['nouns'])
+    def sentence(rng=random.Random()):
+        return rng.choice(Words.words['verbs']) + 'ing a ' + \
+            rng.choice(Words.words['adverbs']) + ' ' + \
+            rng.choice(Words.words['adjectives']) + ' ' + \
+            rng.choice(Words.words['nouns'])

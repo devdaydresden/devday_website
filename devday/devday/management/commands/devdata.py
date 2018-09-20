@@ -158,7 +158,7 @@ class Command(BaseCommand):
             return
         print "Creating one talk per speaker"
         for speaker in Speaker.objects.all():
-            talk = Talk(speaker=speaker, title=Words.sentence(),
+            talk = Talk(speaker=speaker, title=Words.sentence(self.rng),
                         abstract='A very short abstract.',
                         remarks='A very short remark.')
             talk.save()

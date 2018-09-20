@@ -1,4 +1,6 @@
-from datetime import datetime
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from os import makedirs
 from os.path import isfile, join
 from shutil import copyfile
@@ -12,7 +14,6 @@ from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import BaseCommand
-from django.utils import timezone
 
 from cms import api
 from cms.constants import TEMPLATE_INHERITANCE_MAGIC
@@ -20,7 +21,7 @@ from cms.models import Page
 
 from attendee.models import Attendee
 from event.models import Event
-from talk.models import Speaker, Talk, Vote
+from talk.models import Room, Speaker, Talk, TalkSlot, TimeSlot, Track, Vote
 
 from devday.management.commands.words import Words
 
@@ -158,7 +159,7 @@ class Command(BaseCommand):
             speaker.save()
 
     def createTalk(self, speaker):
-        talk = Talk(speaker=speaker, title=Words.sentence(self.rng),
+        talk = Talk(speaker=speaker, title=Words.sentence(self.rng).title(),
                     abstract='A very short abstract.',
                     remarks='A very short remark.')
         talk.save()
@@ -190,6 +191,7 @@ class Command(BaseCommand):
         if nvote > 1:
             print "Vote for talks: {} votes already exists, skipping" \
                 .format(nvote)
+            return
         print "Voting for talk submissions"
         event = Event.objects.get(id=settings.EVENT_ID)
         committee = User.objects.filter(groups__name='talk_committee')
@@ -201,6 +203,112 @@ class Command(BaseCommand):
                     vote.save()
         print "Cast {} votes".format(Vote.objects.count())
 
+    def handleCreateTracks(self):
+        ntrack = Track.objects.count()
+        if ntrack > 1:
+            print "Create tracks: {} tracks already exists, skipping" \
+                .format(ntrack)
+            return
+        print "Creating tracks"
+        tracks = {
+            'devdata.17': [
+                'The Human Side', 'Architektur', 'Let Data Rule', 'DevOps',
+                'Keynote',
+            ],
+            'devdata.18': [
+                'Methodik', 'Frontend', 'Coding', 'Keynote', 'The Human Side',
+                'Exkursion',
+            ],
+        }
+        for (e, ts) in tracks.iteritems():
+            event = Event.objects.get(title=e)
+            for n in ts:
+                track = Track(name=n, event=event)
+                track.save()
+
+    def handleCreateRooms(self):
+        nroom = Room.objects.count()
+        if nroom > 1:
+            print "Create rooms: {} rooms already exists, skipping" \
+                .format(nroom)
+            return
+        print "Creating rooms"
+        event = Event.objects.get(pk=settings.EVENT_ID)
+        p = 0
+        for n in ['Hamburg', 'Gartensaal', 'St. Petersburg', 'Rotterdam']:
+            room = Room(name=n, event=event, priority=p)
+            room.save()
+            p += 1
+
+    def handleCreateTimeSlots(self):
+        ntimeslot = TimeSlot.objects.count()
+        if ntimeslot > 1:
+            print "Create time slots: {} time slots already exists, skipping" \
+                .format(ntimeslot)
+            return
+        print "Creating time slots"
+        timeslots = [
+            [10, 30, 12,  0, 'Exkursion'],
+            [12,  0, 13,  0, 'Registrierung'],
+            [13,  0, 13, 15, 'Begrüßung durch die SECO'],
+            [13, 15, 14, 15, 'Keynote'],
+            [14, 15, 14, 30, 'Kurze Pause'],
+            [14, 30, 15, 15, ''],
+            [15, 15, 15, 45, 'Kaffeepause'],
+            [15, 45, 16, 30, ''],
+            [16, 30, 16, 45, 'Kurze Pause'],
+            [16, 45, 17, 30, ''],
+            [17, 30, 17, 45, 'Kurze Pause'],
+            [17, 45, 18, 45, 'Keynote'],
+            [18, 45, 20, 30, 'Get Together'],
+        ]
+        for t in timeslots:
+            n = u"{:02d}:{:02d} \u2014 {:02d}:{:02d}" \
+                .format(t[0], t[1], t[2], t[3])
+            for event in Event.objects.all():
+                s = event.start_time.replace(hour=t[0], minute=t[1])
+                e = event.end_time.replace(hour=t[2], minute=t[3])
+                timeslot = TimeSlot(name=n, event=event,
+                                    start_time=s, end_time=e,
+                                    text_body=t[4])
+                timeslot.save()
+
+    def handleCreateTalkSlots(self):
+        ntalkslot = TalkSlot.objects.count()
+        if ntalkslot > 1:
+            print "Create talk slots: {} talk slots already exists, skipping" \
+                .format(ntalkslot)
+            return
+        print "Creating talk slots"
+        keynote_room = Room.objects.get(name='Hamburg')
+        rooms = Room.objects.all()
+        for event in Event.objects.exclude(pk=settings.EVENT_ID):
+            tracks = Track.objects.filter(event=event).exclude(name='Keynote')
+            keynote_track = Track.objects.get(event=event, name='Keynote')
+            keynotes = TimeSlot.objects.filter(event=event,
+                                               text_body='Keynote')
+            sessions = TimeSlot.objects.filter(event=event, text_body='')
+            ntalks = len(keynotes) + len(sessions) * len(rooms)
+            print ("    {}: {} talks for {} keynotes,"
+                   " and {} sessions in {} rooms") \
+                .format(event.title, ntalks, len(keynotes), len(sessions),
+                        len(rooms))
+            talks = self.rng.sample(
+                Talk.objects.filter(speaker__user__event=event), ntalks)
+            for ts in keynotes:
+                talk = talks.pop()
+                s = TalkSlot(time=ts, room=keynote_room, talk=talk)
+                s.save()
+                talk.track = keynote_track
+                talk.save()
+            for ts in sessions:
+                for room in rooms:
+                    talk = talks.pop()
+                    s = TalkSlot(time=ts, room=room, talk=talk)
+                    s.save()
+                    talk.track = self.rng.choice(tracks)
+                    talk.save()
+
     def handle(self, *args, **options):
         self.handleCreateUser()
         self.handleUpdateSite()
@@ -209,3 +317,7 @@ class Command(BaseCommand):
         self.handleCreateSpeakers()
         self.handleCreateTalk()
         self.handleVoteForTalk()
+        self.handleCreateTracks()
+        self.handleCreateRooms()
+        self.handleCreateTimeSlots()
+        self.handleCreateTalkSlots()

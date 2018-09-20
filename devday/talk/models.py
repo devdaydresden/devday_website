@@ -217,7 +217,7 @@ class Room(TimeStampedModel):
 
 @python_2_unicode_compatible
 class TimeSlot(TimeStampedModel):
-    name = models.CharField(max_length=40, unique=True, blank=False)
+    name = models.CharField(max_length=40, blank=False)
     start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(default=timezone.now)
     text_body = models.TextField(blank=True, default="")
@@ -227,6 +227,7 @@ class TimeSlot(TimeStampedModel):
         verbose_name = _('Time slot')
         verbose_name_plural = _('Time slots')
         ordering = ['start_time', 'end_time', 'name']
+        unique_together = ('name', 'event')
 
     def __str__(self):
         return "{} ({})".format(self.name, self.event)

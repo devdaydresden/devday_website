@@ -8,6 +8,7 @@ import random
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import BaseCommand
@@ -26,6 +27,7 @@ from devday.management.commands.words import Words
 
 class Command(BaseCommand):
     help = 'Fill database with data suitable for development'
+    committee = []
     rng = random.Random()
     rng.seed(1)  # we want reproducable pseudo-random numbers here
     speaker_placeholder_file = 'icons8-contacts-26.png'
@@ -121,6 +123,13 @@ class Command(BaseCommand):
                     if self.rng.random() < 0.8:
                         a = Attendee(user=user, event=e)
                         a.save()
+        print "Program committee users:"
+        g = Group.objects.get(name='talk_committee')
+        for u in self.rng.sample(User.objects.all(), 7):
+            print "    {}".format(u.email)
+            u.groups.add(g)
+            u.save()
+            self.committee.append(u)
 
     def handleCreateSpeakers(self):
         nspeaker = Speaker.objects.count()

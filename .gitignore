@@ -26,3 +26,4 @@ node_modules/
 /devday/devday/static/schedule_static.xml
 /devday/devday/static/sortedm2m/
 /devday/devday/static/treebeard/
+docker/vault/config/ssl

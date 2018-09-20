@@ -12,23 +12,18 @@ ADMINUSER_EMAIL = 'admin@devday.de'
 DEBUG = True
 # see: http://django-debug-toolbar.readthedocs.io/en/stable/installation.html#explicit-setup
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
-
-INSTALLED_APPS += [
-    'debug_toolbar',
-]
-
-MIDDLEWARE_CLASSES = [
-                         'debug_toolbar.middleware.DebugToolbarMiddleware',
-                     ] + MIDDLEWARE_CLASSES
-
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': 'devday.extras.show_toolbar_callback'
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # for development, we're using the upcoming event. Cf.
 # devday/event/migrations/0001_initial.py
 EVENT_ID = 3
 
-# settings for django-debug-toolbar
-INTERNAL_IPS = ('127.0.0.1', '::1')
+INSTALLED_APPS += [
+    'debug_toolbar',
+]
 
 LOGGING = {
     'version': 1,
@@ -72,6 +67,10 @@ LOGGING = {
         },
     },
 }
+
+MIDDLEWARE_CLASSES = [
+                         'debug_toolbar.middleware.DebugToolbarMiddleware',
+                     ] + MIDDLEWARE_CLASSES
 
 TWITTERFEED_PROXIES = {
     'http': 'http://proxy.mms-dresden.de:8080/',

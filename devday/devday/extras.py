@@ -2,6 +2,7 @@ import hashlib
 import magic
 
 from django.db.models import ImageField
+from django.conf import settings
 from django.core.exceptions import ValidationError
 
 
@@ -35,3 +36,11 @@ class ValidatedImageField(ImageField):
         h.update(data._file.read())
         data.name = u'{}{}'.format(h.hexdigest(), ext)
         return data
+
+
+def show_toolbar_callback(request):
+    """
+    Custom callback to always show the debug toolbar when the DEBUG setting
+    is True. See https://django-debug-toolbar.readthedocs.io/en/1.0/configuration.html#debug-toolbar-config
+    """
+    return settings.DEBUG

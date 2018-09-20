@@ -8,6 +8,15 @@ services:
     restart: always
     volumes:
       - "pg_data:/var/lib/postgresql/data"
+  vault:
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - "vaultlogs:/vault/logs"
+      - "vaultfile:/vault/file"
+    command: server
   app:
     build:
       context: .
@@ -17,6 +26,7 @@ services:
       - "18080:7000"
     depends_on:
       - db
+      - vault
     volumes:
       - "./devday:/srv/devday/devday"
       - "devday_media:/srv/devday/devday/media"
@@ -36,3 +46,5 @@ volumes:
   devday_media:
   devday_static:
   pg_data:
+  vaultlogs:
+  vaultfile:

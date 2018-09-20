@@ -5,6 +5,8 @@ set -e
 dbdump=''
 mediadump=''
 
+DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
+
 OPTIND=1
 while getopts 'd:m:h?' opt; do
   case "$opt" in
@@ -39,24 +41,27 @@ case "$cmd" in
     docker-compose -f docker-compose.yml -f docker-compose.tools.yml run --rm backup
     ;;
   build)
+    # Relevant for production/test environments with full vault setup
+    #mkdir -p docker/vault/config/ssl/private
+    #openssl req -new -x509 -config docker/vault/openssl.cnf  -out docker/vault/config/ssl/vault.crt.pem
     echo "*** Building Docker images"
-    docker-compose build
+    $DOCKER_COMPOSE build
     ;;
   devdata)
     echo "    Starting containers"
-    docker-compose up --detach
+    $DOCKER_COMPOSE up --detach
     echo "    Running migrations"
-    docker-compose exec app python manage.py migrate
+    $DOCKER_COMPOSE exec app python manage.py migrate
     echo "    Filling database"
-    docker-compose exec app python manage.py devdata
+    $DOCKER_COMPOSE exec app python manage.py devdata
     ;;
   manage)
-    docker-compose exec app python manage.py $@
+    $DOCKER_COMPOSE exec app python manage.py $@
     ;;
   purge)
     echo "*** Purge data"
     echo "    Deleting all containers and volumes"
-    docker-compose down --volumes
+    $DOCKER_COMPOSE down --volumes
     echo "    Deleting media files"
     rm -rf devday/media/*
     ;;
@@ -71,33 +76,38 @@ case "$cmd" in
     fi
     echo "*** Restoring database dump ${dbdump} and media dump ${mediadump}"
     echo "    Deleting all containers and volumes"
-    docker-compose down --volumes
+    $DOCKER_COMPOSE down --volumes
     echo "    Starting containers"
-    docker-compose up --detach
+    $DOCKER_COMPOSE up --detach
     echo "    Waiting for database to be available"
-    docker-compose exec db sh -c 'until pg_isready -U devday -d devday; do sleep 1; done'
+    $DOCKER_COMPOSE exec db sh -c 'until pg_isready -U devday -d devday; do sleep 1; done'
     echo "    Importing database dump"
-    gunzip -c ${dbdump} | docker-compose exec -T db psql -U devday devday
+    gunzip -c ${dbdump} | $DOCKER_COMPOSE exec -T db psql -U devday devday
     echo "    Unpacking media dump"
     tar xzf ${mediadump} -C devday
     echo "*** Running migrations"
-    docker-compose exec app python manage.py migrate
+    $DOCKER_COMPOSE exec app python manage.py migrate
     echo "*** Import completed"
     ;;
   shell)
     echo "*** Starting shell in app container"
-    docker-compose exec app bash
+    $DOCKER_COMPOSE exec app bash
     ;;
   start|'')
-    if [ -z "$(docker-compose ps -q)" ]; then
+    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
       echo "*** Starting all containers"
-      docker-compose up --detach
+      $DOCKER_COMPOSE up --detach
+      # fill vault with content
+      http_proxy= \
+          curl -v -X POST -H "X-Vault-Token: devday_root" \
+          --data '{"data": {"postgresql_password": "devday", "secret_key": "s3cr3t"}}' \
+          http://localhost:8200/v1/secret/data/devday
     fi
     echo "*** Running django app"
-    docker-compose exec app python manage.py runserver 0.0.0.0:8000
+    $DOCKER_COMPOSE exec app python manage.py runserver 0.0.0.0:8000
     ;;
   stop)
-    docker-compose down
+    $DOCKER_COMPOSE down
     ;;
   *)
     echo "error: unknown action \"${cmd}\": specify one of import, manage, purge, start, stop" >&2

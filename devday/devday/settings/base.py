@@ -14,10 +14,16 @@ Please keep this list of settings sorted alphabetically!
 """
 import os
 import mimetypes
+from requests import get
 
 from django.core.exceptions import ImproperlyConfigured
 
-gettext = lambda s: s
+
+def gettext(s):
+    return s
+
+
+_VAULT_DATA = None
 
 
 def get_env_variable(var_name):
@@ -32,6 +38,30 @@ def get_env_variable(var_name):
     except KeyError:
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
+
+
+def get_vault_variable(var_name):
+    """
+    Get a setting from vault
+
+    :param var_name: variable name
+    :return: variable data from vault /secret/data/devday
+    """
+    global _VAULT_DATA
+    vault_url = "{}/v1/secret/data/devday".format(
+        get_env_variable('VAULT_URL'))
+    if not _VAULT_DATA:
+        r = get(vault_url,
+                proxies={'http': '', 'https': ''},
+                headers={'x-vault-token': get_env_variable('VAULT_TOKEN')})
+        r.raise_for_status()
+        _VAULT_DATA = r.json()['data']['data']
+    try:
+        return _VAULT_DATA[var_name]
+    except KeyError:
+        error_msg = "Define %s in Vault key at %s" % (var_name, vault_url)
+        raise ImproperlyConfigured(error_msg)
+
 
 mimetypes.add_type("image/svg+xml", ".svg", True)
 
@@ -82,7 +112,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': get_env_variable('DEVDAY_PG_DBNAME'),
         'USER': get_env_variable('DEVDAY_PG_USER'),
-        'PASSWORD': get_env_variable('DEVDAY_PG_PASSWORD'),
+        'PASSWORD': get_vault_variable('postgresql_password'),
         'HOST': get_env_variable('DEVDAY_PG_HOST'),
         'PORT': get_env_variable('DEVDAY_PG_PORT'),
     }
@@ -158,7 +188,7 @@ REGISTRATION_OPEN = True
 ROOT_URLCONF = 'devday.urls'
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_variable('DEVDAY_SECRET')
+SECRET_KEY = get_vault_variable('secret_key')
 SITE_ID = 1
 STATIC_ROOT = os.path.join(DATA_DIR, 'static')
 STATIC_URL = '/static/'

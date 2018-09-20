@@ -20,14 +20,13 @@ from cms.models import Page
 
 from attendee.models import Attendee
 from event.models import Event
-from talk.models import Speaker, Talk
+from talk.models import Speaker, Talk, Vote
 
 from devday.management.commands.words import Words
 
 
 class Command(BaseCommand):
     help = 'Fill database with data suitable for development'
-    committee = []
     rng = random.Random()
     rng.seed(1)  # we want reproducable pseudo-random numbers here
     speaker_placeholder_file = 'icons8-contacts-26.png'
@@ -129,7 +128,6 @@ class Command(BaseCommand):
             print "    {}".format(u.email)
             u.groups.add(g)
             u.save()
-            self.committee.append(u)
 
     def handleCreateSpeakers(self):
         nspeaker = Speaker.objects.count()
@@ -186,6 +184,23 @@ class Command(BaseCommand):
             if p < 0.10:
                 self.createTalk(speaker)
 
+    def handleVoteForTalk(self):
+        User = get_user_model()
+        nvote = Vote.objects.count()
+        if nvote > 1:
+            print "Vote for talks: {} votes already exists, skipping" \
+                .format(nvote)
+        print "Voting for talk submissions"
+        event = Event.objects.get(id=settings.EVENT_ID)
+        committee = User.objects.filter(groups__name='talk_committee')
+        for talk in Talk.objects.filter(speaker__user__event=event):
+            for u in committee:
+                p = self.rng.randint(0, 6)
+                if p > 0:
+                    vote = Vote(voter=u, talk=talk, score=p)
+                    vote.save()
+        print "Cast {} votes".format(Vote.objects.count())
+
     def handle(self, *args, **options):
         self.handleCreateUser()
         self.handleUpdateSite()
@@ -193,3 +208,4 @@ class Command(BaseCommand):
         self.handleCreateAttendees()
         self.handleCreateSpeakers()
         self.handleCreateTalk()
+        self.handleVoteForTalk()

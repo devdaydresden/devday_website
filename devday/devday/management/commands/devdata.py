@@ -150,7 +150,20 @@ class Command(BaseCommand):
                             self.speaker_portrait_media_path)
             speaker.save()
 
+    def createTalk(self, speaker):
+        talk = Talk(speaker=speaker, title=Words.sentence(self.rng),
+                    abstract='A very short abstract.',
+                    remarks='A very short remark.')
+        talk.save()
+        return talk
+
     def handleCreateTalk(self):
+        """
+        Create talks. With a probability of 10%, a speaker will submit two
+        talks, with a probability of 75% will submit one talk, and with a
+        remaining probability of 5% will not submit any talk for the event the
+        speaker registered for.
+        """
         ntalk = Talk.objects.count()
         if ntalk > 1:
             print "Create talks: {} talks already exist, skipping" \
@@ -158,10 +171,11 @@ class Command(BaseCommand):
             return
         print "Creating one talk per speaker"
         for speaker in Speaker.objects.all():
-            talk = Talk(speaker=speaker, title=Words.sentence(self.rng),
-                        abstract='A very short abstract.',
-                        remarks='A very short remark.')
-            talk.save()
+            p = self.rng.random()
+            if p < 0.85:
+                self.createTalk(speaker)
+            if p < 0.10:
+                self.createTalk(speaker)
 
     def handle(self, *args, **options):
         self.handleCreateUser()

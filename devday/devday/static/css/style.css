@@ -8279,10 +8279,14 @@ header {
   background: #171034;
   background: url("../img/eyecatcher.svg"), -webkit-linear-gradient(119deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
   background: url("../img/eyecatcher.svg"), linear-gradient(-29deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
-  padding-top: 14rem;
-  padding-bottom: calc(14rem - 56px);
+  padding-top: 4rem;
+  padding-bottom: calc(4rem - 56px);
   background-size: 125%;
   background-position: 50% 80%; }
+
+header.homepage {
+  padding-top: 14rem;
+  padding-bottom: calc(14rem - 56px); }
 
 .call-to-action {
   z-index: 6; }

@@ -4,6 +4,7 @@ set -e
 
 dbdump=''
 mediadump=''
+container='app'
 
 DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
 
@@ -16,15 +17,26 @@ docker_compose_up() {
       http://localhost:8200/v1/secret/data/devday
 }
 
+usage() {
+    cat >&2 <<EOD
+usage: ./run.sh backup
+       ./run.sh build
+       ./run.sh devdata
+       ./run.sh manage [...]
+       ./run.sh purge
+       ./run.sh -d databasedump.sql.gz -m mediadump.tar.gz restore
+       ./run.sh [-c container] shell
+       ./run.sh start
+       ./run.sh stop
+EOD
+}
+
 OPTIND=1
-while getopts 'd:m:h?' opt; do
+while getopts 'd:m:c:h?' opt; do
   case "$opt" in
   h|\?)
-    echo "usage: rundev.sh -d databasedump.sql.gz -m mediadump.tar.gz import"
-    echo "       rundev.sh manage [...]"
-    echo "       rundev.sh purge"
-    echo "       rundev.sh start"
-    echo "       rundev.sh stop"
+    usage
+    exit
     ;;
   d)
     dbdump="${OPTARG}"
@@ -32,8 +44,12 @@ while getopts 'd:m:h?' opt; do
   m)
     mediadump="${OPTARG}"
     ;;
+  c)
+    container="${OPTARG}"
+    ;;
   *)
     echo "unknown option \"$opt\"" >&2
+    usage
     exit 64
     ;;
   esac
@@ -47,12 +63,9 @@ shift || true
 case "$cmd" in
   backup)
     echo "*** Running backup"
-    docker-compose -f docker-compose.yml -f docker-compose.tools.yml run --rm backup
+    $DOCKER_COMPOSE -f docker-compose.tools.yml run --rm backup
     ;;
   build)
-    # Relevant for production/test environments with full vault setup
-    #mkdir -p docker/vault/config/ssl/private
-    #openssl req -new -x509 -config docker/vault/openssl.cnf  -out docker/vault/config/ssl/vault.crt.pem
     echo "*** Building Docker images"
     $DOCKER_COMPOSE build
     ;;
@@ -87,20 +100,20 @@ case "$cmd" in
     echo "    Deleting all containers and volumes"
     $DOCKER_COMPOSE down --volumes
     echo "    Starting containers"
-    $DOCKER_COMPOSE up --detach
+    docker_compose_up
     echo "    Waiting for database to be available"
     $DOCKER_COMPOSE exec db sh -c 'until pg_isready -U devday -d devday; do sleep 1; done'
     echo "    Importing database dump"
-    gunzip -c ${dbdump} | $DOCKER_COMPOSE exec -T db psql -U devday devday
+    gunzip -c "${dbdump}" | $DOCKER_COMPOSE exec -T db psql -U devday devday
     echo "    Unpacking media dump"
-    tar xzf ${mediadump} -C devday
+    $DOCKER_COMPOSE exec -T app tar xz -C /srv/devday/devday/media < "${mediadump}"
     echo "*** Running migrations"
     $DOCKER_COMPOSE exec app python manage.py migrate
     echo "*** Import completed"
     ;;
   shell)
-    echo "*** Starting shell in app container"
-    $DOCKER_COMPOSE exec app bash
+    echo "*** Starting shell in ${container} container"
+    $DOCKER_COMPOSE exec "${container}" bash
     ;;
   start|'')
     if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
@@ -114,7 +127,8 @@ case "$cmd" in
     $DOCKER_COMPOSE down
     ;;
   *)
-    echo "error: unknown action \"${cmd}\": specify one of import, manage, purge, start, stop" >&2
+    echo -e "error: unknown action \"${cmd}\":\n" >&2
+    usage
     exit 64
     ;;
 esac

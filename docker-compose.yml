@@ -13,17 +13,7 @@ services:
       - "8200:8200"
     cap_add:
       - IPC_LOCK
-    volumes:
-      - "vaultlogs:/vault/logs"
-      - "vaultfile:/vault/file"
-    command: server
   app:
-    build:
-      context: .
-      dockerfile: docker/devday/Dockerfile
-    ports:
-      - "8000:8000"
-      - "18080:7000"
     depends_on:
       - db
       - vault
@@ -31,20 +21,8 @@ services:
       - "./devday:/srv/devday/devday"
       - "devday_media:/srv/devday/devday/media"
       - "devday_static:/srv/devday/devday/static"
-  revproxy:
-    build:
-      context: docker/revproxy
-    ports:
-      - "8080:80"
-    depends_on:
-      - app
-    volumes:
-      - "devday_media:/usr/local/apache2/htdocs/media"
-      - "devday_static:/usr/local/apache2/htdocs/static"
 
 volumes:
   devday_media:
   devday_static:
   pg_data:
-  vaultlogs:
-  vaultfile:

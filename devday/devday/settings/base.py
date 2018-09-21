@@ -52,7 +52,6 @@ def get_vault_variable(var_name):
         get_env_variable('VAULT_URL'))
     if not _VAULT_DATA:
         r = get(vault_url,
-                proxies={'http': '', 'https': ''},
                 headers={'x-vault-token': get_env_variable('VAULT_TOKEN')})
         r.raise_for_status()
         _VAULT_DATA = r.json()['data']['data']

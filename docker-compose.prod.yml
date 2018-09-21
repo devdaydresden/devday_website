@@ -1,0 +1,39 @@
+version: '3'
+services:
+  vault:
+    image: devday_hp_vault:prod
+    build:
+      context: docker/vault
+    volumes:
+      - "vaultlogs:/vault/logs"
+      - "vaultfile:/vault/file"
+    command: server
+  app:
+    # tag dev image as devday_hp_app_dev
+    image: devday_hp_app:prod
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile-prod
+      args:
+        http_proxy: ${http_proxy}
+        no_proxy: ${no_proxy},vault
+    environment:
+      VAULT_URL: https://vault:8200
+      DJANGO_SETTINGS_MODULE: devday.settings.prod
+    env_file:
+      prod-env
+  revproxy:
+    image: devday_hp_revproxy:prod
+    build:
+      context: docker/revproxy
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+    volumes:
+      - "devday_media:/usr/local/apache2/htdocs/media"
+      - "devday_static:/usr/local/apache2/htdocs/static"
+
+volumes:
+  vaultlogs:
+  vaultfile:

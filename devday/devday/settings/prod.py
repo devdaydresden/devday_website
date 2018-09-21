@@ -35,7 +35,7 @@ LOGGING = {
     'handlers': {
         'file': {
             'class': 'logging.FileHandler',
-            'filename': '/home/devdayprod/devday.log',
+            'filename': '/srv/devday/devday.log',
             'formatter': 'simple',
             'level': 'INFO',
         },

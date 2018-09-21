@@ -1,12 +1,16 @@
 FROM node:8-stretch
+MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
+LABEL vendor=T-Systems\ Multimedia\ Solutions\ GmbH
+LABEL devday.release=0.1
 
-VOLUME /srv/devday
+VOLUME /srv/devday /srv/devday/frontend/node_modules
 
-RUN apt update && \
-  apt install -y build-essential ruby ruby-dev && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* && \
-  gem install scss_lint
+ARG http_proxy
+ARG no_proxy
+
+ENV http_proxy ${http_proxy}
+ENV https_proxy ${http_proxy}
+ENV no_proxy ${no_proxy}
 
 WORKDIR /srv/devday/frontend
 

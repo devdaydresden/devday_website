@@ -1,0 +1,43 @@
+FROM python:2
+MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
+LABEL vendor=T-Systems\ Multimedia\ Solutions\ GmbH
+LABEL devday.release=0.1
+
+ARG http_proxy
+ARG no_proxy
+
+ENV http_proxy ${http_proxy}
+ENV https_proxy ${http_proxy}
+ENV no_proxy ${no_proxy}
+ENV PYTHONUNBUFFERED 1
+ENV DEVDAY_PG_DBNAME devday
+ENV DEVDAY_PG_HOST db
+ENV DEVDAY_PG_PORT 5432
+ENV DEVDAY_PG_USER devday
+ENV REQUESTS_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
+
+EXPOSE 7000
+
+RUN apt-get update && \
+    apt-get install -y uwsgi-plugin-python uwsgi gettext && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    ln -fs /usr/lib/python2.7/plat-x86_64-linux-gnu/_sysconfigdata_nd.py /usr/lib/python2.7/ && \
+    mkdir -p /srv/devday
+
+VOLUME /srv/devday/devday /srv/devday/devday/media /srv/devday/devday/static
+WORKDIR /srv/devday
+
+COPY devday/requirements.txt /srv/devday/
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt ; \
+    rm -rf /root/.cache ; \
+    find /usr/local -type f -name '*.pyc' -delete
+
+COPY docker/app/uwsgi.ini /srv/devday/
+COPY docker/app/devday.wsgi /srv/devday/
+COPY docker/app/vault.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+
+WORKDIR /srv/devday/devday
+CMD ["uwsgi", "--ini", "/srv/devday/uwsgi.ini"]

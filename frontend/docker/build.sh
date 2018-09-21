@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker build . -t seco/devday_frontend
+docker build $(dirname $0) -t seco/devday_frontend

@@ -7,6 +7,15 @@ mediadump=''
 
 DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
 
+docker_compose_up() {
+  $DOCKER_COMPOSE up --detach
+  # fill vault with content
+  http_proxy= \
+      curl -X POST -H "X-Vault-Token: devday_root" \
+      --data '{"data": {"postgresql_password": "devday", "secret_key": "s3cr3t"}}' \
+      http://localhost:8200/v1/secret/data/devday
+}
+
 OPTIND=1
 while getopts 'd:m:h?' opt; do
   case "$opt" in
@@ -49,7 +58,7 @@ case "$cmd" in
     ;;
   devdata)
     echo "    Starting containers"
-    $DOCKER_COMPOSE up --detach
+    docker_compose_up
     echo "    Running migrations"
     $DOCKER_COMPOSE exec app python manage.py migrate
     echo "    Filling database"
@@ -96,12 +105,7 @@ case "$cmd" in
   start|'')
     if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
       echo "*** Starting all containers"
-      $DOCKER_COMPOSE up --detach
-      # fill vault with content
-      http_proxy= \
-          curl -v -X POST -H "X-Vault-Token: devday_root" \
-          --data '{"data": {"postgresql_password": "devday", "secret_key": "s3cr3t"}}' \
-          http://localhost:8200/v1/secret/data/devday
+      docker_compose_up
     fi
     echo "*** Running django app"
     $DOCKER_COMPOSE exec app python manage.py runserver 0.0.0.0:8000

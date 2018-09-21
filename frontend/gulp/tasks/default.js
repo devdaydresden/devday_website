@@ -7,6 +7,7 @@ var runSequence = require('run-sequence');
 gulp.task('default', function(callback) {
 	runSequence(
 		['jquery', 'js', 'sass', 'fonts', 'images'],
-		'html',
-		['lint-js', 'lint-sass'], callback);
+		//'html',
+		//['lint-js', 'lint-sass'],
+		callback);
 });

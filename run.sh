@@ -9,7 +9,7 @@ container='app'
 DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
 
 docker_compose_up() {
-  $DOCKER_COMPOSE up --detach
+  $DOCKER_COMPOSE up -d
   # fill vault with content
   http_proxy= \
       curl -X POST -H "X-Vault-Token: devday_root" \

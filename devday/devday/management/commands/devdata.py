@@ -64,17 +64,52 @@ class Command(BaseCommand):
         site.save()
 
     def handleCreatePages(self):
+        User = get_user_model()
+        admin = User.objects.get(email=settings.ADMINUSER_EMAIL)
         npage = Page.objects.count()
         if npage > 0:
             print "Create pages: {} page objects already exist, skipping" \
                   .format(npage)
             return
         print "Creating pages"
-        api.create_page(title="Dev Data 2019", language='de', published=True,
-                        template='devday_index.html', parent=None)
-        api.create_page(title="Deutsche Homepage", language="de",
-                        template=TEMPLATE_INHERITANCE_MAGIC, redirect="/",
-                        slug="de", in_navigation=False, parent=None)
+        index = api.create_page(
+        title="Deutsche Homepage", language="de", template="devday_index.html",
+        parent=None, slug="de", in_navigation=False)
+        eventinfo = index.placeholders.get(slot='eventinfo')
+        api.add_plugin(eventinfo, 'TextPlugin', 'de',
+                       body=u'''<h4>Fünf Jahre DevDay</h4>
+<p>Der Dev Day feiert seinen fünften Geburtstag - und den wollen wir mit euch
+verbringen! Die <strong>Konferenz</strong> für alle
+<strong>IT-Interessenten</strong> - Studierende oder Professionals, aus Dresden
+oder auch dem anderen Ende von Deutschland - hält zu ihrem kleinen Jubiläum
+einige Neuigkeiten und Überaschungen bereit, also seid gespannt und merkt euch
+bereits jetzt den <strong>21.05.2019</strong> vor. Definitiv gleich bleibt
+jedoch: auch 2019 ist der Dev Day für alle Teilnehmer kostenlos.</p>
+<p>Organisiert wird der Dev Day durch uns, die Software Engineering Community
+(kurz SECO) der T-Systems Multimedia Solutions GmbH. Wir sind ein ca.
+15-köpfiges, bunt gemischtes Team größtenteils aus Software- und System
+Architekten und –Entwicklern bestehend. Neben vielen kleinen Events vor allem
+zum Wissensaustausch in der T-Systems MMS organisieren wir einmal im Jahr auch
+den Dev Day. Unser größtes Ziel dabei: Wissensaustausch und Vernetzung über die
+Grenzen von Unternehmen und Dresden hinaus.</p>
+''')
+        audience = index.placeholders.get(slot='audience')
+        api.add_plugin(audience, 'TextPlugin', 'de',
+                       body=u'''<h4>Call for Papers</h4>
+<p>Für den Dev Day 19 brauchen wir wieder eure Unterstützung: meldet euch als
+<strong>Speaker</strong> an und schlagt uns spannende, interessante
+<strong>Vorträge</strong> vor!</p>
+<p>Für 2019 haben wir uns ein paar Neuigkeiten überlegt, um noch mehr Themen
+Raum zu bieten.</p>
+<p>Für die <strong>Vorträge haben wir dieses Mal zwei Längen</strong>: 45 und
+60 Minuten. Und das <strong>Session-Grid wird größer</strong>: wir machen
+statt eines Abschluss-Vortrags vier weiter, reguläre Talks.</p>
+<p>Zusätzlich gibt es Raum für <strong>drei Workshops</strong> am Vormittag:
+jeweils bis zu 15 Teilnehmer können zusammen <strong>drei Stunden</strong>
+tiefer in ein Thema einsteigen.</p>
+<p>Sichert euch jetzt euren kostenfreien Platz auf dem Dev Day!</p>
+''')
+        api.publish_page(index, admin, 'de')
         api.create_page(title="Sessions", language="de", published=True,
                         template=TEMPLATE_INHERITANCE_MAGIC,
                         in_navigation=True, parent=None)

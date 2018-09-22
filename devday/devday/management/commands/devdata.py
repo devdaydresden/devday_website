@@ -25,6 +25,8 @@ from talk.models import Room, Speaker, Talk, TalkSlot, TimeSlot, Track, Vote
 
 from devday.management.commands.words import Words
 
+User = get_user_model()
+
 
 class Command(BaseCommand):
     help = 'Fill database with data suitable for development'
@@ -41,43 +43,45 @@ class Command(BaseCommand):
     speaker_portrait_path = join(settings.MEDIA_ROOT,
                                  speaker_portrait_media_path)
 
-    def handleCreateUser(self):
-        User = get_user_model()
+    def __init__(self, stdout=None, stderr=None, no_color=False):
+        super(Command, self).__init__(stdout, stderr, no_color)
+        self.user = None
 
+    def create_admin_user(self):
         try:
-            user = User.objects.get(email=settings.ADMINUSER_EMAIL)
-            print "Create admin user: {} already present" \
-                  .format(settings.ADMINUSER_EMAIL)
+            self.user = User.objects.get(email=settings.ADMINUSER_EMAIL)
+            self.stdout.write('Create admin user: {} already present'.format(
+                settings.ADMINUSER_EMAIL))
         except ObjectDoesNotExist:
-            print "Create admin user"
-            user = User.objects.create_user(settings.ADMINUSER_EMAIL,
-                                            password='admin')
-            user.is_superuser = True
-            user.is_staff = True
-            user.save()
+            self.stdout.write('Create admin user')
+            self.user = User.objects.create_user(
+                settings.ADMINUSER_EMAIL, password='admin')
+            self.user.is_superuser = True
+            self.user.is_staff = True
+            self.user.save()
 
-    def handleUpdateSite(self):
-        print "Update site"
+    def update_site(self):
+        self.stdout.write('Update site')
         site = Site.objects.get(pk=1)
         site.domain = 'devday.de'
         site.name = 'Dev Data'
         site.save()
 
-    def handleCreatePages(self):
-        User = get_user_model()
-        admin = User.objects.get(email=settings.ADMINUSER_EMAIL)
+    def create_pages(self):
         npage = Page.objects.count()
         if npage > 0:
-            print "Create pages: {} page objects already exist, skipping" \
-                  .format(npage)
+            self.stdout.write(
+                'Create pages: {} page objects already exist, skipping'.format(
+                    npage))
             return
-        print "Creating pages"
+        self.stdout.write('Creating pages')
         index = api.create_page(
-        title="Deutsche Homepage", language="de", template="devday_index.html",
-        parent=None, slug="de", in_navigation=False)
+            title='Deutsche Homepage', language='de',
+            template='devday_index.html',
+            parent=None, slug='de', in_navigation=False)
         eventinfo = index.placeholders.get(slot='eventinfo')
-        api.add_plugin(eventinfo, 'TextPlugin', 'de',
-                       body=u'''<h4>Fünf Jahre DevDay</h4>
+        api.add_plugin(
+            eventinfo, 'TextPlugin', 'de', body=u'''<h4>Fünf Jahre DevDay</h4>
 <p>Der Dev Day feiert seinen fünften Geburtstag - und den wollen wir mit euch
 verbringen! Die <strong>Konferenz</strong> für alle
 <strong>IT-Interessenten</strong> - Studierende oder Professionals, aus Dresden
@@ -94,8 +98,8 @@ den Dev Day. Unser größtes Ziel dabei: Wissensaustausch und Vernetzung über d
 Grenzen von Unternehmen und Dresden hinaus.</p>
 ''')
         audience = index.placeholders.get(slot='audience')
-        api.add_plugin(audience, 'TextPlugin', 'de',
-                       body=u'''<h4>Call for Papers</h4>
+        api.add_plugin(
+            audience, 'TextPlugin', 'de', body=u'''<h4>Call for Papers</h4>
 <p>Für den Dev Day 19 brauchen wir wieder eure Unterstützung: meldet euch als
 <strong>Speaker</strong> an und schlagt uns spannende, interessante
 <strong>Vorträge</strong> vor!</p>
@@ -109,73 +113,77 @@ jeweils bis zu 15 Teilnehmer können zusammen <strong>drei Stunden</strong>
 tiefer in ein Thema einsteigen.</p>
 <p>Sichert euch jetzt euren kostenfreien Platz auf dem Dev Day!</p>
 ''')
-        api.publish_page(index, admin, 'de')
-        api.create_page(title="Sessions", language="de", published=True,
-                        template=TEMPLATE_INHERITANCE_MAGIC,
-                        in_navigation=True, parent=None)
-        archive = api.create_page(title="Archiv", language="de",
-                                  published=True,
-                                  template=TEMPLATE_INHERITANCE_MAGIC,
-                                  in_navigation=True, parent=None)
-        api.create_page(title="Dev Data 2017", language="de", published=True,
-                        template=TEMPLATE_INHERITANCE_MAGIC,
-                        redirect="/devdata17/talk", in_navigation=True,
-                        parent=archive)
-        api.create_page(title="Dev Data 2018", language="de", published=True,
-                        template=TEMPLATE_INHERITANCE_MAGIC,
-                        redirect="/devdata18/talk", in_navigation=True,
-                        parent=archive)
-        api.create_page(title="Sponsoring", language="de", published=True,
-                        template=TEMPLATE_INHERITANCE_MAGIC,
-                        reverse_id="sponsoring", parent=None)
+        api.publish_page(index, self.user, 'de')
+        api.create_page(
+            title='Sessions', language='de', published=True,
+            template=TEMPLATE_INHERITANCE_MAGIC, in_navigation=True,
+            parent=None)
+        archive = api.create_page(
+            title='Archiv', language='de', published=True,
+            template=TEMPLATE_INHERITANCE_MAGIC, in_navigation=True,
+            parent=None)
+        api.create_page(
+            title='Dev Data 2017', language='de', published=True,
+            template=TEMPLATE_INHERITANCE_MAGIC, redirect='/devdata17/talk',
+            in_navigation=True, parent=archive)
+        api.create_page(
+            title='Dev Data 2018', language='de', published=True,
+            template=TEMPLATE_INHERITANCE_MAGIC, redirect='/devdata18/talk',
+            in_navigation=True, parent=archive)
+        api.create_page(
+            title='Sponsoring', language='de', published=True,
+            template=TEMPLATE_INHERITANCE_MAGIC,
+            reverse_id='sponsoring', parent=None)
 
-    def handleCreateAttendees(self):
-        User = get_user_model()
+    def create_attendees(self):
         nuser = User.objects.count()
         if nuser > 3:
-            print "Create attendees: {} users already exist, skipping" \
-                  .format(nuser)
+            self.stdout.write(
+                'Create attendees: {} users already exist, skipping'.format(
+                    nuser))
             return
         events = Event.objects.all()
-        first = ["Alexander", "Barbara", "Christian", "Daniela", "Erik",
-                 "Fatima", "Georg", "Heike", "Ingo", "Jana", "Klaus", "Lena",
-                 "Martin", "Natalie", "Olaf", "Peggy", "Quirin", "Rosa",
-                 "Sven", "Tanja", "Ulrich", "Veronika", "Werner", "Xena",
-                 "Yannick", "Zahra"]
-        last = ["Schneider", "Meier", "Schulze", "Fischer", "Weber",
-                "Becker", "Lehmann", "Koch", "Richter", "Neumann",
-                "Fuchs", "Vogel", "Keller", "Jung", "Hahn",
-                "Schubert", "Winkler", "Berger", "Lorenz", "Albrecht"]
-        print "Creating {:d} attendees".format(len(first) * len(last))
+        first = ['Alexander', 'Barbara', 'Christian', 'Daniela', 'Erik',
+                 'Fatima', 'Georg', 'Heike', 'Ingo', 'Jana', 'Klaus', 'Lena',
+                 'Martin', 'Natalie', 'Olaf', 'Peggy', 'Quirin', 'Rosa',
+                 'Sven', 'Tanja', 'Ulrich', 'Veronika', 'Werner', 'Xena',
+                 'Yannick', 'Zahra']
+        last = ['Schneider', 'Meier', 'Schulze', 'Fischer', 'Weber',
+                'Becker', 'Lehmann', 'Koch', 'Richter', 'Neumann',
+                'Fuchs', 'Vogel', 'Keller', 'Jung', 'Hahn',
+                'Schubert', 'Winkler', 'Berger', 'Lorenz', 'Albrecht']
+        self.stdout.write(
+            'Creating {:d} attendees'.format(len(first) * len(last)))
         for f in first:
             for l in last:
-                user = User.objects.create_user("{}.{}@example.com"
-                                                .format(f.lower(), l.lower()),
-                                                password='attendee',
-                                                first_name=f, last_name=l)
+                user = User.objects.create_user(
+                    '{}.{}@example.com'.format(f.lower(), l.lower()),
+                    password='attendee', first_name=f, last_name=l)
                 user.save()
                 for e in events:
                     if self.rng.random() < 0.8:
                         a = Attendee(user=user, event=e)
                         a.save()
-        print "Program committee users:"
+        self.stdout.write('Program committee users:')
         g = Group.objects.get(name='talk_committee')
         for u in self.rng.sample(User.objects.all(), 7):
-            print "    {}".format(u.email)
+            self.stdout.write('    {}'.format(u.email))
             u.groups.add(g)
             u.save()
 
-    def handleCreateSpeakers(self):
+    def create_speakers(self):
         nspeaker = Speaker.objects.count()
         if nspeaker > 1:
-            print "Create speakers: {} speakers already exist, skipping" \
-                  .format(nspeaker)
+            self.stdout.write(
+                'Create speakers: {} speakers already exist, skipping'.format(
+                    nspeaker))
             return
         nspeakerperevent = 50
         nspeaker = Event.objects.count() * nspeakerperevent
         attendees = self.rng.sample(Attendee.objects.all(), nspeaker)
-        print "Creating {} speakers for {} events" \
-              .format(nspeakerperevent, Event.objects.count())
+        self.stdout.write(
+            'Creating {} speakers for {} events'.format(
+                nspeakerperevent, Event.objects.count()))
         if not isfile(self.speaker_portrait_path):
             try:
                 makedirs(self.speaker_portrait_dir)
@@ -186,21 +194,21 @@ tiefer in ein Thema einsteigen.</p>
                      self.speaker_portrait_path)
         for attendee in attendees:
             speaker = Speaker(user=attendee, shirt_size=3,
-                              videopermission=True, shortbio="My short bio")
+                              videopermission=True, shortbio='My short bio')
             # https://stackoverflow.com/a/5256094
             speaker.portrait = speaker.portrait.field \
                 .attr_class(speaker, speaker.portrait.field,
                             self.speaker_portrait_media_path)
             speaker.save()
 
-    def createTalk(self, speaker):
+    def create_talk(self, speaker):
         talk = Talk(speaker=speaker, title=Words.sentence(self.rng).title(),
                     abstract='A very short abstract.',
                     remarks='A very short remark.')
         talk.save()
         return talk
 
-    def handleCreateTalk(self):
+    def create_talks(self):
         """
         Create talks. With a probability of 10%, a speaker will submit two
         talks, with a probability of 75% will submit one talk, and with a
@@ -209,25 +217,26 @@ tiefer in ein Thema einsteigen.</p>
         """
         ntalk = Talk.objects.count()
         if ntalk > 1:
-            print "Create talks: {} talks already exist, skipping" \
-                  .format(ntalk)
+            self.stdout.write(
+                'Create talks: {} talks already exist, skipping'.format(
+                    ntalk))
             return
-        print "Creating one talk per speaker"
+        self.stdout.write('Creating one talk per speaker')
         for speaker in Speaker.objects.all():
             p = self.rng.random()
             if p < 0.85:
-                self.createTalk(speaker)
+                self.create_talk(speaker)
             if p < 0.10:
-                self.createTalk(speaker)
+                self.create_talk(speaker)
 
-    def handleVoteForTalk(self):
-        User = get_user_model()
+    def vote_for_talk(self):
         nvote = Vote.objects.count()
         if nvote > 1:
-            print "Vote for talks: {} votes already exists, skipping" \
-                .format(nvote)
+            self.stdout.write(
+                'Vote for talks: {} votes already exists, skipping'.format(
+                    nvote))
             return
-        print "Voting for talk submissions"
+        self.stdout.write('Voting for talk submissions')
         event = Event.objects.get(id=settings.EVENT_ID)
         committee = User.objects.filter(groups__name='talk_committee')
         for talk in Talk.objects.filter(speaker__user__event=event):
@@ -236,15 +245,16 @@ tiefer in ein Thema einsteigen.</p>
                 if p > 0:
                     vote = Vote(voter=u, talk=talk, score=p)
                     vote.save()
-        print "Cast {} votes".format(Vote.objects.count())
+        self.stdout.write('Cast {} votes'.format(Vote.objects.count()))
 
-    def handleCreateTracks(self):
+    def create_tracks(self):
         ntrack = Track.objects.count()
         if ntrack > 1:
-            print "Create tracks: {} tracks already exists, skipping" \
-                .format(ntrack)
+            self.stdout.write(
+                'Create tracks: {} tracks already exists, skipping'.format(
+                    ntrack))
             return
-        print "Creating tracks"
+        self.stdout.write('Creating tracks')
         tracks = {
             'devdata.17': [
                 'The Human Side', 'Architektur', 'Let Data Rule', 'DevOps',
@@ -261,13 +271,13 @@ tiefer in ein Thema einsteigen.</p>
                 track = Track(name=n, event=event)
                 track.save()
 
-    def handleCreateRooms(self):
+    def create_rooms(self):
         nroom = Room.objects.count()
         if nroom > 1:
-            print "Create rooms: {} rooms already exists, skipping" \
-                .format(nroom)
+            self.stdout.write(
+                'Create rooms: {} rooms already exists, skipping'.format(nroom))
             return
-        print "Creating rooms"
+        self.stdout.write('Creating rooms')
         event = Event.objects.get(pk=settings.EVENT_ID)
         p = 0
         for n in ['Hamburg', 'Gartensaal', 'St. Petersburg', 'Rotterdam']:
@@ -275,17 +285,18 @@ tiefer in ein Thema einsteigen.</p>
             room.save()
             p += 1
 
-    def handleCreateTimeSlots(self):
+    def create_time_slots(self):
         ntimeslot = TimeSlot.objects.count()
         if ntimeslot > 1:
-            print "Create time slots: {} time slots already exists, skipping" \
-                .format(ntimeslot)
+            self.stdout.write(
+                'Create time slots: {} time slots already exists, skipping'.format(
+                    ntimeslot))
             return
-        print "Creating time slots"
-        timeslots = [
-            [10, 30, 12,  0, 'Exkursion'],
-            [12,  0, 13,  0, 'Registrierung'],
-            [13,  0, 13, 15, 'Begrüßung durch die SECO'],
+        self.stdout.write('Creating time slots')
+        time_slots = [
+            [10, 30, 12, 0, 'Exkursion'],
+            [12, 0, 13, 0, 'Registrierung'],
+            [13, 0, 13, 15, 'Begrüßung durch die SECO'],
             [13, 15, 14, 15, 'Keynote'],
             [14, 15, 14, 30, 'Kurze Pause'],
             [14, 30, 15, 15, ''],
@@ -297,9 +308,9 @@ tiefer in ein Thema einsteigen.</p>
             [17, 45, 18, 45, 'Keynote'],
             [18, 45, 20, 30, 'Get Together'],
         ]
-        for t in timeslots:
-            n = u"{:02d}:{:02d} \u2014 {:02d}:{:02d}" \
-                .format(t[0], t[1], t[2], t[3])
+        for t in time_slots:
+            n = u'{:02d}:{:02d} \u2014 {:02d}:{:02d}'.format(t[0], t[1], t[2],
+                                                             t[3])
             for event in Event.objects.all():
                 s = event.start_time.replace(hour=t[0], minute=t[1])
                 e = event.end_time.replace(hour=t[2], minute=t[3])
@@ -308,13 +319,14 @@ tiefer in ein Thema einsteigen.</p>
                                     text_body=t[4])
                 timeslot.save()
 
-    def handleCreateTalkSlots(self):
+    def create_talk_slots(self):
         ntalkslot = TalkSlot.objects.count()
         if ntalkslot > 1:
-            print "Create talk slots: {} talk slots already exists, skipping" \
-                .format(ntalkslot)
+            self.stdout.write(
+                ('Create talk slots: {} talk slots already exists,'
+                 ' skipping').format(ntalkslot))
             return
-        print "Creating talk slots"
+        self.stdout.write('Creating talk slots')
         keynote_room = Room.objects.get(name='Hamburg')
         rooms = Room.objects.all()
         for event in Event.objects.exclude(pk=settings.EVENT_ID):
@@ -324,10 +336,11 @@ tiefer in ein Thema einsteigen.</p>
                                                text_body='Keynote')
             sessions = TimeSlot.objects.filter(event=event, text_body='')
             ntalks = len(keynotes) + len(sessions) * len(rooms)
-            print ("    {}: {} talks for {} keynotes,"
-                   " and {} sessions in {} rooms") \
-                .format(event.title, ntalks, len(keynotes), len(sessions),
-                        len(rooms))
+            self.stdout.write(
+                ('    {}: {} talks for {} keynotes, and {} sessions in {}'
+                 ' rooms').format(
+                    event.title, ntalks, len(keynotes), len(sessions),
+                    len(rooms)))
             talks = self.rng.sample(
                 Talk.objects.filter(speaker__user__event=event), ntalks)
             for ts in keynotes:
@@ -345,14 +358,14 @@ tiefer in ein Thema einsteigen.</p>
                     talk.save()
 
     def handle(self, *args, **options):
-        self.handleCreateUser()
-        self.handleUpdateSite()
-        self.handleCreatePages()
-        self.handleCreateAttendees()
-        self.handleCreateSpeakers()
-        self.handleCreateTalk()
-        self.handleVoteForTalk()
-        self.handleCreateTracks()
-        self.handleCreateRooms()
-        self.handleCreateTimeSlots()
-        self.handleCreateTalkSlots()
+        self.create_admin_user()
+        self.update_site()
+        self.create_pages()
+        self.create_attendees()
+        self.create_speakers()
+        self.create_talks()
+        self.vote_for_talk()
+        self.create_tracks()
+        self.create_rooms()
+        self.create_time_slots()
+        self.create_talk_slots()

@@ -33,7 +33,7 @@ case "$cmd" in
       openssl req -new -x509 -config docker/vault/openssl.cnf -key "${VAULT_KEY}" -out "${VAULT_CERT}"
     fi
     openssl x509 -in "${VAULT_CERT}" -out docker/app/vault.crt
-    $DOCKER_COMPOSE build
+    $DOCKER_COMPOSE build $@
     ;;
   manage)
     $DOCKER_COMPOSE exec app python manage.py $@
@@ -43,19 +43,19 @@ case "$cmd" in
     $DOCKER_COMPOSE exec app bash
     ;;
   startall)
-    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
-      echo "*** Starting all containers"
-      $DOCKER_COMPOSE up --detach
-    fi
+    echo "*** Starting all containers"
+    $DOCKER_COMPOSE up -d
     ;;
   start)
-    $DOCKER_COMPOSE up --no-deps app
+    container="${1:-app}"
+    $DOCKER_COMPOSE up --no-deps -d "${container}"
     ;;
   stopall)
     $DOCKER_COMPOSE down
     ;;
   stop)
-    $DOCKER_COMPOSE stop app
+    container="${1:-app}"
+    $DOCKER_COMPOSE stop "${container}"
     ;;
   restart)
     $DOCKER_COMPOSE stop app

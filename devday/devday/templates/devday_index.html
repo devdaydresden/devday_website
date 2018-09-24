@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% comment %}
+  This is the page template for the home page. All other pages use devday.html.
+{% endcomment %}
 {% load cms_tags static sekizai_tags i18n %}
-{% block body_classes %}{{ block.super }} dd-2018{% endblock %}
+{% block body_classes %}{{ block.super }} dd-2018 homepage{% endblock %}
 {% block title %}{{ block.super }} - {% page_attribute "page_title" %}{% endblock %}
 {% block meta_description %}{% page_attribute "meta_description" as meta_description %}{% if meta_description %}{{ meta_description }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 

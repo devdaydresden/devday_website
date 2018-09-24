@@ -1,5 +1,5 @@
 /**
- * Build on 2018-9-11
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8279,10 +8279,13 @@ header {
   background: #171034;
   background: url("../img/eyecatcher.svg"), -webkit-linear-gradient(119deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
   background: url("../img/eyecatcher.svg"), linear-gradient(-29deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
-  padding-top: 14rem;
-  padding-bottom: calc(14rem - 56px);
+  padding-top: 7rem;
+  padding-bottom: calc(7rem - 56px);
   background-size: 125%;
   background-position: 50% 80%; }
+  .homepage header {
+    padding-top: 14rem;
+    padding-bottom: calc(14rem - 56px); }
 
 .call-to-action {
   z-index: 6; }
@@ -8519,3 +8522,36 @@ footer {
   border-top: 2px solid #ffffff; }
   footer img {
     height: 28px; }
+
+.full-width {
+  width: 100%; }
+
+.form-row {
+  margin-bottom: 1rem; }
+
+form .btn {
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  margin-bottom: 1rem; }
+
+.form-group label {
+  color: #171034;
+  line-height: 1.15rem;
+  margin-bottom: 0.25rem; }
+
+.form-group .form-control {
+  border-radius: 0; }
+  .form-group .form-control:focus {
+    border: 1px solid #35a4a3;
+    outline: 0;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    color: #3f8b89; }
+  .form-group .form-control::-webkit-input-placeholder {
+    color: #c7c7c7; }
+  .form-group .form-control:-ms-input-placeholder {
+    color: #c7c7c7; }
+  .form-group .form-control::-ms-input-placeholder {
+    color: #c7c7c7; }
+  .form-group .form-control::placeholder {
+    color: #c7c7c7; }

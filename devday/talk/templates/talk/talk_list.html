@@ -2,88 +2,94 @@
 {% load i18n %}
 {% block title %}{{ block.super }} - {% trans "Schedule" %}{% endblock %}
 {% block content %}
-  <div class="col-md-12 col-lg-10 col-lg-offset-1 info-area" id="info-area">
-    {% if has_footage %}
-      <h1>{% trans "Videos, Slides and Code" %}</h1>
-      {% url "video_list" event=event.slug as video_url %}
-      <p>{% blocktrans %}See <a href="{{ video_url }}">videos, slides and example code</a> from this event.{% endblocktrans %}</p>
-    {% endif %}
-    <h1>{% trans "Schedule" %} {{ event.title }}</h1>
-    {% if talk_list %}
-      <table class="hidden-xs hidden-sm">
-        <thead>
-        <tr>
-          <th>{% trans "Time" %}</th>
-          {% for room in rooms %}
-            <th>{{ room.name }}</th>
-          {% endfor %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for timeslot in times %}
-          <tr>
-            <td>{{ timeslot.name }}</td>
-            {% for talk_time, talks in talks_by_time_and_room.items %}
-              {% if talk_time == timeslot %}
-                {% if talks|length == 1 %}
-                  {% with talk=talks|first %}
-                    <td colspan="{{ rooms|length }}"
-                        class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
-                  {% endwith %}
-                {% else %}
-                  {% for room in rooms %}
-                    {% for talk in talks %}
-                      {% if talk.talkslot.room == room %}
-                        <td class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
-                      {% endif %}
-                    {% endfor %}
-                  {% endfor %}
-                {% endif %}
-              {% endif %}
-            {% endfor %}
-            {% if timeslot not in talks_by_time_and_room %}
-              <td class="{% if timeslot.text_body %}no-talk{% else %}text-warning{% endif %}"
-                  colspan="{{ rooms|length }}">{% if timeslot.text_body %}{{ timeslot.text_body }}{% else %}
-                {% trans "Nothing scheduled here" %}{% endif %}</td>
+  <div class="content-area">
+   <div class="row">
+       <div class="col-12 col-md-10 offset-md-1">
+         {% if has_footage %}
+            <h1>{% trans "Videos, Slides and Code" %}</h1>
+            {% url "video_list" event=event.slug as video_url %}
+            <p>{% blocktrans %}See <a href="{{ video_url }}">videos, slides and example code</a> from this event.{% endblocktrans %}</p>
             {% endif %}
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
-      <div class="visible-xs-block visible-sm-block">
-        {% for room in rooms %}
-          <table>
-            <thead>
-            <tr>
-              <th>{% trans "Time" %}</th>
-              <th>{{ room.name }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for talk_room, talks in talks_by_room_and_time.items %}
-              {% if talk_room == room %}
-                {% for talk in talks %}
-                  <tr>
-                    <td>{{ talk.talkslot.time.name }}</td>
-                    <td class="{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
-                  </tr>
+            <h1>{% trans "Schedule" %} {{ event.title }}</h1>
+            {% if talk_list %}
+            <div class="table-responsive d-none d-md-block">
+                <table class="table">
+                    <thead>
+                    <tr>
+                    <th>{% trans "Time" %}</th>
+                    {% for room in rooms %}
+                        <th>{{ room.name }}</th>
+                    {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for timeslot in times %}
+                    <tr>
+                        <td>{{ timeslot.name }}</td>
+                        {% for talk_time, talks in talks_by_time_and_room.items %}
+                        {% if talk_time == timeslot %}
+                            {% if talks|length == 1 %}
+                            {% with talk=talks|first %}
+                                <td colspan="{{ rooms|length }}"
+                                    class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
+                            {% endwith %}
+                            {% else %}
+                            {% for room in rooms %}
+                                {% for talk in talks %}
+                                {% if talk.talkslot.room == room %}
+                                    <td class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
+                                {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% if timeslot not in talks_by_time_and_room %}
+                        <td class="{% if timeslot.text_body %}no-talk{% else %}text-warning{% endif %}"
+                            colspan="{{ rooms|length }}">{% if timeslot.text_body %}{{ timeslot.text_body }}{% else %}
+                            {% trans "Nothing scheduled here" %}{% endif %}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive d-md-none">
+                {% for room in rooms %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                    <th>{% trans "Time" %}</th>
+                    <th>{{ room.name }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for talk_room, talks in talks_by_room_and_time.items %}
+                    {% if talk_room == room %}
+                        {% for talk in talks %}
+                        <tr>
+                            <td>{{ talk.talkslot.time.name }}</td>
+                            <td class="{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
                 {% endfor %}
-              {% endif %}
-            {% endfor %}
-            </tbody>
-          </table>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p>{% trans "no schedule defined yet" %}</p>
-    {% endif %}
-    {% if unscheduled %}
-      <h2>{% trans "Unscheduled talks" %}</h2>
-      <ul>
-        {% for talk in unscheduled %}
-          <li class="track-{{ talk.track.name|slugify }}">{{ talk }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+            </div>
+            {% else %}
+            <p>{% trans "no schedule defined yet" %}</p>
+            {% endif %}
+            {% if unscheduled %}
+            <h2>{% trans "Unscheduled talks" %}</h2>
+            <ul>
+                {% for talk in unscheduled %}
+                <li class="track-{{ talk.track.name|slugify }}">{{ talk }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+       </div>
+   </div>
   </div>
 {% endblock %}

@@ -78,18 +78,20 @@
             <div class="offset-lg-2 col-lg-8 col-12">
                 {% if events %}
                 <h1>{% blocktrans %}You are registered for these events{% endblocktrans %}</h1>
-                <table>
-                    {% for event in events %}
-                    <tr>
-                        <td>{{ event.title }}</td>
-                        <td>{{ event.description }}</td>
-                        <td>{% if event.id == event_id and not user.get_speaker %}
-                        <p><a class="btn btn-primary"
-                                href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a></p>
-                        {% endif %}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
+                <div class="table-responsive">
+                    <table class="table">
+                        {% for event in events %}
+                        <tr>
+                            <td>{{ event.title }}</td>
+                            <td>{{ event.description }}</td>
+                            <td>{% if event.id == event_id and not user.get_speaker %}
+                            <p><a class="btn btn-primary"
+                                    href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a></p>
+                            {% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
                 {% else %}
                 <p>{% blocktrans %}You are not currently registered to participate in any event.{% endblocktrans %}</p>
                 {% endif %}

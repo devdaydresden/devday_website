@@ -3,7 +3,7 @@
 {% block title %}{% trans "List of sessions" %}{% endblock %}
 {% block content_body %}
     <div class="row">
-        <div class="col-lg-offset-1 col-lg-10 col-md-12">
+        <div class="offset-lg-1 col-lg-10 col-md-12">
             <h1>{% trans "List of sessions" %}: {{ talk_list|length }}</h1>
             {% if talk_list %}
                 {% addtoblock "css" %}
@@ -13,40 +13,42 @@
                 {% addtoblock "js" %}
                     <script src="{% static "js/star-rating.js" %}" type="text/javascript"></script>
                 {% endaddtoblock %}
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th><a href="{% url 'talk_overview' %}?sort_order=speaker&sort_dir={% if sort_order == 'speaker' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Speaker" %}</a></th>
-                        <th><a href="{% url 'talk_overview' %}?sort_order=title&sort_dir={% if sort_order == 'title' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Session title" %}</a></th>
-                        <th><a href="{% url 'talk_overview' %}?sort_order=score&sort_dir={% if sort_order == 'score' and sort_dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Vote average" %}</a> /
-                        <a href="{% url 'talk_overview' %}?sort_order=score_sum&sort_dir={% if sort_order == 'score_sum' and sort_dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Vote sum" %}</a></th>
-                        <th>{% trans "Comments" %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for talk in talk_list %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td><a href="{% url 'speaker_details' pk=talk.speaker.pk %}">{{ talk.speaker }}</a></td>
-                            <td><a href="{% url 'talk_details' pk=talk.pk %}">{{ talk.title }}</a></td>
-                            <td>
-                                {% if talk.average_score %}
-                                    <input title="{% trans 'average vote' %}" id="talk-average-{{ talk.pk }}-id"
-                                           name="talk-average" type="number" class="rating-loading" data-size="xs"
-                                           value="{{ talk.average_score|unlocalize }}">
-                                    {% blocktrans with vote_sum=talk.vote_sum count vote_count=talk.vote_count %}(Sum {{ vote_sum }} in {{ vote_count }} vote){% plural %}(Sum {{ vote_sum }} in {{ vote_count }} votes){% endblocktrans %}
-                                {% else %}
-                                    {% trans "No votes yet" %}
-                                {% endif %}</td>
-                            <td>{% if talk.comment_count > 0 %}
-                                {{ talk.comment_count }}
-                                {% else %}
-                                {% trans "No comments yet" %}
-                                {% endif %}
-                            </td>
+                            <th><a href="{% url 'talk_overview' %}?sort_order=speaker&sort_dir={% if sort_order == 'speaker' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Speaker" %}</a></th>
+                            <th><a href="{% url 'talk_overview' %}?sort_order=title&sort_dir={% if sort_order == 'title' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}">{% trans "Session title" %}</a></th>
+                            <th><a href="{% url 'talk_overview' %}?sort_order=score&sort_dir={% if sort_order == 'score' and sort_dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Vote average" %}</a> /
+                            <a href="{% url 'talk_overview' %}?sort_order=score_sum&sort_dir={% if sort_order == 'score_sum' and sort_dir == 'desc' %}asc{% else %}desc{% endif %}">{% trans "Vote sum" %}</a></th>
+                            <th>{% trans "Comments" %}</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {% for talk in talk_list %}
+                            <tr>
+                                <td><a href="{% url 'speaker_details' pk=talk.speaker.pk %}">{{ talk.speaker }}</a></td>
+                                <td><a href="{% url 'talk_details' pk=talk.pk %}">{{ talk.title }}</a></td>
+                                <td>
+                                    {% if talk.average_score %}
+                                        <input title="{% trans 'average vote' %}" id="talk-average-{{ talk.pk }}-id"
+                                            name="talk-average" type="number" class="rating-loading" data-size="xs"
+                                            value="{{ talk.average_score|unlocalize }}">
+                                        {% blocktrans with vote_sum=talk.vote_sum count vote_count=talk.vote_count %}(Sum {{ vote_sum }} in {{ vote_count }} vote){% plural %}(Sum {{ vote_sum }} in {{ vote_count }} votes){% endblocktrans %}
+                                    {% else %}
+                                        {% trans "No votes yet" %}
+                                    {% endif %}</td>
+                                <td>{% if talk.comment_count > 0 %}
+                                    {{ talk.comment_count }}
+                                    {% else %}
+                                    {% trans "No comments yet" %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% addtoblock "js" %}
                     <script type="text/javascript">
                         $(document).on('ready', function () {

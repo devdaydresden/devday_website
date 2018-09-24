@@ -2,23 +2,23 @@
 {% load cms_tags crispy_forms_tags i18n %}
 {% block content_body %}
     <div class="row">
-        <div class="col-lg-offset-2 col-lg-8 col-md-12">
+        <div class="offset-lg-2 col-lg-8 col-md-12">
             {% static_placeholder "create-talk-introtext" %}
         </div>
         {% if request.user.is_staff %}
-            <div class="col-lg-offset-2 col-lg-8 col-md-12 hide">
+            <div class="offset-lg-2 col-lg-8 col-md-12 hide">
                 {% static_placeholder "submit-session-introtext" %}
             </div>
         {% endif %}
     </div>
     {% if request.user.is_anonymous %}
         <div class="row">
-            <div class="col-lg-offset-2 col-lg-8 col-md-12">
+            <div class="offset-lg-2 col-lg-8 col-md-12">
                 {% static_placeholder "submit-session-introtext" %}
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-offset-2 col-lg-4 col-md-12">
+            <div class="offset-lg-2 col-lg-4 col-md-12">
                 <h2>{% trans "You already have an account" %}</h2>
                 {% crispy form %}
                 <p style="margin-top: 1em;">{% trans "Forgot password" %}? <a
@@ -33,12 +33,12 @@
         </div>
     {% else %}
         <div class="row">
-            <div class="col-lg-offset-2 col-lg-8 col-md-12">
+            <div class="offset-lg-2 col-lg-8 col-md-12">
                 {% static_placeholder "submit-session-introtext-authenticated" %}
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-offset-2 col-lg-8 col-md-12 text-center">
+            <div class="offset-lg-2 col-lg-8 col-md-12 text-center">
                 <a class="btn btn-primary" href="{% url "create_speaker" %}">{% trans "Become a speaker" %}</a>
             </div>
         </div>

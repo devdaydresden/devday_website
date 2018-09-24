@@ -20,9 +20,9 @@
             }
         </script>
     {% endaddtoblock %}
-    <h1 class="col-lg-offset-1 col-lg-10 col-md-12">{% trans "Edit session" %}</h1>
+    <h1 class="offset-lg-1 col-lg-10 col-md-12">{% trans "Edit session" %}</h1>
     {% crispy form %}
-    <div class="col-lg-offset-1 col-lg-10 col-md-12">
+    <div class="offset-lg-1 col-lg-10 col-md-12">
         <h2>{% trans "Comments" %}</h2>
         {% if comments %}
             {% for comment in comments %}

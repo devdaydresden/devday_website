@@ -8183,6 +8183,9 @@ body {
 .content-center {
   width: 100%; }
 
+.content-area {
+  padding-top: 1.5rem; }
+
 @media (max-width: 1599.98px) {
   .container {
     width: 100%;
@@ -8370,8 +8373,15 @@ header {
 p {
   font-size: 14px; }
 
+h1 {
+  font-size: 26px;
+  color: #171034;
+  margin-bottom: 1rem; }
+
 .info {
-  color: #0E0E0E; }
+  color: #0E0E0E;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem; }
   .info.col-center {
     padding-top: 40px;
     padding-bottom: 40px;
@@ -8404,6 +8414,8 @@ p {
   text-align: center;
   padding-top: 15px;
   padding-bottom: 15px; }
+  .col-center > .row {
+    width: 100%; }
 
 .col-highlight {
   background: #35a4a3;
@@ -8566,3 +8578,7 @@ form .btn {
     color: #c7c7c7; }
   .form-group .form-control::placeholder {
     color: #c7c7c7; }
+
+.speaker-image {
+  max-width: 280px;
+  max-height: 320px; }

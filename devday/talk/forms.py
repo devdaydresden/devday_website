@@ -99,14 +99,14 @@ class CreateTalkForm(TalkForm):
                 Field("title", template='devday/form/field.html', autofocus='autofocus'),
                 "abstract",
                 "remarks",
-                css_class="col-md-12 col-lg-offset-2 col-lg-8"
+                css_class="col-md-12 offset-lg-2 col-lg-8"
             ),
             Div(
                 Div(
                     Submit('submit', _('Submit'), css_class="btn-default"),
                     css_class="text-center",
                 ),
-                css_class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2"
+                css_class="col-xs-12 col-sm-12 col-lg-8 offset-lg-2"
             )
         )
 
@@ -126,14 +126,14 @@ class EditTalkForm(TalkForm):
                 Field("title", template='devday/form/field.html', autofocus='autofocus'),
                 Field("abstract", template='devday/form/field.html', rows=2),
                 Field("remarks", template='devday/form/field.html', rows=2),
-                css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2"
+                css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 offset-lg-2"
             ),
             Div(
                 Div(
                     Submit('submit', _('Update session'), css_class="btn-default"),
                     css_class="text-center",
                 ),
-                css_class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2"
+                css_class="col-xs-12 col-sm-12 col-lg-8 offset-lg-2"
             )
         )
 
@@ -190,7 +190,7 @@ class BecomeSpeakerForm(CombinedFormBase):
                 "twitter_handle",
                 "position",
                 "organization",
-                css_class="col-lg-offset-2 col-lg-4 col-md-6 col-sm-12",
+                css_class="offset-lg-2 col-lg-4 col-md-6 col-sm-12",
             ),
             Div(
                 Field("uploaded_image", template="talk/form/speakerportrait-field.html"),
@@ -205,7 +205,7 @@ class BecomeSpeakerForm(CombinedFormBase):
             ),
             Div(
                 Submit('submit', _('Register as speaker')),
-                css_class="col-lg-offset-2 col-lg-8 col-md-12 text-center"
+                css_class="offset-lg-2 col-lg-8 col-md-12 text-center"
             )
         )
 
@@ -226,11 +226,11 @@ class EditSpeakerForm(forms.models.ModelForm):
                 "shortbio",
                 Field("videopermission", template="talk/form/videopermission-field.html"),
                 "shirt_size",
-                css_class="col-lg-offset-1 col-lg-10 col-md-12"
+                css_class="offset-lg-1 col-lg-10 col-md-12"
             ),
             Div(
                 Submit('submit', _('Update your speaker information')),
-                css_class="col-lg-offset-1 col-lg-10 col-md-12 text-center"
+                css_class="offset-lg-1 col-lg-10 col-md-12 text-center"
             )
         )
 
@@ -268,7 +268,7 @@ class CreateSpeakerForm(CombinedFormBase):
                 'twitter_handle',
                 'organization',
                 'position',
-                css_class='col-md-12 col-lg-offset-2 col-lg-4'
+                css_class='col-md-12 offset-lg-2 col-lg-4'
             ),
             Div(
                 Field('uploaded_image', template='talk/form/speakerportrait-field.html'),
@@ -283,7 +283,7 @@ class CreateSpeakerForm(CombinedFormBase):
             ),
             Div(
                 Submit('submit', _('Register as speaker')),
-                css_class='col-md-12 col-lg-offset-2 col-lg-8 text-center'
+                css_class='col-md-12 offset-lg-2 col-lg-8 text-center'
             )
         )
 

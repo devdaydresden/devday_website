@@ -1,11 +1,11 @@
 {% extends "devday_site.html" %}
 {% load i18n crispy_forms_tags %}
 {% block content_body %}
-    <div class="row full-width">
+    <div class="row">
         {% comment %}
             Static Login withour crispy form
         {% endcomment %}
-        <div class="offset-sm-3 offset-md-4 col-sm-6 col-md-4 col-12">
+        <div class="offset-sm-3 offset-md-4 col-sm-6 col-md-4 col-12 info">
             <form method="post" action="{% url "auth_login" %}">
                 <div id="div_id_username" class="form-group">
                     <label for="id_username" class="control-label  requiredField">E-Mail-Adresse *</label>

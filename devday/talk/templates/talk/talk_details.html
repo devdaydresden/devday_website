@@ -5,7 +5,7 @@
     {% addtoblock "css" %}
         <link rel="stylesheet" href="{% static "css/theme-krajee-svg.css" %}">
     {% endaddtoblock %}
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+    <div class="offset-lg-2 col-lg-8 col-md-12">
         <h1>{% spaceless %}{{ talk.title }}{% endspaceless %}</h1>
         <dl class="definition-list">
             <dt>{% trans "Title" %}</dt>
@@ -16,7 +16,7 @@
             <dd>{{ talk.remarks }}</dd>
         </dl>
     </div>
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+    <div class="offset-lg-2 col-lg-8 col-md-12">
       <h3>{{ speaker }}{% if speaker.user.organization %} // {{ speaker.user.organization }}{% endif %}
           {% if speaker.user.user.twitter_handle %} //
               <a href="https://www.twitter.com/{{ speaker.user.user.twitter_handle }}">@{{ speaker.user.user.twitter_handle }}</a>{% endif %}

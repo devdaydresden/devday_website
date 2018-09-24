@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% trans "Speaker profile" %}{% endblock %}
 {% block content_body %}
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+    <div class="offset-lg-2 col-lg-8 col-md-12">
         <h1>{% spaceless %}
             {% if speaker.user.user.first_name %}
                 {% blocktrans with username=speaker.user.user.get_full_name %}Speaker profile for

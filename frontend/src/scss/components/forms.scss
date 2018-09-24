@@ -1,0 +1,34 @@
+.form-row {
+    margin-bottom: 1rem;
+}
+
+form {
+    .btn {
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
+        margin-bottom: 1rem;
+    }
+}
+
+.form-group {
+    label {
+        color: $base;
+        line-height: 1.15rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .form-control {
+        border-radius: 0;
+
+        &:focus {
+            border: 1px solid $highlight;
+            outline: 0;
+            box-shadow: none;
+            color: $highlight-darker;
+        }
+
+        &::placeholder {
+            color: $gray-light;
+        }
+    }
+}

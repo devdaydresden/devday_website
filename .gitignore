@@ -4,6 +4,7 @@
 .*.swp
 
 .idea/
+.ropeproject/
 .sass-cache/
 .vagrant/
 .venv/
@@ -26,7 +27,8 @@ node_modules/
 /devday/devday/static/schedule_static.xml
 /devday/devday/static/sortedm2m/
 /devday/devday/static/treebeard/
-docker/vault/config/ssl
-prod-env
+/docker/vault/config/ssl
+/prod-env*
 vault-cluster-*.json
 docker/app/vault.crt
+vault-*.json

@@ -1,0 +1,9 @@
+.full-width {
+    width: 100%;
+}
+
+.row.full-width{
+    flex-basis: 100%;
+    margin: 0;
+    width: auto;
+}

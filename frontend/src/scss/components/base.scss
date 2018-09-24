@@ -6,6 +6,10 @@ body {
     width: 100%;
 }
 
+.content-area {
+    padding-top: 1.5rem;
+}
+
 @include media-breakpoint-down(lg) {
     .container {
         width: 100%;

@@ -32,7 +32,7 @@ var Navbar = function ($element, args) {
     };
 
     that.navbarHandle = function () {
-        if (that.$element.offset().top > 100) {
+        if (that.$element.offset().top > 54) {
             that.$element.addClass("navbar-shrink");
         } else {
             that.$element.removeClass("navbar-shrink");

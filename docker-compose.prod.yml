@@ -1,5 +1,10 @@
 version: '3'
 services:
+  db:
+    build:
+      dockerfile: Dockerfile-prod
+    env_file:
+      prod-env-db
   vault:
     image: devday_hp_vault:prod
     build:
@@ -22,6 +27,10 @@ services:
       DJANGO_SETTINGS_MODULE: devday.settings.prod
     env_file:
       prod-env
+    volumes:
+      - "devday_media:/srv/devday/media"
+      - "devday_static:/srv/devday/static"
+      - "devday_logs:/srv/devday/logs"
   revproxy:
     image: devday_hp_revproxy:prod
     build:
@@ -37,3 +46,4 @@ services:
 volumes:
   vaultlogs:
   vaultfile:
+  devday_logs:

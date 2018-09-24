@@ -7,6 +7,7 @@ $promogradient-bright: #3a3f69;
 $promogradient-dark: #272c59;
 $onyx: #0E0E0E;
 $gray: #545454;
+$gray-light: #c7c7c7;
 $red: #b43737;
 $gray-bright: #F6F6F6;
 $highlight-dark: #488483;
@@ -17,6 +18,14 @@ $black-50: rgba(0, 0, 0, 0.5);
 $white-20: rgba(255, 255, 255, 0.2);
 $black-80: rgba(0, 0, 0, 0.8);
 
+$track-1: $highlight;
+$track-2: #720f29;
+$track-3: #ddbea8;
+$track-4: #58355e;
+$track-5: #ffbd23;
+$track-6: #28d0d0;
+$track-7: #578265;
+$track-8: $base;
 // Options
 $enable-flex: true !default;
 $enable-gradients: true !default;

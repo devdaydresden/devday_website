@@ -2,33 +2,101 @@
 {% load i18n cms_tags crispy_forms_tags %}
 {% block title %}{% trans "Attendee profile" %}{% endblock %}
 {% block content_body %}
-  <div class="col-lg-offset-2 col-lg-8 col-md-12">
-    <h1>{% blocktrans with username=user.get_username %}User profile for {{ username }}{% endblocktrans %}</h1>
-    {% static_placeholder "gdpr_teaser" %}
-    {% crispy form %}
-  </div>
-  <div class="col-lg-offset-2 col-lg-8 col-md-12">
-    {% if events %}
-      <h1>{% blocktrans %}You are registered for these events{% endblocktrans %}</h1>
-      <table>
-        {% for event in events %}
-          <tr>
-            <td>{{ event.title }}</td>
-            <td>{{ event.description }}</td>
-            <td>{% if event.id == event_id and not user.get_speaker %}
-              <p><a class="btn btn-primary"
-                    href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a></p>
-            {% endif %}</td>
-          </tr>
-        {% endfor %}
-      </table>
-    {% else %}
-      <p>{% blocktrans %}You are not currently registered to participate in any event.{% endblocktrans %}</p>
-    {% endif %}
-  </div>
-  {% if not has_talks %}
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
-      <a href="{% url "attendee_delete" %}" class="btn btn-warning">{% trans "Delete your account" %}</a>
-    </div>
-  {% endif %}
+        <form action="" class="row">
+            <div class="offset-lg-2 col-lg-8 col-12 content-area">
+                <h1>{% blocktrans with username=user.get_username %}User profile for {{ username }}{% endblocktrans %}</h1>
+
+                <div class="form-row">
+                    <div class="form-group col-12 col-sm-6">
+                        <label for="id_first_name" class="control-label ">Vorname</label>
+                        <input autofocus="autofocus" class="textinput textInput form-control" id="id_first_name" maxlength="30" placeholder="Vorname" name="first_name" type="text">
+                    </div>
+                    <div class="form-group col-12 col-sm-6">
+                        <label for="id_sure_name" class="control-label ">Nachname</label>
+                        <input autofocus="autofocus" class="textinput textInput form-control" id="id_sure_name" maxlength="30" placeholder="Nachname" name="sure_name" type="text">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-12 col-sm-6">
+                        <label for="id_twitter" class="control-label ">Twitterhandle</label>
+                        <input autofocus="autofocus" class="textinput textInput form-control" id="id_twitter" maxlength="64" placeholder="Twitterhandle" name="twitter" type="text">
+                    </div>
+                    <div class="form-group col-12 col-sm-6">
+                        <label for="id_phone" class="control-label ">Telefon</label>
+                        <input autofocus="autofocus" class="textinput textInput form-control" id="id_phone" maxlength="32" placeholder="Telefon" name="phone" type="text">
+                    </div>
+                </div>
+                <hr>
+
+                <div class="form-row">
+                    <div class="form-group col-12 col-sm-6">
+                        <label for="id_job" class="control-label ">Job or study subject</label>
+                        <input autofocus="autofocus" class="textinput textInput form-control" id="id_job" maxlength="128" placeholder="Job or study subject" name="job" type="text">
+                    </div>
+                    <div class="form-group col-12 col-sm-6">
+                        <label for="id_company" class="control-label ">Company or institution</label>
+                        <input autofocus="autofocus" class="textinput textInput form-control" id="id_company" maxlength="128" placeholder="Company or institution" name="company" type="text">
+                    </div>
+                </div>
+                <hr>
+                <div class="form-row">
+                    <div class="form-group col-12 col-sm-6">
+                        <label for="id_job" class="control-label">Contact permission date</label>
+                        <input autofocus="autofocus" class="textinput textInput form-control" id="id_job" maxlength="30" name="job" type="text" readonly>
+                    </div>
+                    <div class="form-group col-12 col-sm-6">
+                        <label for="id_company" class="control-label">Date joined</label>
+                        <input autofocus="autofocus" class="textinput textInput form-control" id="id_company" value="24.09.2018 11:52:32" name="company" type="text" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-12 col-sm-6 order-2 order-sm-1">
+                        {% if not has_talks %}
+                        <a href="{% url "attendee_delete" %}" class="btn btn-outline-danger">{% trans "Delete your account" %}</a>
+                        {% endif %}
+                        <a href="/accounts/password/change/" class="btn btn-outline-secondary">Passwort ändern</a>
+                    </div>
+                    <div class="col-12 col-sm-6 order-1 order-sm-2">
+                        <input type="submit" name="submit" value="Update your profile" class="btn btn-primary float-left float-sm-right" id="submit-id-submit">
+                    </div>
+                </div>
+            </div>
+
+            {% comment %}
+                Replace the block marked with d-none with the static code above but make it dynamic.
+            {% endcomment %}
+
+            <div class="offset-lg-2 col-lg-8 col-12 d-none">
+                {% static_placeholder "gdpr_teaser" %}
+                {% crispy form %}
+            </div>
+
+            {% comment %}
+                Leave this as it is, should work.
+            {% endcomment %}
+            <div class="offset-lg-2 col-lg-8 col-12">
+                {% if events %}
+                <h1>{% blocktrans %}You are registered for these events{% endblocktrans %}</h1>
+                <div class="table-responsive">
+                    <table class="table">
+                        {% for event in events %}
+                        <tr>
+                            <td>{{ event.title }}</td>
+                            <td>{{ event.description }}</td>
+                            <td>{% if event.id == event_id and not user.get_speaker %}
+                            <p><a class="btn btn-primary"
+                                    href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a></p>
+                            {% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% else %}
+                <p>{% blocktrans %}You are not currently registered to participate in any event.{% endblocktrans %}</p>
+                {% endif %}
+            </div>
+        </form>
+
+
 {% endblock %}

@@ -17,10 +17,6 @@ services:
     depends_on:
       - db
       - vault
-    volumes:
-      - "./devday:/srv/devday/devday"
-      - "devday_media:/srv/devday/devday/media"
-      - "devday_static:/srv/devday/devday/static"
 
 volumes:
   devday_media:

@@ -2,7 +2,7 @@
 {% load i18n cms_tags crispy_forms_tags %}
 {% block title %}{% trans "Delete profile" %}{% endblock %}
 {% block content_body %}
-  <div class="col-lg-offset-2 col-lg-8 col-md-12">
+  <div class="offset-lg-2 col-lg-8 col-md-12">
     <h1>{% blocktrans with username=user.get_username %}Delete your profile {{ username }}{% endblocktrans %}</h1>
     <form method="post">
       {% csrf_token %}

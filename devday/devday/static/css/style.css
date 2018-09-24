@@ -1,5 +1,5 @@
 /**
- * Build on 2018-9-11
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8183,6 +8183,9 @@ body {
 .content-center {
   width: 100%; }
 
+.content-area {
+  padding-top: 1.5rem; }
+
 @media (max-width: 1599.98px) {
   .container {
     width: 100%;
@@ -8279,10 +8282,13 @@ header {
   background: #171034;
   background: url("../img/eyecatcher.svg"), -webkit-linear-gradient(119deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
   background: url("../img/eyecatcher.svg"), linear-gradient(-29deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
-  padding-top: 14rem;
-  padding-bottom: calc(14rem - 56px);
+  padding-top: 7rem;
+  padding-bottom: calc(7rem - 56px);
   background-size: 125%;
   background-position: 50% 80%; }
+  .homepage header {
+    padding-top: 14rem;
+    padding-bottom: calc(14rem - 56px); }
 
 .call-to-action {
   z-index: 6; }
@@ -8367,13 +8373,23 @@ header {
 p {
   font-size: 14px; }
 
-.info {
-  color: #0E0E0E; }
-  .info.col-center {
+h1 {
+  font-size: 26px;
+  color: #171034;
+  margin-bottom: 1rem; }
+
+.info,
+.content-area {
+  color: #0E0E0E;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem; }
+  .info.col-center,
+  .content-area.col-center {
     padding-top: 40px;
     padding-bottom: 40px;
     text-align: left; }
-  .info h1 {
+  .info h1,
+  .content-area h1 {
     font-size: 26px;
     color: #171034;
     margin-bottom: 1rem; }
@@ -8401,6 +8417,8 @@ p {
   text-align: center;
   padding-top: 15px;
   padding-bottom: 15px; }
+  .col-center > .row {
+    width: 100%; }
 
 .col-highlight {
   background: #35a4a3;
@@ -8433,6 +8451,10 @@ p {
       color: #35a4a3; }
       .btn.btn-call-action.bright:hover {
         color: #ffffff; }
+  .btn.full-width {
+    margin-left: 0;
+    margin-right: 0;
+    text-transform: uppercase; }
 
 .carousel .carousel-control-prev-icon,
 .carousel .carousel-control-next-icon {
@@ -8519,3 +8541,195 @@ footer {
   border-top: 2px solid #ffffff; }
   footer img {
     height: 28px; }
+
+.full-width {
+  width: 100%; }
+
+.row.full-width {
+  -webkit-flex-basis: 100%;
+      -ms-flex-preferred-size: 100%;
+          flex-basis: 100%;
+  margin: 0;
+  width: auto; }
+
+.form-row {
+  margin-bottom: 1rem; }
+
+form .btn {
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  margin-bottom: 1rem; }
+
+.form-group label {
+  color: #171034;
+  line-height: 1.15rem;
+  margin-bottom: 0.25rem; }
+
+.form-group .form-control {
+  border-radius: 0; }
+  .form-group .form-control:focus {
+    border: 1px solid #35a4a3;
+    outline: 0;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    color: #3f8b89; }
+  .form-group .form-control::-webkit-input-placeholder {
+    color: #c7c7c7; }
+  .form-group .form-control:-ms-input-placeholder {
+    color: #c7c7c7; }
+  .form-group .form-control::-ms-input-placeholder {
+    color: #c7c7c7; }
+  .form-group .form-control::placeholder {
+    color: #c7c7c7; }
+
+.speaker-image {
+  max-width: 280px;
+  max-height: 320px; }
+
+table.table.session {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+  font-size: 20px;
+  line-height: 23px; }
+  table.table.session thead th {
+    border: 0; }
+    table.table.session thead th > span {
+      position: relative;
+      width: 98%;
+      margin-left: 2%;
+      display: block; }
+      table.table.session thead th > span::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        border-radius: 100px;
+        background: #35a4a3;
+        top: auto;
+        bottom: -9px;
+        width: 100%;
+        height: 6px; }
+    table.table.session thead th:first-child {
+      width: 14%; }
+    table.table.session thead th:nth-child(3) > span::after {
+      background: #720f29; }
+    table.table.session thead th:nth-child(4) > span::after {
+      background: #ddbea8; }
+    table.table.session thead th:nth-child(5) > span::after {
+      background: #58355e; }
+    table.table.session thead th:nth-child(6) > span::after {
+      background: #ffbd23; }
+    table.table.session thead th:nth-child(7) > span::after {
+      background: #28d0d0; }
+    table.table.session thead th:nth-child(8) > span::after {
+      background: #578265; }
+    table.table.session thead th:nth-child(9) > span::after {
+      background: #171034; }
+  table.table.session tbody tr td.track-keynote, table.table.session tbody tr td.no-talk {
+    text-align: center;
+    vertical-align: middle; }
+  table.table.session tbody tr td .talk-entry {
+    color: #171034; }
+    table.table.session tbody tr td .talk-entry span {
+      display: block; }
+    table.table.session tbody tr td .talk-entry .speaker {
+      color: #adb5bd; }
+    table.table.session tbody tr td .talk-entry .title {
+      color: #35a4a3; }
+    table.table.session tbody tr td .talk-entry:hover {
+      text-decoration: none; }
+      table.table.session tbody tr td .talk-entry:hover .title {
+        text-decoration: underline; }
+  table.table.session tbody tr td:first-child {
+    width: 14%;
+    color: #6c757d;
+    font-size: 24px;
+    line-height: 31px;
+    font-weight: 500; }
+
+@media (max-width: 1599.98px) {
+  table.session tr {
+    display: block;
+    border-bottom: 2px solid rgba(20, 21, 20, 0.12);
+    background: #fff;
+    padding: 4px 0 12px 0; }
+    table.session tr:last-child {
+      border: none; }
+  table.session thead {
+    display: none !important; }
+    table.session thead.stick {
+      display: none !important; }
+  table.session tbody tr {
+    display: block;
+    border-bottom: 2px solid rgba(20, 21, 20, 0.12);
+    background: #fff; }
+    table.session tbody tr td {
+      display: inline-block;
+      width: 83%;
+      margin: 12px 0 12px 17%;
+      margin-left: 16%;
+      vertical-align: top;
+      border: 0;
+      position: relative;
+      padding-top: 24px; }
+      table.session tbody tr td.track-keynote, table.session tbody tr td.no-talk {
+        text-align: left; }
+        table.session tbody tr td.track-keynote::before, table.session tbody tr td.track-keynote::after, table.session tbody tr td.no-talk::before, table.session tbody tr td.no-talk::after {
+          display: none; }
+      table.session tbody tr td .talk-entry span {
+        display: block; }
+      table.session tbody tr td::before {
+        position: absolute;
+        content: attr(data-label);
+        left: 12px;
+        top: 0;
+        font-size: 18px;
+        line-height: 22px;
+        color: #35a4a3; }
+      table.session tbody tr td::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        border-radius: 100px;
+        background: #35a4a3; }
+      table.session tbody tr td:first-child {
+        width: 14%;
+        height: 100%;
+        margin-left: 0; }
+        table.session tbody tr td:first-child::before, table.session tbody tr td:first-child::after {
+          display: none; }
+      table.session tbody tr td:nth-child(2) {
+        margin-left: 2%; }
+      table.session tbody tr td:nth-child(3)::before {
+        color: #720f29; }
+      table.session tbody tr td:nth-child(3)::after {
+        background: #720f29; }
+      table.session tbody tr td:nth-child(4)::before {
+        color: #ddbea8; }
+      table.session tbody tr td:nth-child(4)::after {
+        background: #ddbea8; }
+      table.session tbody tr td:nth-child(5)::before {
+        color: #58355e; }
+      table.session tbody tr td:nth-child(5)::after {
+        background: #58355e; }
+      table.session tbody tr td:nth-child(6)::before {
+        color: #ffbd23; }
+      table.session tbody tr td:nth-child(6)::after {
+        background: #ffbd23; }
+      table.session tbody tr td:nth-child(7)::before {
+        color: #28d0d0; }
+      table.session tbody tr td:nth-child(7)::after {
+        background: #28d0d0; }
+      table.session tbody tr td:nth-child(8)::before {
+        color: #578265; }
+      table.session tbody tr td:nth-child(8)::after {
+        background: #578265; }
+      table.session tbody tr td:nth-child(9)::before {
+        color: #171034; }
+      table.session tbody tr td:nth-child(9)::after {
+        background: #171034; } }

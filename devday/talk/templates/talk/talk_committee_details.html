@@ -25,7 +25,7 @@
             }
         </script>
     {% endaddtoblock %}
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+    <div class="offset-lg-2 col-lg-8 col-md-12">
         <h1>{% spaceless %}{{ talk.title }}{% endspaceless %}</h1>
         <dl class="definition-list">
             <dt>{% trans "Title" %}</dt>
@@ -36,7 +36,7 @@
             <dd>{{ talk.remarks }}</dd>
         </dl>
     </div>
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+    <div class="offset-lg-2 col-lg-8 col-md-12">
         <h2>{% trans "Votes" %}</h2>
         <p>{% if average_votes %}
             {% trans "Average vote" %}:
@@ -136,7 +136,7 @@
         {% endif %}
         {% crispy comment_form %}
     </div>
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
+    <div class="offset-lg-2 col-lg-8 col-md-12">
         <a class="btn" href="{% url 'talk_overview' %}">{% trans "Back to list of sessions" %}</a>
     </div>
 {% endblock %}

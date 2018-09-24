@@ -9,10 +9,10 @@ ADMINS = [
     ('Jan Dittberner', 'jan.dittberner@t-systems.com'),
     ('Stefan Bethke', 'stefan.bethke@t-systems.com'),
 ]
-ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'q4deumsy0dg.mms-at-work.de',
+ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'app',
                  'localhost', 'devday-test.t-systems-mms.eu']
 
-DATA_DIR = '/var/www/html/devday'
+DATA_DIR = '/srv/devday'
 DEFAULT_FROM_EMAIL = 'info@devday.de'
 
 LOGGING = {
@@ -35,7 +35,7 @@ LOGGING = {
     'handlers': {
         'file': {
             'class': 'logging.FileHandler',
-            'filename': '/srv/devday/devday.log',
+            'filename': os.path.join(DATA_DIR, 'logs', 'devday.log'),
             'formatter': 'simple',
             'level': 'INFO',
         },
@@ -48,12 +48,12 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['file', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['file', 'mail_admins'],
             'level': 'ERROR',
             'propagate': False,
         },

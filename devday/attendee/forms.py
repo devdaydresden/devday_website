@@ -112,7 +112,7 @@ class EventRegistrationForm(FormView):
                     css_class='checkbox'
                 ),
                 Submit('submit', _('Register as attendee')),
-                css_class='col-md-12 col-lg-offset-2 col-lg-8 text-center',
+                css_class='col-md-12 offset-lg-2 col-lg-8 text-center',
             )
         )
 
@@ -173,7 +173,7 @@ class AttendeeRegistrationForm(CombinedFormBase):
                 'last_name',
                 'password1',
                 'password2',
-                css_class='col-md-12 col-lg-offset-2 col-lg-4'
+                css_class='col-md-12 offset-lg-2 col-lg-4'
             ),
             Div(
                 'position',
@@ -190,6 +190,6 @@ class AttendeeRegistrationForm(CombinedFormBase):
                 Hidden('accept_devday_contact', value='1'),
                 DevDayContactField('accept_general_contact'),
                 Submit('submit', _('Register as attendee')),
-                css_class='col-md-12 col-lg-offset-2 col-lg-8 text-center',
+                css_class='col-md-12 offset-lg-2 col-lg-8 text-center',
             )
         )

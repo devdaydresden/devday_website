@@ -1,16 +1,41 @@
 {% extends "devday_site.html" %}
 {% load i18n crispy_forms_tags %}
 {% block content_body %}
-    <div class="col-lg-offset-2 col-lg-8 col-md-12">
-        <form method="post" action="{% url "auth_login" %}">
-            {% crispy form %}
-
-            <input class="btn" type="submit" value="{% trans 'Log in' %}"/>
-            <input type="hidden" name="next" value="{{ next }}"/>
-        </form>
-        <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+    <div class="row">
         {% comment %}
-            <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+            Static Login withour crispy form
         {% endcomment %}
+        <div class="offset-sm-3 offset-md-4 col-sm-6 col-md-4 col-12 content-area">
+            <form method="post" action="{% url "auth_login" %}">
+                <div id="div_id_username" class="form-group">
+                    <label for="id_username" class="control-label  requiredField">E-Mail-Adresse *</label>
+                    <input autofocus="autofocus" class="textinput textInput form-control" id="id_username" maxlength="254" name="username" type="text">
+                </div>
+                <div id="div_id_password" class="form-group">
+                    <label for="id_password" class="control-label  requiredField">Passwort *</label>
+                    <input class="textinput textInput form-control" id="id_password" name="password" type="password">
+                </div>
+
+                <input class="btn btn-primary full-width" type="submit" value="{% trans 'Log in' %}"/>
+                <input type="hidden" name="next" value="{{ next }}"/>
+            </form>
+            <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+            {% comment %}
+                <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+            {% endcomment %}
+        </div>
+
+        <div class="offset-md-2 col-md-8 col-12">
+            <form method="post" action="{% url "auth_login" %}">
+                {% crispy form %}
+
+                <input class="btn" type="submit" value="{% trans 'Log in' %}"/>
+                <input type="hidden" name="next" value="{{ next }}"/>
+            </form>
+            <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+            {% comment %}
+                <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+            {% endcomment %}
+        </div>
     </div>
 {% endblock %}

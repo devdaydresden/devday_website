@@ -32,7 +32,7 @@ var devdayUIRegistry = function () {
 
 
         // init single class instances
-        that.collapse = new ClassInstanceManager('.collapse', 'Collapse');
+        that.navbarCollapse = new ClassInstanceManager('.navbar-collapse', 'navbarCollapse');
         that.navbar = new ClassInstanceManager('[data-ui-navbar]', 'Navbar');
     };
 
@@ -40,7 +40,7 @@ var devdayUIRegistry = function () {
 
         var start = Date.now();
 
-        that.collapse.addInstances($container);
+        that.navbarCollapse.addInstances($container);
         //that.technicalParameterSearch.addInstances($container);
 
         console.log('addInstances', Date.now() - start);

@@ -1,5 +1,5 @@
 /**
- * Build on 2018-9-10
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -2545,7 +2545,7 @@ return Popper;
 //# sourceMappingURL=popper.js.map
 
 /**
- * Build on 2018-9-10
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -3684,7 +3684,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 //# sourceMappingURL=popper-utils.js.map
 
 /**
- * Build on 2018-9-10
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -7634,7 +7634,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 //# sourceMappingURL=bootstrap.js.map
 
 /**
- * Build on 2018-9-10
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -7722,7 +7722,7 @@ var ClassInstanceManager = function(dataTag, className, args) {
 };
 
 /**
- * Build on 2018-9-10
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -7812,7 +7812,7 @@ var EventHandler = function () {
 };
 
 /**
- * Build on 2018-9-10
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -7858,7 +7858,7 @@ var CSRFHandler = function () {
 }
 
 /**
- * Build on 2018-9-10
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8014,10 +8014,7 @@ var ResizeListener = function () {
 };
 
 /**
-<<<<<<< Updated upstream
- * Build on 2018-9-10
-=======
- * Build on 2018-9-7
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8026,7 +8023,7 @@ var ResizeListener = function () {
  * @param  {[Object]} $element The Element the function fires to
  * @param  {[type]} args     Arguments
  */
-var Collapse = function ($element, args) {
+var navbarCollapse = function ($element, args) {
 
     'use strict';
 
@@ -8035,23 +8032,32 @@ var Collapse = function ($element, args) {
     /**
      * jQuery and controll Vars
      */
-    that.$baseElement = $element || $('.collapse');
+    that.$baseElement = $element || $('.navbar-collapse');
     that.$element = that.$baseElement;
+    that.$navbar = $('nav.navbar');
 
 
     /**
      * Init of the whole function
      */
-    that.initCollapse = function () {
+    that.initNavbarCollapse = function () {
+        that.$element.on('show.bs.collapse', function(){
+            that.$navbar.addClass('navbar-shrink');
+        })
+
+        that.$element.on('hidden.bs.collapse', function(){
+            if (that.$navbar.offset().top < 54) {
+                that.$navbar.removeClass('navbar-shrink');
+            }
+        })
     };
 
 
-    that.initCollapse();
+    that.initNavbarCollapse();
 };
 
 /**
- * Build on 2018-9-7
->>>>>>> Stashed changes
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8089,7 +8095,7 @@ var Navbar = function ($element, args) {
     };
 
     that.navbarHandle = function () {
-        if (that.$element.offset().top > 100) {
+        if (that.$element.offset().top > 54) {
             that.$element.addClass("navbar-shrink");
         } else {
             that.$element.removeClass("navbar-shrink");
@@ -8105,7 +8111,7 @@ var Navbar = function ($element, args) {
 
 
 /**
- * Build on 2018-9-10
+ * Build on 2018-9-24
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8143,7 +8149,7 @@ var devdayUIRegistry = function () {
 
 
         // init single class instances
-        that.collapse = new ClassInstanceManager('.collapse', 'Collapse');
+        that.navbarCollapse = new ClassInstanceManager('.navbar-collapse', 'navbarCollapse');
         that.navbar = new ClassInstanceManager('[data-ui-navbar]', 'Navbar');
     };
 
@@ -8151,7 +8157,7 @@ var devdayUIRegistry = function () {
 
         var start = Date.now();
 
-        that.collapse.addInstances($container);
+        that.navbarCollapse.addInstances($container);
         //that.technicalParameterSearch.addInstances($container);
 
         console.log('addInstances', Date.now() - start);

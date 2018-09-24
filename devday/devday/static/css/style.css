@@ -8436,6 +8436,10 @@ p {
       color: #35a4a3; }
       .btn.btn-call-action.bright:hover {
         color: #ffffff; }
+  .btn.full-width {
+    margin-left: 0;
+    margin-right: 0;
+    text-transform: uppercase; }
 
 .carousel .carousel-control-prev-icon,
 .carousel .carousel-control-next-icon {
@@ -8525,6 +8529,13 @@ footer {
 
 .full-width {
   width: 100%; }
+
+.row.full-width {
+  -webkit-flex-basis: 100%;
+      -ms-flex-preferred-size: 100%;
+          flex-basis: 100%;
+  margin: 0;
+  width: auto; }
 
 .form-row {
   margin-bottom: 1rem; }

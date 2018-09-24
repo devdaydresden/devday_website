@@ -8378,15 +8378,18 @@ h1 {
   color: #171034;
   margin-bottom: 1rem; }
 
-.info {
+.info,
+.content-area {
   color: #0E0E0E;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem; }
-  .info.col-center {
+  .info.col-center,
+  .content-area.col-center {
     padding-top: 40px;
     padding-bottom: 40px;
     text-align: left; }
-  .info h1 {
+  .info h1,
+  .content-area h1 {
     font-size: 26px;
     color: #171034;
     margin-bottom: 1rem; }

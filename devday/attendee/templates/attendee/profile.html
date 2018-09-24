@@ -2,8 +2,8 @@
 {% load i18n cms_tags crispy_forms_tags %}
 {% block title %}{% trans "Attendee profile" %}{% endblock %}
 {% block content_body %}
-        <form action="" class="row full-width">
-            <div class="offset-lg-2 col-lg-8 col-12">
+        <form action="" class="row">
+            <div class="offset-lg-2 col-lg-8 col-12 content-area">
                 <h1>{% blocktrans with username=user.get_username %}User profile for {{ username }}{% endblocktrans %}</h1>
 
                 <div class="form-row">

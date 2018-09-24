@@ -1,0 +1,298 @@
+table.table.session {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+    font-size: 20px;
+    line-height: 23px;
+
+    thead {
+        th {
+            border: 0;
+
+            > span {
+                position: relative;
+                width: 98%;
+                margin-left: 2%;
+                display: block;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    border-radius: 100px;
+                    background: $track-1;
+                    top: auto;
+                    bottom: -9px;
+                    width: 100%;
+                    height: 6px;
+                }
+            }
+
+            &:first-child {
+                width: 14%;
+            }
+
+            &:nth-child(3) {
+                > span {
+                    &::after {
+                        background: $track-2;
+                    }
+                }
+            }
+
+            &:nth-child(4) {
+                > span {
+                    &::after {
+                        background: $track-3;
+                    }
+                }
+            }
+
+            &:nth-child(5) {
+                > span {
+                    &::after {
+                        background: $track-4;
+                    }
+                }
+            }
+
+            &:nth-child(6) {
+                > span {
+                    &::after {
+                        background: $track-5;
+                    }
+                }
+            }
+
+            &:nth-child(7) {
+                > span {
+                    &::after {
+                        background: $track-6;
+                    }
+                }
+            }
+
+            &:nth-child(8) {
+                > span {
+                    &::after {
+                        background: $track-7;
+                    }
+                }
+            }
+
+            &:nth-child(9) {
+                > span {
+                    &::after {
+                        background: $track-8;
+                    }
+                }
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            td {
+                &.track-keynote,
+                &.no-talk {
+                    text-align: center;
+                    vertical-align: middle;
+                }
+
+                .talk-entry {
+                    color: $base;
+
+                    span {
+                        display: block;
+                    }
+
+                    .speaker {
+                        color: $gray-500;
+                    }
+
+                    .title {
+                        color: $highlight;
+                    }
+
+                    &:hover {
+                        text-decoration: none;
+
+                        .title {
+                            text-decoration: underline;
+                        }
+                    }
+
+                }
+
+                &:first-child {
+                    width: 14%;
+                    color: $gray-600;
+                    font-size: 24px;
+                    line-height: 31px;
+                    font-weight: 500;
+                }
+
+            }
+        }
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    table.session {
+        tr {
+            display: block;
+            border-bottom: 2px solid rgba(20, 21, 20, 0.12);
+            background: #fff;
+            padding: 4px 0 12px 0;
+
+            &:last-child {
+                border: none;
+            }
+        }
+
+        thead {
+            &.stick {
+                display: none !important;
+            }
+
+            display: none !important;
+        }
+
+        tbody {
+            tr {
+                display: block;
+                border-bottom: 2px solid rgba(20,21,20,0.12);
+                background: #fff;
+                td {
+                    display: inline-block;
+                    width: 83%;
+                    margin: 12px 0 12px 17%;
+                    margin-left: 16%;
+                    vertical-align: top;
+                    border: 0;
+                    position: relative;
+                    padding-top: 24px;
+
+                    &.track-keynote,
+                    &.no-talk {
+                        text-align: left;
+
+                        &::before,
+                        &::after {
+                            display: none;
+                        }
+                    }
+
+                    .talk-entry {
+                        span {
+                            display: block;
+                        }
+                    }
+
+                    &::before {
+                        position: absolute;
+                        content: attr(data-label);
+                        left: 12px;
+                        top: 0;
+                        font-size: 18px;
+                        line-height: 22px;
+                        color: $track-1;
+                    }
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 4px;
+                        height: 100%;
+                        border-radius: 100px;
+                        background: $track-1;
+                    }
+
+                    &:first-child {
+                        width: 14%;
+                        height: 100%;
+                        margin-left: 0;
+
+                        &::before,
+                        &::after {
+                            display: none;
+                        }
+                    }
+
+                    &:nth-child(2) {
+                        margin-left: 2%;
+                    }
+
+                    &:nth-child(3) {
+                        &::before {
+                            color: $track-2;
+                        }
+                        &::after {
+                            background: $track-2;
+                        }
+                    }
+
+                    &:nth-child(4) {
+                        &::before {
+                            color: $track-3;
+                        }
+                        &::after {
+                            background: $track-3;
+                        }
+                    }
+
+                    &:nth-child(5) {
+                        &::before {
+                            color: $track-4;
+                        }
+                        &::after {
+                            background: $track-4;
+                        }
+                    }
+
+                    &:nth-child(6) {
+                        &::before {
+                            color: $track-5;
+                        }
+                        &::after {
+                            background: $track-5;
+                        }
+                    }
+
+                    &:nth-child(7) {
+                        &::before {
+                            color: $track-6;
+                        }
+                        &::after {
+                            background: $track-6;
+                        }
+                    }
+
+                    &:nth-child(8) {
+                        &::before {
+                            color: $track-7;
+                        }
+                        &::after {
+                            background: $track-7;
+                        }
+                    }
+
+                    &:nth-child(9) {
+                        &::before {
+                            color: $track-8;
+                        }
+                        &::after {
+                            background: $track-8;
+                        }
+                    }
+
+
+                }
+            }
+        }
+    }
+}

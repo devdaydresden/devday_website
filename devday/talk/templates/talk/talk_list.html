@@ -12,13 +12,13 @@
             {% endif %}
             <h1>{% trans "Schedule" %} {{ event.title }}</h1>
             {% if talk_list %}
-            <div class="table-responsive d-none d-md-block">
-                <table class="table">
+            <div class="">
+                <table class="table session">
                     <thead>
                     <tr>
                     <th>{% trans "Time" %}</th>
                     {% for room in rooms %}
-                        <th>{{ room.name }}</th>
+                        <th><span>{{ room.name }}</span></th>
                     {% endfor %}
                     </tr>
                     </thead>
@@ -37,7 +37,7 @@
                             {% for room in rooms %}
                                 {% for talk in talks %}
                                 {% if talk.talkslot.room == room %}
-                                    <td class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
+                                    <td class="track-{{ talk.track.name|slugify }}" data-label="{{talk.talkslot.room}}">{% include "talk/talk_list_entry.html" %}</td>
                                 {% endif %}
                                 {% endfor %}
                             {% endfor %}
@@ -53,30 +53,6 @@
                     {% endfor %}
                     </tbody>
                 </table>
-            </div>
-            <div class="table-responsive d-md-none">
-                {% for room in rooms %}
-                <table class="table">
-                    <thead>
-                    <tr>
-                    <th>{% trans "Time" %}</th>
-                    <th>{{ room.name }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for talk_room, talks in talks_by_room_and_time.items %}
-                    {% if talk_room == room %}
-                        {% for talk in talks %}
-                        <tr>
-                            <td>{{ talk.talkslot.time.name }}</td>
-                            <td class="{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
-                        </tr>
-                        {% endfor %}
-                    {% endif %}
-                    {% endfor %}
-                    </tbody>
-                </table>
-                {% endfor %}
             </div>
             {% else %}
             <p>{% trans "no schedule defined yet" %}</p>

@@ -17,6 +17,8 @@ Make sure that the following preconditions are met:
 - the docker daemon is running
 - your user is in the docker group
 - you have docker-compose installed
+- put `MAILNAME`, `POSTFIX_ROOT_ALIAS` and `POSTFIX_RELAY_HOST` variables into
+  `prod-env-postfix`
 
 To build the images run:
 
@@ -71,7 +73,7 @@ echo "ALTER USER devday PASSWORD '<password from above>'"|./prod.sh exec -T db p
 > zcat "<database dump>.sql" | ./prod.sh exec -T db psql -U devday devday
 > ```
 
-# Start the application and the reverse proxy
+# Start the application, the mail server and the reverse proxy
 
 ```
 ./prod.sh up -d

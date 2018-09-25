@@ -15,6 +15,9 @@ ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'app',
 DATA_DIR = '/srv/devday'
 DEFAULT_FROM_EMAIL = 'info@devday.de'
 
+EMAIL_HOST = 'mail'
+EMAIL_SUBJECT_PREFIX = '[Dev Day] '
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

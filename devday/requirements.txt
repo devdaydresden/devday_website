@@ -28,7 +28,7 @@ djangocms-video==2.0.4
 easy-thumbnails==2.3
 html5lib==0.9999999
 Pillow==3.3.0
-psycopg2==2.6.2
+psycopg2==2.7.5
 python-magic==0.4.15
 pytz==2016.6.1
 six==1.10.0

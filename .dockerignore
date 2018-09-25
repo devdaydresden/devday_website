@@ -22,3 +22,7 @@ docker-compose*.yml
 node_modules/
 prod-env*
 vault-*.json
+README.md
+README.prod.md
+docker/vault/openssl.cnf
+docker/vault/vault.csr.pem

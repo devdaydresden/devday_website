@@ -13,6 +13,12 @@ services:
       - "vaultlogs:/vault/logs"
       - "vaultfile:/vault/file"
     command: server
+  mail:
+    image: devday_hp_mail:prod
+    build:
+      context: docker/mail
+    env_file:
+      prod-env-mail
   app:
     # tag dev image as devday_hp_app_dev
     image: devday_hp_app:prod
@@ -31,6 +37,10 @@ services:
       - "devday_media:/srv/devday/media"
       - "devday_static:/srv/devday/static"
       - "devday_logs:/srv/devday/logs"
+    depends_on:
+      - db
+      - vault
+      - mail
   revproxy:
     image: devday_hp_revproxy:prod
     build:

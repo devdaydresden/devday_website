@@ -33,6 +33,10 @@ case "$cmd" in
       openssl req -new -x509 -config docker/vault/openssl.cnf -key "${VAULT_KEY}" -out "${VAULT_CERT}"
     fi
     openssl x509 -in "${VAULT_CERT}" -out docker/app/vault.crt
+    if [ ! -f "prod-env-db" ]; then
+      (echo -n "POSTGRES_PASSWORD=" ; dd if=/dev/urandom bs=32 count=1 2>/dev/null | \
+        base64 -w 0) > prod-env-db
+    fi
     $DOCKER_COMPOSE build $@
     ;;
   manage)

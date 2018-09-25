@@ -1,0 +1,45 @@
+#!/bin/bash
+set -e
+
+# Avoid  warning: smtputf8_enable is true, but EAI support is not compiled in
+echo "smtputf8_enable = no" >> /etc/postfix/main.cf
+
+cat >> /etc/postfix/main.cf << EOF
+# limit smtp to loopback interface & compute engine doesn't support ipv6
+inet_interfaces = all
+inet_protocols = ipv4
+mynetworks_style = subnet
+EOF
+
+# Do we want to modify the config first with the script?
+# shellcheck disable=SC1091
+[ -f /etc/service/postfix/run.config ] && source /etc/service/postfix/run.config
+
+if [[ ! -z "$MAILNAME" ]]; then
+	echo "$MAILNAME" > /etc/mailname
+	postconf -e myorigin="/etc/mailname"
+
+	cat >> /etc/postfix/main.cf <<- EOF
+	# Force ehlo behavior
+	smtp_always_send_ehlo = yes
+	smtp_helo_name = $MAILNAME
+	EOF
+fi
+
+if [[ ! -z "$POSTFIX_ROOT_ALIAS" ]]; then
+	if [[ -f /etc/aliases ]]; then
+		sed -i '/^root:/d' /etc/aliases
+	fi
+	echo "root: $POSTFIX_ROOT_ALIAS" >> /etc/aliases
+	newaliases
+fi
+
+if [[ ! -z "$POSTFIX_RELAY_HOST" ]]; then
+	# setup the relay
+	cat >> /etc/postfix/main.cf <<- EOF
+	relayhost = $POSTFIX_RELAY_HOST
+	EOF
+fi
+
+/usr/libexec/postfix/master -c /etc/postfix -d 2>&1
+tail -F /var/log/mail.log

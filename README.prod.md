@@ -8,17 +8,12 @@ This is the documentation for going to test/production.
 git clone https://git.t-systems-mms.eu/scm/saec/devday_hp.git
 ```
 
-## Generate a strong postgresql password
-
-```
-(echo -n "POSTGRES_PASSWORD=" ; dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 -w 0) > prod-env-db
-```
-
 ## Build the images
 
 Make sure that the following preconditions are met:
 
-- `http_proxy` and `no_proxy` environment variables are matching the system network
+- `http_proxy` and `no_proxy` environment variables are matching the system
+  network
 - the docker daemon is running
 - your user is in the docker group
 - you have docker-compose installed
@@ -31,13 +26,28 @@ To build the images run:
 
 which should work™.
 
+The build process creates a self signed certificate for Vault. You may also
+create a CSR by running
+
+```
+openssl req -new -config docker/vault/openssl.cnf \
+  -out docker/vault/vault.csr.pem \
+  -key docker/vault/config/ssl/private/vault.key.pem
+```
+
+Let it sign by a CA and put the resulting certificate chain into
+docker/vault/config/ssl/vault.crt.pem before running the build again.
+
+The build process generates a random password for the postgres user in the db
+container and puts it into prod-env-db
+
 # Start Vault and initialize it
 
 ```
 ./prod.sh up -d vault
-popd docker/vault
+pushd docker/vault
 ./init_unseal_fill_vault.sh
-pushd
+popd
 ```
 
 Save the generated `vault-YYYYMMDD-HHMMSS+TZ.json` (file name is written at the

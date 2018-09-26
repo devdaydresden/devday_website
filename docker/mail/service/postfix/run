@@ -16,30 +16,35 @@ EOF
 [ -f /etc/service/postfix/run.config ] && source /etc/service/postfix/run.config
 
 if [[ ! -z "$MAILNAME" ]]; then
-	echo "$MAILNAME" > /etc/mailname
-	postconf -e myorigin="/etc/mailname"
+    echo "$MAILNAME" > /etc/mailname
+    postconf -e myorigin="/etc/mailname"
 
-	cat >> /etc/postfix/main.cf <<- EOF
-	# Force ehlo behavior
-	smtp_always_send_ehlo = yes
-	smtp_helo_name = $MAILNAME
-	EOF
+    cat >> /etc/postfix/main.cf <<- EOF
+    # Force ehlo behavior
+    smtp_always_send_ehlo = yes
+    smtp_helo_name = $MAILNAME
+    EOF
 fi
 
 if [[ ! -z "$POSTFIX_ROOT_ALIAS" ]]; then
-	if [[ -f /etc/aliases ]]; then
-		sed -i '/^root:/d' /etc/aliases
-	fi
-	echo "root: $POSTFIX_ROOT_ALIAS" >> /etc/aliases
-	newaliases
+    if [[ -f /etc/aliases ]]; then
+        sed -i '/^root:/d' /etc/aliases
+    fi
+    echo "root: $POSTFIX_ROOT_ALIAS" >> /etc/aliases
+    newaliases
 fi
 
 if [[ ! -z "$POSTFIX_RELAY_HOST" ]]; then
-	# setup the relay
-	cat >> /etc/postfix/main.cf <<- EOF
-	relayhost = $POSTFIX_RELAY_HOST
-	EOF
+    # setup the relay
+    cat >> /etc/postfix/main.cf <<- EOF
+    relayhost = $POSTFIX_RELAY_HOST
+    EOF
 fi
 
-/usr/libexec/postfix/master -c /etc/postfix -d 2>&1
+if [ -x /usr/libexec/postfix/master ]; then
+    POSTFIX_MASTER=/usr/libexec/postfix/master
+else
+    POSTFIX_MASTER=/usr/lib/postfix/master
+fi
+$POSTFIX_MASTER -c /etc/postfix -d 2>&1
 tail -F /var/log/mail.log

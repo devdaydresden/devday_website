@@ -151,18 +151,6 @@ tiefer in ein Thema einsteigen.</p>
             title='Sessions', language='de', published=True,
             template=TEMPLATE_INHERITANCE_MAGIC, in_navigation=True,
             parent=None)
-        archive = api.create_page(
-            title='Archiv', language='de', published=True,
-            template=TEMPLATE_INHERITANCE_MAGIC, in_navigation=True,
-            parent=None)
-        api.create_page(
-            title='Dev Data 2017', language='de', published=True,
-            template=TEMPLATE_INHERITANCE_MAGIC,
-            redirect='/devdata17/talk', in_navigation=True, parent=archive)
-        api.create_page(
-            title='Dev Data 2018', language='de', published=True,
-            template=TEMPLATE_INHERITANCE_MAGIC,
-            redirect='/devdata18/talk', in_navigation=True, parent=archive)
         api.create_page(
             title='Sponsoring', language='de', published=True,
             template=TEMPLATE_INHERITANCE_MAGIC,

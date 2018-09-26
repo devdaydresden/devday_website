@@ -17,6 +17,9 @@ services:
     image: devday_hp_mail:prod
     build:
       context: docker/mail
+      args:
+        http_proxy: ${http_proxy}
+        no_proxy: ${no_proxy},vault
     env_file:
       prod-env-mail
   app:

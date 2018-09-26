@@ -2,7 +2,7 @@
 {% if field.is_hidden %}
     {{ field }}
 {% elif field|is_checkbox %}
-    <div class="form-group">
+    <div class="form-group{% if wrapper_class %} {{ wrapper_class }}{% endif %}">
         {% if form_show_labels %}
             <label for="{{ field.id_for_label }}"
                    class="{{ label_class }}{% if field.field.required %} requiredField{% endif %}">

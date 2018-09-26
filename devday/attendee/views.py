@@ -37,7 +37,6 @@ class AttendeeProfileView(LoginRequiredMixin, UpdateView):
         context = super(AttendeeProfileView, self).get_context_data(**kwargs)
         context['events'] = self.request.user.get_events().order_by('id')
         context['event_id'] = settings.EVENT_ID
-        context['has_talks'] = Talk.objects.filter(speaker__user__user=context['object']).count() > 0
         return context
 
 

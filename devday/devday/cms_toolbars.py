@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 class DevDayToolbar(CMSToolbar):
     def populate(self):
         if not self.is_current_app:
-            menu = self.toolbar.get_or_create_menu('devday', _('DevDay'))
+            menu = self.toolbar.get_or_create_menu('devday', _('Dev Day'))
             url = reverse('admin_csv_inactive')
             menu.add_link_item(_('Inactive users'), url=url)
             url = reverse('admin_csv_maycontact')

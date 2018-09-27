@@ -23,9 +23,6 @@ def gettext(s):
     return s
 
 
-_VAULT_DATA = None
-
-
 def get_env_variable(var_name):
     """
     Get a setting from an environment variable.
@@ -39,6 +36,20 @@ def get_env_variable(var_name):
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
 
+_VAULT_DATA = None
+_VAULT_URL = vault_url = "{}/v1/secret/data/devday".format(
+    get_env_variable('VAULT_URL'))
+
+
+def _fetch_from_vault():
+    global _VAULT_DATA
+    if not _VAULT_DATA:
+        r = get(_VAULT_URL,
+                headers={'x-vault-token': get_env_variable('VAULT_TOKEN')})
+        r.raise_for_status()
+        _VAULT_DATA = r.json()['data']['data']
+    return _VAULT_DATA
+
 
 def get_vault_variable(var_name):
     """
@@ -47,19 +58,48 @@ def get_vault_variable(var_name):
     :param var_name: variable name
     :return: variable data from vault /secret/data/devday
     """
-    global _VAULT_DATA
-    vault_url = "{}/v1/secret/data/devday".format(
-        get_env_variable('VAULT_URL'))
-    if not _VAULT_DATA:
-        r = get(vault_url,
-                headers={'x-vault-token': get_env_variable('VAULT_TOKEN')})
-        r.raise_for_status()
-        _VAULT_DATA = r.json()['data']['data']
     try:
-        return _VAULT_DATA[var_name]
+        return _fetch_from_vault()[var_name]
     except KeyError:
-        error_msg = "Define %s in Vault key at %s" % (var_name, vault_url)
+        error_msg = "Define %s in Vault key at %s" % (var_name, _VAULT_URL)
         raise ImproperlyConfigured(error_msg)
+
+
+def get_variable_cascade(var_name, type=str, default_value=None):
+    """
+    Try to get a setting from Vault or the environment and fallback to
+    default_value if it is defined.
+
+    Variables are transformed to uppercase before they are looked up in the
+    environment.
+
+    If no default is defined and the variable cannot be found in either
+    Vault or the environment an ImproperlyConfigured exception is raised.
+
+    :param var_name: variable name
+    :param type: result type
+    :param default_value: default value
+    :return: variable from Vault or the environment
+    """
+    try:
+        value = _fetch_from_vault()[var_name]
+    except KeyError:
+        try:
+            value = os.environ[var_name.upper()]
+        except KeyError:
+            if default_value is None:
+                error_msg = ('Define %s in Vault key at %s or set the'
+                             ' environment variable %s') % (
+                    var_name, _VAULT_URL, var_name.upper()
+                )
+                raise ImproperlyConfigured(error_msg)
+            else:
+                return default_value
+    try:
+        return type(value)
+    except ValueError:
+        raise ImproperlyConfigured(
+            'Cannot interpret value %s as %s', value, type.__name__)
 
 
 mimetypes.add_type("image/svg+xml", ".svg", True)
@@ -109,11 +149,11 @@ DATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': get_env_variable('DEVDAY_PG_DBNAME'),
-        'USER': get_env_variable('DEVDAY_PG_USER'),
-        'PASSWORD': get_vault_variable('postgresql_password'),
-        'HOST': get_env_variable('DEVDAY_PG_HOST'),
-        'PORT': get_env_variable('DEVDAY_PG_PORT'),
+        'NAME': get_variable_cascade('DEVDAY_PG_DBNAME'),
+        'USER': get_variable_cascade('DEVDAY_PG_USER'),
+        'PASSWORD': get_variable_cascade('postgresql_password'),
+        'HOST': get_variable_cascade('DEVDAY_PG_HOST'),
+        'PORT': get_variable_cascade('DEVDAY_PG_PORT'),
     }
 }
 DEBUG = False
@@ -183,11 +223,14 @@ MIDDLEWARE_CLASSES = [
 ]
 MIGRATION_MODULES = {}
 
-REGISTRATION_OPEN = True
+REGISTRATION_OPEN = get_variable_cascade('registration_open', bool, True)
 ROOT_URLCONF = 'devday.urls'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_vault_variable('secret_key')
+
+SPONSORING_OPEN = get_variable_cascade('sponsoring_open', bool, False)
+
 SITE_ID = 1
 STATIC_ROOT = os.path.join(DATA_DIR, 'static')
 STATIC_URL = '/static/'
@@ -197,7 +240,7 @@ STATICFILES_DIRS = (
 
 TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT = 960
 TALK_PUBLIC_SPEAKER_IMAGE_WIDTH = 636
-TALK_SUBMISSION_OPEN = True
+TALK_SUBMISSION_OPEN = get_variable_cascade('talk_submission_open', bool, True)
 TALK_THUMBNAIL_HEIGHT = 320
 TEMPLATES = [
     {

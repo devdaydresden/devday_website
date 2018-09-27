@@ -8,4 +8,5 @@ def devdaysettings_contextprocessor(request):
         'facebook_url': settings.DEVDAY_FACEBOOK_URL,
         'talk_submission_open': settings.TALK_SUBMISSION_OPEN,
         'attendee_registration_open': settings.REGISTRATION_OPEN,
+        'sponsoring_open': settings.SPONSORING_OPEN,
     }

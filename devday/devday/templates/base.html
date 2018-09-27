@@ -73,6 +73,7 @@
     </div>
     {% endblock content_block_2 %}
 
+    {% if sponsoring_open %}
     <div class="stripe c-gray">
         <div class="container">
             <div class="row ">
@@ -93,6 +94,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
     <footer>
         <img src="{% static 'images/seco-logo.svg' %}" alt="Software Engineering Community"> | <a href="{% url 'imprint' %}">IMPRESSUM</a>

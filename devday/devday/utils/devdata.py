@@ -6,7 +6,9 @@ from os.path import isfile, join
 from shutil import copyfile
 
 import errno
+import os
 import random
+import sys
 
 import lorem
 
@@ -15,6 +17,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.management.base import OutputWrapper
+from django.core.management.color import no_style
 
 from cms import api
 from cms.constants import TEMPLATE_INHERITANCE_MAGIC
@@ -48,8 +52,14 @@ class DevData:
                                  speaker_portrait_media_path)
 
     def __init__(self, stdout=None, style=None):
-        self.stdout = stdout
-        self.style = style
+        if stdout:
+            self.stdout = stdout
+        else:
+            self.stdout = OutputWrapper(open(os.devnull, 'w'))
+        if style:
+            self.style = style
+        else:
+            self.style = no_style()
 
     def write_action(self, msg):
         self.stdout.write(msg + '... ', ending='')

@@ -11,8 +11,10 @@ from django.utils.translation import ugettext as _
 from django_file_form.forms import ExistingFile
 
 from attendee.models import Attendee
+from devday.utils.devdata import DevData
 from event.test.testutils import create_test_event
-from talk.forms import CreateSpeakerForm, BecomeSpeakerForm, TalkCommentForm, EditTalkForm, TalkSpeakerCommentForm
+from talk.forms import (CreateSpeakerForm, BecomeSpeakerForm, TalkCommentForm,
+                        EditTalkForm, TalkSpeakerCommentForm)
 from talk.models import Speaker, Talk, Vote, TalkComment
 from talk.views import CreateTalkView, ExistingFileView, CreateSpeakerView
 
@@ -28,16 +30,18 @@ class TestSubmitSessionView(TestCase):
     def test_submit_session_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        with override_settings(TALK_SUBMISSION_OPEN=True):
+        with override_settings(TALK_SUBMISSION_OPEN=True):  # FIXME _OPEN
             response = self.client.get(u'/session/submit-session/')
-            self.assertRedirects(response, u'/session/create-session/', 302, fetch_redirect_response=False)
+            self.assertRedirects(response, u'/session/create-session/', 302,
+                                 fetch_redirect_response=False)
 
     def test_submit_session_attendee(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
         event = create_test_event()
         Attendee.objects.create(user=user, event=event)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=event.id, TALK_SUBMISSION_OPEN=True):
+        with override_settings(EVENT_ID=event.id, TALK_SUBMISSION_OPEN=True):  # FIXME _OPEN
             response = self.client.get(u'/session/submit-session/')
             self.assertRedirects(response, u'/session/create-session/', 302, fetch_redirect_response=False)
 
@@ -48,7 +52,7 @@ class TestSubmitSessionView(TestCase):
         Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=event.id, TALK_SUBMISSION_OPEN=True):
+        with override_settings(EVENT_ID=event.id, TALK_SUBMISSION_OPEN=True):  # FIXME _OPEN
             response = self.client.get(u'/session/submit-session/')
             self.assertRedirects(response, u'/session/create-session/', 302)
 
@@ -115,12 +119,12 @@ class TestTalkSubmittedView(TestCase):
         self.assertEqual(response.context[u'speaker'], speaker)
 
 
-@override_settings(TALK_SUBMISSION_OPEN=True)
+@override_settings(TALK_SUBMISSION_OPEN=True)  # FIXME _OPEN
 class TestCreateTalkView(TestCase):
     def setUp(self):
         self.url = u'/session/create-session/'
 
-    @override_settings(TALK_SUBMISSION_OPEN=False)
+    @override_settings(TALK_SUBMISSION_OPEN=False)  # FIXME _OPEN
     def test_redirect_if_talk_submission_closed(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
@@ -299,12 +303,16 @@ class TestSpeakerProfileView(TestCase):
         self.assertEqual(self.speaker.shortbio, 'A nice guy from high above the sky')
 
 
-@override_settings(TALK_SUBMISSION_OPEN=True, REGISTRATION_OPEN=True)
+@override_settings(TALK_SUBMISSION_OPEN=True, REGISTRATION_OPEN=True)  # FIXME _OPEN
 class TestCreateSpeakerView(TestCase):
     def setUp(self):
         self.url = u'/session/new-speaker/'
+    @classmethod
+    def setUpTestData(cls):
+        cls.devdata = DevData()
+        cls.devdata.update_events()
 
-    @override_settings(TALK_SUBMISSION_OPEN=False)
+    @override_settings(TALK_SUBMISSION_OPEN=False)  # FIXME _OPEN
     def test_redirect_if_talk_submission_closed(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)

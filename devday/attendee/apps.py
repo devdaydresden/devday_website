@@ -16,7 +16,7 @@ class AttendeeConfig(AppConfig):
 
 def set_default_event(verbosity=2, **kwargs):
     Event = apps.get_model('event', 'Event')
-    default_event = Event.objects.get(pk=getattr(settings, 'EVENT_ID'))
+    default_event = Event.current_event()
 
     Attendee = apps.get_model('attendee', 'Attendee')
     attendees = Attendee.objects.filter(event=None)

@@ -13,7 +13,7 @@ class EventArchiveMenu(Menu):
     def get_nodes(self, request):
         archive = NavigationNode(_('Archive'), '#', 0)
         for event in Event.objects.filter(end_time__lt=timezone.now()).exclude(
-                id__exact=settings.EVENT_ID).order_by('start_time'):
+                id=Event.current_event_id()).order_by('start_time'):
             archive.children.append(
                 NavigationNode(event.title, event.get_absolute_url(), event.id))
         return [archive]

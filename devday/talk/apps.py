@@ -28,7 +28,7 @@ def create_talk_committee(**kwargs):
 
 def set_default_event(verbosity=2, **kwargs):
     Event = apps.get_model('event', 'Event')
-    default_event = Event.objects.get(pk=getattr(settings, 'EVENT_ID'))
+    default_event = Event.current_event()
 
     Room = apps.get_model('talk', 'Room')
     rooms = Room.objects.filter(event=None)

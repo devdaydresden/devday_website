@@ -15,11 +15,22 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='registration_open',
-            field=models.BooleanField(default=False, verbose_name='People can register as attendees'),
+            field=models.BooleanField(
+                default=False,
+                verbose_name='People can register as attendees'),
         ),
         migrations.AddField(
             model_name='event',
             name='submission_open',
-            field=models.BooleanField(default=False, verbose_name='People can register as speakers'),
+            field=models.BooleanField(
+                default=False,
+                verbose_name='People can register as speakers'),
+        ),
+        migrations.AddField(
+            model_name='event',
+            name='published',
+            field=models.BooleanField(
+                default=True,
+                verbose_name='Event is visible on the website'),
         ),
     ]

@@ -191,7 +191,7 @@ The site has been restructured to allow multiple events to be served concurrentl
 
 ## Public Information
 
-* **/** Redirect to current event (as determined by devday/devday/settings/base.py EVENT_ID)
+* **/** Redirect to current event (as determined by Event.current_event())
 * **/`event`/** Homepage, managed by DjangoCMS
 * **/`event`/talk/** List of accepted talks for this event.  Once all accepted talks have been assigned a slot, this will show the session grid.
 * **/`event`/talk/*slug*/`ID`** Detail page for an accepted talk, including speaker bio.

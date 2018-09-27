@@ -52,14 +52,9 @@ class DevData:
                                  speaker_portrait_media_path)
 
     def __init__(self, stdout=None, style=None):
-        if stdout:
-            self.stdout = stdout
-        else:
-            self.stdout = OutputWrapper(open(os.devnull, 'w'))
-        if style:
-            self.style = style
-        else:
-            self.style = no_style()
+        self.stdout = stdout if stdout else OutputWrapper(open(os.devnull,
+                                                               'w'))
+        self.style = style if style else no_style()
 
     def write_action(self, msg):
         self.stdout.write(msg + '... ', ending='')

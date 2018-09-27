@@ -18,6 +18,10 @@ class Event(models.Model):
                                    default=False)
     start_time = models.DateTimeField(verbose_name=_("Start time"))
     end_time = models.DateTimeField(verbose_name=_("End time"))
+    registration_open = models.BooleanField(
+        verbose_name=_('People can register as attendees'), default=False)
+    submission_open = models.BooleanField(
+        verbose_name=_('People can register as speakers'), default=False)
 
     def registration_count(self):
         "Returns the count of registered attendees."

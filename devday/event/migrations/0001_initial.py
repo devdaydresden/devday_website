@@ -25,7 +25,8 @@ def create_devday_events_fwd(apps, schema_manager):
                   description='Dev Data.19 am 21.5. in Dresden',
                   location='Dresden', full_day=False,
                   start_time=timezone.make_aware(datetime(2019, 5, 21, 13, 0)),
-                  end_time=timezone.make_aware(datetime(2019, 5, 21, 20, 0)))
+                  end_time=timezone.make_aware(datetime(2019, 5, 21, 20, 0)),
+                  registration_open=True, submission_open=True)
     event.save()
     sequence_sql = connections[DEFAULT_DB_ALIAS].ops. \
         sequence_reset_sql(no_style(), [Event])

@@ -171,8 +171,8 @@ tiefer in ein Thema einsteigen.</p>
             template=TEMPLATE_INHERITANCE_MAGIC,
             reverse_id='sponsoring', parent=None)
 
-    def create_static_placeholder_text(self, name, title, lang='de', paras=3,
-                                       text=None):
+    def create_static_placeholder_text(self, name, lang='de', paras=3,
+                                       title=None, text=None):
         self.write_action('    "{}"'.format(name))
 
         try:
@@ -200,7 +200,8 @@ tiefer in ein Thema einsteigen.</p>
                 text = ''
                 for i in range(paras):
                     text += "<p>{}</p>\n".format(lorem.paragraph())
-            text = "<h1>{}</h1>\n{}".format(title, text)
+            if title:
+                text = "<h1>{}</h1>\n{}".format(title, text)
             p = api.add_plugin(ph, 'TextPlugin', lang, body=text)
             p.save()
             sph.publish(None, lang, True)
@@ -211,8 +212,23 @@ tiefer in ein Thema einsteigen.</p>
 
     def update_static_placeholders(self):
         self.stdout.write("Update static placeholders")
+        # find devday -name "*.html" | xargs grep static_placeholder \
+        # | sed -nEe 's#^.*static_placeholder "([^"]*)".*$#\1#p' | sort -u
+        self.create_static_placeholder_text(u'create-talk-introtext')
+        self.create_static_placeholder_text(u'gdpr_teaser')
         self.create_static_placeholder_text(u'imprint_text',
-                                            u'Impressum', paras=5)
+                                            title=u'Impressum', paras=5)
+        self.create_static_placeholder_text(u'register-attendee-introtext')
+        self.create_static_placeholder_text(u'register-intro')
+        self.create_static_placeholder_text(u'register-intro-anonymous')
+        self.create_static_placeholder_text(u'register-intro-introtext-authenticated')
+        self.create_static_placeholder_text(u'register-success')
+        self.create_static_placeholder_text(u'speaker_registered')
+        self.create_static_placeholder_text(u'sponsors')
+        self.create_static_placeholder_text(u'submit-session-introtext')
+        self.create_static_placeholder_text(u'submit-session-introtext-authenticated')
+        self.create_static_placeholder_text(u'talk_submission_closed')
+        self.create_static_placeholder_text(u'talk_submitted')
 
     def get_committee_members(self):
         r = "Program committee users:\n"

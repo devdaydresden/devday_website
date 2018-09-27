@@ -14,7 +14,7 @@ postconf -e mynetworks_style=subnet
 if [[ ! -z "$MAILNAME" ]]; then
     echo "$MAILNAME" > /etc/mailname
     postconf -e myorigin="/etc/mailname"
-    postconf -e smtp_alway_send_ehlo=yes
+    postconf -e smtp_always_send_ehlo=yes
     postconf -e smtp_helo_name=$MAILNAME
 fi
 

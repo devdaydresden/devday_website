@@ -8,6 +8,8 @@ from shutil import copyfile
 import errno
 import random
 
+import lorem
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -18,6 +20,9 @@ from django.core.management import BaseCommand
 from cms import api
 from cms.constants import TEMPLATE_INHERITANCE_MAGIC
 from cms.models import Page
+from cms.models.placeholdermodel import Placeholder
+from cms.models.pluginmodel import CMSPlugin
+from cms.models.static_placeholder import StaticPlaceholder
 
 from attendee.models import Attendee
 from event.models import Event
@@ -147,6 +152,7 @@ tiefer in ein Thema einsteigen.</p>
 <p>Sichert euch jetzt euren kostenfreien Platz auf dem Dev Day!</p>
 ''')
         api.publish_page(index, self.user, 'de')
+
         api.create_page(
             title='Sessions', language='de', published=True,
             template=TEMPLATE_INHERITANCE_MAGIC, in_navigation=True,
@@ -155,6 +161,49 @@ tiefer in ein Thema einsteigen.</p>
             title='Sponsoring', language='de', published=True,
             template=TEMPLATE_INHERITANCE_MAGIC,
             reverse_id='sponsoring', parent=None)
+
+    def create_static_placeholder_text(self, name, title, lang='de', paras=3,
+                                       text=None):
+        self.write_action('    "{}"'.format(name))
+
+        try:
+            try:
+                sph = StaticPlaceholder.objects.get(name=name)
+                ph = sph.draft
+                np = CMSPlugin.objects.filter(placeholder=ph,
+                                              language=lang).count()
+                if np >= 1:
+                    self.stdout.write('OK', style_func=self.style.SUCCESS)
+                    return
+            except ObjectDoesNotExist:
+                ph, created = Placeholder.objects.update_or_create(slot=name)
+                sph = StaticPlaceholder(name=name, code=name, draft=ph,
+                                        dirty=True)
+                sph.draft = ph
+                sph.save()
+                sph.publish(None, lang, True)
+                # this shouldn't be necessary, but leaving it out will lead
+                # to an empty placeholder.
+                sph = StaticPlaceholder.objects.get(name=name)
+                ph = sph.draft
+            # p = lorem.paragraph()
+            if not text:
+                text = ''
+                for i in range(paras):
+                    text += "<p>{}</p>\n".format(lorem.paragraph())
+            text = "<h1>{}</h1>\n{}".format(title, text)
+            p = api.add_plugin(ph, 'TextPlugin', lang, body=text)
+            p.save()
+            sph.publish(None, lang, True)
+            self.stdout.write('Created', style_func=self.style.SUCCESS)
+        except Exception:
+            self.write_error()
+            raise
+
+    def update_static_placeholders(self):
+        self.stdout.write("Update static placeholders")
+        self.create_static_placeholder_text(u'imprint_text',
+                                            u'Impressum', paras=5)
 
     def get_committee_members(self):
         r = "Program committee users:\n"
@@ -336,6 +385,7 @@ tiefer in ein Thema einsteigen.</p>
     def handle(self, *args, **options):
         self.create_admin_user()
         self.update_site()
+        self.update_static_placeholders()
         self.create_objects('pages', Page, 3, self.create_pages)
         self.create_objects('users', User, 3, self.create_attendees,
                             self.get_committee_members)

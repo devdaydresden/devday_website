@@ -9,18 +9,22 @@
 
 {% block content_box_1 %}{% placeholder "eventinfo" or %}Edit eventinfo{% endplaceholder %}{% endblock %}
 
-{% block content_box_2 %}{% placeholder "audience" or %}Edit audience{% endplaceholder %}
-{% if attendee_registration_open %}
-<a class="btn btn-outline btn-call-action m-t-1"
-   href="{% url 'login_or_register_attendee' %}" role="button">{% trans "Sign up now - Be part of it!" %}</a><br>
+{% block content_box_2 %}
+{% if not attendee_registration_open and not talk_submission_open or has_change_permissions %}
+{% comment %}Keep until content from the audience placeholder has been migrated{% endcomment %}
+{% placeholder "audience" %}
+{% placeholder "save_the_date" or %}Edit save_the_date{% endplaceholder %}
 {% endif %}
-{% if talk_submission_open %}
-<a class="btn btn-outline btn-call-action m-t-1"
-   href="{% url 'submit_session' %}">{% trans "Submit session now" %}</a>
-{% comment %}
-{% else %}
-{% placeholder 'submission_closed_thanks' or %}Edit submission_closed_thanks{% endplaceholder %}
-{% endcomment %}
+{% if attendee_registration_open or has_change_permissions %}
+    {% placeholder "sign_up"  or %}Edit sign_up{% endplaceholder %}
+    <p><a class="btn btn-outline btn-call-action m-t-1"
+          href="{% url 'login_or_register_attendee' %}"
+          role="button">{% trans "Sign up now - Be part of it!" %}</a></p>
+{% endif %}
+{% if talk_submission_open or has_change_permissions %}
+    {% placeholder "cfp_open" or %}Edit cfp_open{% endplaceholder %}
+    <p><a class="btn btn-outline btn-call-action m-t-1"
+          href="{% url 'submit_session' %}">{% trans "Submit session now" %}</a></p>
 {% endif %}
 {% endblock %}
 

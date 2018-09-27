@@ -130,9 +130,9 @@ zum Wissensaustausch in der T-Systems MMS organisieren wir einmal im Jahr auch
 den Dev Day. Unser größtes Ziel dabei: Wissensaustausch und Vernetzung über die
 Grenzen von Unternehmen und Dresden hinaus.</p>
 ''')
-        audience = index.placeholders.get(slot='audience')
+        cfp_open = index.placeholders.get(slot='cfp_open')
         api.add_plugin(
-            audience, 'TextPlugin', 'de', body=u'''<h4>Call for Papers</h4>
+            cfp_open, 'TextPlugin', 'de', body=u'''<h4>Call for Papers</h4>
 <p>Für den Dev Day 19 brauchen wir wieder eure Unterstützung: meldet euch als
 <strong>Speaker</strong> an und schlagt uns spannende, interessante
 <strong>Vorträge</strong> vor!</p>
@@ -144,8 +144,17 @@ statt eines Abschluss-Vortrags vier weiter, reguläre Talks.</p>
 <p>Zusätzlich gibt es Raum für <strong>drei Workshops</strong> am Vormittag:
 jeweils bis zu 15 Teilnehmer können zusammen <strong>drei Stunden</strong>
 tiefer in ein Thema einsteigen.</p>
-<p>Sichert euch jetzt euren kostenfreien Platz auf dem Dev Day!</p>
 ''')
+        save_the_date = index.placeholders.get(slot='save_the_date')
+        api.add_plugin(
+            save_the_date, 'TextPlugin', 'de', body=u'''<h4>Save the Date</h4>
+<p>Der Dev Day 19 findet am <strong>21. Mai 2019</strong> am gewohnten Ort, der <strong>Börse Dresden</strong> statt.</p>'''
+        )
+        sign_up = index.placeholders.get(slot='sign_up')
+        api.add_plugin(
+            sign_up, 'TextPlugin', 'de', body=u'''<h4>Jetzt anmelden</h4>
+<p>Sichert euch jetzt euren kostenfreien Platz auf dem Dev Day!</p>'''
+        )
         api.publish_page(index, self.user, 'de')
         api.create_page(
             title='Sessions', language='de', published=True,

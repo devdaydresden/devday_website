@@ -34,4 +34,4 @@ RUN apt-get update && \
 WORKDIR /srv/devday/devday
 
 # tail /dev/null to keep container alive
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]

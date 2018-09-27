@@ -77,6 +77,9 @@ case "$cmd" in
     echo "    Filling database"
     $DOCKER_COMPOSE exec app python manage.py devdata
     ;;
+  log|logs)
+    $DOCKER_COMPOSE logs -f app
+    ;;
   manage)
     $DOCKER_COMPOSE exec app python manage.py $@
     ;;
@@ -120,8 +123,8 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker_compose_up
     fi
-    echo "*** Running django app"
-    $DOCKER_COMPOSE exec app python manage.py runserver 0.0.0.0:8000
+    #$DOCKER_COMPOSE exec app python manage.py runserver 0.0.0.0:8000
+    $DOCKER_COMPOSE logs -f app
     ;;
   stop)
     $DOCKER_COMPOSE down

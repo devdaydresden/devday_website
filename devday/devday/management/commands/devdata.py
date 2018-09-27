@@ -276,8 +276,8 @@ tiefer in ein Thema einsteigen.</p>
 
     def create_talk(self, speaker):
         talk = Talk(speaker=speaker, title=Words.sentence(self.rng).title(),
-                    abstract='A very short abstract.',
-                    remarks='A very short remark.')
+                    abstract=lorem.paragraph(),
+                    remarks=lorem.paragraph())
         talk.save()
         return talk
 

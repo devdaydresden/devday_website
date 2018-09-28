@@ -12,8 +12,8 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.generic import TemplateView, View, UpdateView, DeleteView
 from django.views.generic.list import BaseListView
-from registration import signals
-from registration.backends.hmac.views import RegistrationView
+from django_registration import signals
+from django_registration.views import RegistrationView
 
 from attendee.forms import (AttendeeRegistrationForm, EventRegistrationForm,
                             RegistrationAuthenticationForm, AttendeeProfileForm)

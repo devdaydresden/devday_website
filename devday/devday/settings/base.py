@@ -131,7 +131,7 @@ CMS_LANGUAGES = {
     },
 }
 CMS_PLACEHOLDER_CONF = {}
-CMS_STYLE_NAMES = (
+DJANGOCMS_STYLE_CHOICES = (
     # styles for bootstrap grid model
     ('row', gettext('row')),
     ('container', gettext('container')),

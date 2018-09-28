@@ -28,8 +28,8 @@ from django.views.generic.list import BaseListView
 from django_file_form.forms import ExistingFile
 from django_file_form.uploader import FileFormUploader
 from pathlib import Path
-from registration import signals
-from registration.backends.hmac.views import RegistrationView
+from django_registration import signals
+from django_registration.views import RegistrationView
 
 from attendee.models import Attendee
 from event.models import Event

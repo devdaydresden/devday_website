@@ -20,6 +20,7 @@ EXPOSE 8000
 VOLUME /srv/devday/devday /srv/devday/devday/media /srv/devday/devday/static
 WORKDIR /srv/devday
 COPY devday/dev_requirements.txt devday/requirements.txt /srv/devday/
+COPY devday/Pipfile devday/Pipfile.lock /srv/devday/
 
 RUN apt-get update && \
     apt-get install -y gettext libmagic1 build-essential && \
@@ -27,11 +28,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     ln -fs /usr/lib/python2.7/plat-x86_64-linux-gnu/_sysconfigdata_nd.py /usr/lib/python2.7/ && \
     pip install --upgrade pip && \
-    pip install -r dev_requirements.txt && \
+    pip install pipenv && \
+    pipenv install --dev --deploy --system && \
     rm -rf /root/.cache && \
     find /usr/local -type f -name '*.pyc' -delete
 
 WORKDIR /srv/devday/devday
 
-# tail /dev/null to keep container alive
 ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]

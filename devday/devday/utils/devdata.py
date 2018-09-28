@@ -330,7 +330,7 @@ tiefer in ein Thema einsteigen.</p>
     def vote_for_talk(self):
         committee = User.objects.filter(groups__name='talk_committee')
         for talk in Talk.objects.filter(
-                speaker__user__event=Event.current_event()):
+                speaker__user__event=Event.objects.get(pk=settings.EVENT_ID)):
             for u in committee:
                 p = self.rng.randint(0, 6)
                 if p > 0:
@@ -358,7 +358,7 @@ tiefer in ein Thema einsteigen.</p>
     def create_rooms(self):
         p = 0
         for n in ['Hamburg', 'Gartensaal', 'St. Petersburg', 'Rotterdam']:
-            room = Room(name=n, event=Event.current_event(), priority=p)
+            room = Room(name=n, event=Event.objects.get(pk=settings.EVENT_ID), priority=p)
             room.save()
             p += 1
 
@@ -393,7 +393,7 @@ tiefer in ein Thema einsteigen.</p>
         keynote_room = Room.objects.get(name='Hamburg')
         rooms = Room.objects.all()
         details = ''
-        for event in Event.current_event():
+        for event in Event.objects.exclude(pk=settings.EVENT_ID):
             tracks = Track.objects.filter(event=event) \
                 .exclude(name='Keynote')
             keynote_track = Track.objects.get(event=event, name='Keynote')

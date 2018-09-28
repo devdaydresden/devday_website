@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 from event.models import Event
@@ -15,6 +16,7 @@ def create_test_event():
 def create_test_user():
     return get_user_model().objects.create_user(email=u'speaker@example.org',
                                                 password=u's3cr3t')
+
 
 def update_current_event(*args, **kwargs):
     e = Event.current_event()

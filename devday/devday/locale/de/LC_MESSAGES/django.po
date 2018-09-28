@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-05 18:32+0200\n"
-"PO-Revision-Date: 2018-03-15 17:16+0100\n"
+"POT-Creation-Date: 2018-09-26 22:04+0200\n"
+"PO-Revision-Date: 2018-09-26 21:43+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -19,13 +19,9 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: devday/cms_menus.py:9
-msgid "2016"
-msgstr "2016"
-
 #: devday/cms_toolbars.py:11
-msgid "DevDay"
-msgstr ""
+msgid "Dev Day"
+msgstr "Dev Day"
 
 #: devday/cms_toolbars.py:13 devday/templates/admin/inc/branding.html:19
 msgid "Inactive users"
@@ -47,23 +43,23 @@ msgstr "Mein Passwort ändern"
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
-#: devday/settings/base.py:160 devday/settings/base.py:167
+#: devday/settings/base.py:80 devday/settings/base.py:165
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:203
+#: devday/settings/base.py:96
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:204
+#: devday/settings/base.py:97
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:205
+#: devday/settings/base.py:98
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:206
+#: devday/settings/base.py:99
 msgid "col-md-12"
 msgstr "col-md-12"
 
@@ -116,29 +112,13 @@ msgstr "Profil"
 msgid "Login"
 msgstr "Login"
 
-#: devday/templates/devday_index.html:9
+#: devday/templates/devday_index.html:15
 msgid "Sign up now - Be part of it!"
 msgstr "Jetzt anmelden - Sei dabei!"
 
-#: devday/templates/devday_index.html:12 devday/templates/devday_index.html:25
-msgid "Submit session"
-msgstr "Session einreichen"
-
-#: devday/templates/devday_index.html:16
-msgid "more info"
-msgstr "Mehr Infos"
-
-#: devday/templates/devday_index.html:27
-msgid "Our event on your mobile in the webapp"
-msgstr "Unser Event mobil in der WebApp"
-
-#: devday/templates/devday_index.html:33
-msgid "I want to be part of it!"
-msgstr "Ich will dabei sein!"
-
-#: devday/templates/devday_index.html:44
-msgid "Follow us!"
-msgstr "Folge uns!"
+#: devday/templates/devday_index.html:19
+msgid "Submit session now"
+msgstr "Jetzt eine Session einreichen"
 
 #: devday/templates/django_file_form/upload_template.html:13
 msgid "Cancel"
@@ -182,7 +162,7 @@ msgstr "Dein Benutzerkonto ist jetzt aktiviert."
 #: devday/templates/registration/logout.html:8
 #, python-format
 msgid "Back to <a href=\"%(root_page)s\">home page</a>."
-msgstr "Zurück zur <a href=\"%(root_page)s\">Startseite</a>"
+msgstr "Zurück zur <a href=\"%(root_page)s\">Startseite</a>."
 
 #: devday/templates/registration/activation_email.txt:1
 #, python-format
@@ -224,18 +204,26 @@ msgstr "Das Dev Day Team\n"
 msgid "Confirm your registration"
 msgstr "Bestätige deine Anmeldung"
 
-#: devday/templates/registration/login.html:8
+#: devday/templates/registration/login.html:9
 #: devday/templates/registration/password_reset_complete.html:8
 msgid "Log in"
 msgstr "Login"
 
-#: devday/templates/registration/login.html:11
-msgid "Forgot password"
-msgstr "Passwort vergessen"
+#: devday/templates/registration/login.html:12
+msgid "Forgot password?"
+msgstr "Passwort vergessen?"
 
-#: devday/templates/registration/login.html:11
+#: devday/templates/registration/login.html:12
 msgid "Reset it"
 msgstr "Zurücksetzen"
+
+#: devday/templates/registration/login.html:14
+msgid "Not registered yet?"
+msgstr "Noch nicht angemeldet?"
+
+#: devday/templates/registration/login.html:14
+msgid "Register"
+msgstr "Anmelden"
 
 #: devday/templates/registration/logout.html:3
 #: devday/templates/registration/logout.html:6
@@ -378,9 +366,3 @@ msgstr ""
 #: devday/templates/registration/registration_form.html:3
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
-
-#~ msgid "Vote now for sessions!"
-#~ msgstr "Jetzt für Sessions voten!"
-
-#~ msgid "Register"
-#~ msgstr "Anmelden"

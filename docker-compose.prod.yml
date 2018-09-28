@@ -17,6 +17,9 @@ services:
     image: devday_hp_mail:prod
     build:
       context: docker/mail
+      args:
+        http_proxy: ${http_proxy}
+        no_proxy: ${no_proxy},vault
     env_file:
       prod-env-mail
   app:
@@ -47,6 +50,7 @@ services:
       context: docker/revproxy
     ports:
       - "8080:80"
+      - "80:80"
     depends_on:
       - app
     volumes:

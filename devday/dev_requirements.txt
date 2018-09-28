@@ -1,5 +1,6 @@
 -r requirements.txt
 coverage==4.2
 django-debug-toolbar==1.5
+lorem==0.1.1
 mock==2.0.0
 sqlparse==0.2.1

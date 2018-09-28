@@ -63,6 +63,33 @@ Creating volume "devday_hp_devday_static" with default driver
 ...
 ```
 
+## `logs`: Show Logs of the App Container
+
+Tail the logs from the app container, which is running `manage.py runserver`.
+
+```
+$ ./run.sh log
+Attaching to devday_hp_app_1
+app_1    | Performing system checks...
+app_1    |
+app_1    | System check identified no issues (0 silenced).
+app_1    |
+app_1    | You have unapplied migrations; your app may not work properly until they are applied.
+app_1    | Run 'python manage.py migrate' to apply them.
+app_1    | September 27, 2018 - 19:48:29
+app_1    | Django version 1.9.8, using settings 'devday.settings.dev'
+app_1    | Starting development server at http://0.0.0.0:8000/
+app_1    | Quit the server with CONTROL-C.
+```
+
+## `manage`: Run Django Admin
+
+For development and maintenance tasks, run the Django Admin command inside the app container. This simply runs `python manage.py $@`.
+
+```
+$ ./run.sh manage migrate
+```
+
 ## `restore`: Start the development environment and import a database dump.
 
 Any preexisting volumes will be deleted first
@@ -99,14 +126,6 @@ Removing volume devday_hp_devday_media
 Removing volume devday_hp_devday_static
 Removing volume devday_hp_pg_data
     Deleting media files
-```
-
-## `manage`: Run Django Admin
-
-For development and maintenance tasks, run the Django Admin command inside the app container. This simply runs `python manage.py $@`.
-
-```
-$ ./run.sh manage migrate
 ```
 
 ## `shell`: Run a shell in the app container
@@ -165,35 +184,6 @@ Removing devday_hp_db_1       ... done
 Removing network devday_hp_default
 ```
 
-
-# Moving data between systems
-
-The following sections are outdated as of September 2018, and should be deleted once they have been replaced with the current information.
-
-## Creating a data dump
-
-On the production system:
-
-```
-sudo -iu devdayprod
-mkdir -p dump/devday/fixtures
-/srv/devday/devday.sh dumpdata >dump/devday/fixtures/data_dump.json
-tar czf content_dump-20171207.tar.gz -C dump devday -C /var/www/html devday
-```
-
-
-## Importing a data dump
-
-On the local laptop:
-
-```
-cd .../devday_hp
-tar xzf ../content_dump-20171207.tar.gz -C devday
-vagrant ssh runbox
-cd /vagrant/devday
-/srv/devday/devday.sh sqlflush | /srv/devday/devday.sh dbshell   # Daten wegwerfen
-/srv/devday/devday.sh loaddata --app devday data_dump
-```
 
 # URL Structure of the Dev Day Website
 

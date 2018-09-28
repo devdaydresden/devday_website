@@ -1,14 +1,16 @@
 FROM alpine:latest
 
-RUN apk add --no-cache \
-	bash \
-	ca-certificates \
-	libsasl \
-	mailx \
-	postfix \
-	rsyslog \
-	runit \
-	--repository https://dl-3.alpinelinux.org/alpine/edge/main
+ARG http_proxy
+ARG no_proxy
+RUN http_proxy=${http_proxy} https_proxy=${http_proxy} \
+    no_proxy=${no_proxy} \
+    apk add --no-cache \
+    bash \
+    ca-certificates \
+    mailx \
+    postfix \
+    rsyslog \
+    runit
 
 COPY service /etc/service
 COPY runit_bootstrap /usr/sbin/runit_bootstrap

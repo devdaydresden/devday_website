@@ -1,5 +1,8 @@
 version: '3'
 services:
+  db:
+    ports:
+      - "15432:5432"
   vault:
     image: vault:0.11.1
     environment:

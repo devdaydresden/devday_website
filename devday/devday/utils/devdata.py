@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from datetime import timedelta
 from os import makedirs
 from os.path import isfile, join
 from shutil import copyfile
@@ -19,6 +20,7 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import OutputWrapper
 from django.core.management.color import no_style
+from django.utils import timezone
 
 from cms import api
 from cms.constants import TEMPLATE_INHERITANCE_MAGIC
@@ -30,6 +32,7 @@ from cms.models.static_placeholder import StaticPlaceholder
 from attendee.models import Attendee
 from event.models import Event
 from talk.models import Room, Speaker, Talk, TalkSlot, TimeSlot, Track, Vote
+from twitterfeed.models import Tweet, TwitterProfileImage
 
 from devday.utils.words import Words
 
@@ -72,7 +75,7 @@ class DevData:
     def create_objects(self, name, object, min, create, already=None):
         self.write_action('Create {}'.format(name))
         count = object.objects.count()
-        if count > min:
+        if count >= min:
             self.write_notice('{} {} already exist'.format(count, name))
             if already:
                 self.stdout.write(already(), ending='')
@@ -398,7 +401,7 @@ tiefer in ein Thema einsteigen.</p>
         keynote_room = Room.objects.get(name='Hamburg')
         rooms = Room.objects.all()
         details = ''
-        for event in Event.current_event():
+        for event in Event.objects.exclude(pk=Event.current_event_id()):
             tracks = Track.objects.filter(event=event) \
                 .exclude(name='Keynote')
             keynote_track = Track.objects.get(event=event, name='Keynote')
@@ -427,6 +430,36 @@ tiefer in ein Thema einsteigen.</p>
                     talk.save()
         return details
 
+    def create_twitter_profiles(self):
+        profile_image = TwitterProfileImage.objects.create(
+            user_profile_image_url='http://localhost/twitter_profile.png')
+        # https://stackoverflow.com/a/5256094
+        profile_image.image_data = profile_image.image_data.field \
+            .attr_class(profile_image, profile_image.image_data,
+                        self.speaker_portrait_media_path)
+        profile_image.save()
+
+    def create_tweets(self, count=7):
+        profile_image = TwitterProfileImage.objects.get(
+            user_profile_image_url='http://localhost/twitter_profile.png')
+        dt = timezone.now() - timedelta(days=-count)
+        for i in range(count):
+            user = self.rng.choice(User.objects.all())
+            handle = '{}{}'.format(user.first_name, user.last_name).lower()
+            text = lorem.sentence()
+            Tweet.objects.create(
+                twitter_id=i,
+                user_profile_image=profile_image,
+                user_name='{} {}'.format(user.first_name, user.last_name),
+                user_screen_name=handle,
+                text=text,
+                plain_text=text,
+                entities='{}',
+                created_at=dt,
+                show_on_site=True)
+            dt += timedelta(days=1, hours=self.rng.randrange(3),
+                            minutes=self.rng.randrange(30))
+
     def create_devdata(self):
         self.create_admin_user()
         self.update_site()
@@ -442,3 +475,6 @@ tiefer in ein Thema einsteigen.</p>
         self.create_objects('rooms', Room, 1, self.create_rooms)
         self.create_objects('time slots', TimeSlot, 1, self.create_time_slots)
         self.create_objects('talk slots', TalkSlot, 1, self.create_talk_slots)
+        self.create_objects('twitter profiles', TwitterProfileImage, 1,
+                            self.create_twitter_profiles)
+        self.create_objects('tweets', Tweet, 1, self.create_tweets)

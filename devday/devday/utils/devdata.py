@@ -67,7 +67,7 @@ class DevData:
     def create_objects(self, name, object, min, create, already=None):
         self.write_action('Create {}'.format(name))
         count = object.objects.count()
-        if count > min:
+        if count >= min:
             self.write_notice('{} {} already exist'.format(count, name))
             if already:
                 self.stdout.write(already(), ending='')

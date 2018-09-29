@@ -62,7 +62,7 @@ def submit_session_view(request):
 
 class TalkSubmissionOpenMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        if not settings.TALK_SUBMISSION_OPEN:
+        if not Event.current_submission_open():
             return redirect('talk_submission_closed')
         # noinspection PyUnresolvedReferences
         return super(TalkSubmissionOpenMixin, self).dispatch(request, *args, **kwargs)
@@ -81,7 +81,7 @@ class SpeakerRequiredMixin(AccessMixin):
         user = request.user
         if not user.is_authenticated():
             return self.handle_no_permission()
-        if not user.get_speaker(get_object_or_404(Event, pk=settings.EVENT_ID)):
+        if not user.get_speaker(Event.current_event()):
             return redirect(reverse('create_speaker'))
         # noinspection PyUnresolvedReferences
         return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
@@ -92,7 +92,8 @@ class TalkSubmittedView(SpeakerRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TalkSubmittedView, self).get_context_data(**kwargs)
-        context['speaker'] = self.request.user.get_speaker(get_object_or_404(Event, pk=settings.EVENT_ID))
+        context['speaker'] = self.request.user.get_speaker(
+            Event.current_event())
         return context
 
 
@@ -103,7 +104,8 @@ class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         form_kwargs = super(CreateTalkView, self).get_form_kwargs()
-        form_kwargs['speaker'] = self.request.user.get_speaker(get_object_or_404(Event, pk=settings.EVENT_ID))
+        form_kwargs['speaker'] = self.request.user.get_speaker(
+            Event.current_event())
         return form_kwargs
 
 
@@ -168,9 +170,8 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
-        event = Event.objects.get(pk=settings.EVENT_ID)
         if user.is_authenticated():
-            if not user.get_attendee(event):
+            if not user.get_attendee(Event.current_event()):
                 self.auth_level = 'user'
             elif not user.get_speaker():
                 self.auth_level = 'attendee'
@@ -225,9 +226,10 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
             user = self.request.user
 
         if self.auth_level in ('anonymous', 'user'):
-            attendee = Attendee.objects.create(user=user, event_id=settings.EVENT_ID)
+            attendee = Attendee.objects.create(user=user,
+                                               event=Event.current_event())
         else:
-            attendee = user.attendees.get(event_id=settings.EVENT_ID)
+            attendee = user.attendees.get(event=Event.current_event())
 
         speaker = form.speakerform.save(commit=False)
         speaker.user = attendee
@@ -280,7 +282,7 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super(CommitteeTalkOverview, self).get_queryset().filter(
-            speaker__user__event_id=settings.EVENT_ID).annotate(
+            speaker__user__event=Event.current_event()).annotate(
             average_score=Avg('vote__score'),
             vote_sum=Sum('vote__score'),
             vote_count=Count('vote__id')).select_related(
@@ -329,15 +331,16 @@ class TalkListView(ListView):
     def dispatch(self, request, *args, **kwargs):
         event = self.kwargs.get('event')
         if not event:
-            event = Event.objects.get(pk=settings.EVENT_ID)
+            event = Event.current_event()
             return HttpResponseRedirect('/{}/talk/'.format(event.slug))
         return super(TalkListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        return super(TalkListView, self).get_queryset().filter(track__isnull=False,
-                                                               speaker__user__event=event,
-                                                               talkslot__time__event=event).select_related(
+        return super(TalkListView, self).get_queryset().filter(
+            track__isnull=False,
+            speaker__user__event=event,
+            talkslot__time__event=event).select_related(
             'track',
             'speaker', 'speaker__user', 'speaker__user__event',
             'speaker__user__user', 'speaker__user__event__slug',
@@ -359,9 +362,11 @@ class TalkListView(ListView):
         for talk in talks:
             try:
                 # build dictionary grouped by time and room (md and lg display)
-                talks_by_time_and_room.setdefault(talk.talkslot.time, []).append(talk)
+                talks_by_time_and_room.setdefault(
+                    talk.talkslot.time, []).append(talk)
                 # build dictionary grouped by room and time (sm and xs display)
-                talks_by_room_and_time.setdefault(talk.talkslot.room, []).append(talk)
+                talks_by_room_and_time.setdefault(
+                    talk.talkslot.room, []).append(talk)
             except TalkSlot.DoesNotExist:
                 unscheduled.append(talk)
         context.update(
@@ -423,9 +428,10 @@ class InfoBeamerXMLView(BaseListView):
     def dispatch(self, request, *args, **kwargs):
         event = self.kwargs.get('event')
         if not event:
-            event = Event.objects.get(pk=settings.EVENT_ID)
-            return HttpResponseRedirect('/{}/schedule.xml'.format(event.slug))
-        return super(InfoBeamerXMLView, self).dispatch(request, *args, **kwargs)
+            return HttpResponseRedirect('/{}/schedule.xml'.format(
+                Event.current_event().slug))
+        return super(InfoBeamerXMLView, self).dispatch(
+            request, *args, **kwargs)
 
     def recalculate_timestamp(self, timestamp, context):
         if 'starttoday' in self.request.GET:
@@ -434,24 +440,28 @@ class InfoBeamerXMLView(BaseListView):
         else:
             delta = timedelta()
         delta += timedelta(hours=int(self.request.GET.get('offsethours', '0')))
-        local_time = timezone.localtime(timestamp + delta, timezone.get_default_timezone())
+        local_time = timezone.localtime(timestamp + delta,
+                                        timezone.get_default_timezone())
         return local_time
 
     def to_xml_timestamp(self, timestamp, context):
-        formatted = self.recalculate_timestamp(timestamp, context).strftime(XML_TIMESTAMP_FORMAT)
+        formatted = self.recalculate_timestamp(timestamp, context).strftime(
+            XML_TIMESTAMP_FORMAT)
         return "%s:%s" % (formatted[:-2], formatted[-2:])
 
     def to_xml_localtime(self, timestamp, context):
         return self.recalculate_timestamp(timestamp, context).strftime("%H:%M")
 
     def to_xml_date(self, timestamp, context):
-        return self.recalculate_timestamp(timestamp, context).strftime("%Y-%m-%d")
+        return self.recalculate_timestamp(timestamp, context).strftime(
+            "%Y-%m-%d")
 
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        return super(InfoBeamerXMLView, self).get_queryset().filter(track__isnull=False,
-                                                                    speaker__user__event=event,
-                                                                    talkslot__time__event=event).select_related(
+        return super(InfoBeamerXMLView, self).get_queryset().filter(
+            track__isnull=False,
+            speaker__user__event=event,
+            talkslot__time__event=event).select_related(
             'track',
             'speaker', 'speaker__user', 'speaker__user__user',
             'talkslot', 'talkslot__time', 'talkslot__room'
@@ -460,7 +470,8 @@ class InfoBeamerXMLView(BaseListView):
     def get_context_data(self, **kwargs):
         context = super(InfoBeamerXMLView, self).get_context_data(**kwargs)
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        time_range = TimeSlot.objects.filter(event=event).aggregate(Min('start_time'), Max('end_time'))
+        time_range = TimeSlot.objects.filter(event=event).aggregate(
+            Min('start_time'), Max('end_time'))
         context['min_time'] = time_range['start_time__min']
         context['max_time'] = time_range['end_time__max']
         talks = context.get('talk_list', [])
@@ -468,7 +479,8 @@ class InfoBeamerXMLView(BaseListView):
         for talk in talks:
             try:
                 # build dictionary grouped by room and time (sm and xs display)
-                talks_by_room_and_time.setdefault(talk.talkslot.room, []).append(talk)
+                talks_by_room_and_time.setdefault(
+                    talk.talkslot.room, []).append(talk)
             except TalkSlot.DoesNotExist:
                 continue
         context.update(
@@ -721,4 +733,4 @@ class SpeakerListView(ListView):
 
 class RedirectVideoView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        return reverse('video_list', kwargs={'event': get_object_or_404(Event, pk=settings.EVENT_ID).slug})
+        return reverse('video_list', kwargs={'event': Event.current_event().slug})

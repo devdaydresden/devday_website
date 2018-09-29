@@ -17,9 +17,6 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# for development, we're using the upcoming event. Cf.
-# devday/event/migrations/0001_initial.py
-EVENT_ID = 3
 
 INSTALLED_APPS += [
     'debug_toolbar',

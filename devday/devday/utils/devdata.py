@@ -7,6 +7,7 @@ from os.path import isfile, join
 from shutil import copyfile
 
 import errno
+import os
 import random
 
 import lorem
@@ -16,6 +17,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.management.base import OutputWrapper
+from django.core.management.color import no_style
 from django.utils import timezone
 
 from cms import api
@@ -52,8 +55,9 @@ class DevData:
 
     def __init__(self, stdout=None, style=None):
         self.user = None
-        self.stdout = stdout
-        self.style = style
+        self.stdout = stdout if stdout else OutputWrapper(
+            open(os.devnull, 'w'))
+        self.style = style if style else no_style()
 
     def write_action(self, msg):
         self.stdout.write(msg + '... ', ending='')
@@ -219,21 +223,24 @@ tiefer in ein Thema einsteigen.</p>
         self.stdout.write("Update static placeholders")
         # find devday -name "*.html" | xargs grep static_placeholder \
         # | sed -nEe 's#^.*static_placeholder "([^"]*)".*$#\1#p' | sort -u
-        self.create_static_placeholder_text(u'create-talk-introtext')
-        self.create_static_placeholder_text(u'gdpr_teaser')
-        self.create_static_placeholder_text(u'imprint_text',
-                                            title=u'Impressum', paras=5)
-        self.create_static_placeholder_text(u'register-attendee-introtext')
-        self.create_static_placeholder_text(u'register-intro')
-        self.create_static_placeholder_text(u'register-intro-anonymous')
-        self.create_static_placeholder_text(u'register-intro-introtext-authenticated')
-        self.create_static_placeholder_text(u'register-success')
-        self.create_static_placeholder_text(u'speaker_registered')
-        self.create_static_placeholder_text(u'sponsors')
-        self.create_static_placeholder_text(u'submit-session-introtext')
-        self.create_static_placeholder_text(u'submit-session-introtext-authenticated')
-        self.create_static_placeholder_text(u'talk_submission_closed')
-        self.create_static_placeholder_text(u'talk_submitted')
+        for placeholder in (
+                u'create-talk-introtext',
+                u'gdpr_teaser',
+                u'register-attendee-introtext',
+                u'register-intro',
+                u'register-intro-anonymous',
+                u'register-intro-introtext-authenticated',
+                u'register-success',
+                u'speaker_registered',
+                u'sponsors',
+                u'submit-session-introtext',
+                u'submit-session-introtext-authenticated',
+                u'talk_submission_closed',
+                u'talk_submitted',
+        ):
+            self.create_static_placeholder_text(placeholder)
+        self.create_static_placeholder_text(
+            u'imprint_text', title=u'Impressum', paras=5)
 
     def update_events(self):
         self.write_action('Updating events')
@@ -336,7 +343,7 @@ tiefer in ein Thema einsteigen.</p>
     def vote_for_talk(self):
         committee = User.objects.filter(groups__name='talk_committee')
         for talk in Talk.objects.filter(
-                speaker__user__event=Event.objects.get(pk=settings.EVENT_ID)):
+                speaker__user__event=Event.current_event()):
             for u in committee:
                 p = self.rng.randint(0, 6)
                 if p > 0:
@@ -364,7 +371,7 @@ tiefer in ein Thema einsteigen.</p>
     def create_rooms(self):
         p = 0
         for n in ['Hamburg', 'Gartensaal', 'St. Petersburg', 'Rotterdam']:
-            room = Room(name=n, event=Event.objects.get(pk=settings.EVENT_ID), priority=p)
+            room = Room(name=n, event=Event.current_event(), priority=p)
             room.save()
             p += 1
 
@@ -399,7 +406,7 @@ tiefer in ein Thema einsteigen.</p>
         keynote_room = Room.objects.get(name='Hamburg')
         rooms = Room.objects.all()
         details = ''
-        for event in Event.objects.exclude(pk=settings.EVENT_ID):
+        for event in Event.objects.exclude(pk=Event.current_event_id()):
             tracks = Track.objects.filter(event=event) \
                 .exclude(name='Keynote')
             keynote_track = Track.objects.get(event=event, name='Keynote')

@@ -8,7 +8,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'twitterfeed', '0003_auto_20170129_1110'), (b'twitterfeed', '0004_auto_20170129_1129'), (b'twitterfeed', '0005_auto_20170129_1231'), (b'twitterfeed', '0006_auto_20170129_1243')]
+    replaces = [('twitterfeed', '0003_auto_20170129_1110'), ('twitterfeed', '0004_auto_20170129_1129'), ('twitterfeed', '0005_auto_20170129_1231'), ('twitterfeed', '0006_auto_20170129_1243')]
 
     dependencies = [
         ('twitterfeed', '0002_auto_20170118_2023'),

@@ -1,4 +1,4 @@
-FROM python:2-slim
+FROM python:3.6-alpine
 MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
 LABEL vendor=T-Systems\ Multimedia\ Solutions\ GmbH
 LABEL devday.release=0.1
@@ -6,30 +6,46 @@ LABEL devday.release=0.1
 ARG http_proxy
 ARG no_proxy
 
-ENV http_proxy ${http_proxy}
-ENV https_proxy ${http_proxy}
-ENV no_proxy ${no_proxy}
-ENV PYTHONUNBUFFERED 1
-ENV DEVDAY_PG_DBNAME devday
-ENV DEVDAY_PG_HOST db
-ENV DEVDAY_PG_PORT 5432
-ENV DEVDAY_PG_USER devday
+ENV \
+  http_proxy=${http_proxy} \
+  https_proxy=${http_proxy} \
+  no_proxy=${no_proxy} \
+  PYTHONUNBUFFERED=1 \
+  PYTHONFAULTHANDLER=1 \
+  PIP_NO_CACHE_DIR=off \
+  PIP_DISABLE_VERSION_CHECK=on \
+  PIP_DEFAULT_TIMEOUT=100 \
+  PIPENV_HIDE_EMOJIS=true \
+  PIPENV_COLORBLIND=true \
+  PIPENV_NOSPIN=true \
+  PIPENV_DOTENV_LOCATION=config/.env \
+  DEVDAY_PG_DBNAME=devday \
+  DEVDAY_PG_HOST=db \
+  DEVDAY_PG_PORT=5432 \
+  DEVDAY_PG_USER=devday
 
 EXPOSE 8000
 
+RUN apk --no-cache add \
+  bash \
+  build-base \
+  curl \
+  gcc \
+  gettext \
+  git \
+  libffi-dev \
+  linux-headers \
+  musl-dev \
+  zlib-dev \
+  postgresql-dev \
+  jpeg-dev
+RUN pip install pipenv
+
 VOLUME /srv/devday/devday /srv/devday/devday/media /srv/devday/devday/static
 WORKDIR /srv/devday
-COPY devday/dev_requirements.txt devday/requirements.txt /srv/devday/
+COPY Pipfile Pipfile.lock /srv/devday/
 
-RUN apt-get update && \
-    apt-get install -y gettext libmagic1 build-essential && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    ln -fs /usr/lib/python2.7/plat-x86_64-linux-gnu/_sysconfigdata_nd.py /usr/lib/python2.7/ && \
-    pip install --upgrade pip && \
-    pip install -r dev_requirements.txt && \
-    rm -rf /root/.cache && \
-    find /usr/local -type f -name '*.pyc' -delete
+RUN pipenv install --system --deploy --ignore-pipfile --dev
 
 WORKDIR /srv/devday/devday
 

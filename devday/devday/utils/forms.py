@@ -45,8 +45,6 @@ class CombinedFormBase(forms.Form):
             self.initial.update(form.initial)
 
     def is_valid(self):
-        #import pdb; pdb.set_trace()
-
         isValid = True
         for f in self.form_classes:
             name = f.__name__.lower()

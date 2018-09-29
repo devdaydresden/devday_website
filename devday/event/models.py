@@ -8,6 +8,33 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 
+class EventManager(models.Manager):
+    def current_event(self):
+        try:
+            return self.filter(published=True) \
+                .order_by('-start_time').first()
+        except ObjectDoesNotExist:
+            return None
+
+    def current_event_id(self):
+        e = self.current_event()
+        if e:
+            return e.id
+        return None
+
+    def current_registration_open(self):
+        e = self.current_event()
+        if e:
+            return e.registration_open
+        return False
+
+    def current_submission_open(self):
+        e = self.current_event()
+        if e:
+            return e.submission_open
+        return False
+
+
 @python_2_unicode_compatible
 class Event(models.Model):
     title = models.CharField(verbose_name=_("Event title"), max_length=256,
@@ -32,6 +59,7 @@ class Event(models.Model):
         return a.objects.filter(event=self).count()
 
     registration_count.short_description = _("Registration Count")
+    objects = EventManager()
 
     class Meta:
         verbose_name = _("Event")
@@ -42,31 +70,3 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('session_list', kwargs={'event': self.slug})
-
-    @staticmethod
-    def current_event():
-        try:
-            return Event.objects.filter(published=True) \
-                .order_by('-start_time').first()
-        except ObjectDoesNotExist:
-            return None
-
-    @staticmethod
-    def current_event_id():
-        e = Event.current_event()
-        if e:
-            return e.id
-        return None
-
-    @staticmethod
-    def current_registration_open():
-        e = Event.current_event()
-        if e:
-            return e.registration_open
-        return False
-
-    @staticmethod
-    def current_submission_open():
-        e = Event.current_event()
-        if e:
-            return e.submission_open

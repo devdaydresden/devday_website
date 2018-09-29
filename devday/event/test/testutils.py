@@ -19,7 +19,7 @@ def create_test_user():
 
 
 def update_current_event(*args, **kwargs):
-    e = Event.current_event()
-    for attr, value in kwargs.iteritems():
+    e = Event.objects.current_event()
+    for attr, value in kwargs.items():
         setattr(e, attr, value)
     e.save()

@@ -9,7 +9,6 @@ from shutil import copyfile
 import errno
 import os
 import random
-import sys
 
 import lorem
 
@@ -55,8 +54,9 @@ class DevData:
                                  speaker_portrait_media_path)
 
     def __init__(self, stdout=None, style=None):
-        self.stdout = stdout if stdout else OutputWrapper(open(os.devnull,
-                                                               'w'))
+        self.user = None
+        self.stdout = stdout if stdout else OutputWrapper(
+            open(os.devnull, 'w'))
         self.style = style if style else no_style()
 
     def write_action(self, msg):
@@ -72,10 +72,10 @@ class DevData:
         self.stdout.write(' OK', style_func=self.style.SUCCESS, ending='')
         self.stdout.write(', ' + msg, style_func=self.style.NOTICE)
 
-    def create_objects(self, name, object, min, create, already=None):
+    def create_objects(self, name, thing, min_count, create, already=None):
         self.write_action('Create {}'.format(name))
-        count = object.objects.count()
-        if count >= min:
+        count = thing.objects.count()
+        if count >= min_count:
             self.write_notice('{} {} already exist'.format(count, name))
             if already:
                 self.stdout.write(already(), ending='')
@@ -124,6 +124,7 @@ class DevData:
             title='Deutsche Homepage', language='de',
             template='devday_index.html',
             parent=None, slug='de', in_navigation=False)
+        index.set_as_homepage()
         eventinfo = index.placeholders.get(slot='eventinfo')
         api.add_plugin(
             eventinfo, 'TextPlugin', 'de', body=u'''<h4>Fünf Jahre
@@ -160,7 +161,8 @@ tiefer in ein Thema einsteigen.</p>
         save_the_date = index.placeholders.get(slot='save_the_date')
         api.add_plugin(
             save_the_date, 'TextPlugin', 'de', body=u'''<h4>Save the Date</h4>
-<p>Der Dev Day 19 findet am <strong>21. Mai 2019</strong> am gewohnten Ort, der <strong>Börse Dresden</strong> statt.</p>'''
+<p>Der Dev Day 19 findet am <strong>21. Mai 2019</strong> am gewohnten Ort, der
+<strong>Börse Dresden</strong> statt.</p>'''
         )
         sign_up = index.placeholders.get(slot='sign_up')
         api.add_plugin(
@@ -221,21 +223,24 @@ tiefer in ein Thema einsteigen.</p>
         self.stdout.write("Update static placeholders")
         # find devday -name "*.html" | xargs grep static_placeholder \
         # | sed -nEe 's#^.*static_placeholder "([^"]*)".*$#\1#p' | sort -u
-        self.create_static_placeholder_text(u'create-talk-introtext')
-        self.create_static_placeholder_text(u'gdpr_teaser')
-        self.create_static_placeholder_text(u'imprint_text',
-                                            title=u'Impressum', paras=5)
-        self.create_static_placeholder_text(u'register-attendee-introtext')
-        self.create_static_placeholder_text(u'register-intro')
-        self.create_static_placeholder_text(u'register-intro-anonymous')
-        self.create_static_placeholder_text(u'register-intro-introtext-authenticated')
-        self.create_static_placeholder_text(u'register-success')
-        self.create_static_placeholder_text(u'speaker_registered')
-        self.create_static_placeholder_text(u'sponsors')
-        self.create_static_placeholder_text(u'submit-session-introtext')
-        self.create_static_placeholder_text(u'submit-session-introtext-authenticated')
-        self.create_static_placeholder_text(u'talk_submission_closed')
-        self.create_static_placeholder_text(u'talk_submitted')
+        for placeholder in (
+                u'create-talk-introtext',
+                u'gdpr_teaser',
+                u'register-attendee-introtext',
+                u'register-intro',
+                u'register-intro-anonymous',
+                u'register-intro-introtext-authenticated',
+                u'register-success',
+                u'speaker_registered',
+                u'sponsors',
+                u'submit-session-introtext',
+                u'submit-session-introtext-authenticated',
+                u'talk_submission_closed',
+                u'talk_submitted',
+        ):
+            self.create_static_placeholder_text(placeholder)
+        self.create_static_placeholder_text(
+            u'imprint_text', title=u'Impressum', paras=5)
 
     def update_events(self):
         self.write_action('Updating events')
@@ -285,7 +290,7 @@ tiefer in ein Thema einsteigen.</p>
                         a = Attendee(user=user, event=e)
                         a.save()
         g = Group.objects.get(name='talk_committee')
-        for u in self.rng.sample(User.objects.all(), 7):
+        for u in self.rng.sample(list(User.objects.all()), 7):
             u.groups.add(g)
             u.save()
         return self.get_committee_members()
@@ -293,7 +298,7 @@ tiefer in ein Thema einsteigen.</p>
     def create_speakers(self):
         nspeakerperevent = 50
         nspeaker = Event.objects.count() * nspeakerperevent
-        attendees = self.rng.sample(Attendee.objects.all(), nspeaker)
+        attendees = self.rng.sample(list(Attendee.objects.all()), nspeaker)
         self.write_action(
             'creating {} speakers for each of the {} events'.format(
                 nspeakerperevent, Event.objects.count()))
@@ -338,7 +343,7 @@ tiefer in ein Thema einsteigen.</p>
     def vote_for_talk(self):
         committee = User.objects.filter(groups__name='talk_committee')
         for talk in Talk.objects.filter(
-                speaker__user__event=Event.current_event()):
+                speaker__user__event=Event.objects.current_event()):
             for u in committee:
                 p = self.rng.randint(0, 6)
                 if p > 0:
@@ -357,7 +362,7 @@ tiefer in ein Thema einsteigen.</p>
                 'The Human Side', 'Exkursion',
             ],
         }
-        for (e, ts) in tracks.iteritems():
+        for (e, ts) in tracks.items():
             event = Event.objects.get(title=e)
             for n in ts:
                 track = Track(name=n, event=event)
@@ -366,7 +371,8 @@ tiefer in ein Thema einsteigen.</p>
     def create_rooms(self):
         p = 0
         for n in ['Hamburg', 'Gartensaal', 'St. Petersburg', 'Rotterdam']:
-            room = Room(name=n, event=Event.current_event(), priority=p)
+            room = Room(
+                name=n, event=Event.objects.current_event(), priority=p)
             room.save()
             p += 1
 
@@ -401,7 +407,8 @@ tiefer in ein Thema einsteigen.</p>
         keynote_room = Room.objects.get(name='Hamburg')
         rooms = Room.objects.all()
         details = ''
-        for event in Event.objects.exclude(pk=Event.current_event_id()):
+        for event in Event.objects.exclude(
+                pk=Event.objects.current_event_id()):
             tracks = Track.objects.filter(event=event) \
                 .exclude(name='Keynote')
             keynote_track = Track.objects.get(event=event, name='Keynote')
@@ -414,7 +421,7 @@ tiefer in ein Thema einsteigen.</p>
                         "\n").format(event.title, ntalks, len(keynotes),
                                      len(sessions), len(rooms))
             talks = self.rng.sample(
-                Talk.objects.filter(speaker__user__event=event), ntalks)
+                list(Talk.objects.filter(speaker__user__event=event)), ntalks)
             for ts in keynotes:
                 talk = talks.pop()
                 s = TalkSlot(time=ts, room=keynote_room, talk=talk)
@@ -444,7 +451,7 @@ tiefer in ein Thema einsteigen.</p>
             user_profile_image_url='http://localhost/twitter_profile.png')
         dt = timezone.now() - timedelta(days=-count)
         for i in range(count):
-            user = self.rng.choice(User.objects.all())
+            user = self.rng.choice(list(User.objects.all()))
             handle = '{}{}'.format(user.first_name, user.last_name).lower()
             text = lorem.sentence()
             Tweet.objects.create(

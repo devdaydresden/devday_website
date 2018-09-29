@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 22:04+0200\n"
-"PO-Revision-Date: 2018-09-26 21:43+0200\n"
+"POT-Creation-Date: 2018-09-29 16:02+0000\n"
+"PO-Revision-Date: 2018-09-29 18:02+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -43,23 +43,23 @@ msgstr "Mein Passwort ändern"
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
-#: devday/settings/base.py:80 devday/settings/base.py:165
+#: devday/settings/base.py:120 devday/settings/base.py:200
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:96
+#: devday/settings/base.py:136
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:97
+#: devday/settings/base.py:137
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:98
+#: devday/settings/base.py:138
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:99
+#: devday/settings/base.py:139
 msgid "col-md-12"
 msgstr "col-md-12"
 
@@ -112,11 +112,11 @@ msgstr "Profil"
 msgid "Login"
 msgstr "Login"
 
-#: devday/templates/devday_index.html:15
+#: devday/templates/devday_index.html:23
 msgid "Sign up now - Be part of it!"
 msgstr "Jetzt anmelden - Sei dabei!"
 
-#: devday/templates/devday_index.html:19
+#: devday/templates/devday_index.html:28
 msgid "Submit session now"
 msgstr "Jetzt eine Session einreichen"
 
@@ -132,39 +132,35 @@ msgstr "Wiederholen"
 msgid "Choose Image"
 msgstr "Bild wählen"
 
-#: devday/templates/imprint.html:3
-msgid "Imprint and Data Privacy Policy"
-msgstr "Impressum und Datenschutzhinweis"
-
-#: devday/templates/registration/activate.html:3
+#: devday/templates/django_registration/activate.html:3
 msgid "Activation failed."
 msgstr "Aktivierung fehlgeschlagen."
 
-#: devday/templates/registration/activate.html:5
+#: devday/templates/django_registration/activate.html:5
 msgid "You specified an invalid activation code or your code has expired."
 msgstr ""
 "Du hast einen ungültigen Aktivierungscode angegeben oder der Code ist "
 "bereits abgelaufen."
 
-#: devday/templates/registration/activation_complete.html:3
+#: devday/templates/django_registration/activation_complete.html:3
 msgid "Activation complete"
 msgstr "Aktivierung abgeschlossen"
 
-#: devday/templates/registration/activation_complete.html:6
+#: devday/templates/django_registration/activation_complete.html:6
 msgid "Account activated"
 msgstr "Benutzerkonto aktiviert"
 
-#: devday/templates/registration/activation_complete.html:7
+#: devday/templates/django_registration/activation_complete.html:7
 msgid "Your account is now activated."
 msgstr "Dein Benutzerkonto ist jetzt aktiviert."
 
-#: devday/templates/registration/activation_complete.html:8
-#: devday/templates/registration/logout.html:8
+#: devday/templates/django_registration/activation_complete.html:8
+#: devday/templates/django_registration/logout.html:8
 #, python-format
 msgid "Back to <a href=\"%(root_page)s\">home page</a>."
 msgstr "Zurück zur <a href=\"%(root_page)s\">Startseite</a>."
 
-#: devday/templates/registration/activation_email.txt:1
+#: devday/templates/django_registration/activation_email_body.txt:1
 #, python-format
 msgid ""
 "Hello %(shortname)s,\n"
@@ -181,7 +177,7 @@ msgstr ""
 "Um deine Anmeldung abzuschließen, verifiziere bitte deine Email-Adresse "
 "durch Klick auf diesen Link:\n"
 
-#: devday/templates/registration/activation_email.txt:8
+#: devday/templates/django_registration/activation_email_body.txt:8
 #, python-format
 msgid ""
 "\n"
@@ -196,74 +192,74 @@ msgstr[1] ""
 "\n"
 "Der Link ist für %(days)s Tage gültig.\n"
 
-#: devday/templates/registration/activation_email.txt:14
+#: devday/templates/django_registration/activation_email_body.txt:14
 msgid "The Dev Day team\n"
 msgstr "Das Dev Day Team\n"
 
-#: devday/templates/registration/activation_email_subject.txt:1
+#: devday/templates/django_registration/activation_email_subject.txt:1
 msgid "Confirm your registration"
 msgstr "Bestätige deine Anmeldung"
 
-#: devday/templates/registration/login.html:9
-#: devday/templates/registration/password_reset_complete.html:8
+#: devday/templates/django_registration/login.html:9
+#: devday/templates/django_registration/password_reset_complete.html:8
 msgid "Log in"
 msgstr "Login"
 
-#: devday/templates/registration/login.html:12
+#: devday/templates/django_registration/login.html:12
 msgid "Forgot password?"
 msgstr "Passwort vergessen?"
 
-#: devday/templates/registration/login.html:12
+#: devday/templates/django_registration/login.html:12
 msgid "Reset it"
 msgstr "Zurücksetzen"
 
-#: devday/templates/registration/login.html:14
+#: devday/templates/django_registration/login.html:14
 msgid "Not registered yet?"
 msgstr "Noch nicht angemeldet?"
 
-#: devday/templates/registration/login.html:14
+#: devday/templates/django_registration/login.html:14
 msgid "Register"
 msgstr "Anmelden"
 
-#: devday/templates/registration/logout.html:3
-#: devday/templates/registration/logout.html:6
+#: devday/templates/django_registration/logout.html:3
+#: devday/templates/django_registration/logout.html:6
 msgid "Logged out"
 msgstr "Abgemeldet"
 
-#: devday/templates/registration/logout.html:7
+#: devday/templates/django_registration/logout.html:7
 msgid "You are now logged out."
 msgstr "Du bist jetzt abgemeldet."
 
-#: devday/templates/registration/password_change_done.html:3
+#: devday/templates/django_registration/password_change_done.html:3
 msgid "Password changed"
 msgstr "Passwort geändert"
 
-#: devday/templates/registration/password_change_done.html:6
-#: devday/templates/registration/password_change_form.html:6
+#: devday/templates/django_registration/password_change_done.html:6
+#: devday/templates/django_registration/password_change_form.html:6
 msgid "Password change"
 msgstr "Passwortänderung"
 
-#: devday/templates/registration/password_change_done.html:7
+#: devday/templates/django_registration/password_change_done.html:7
 msgid "Your password was changed."
 msgstr "Dein Passwort wurde geändert."
 
-#: devday/templates/registration/password_reset_complete.html:6
+#: devday/templates/django_registration/password_reset_complete.html:6
 msgid "Password set"
 msgstr "Passwort geändert"
 
-#: devday/templates/registration/password_reset_complete.html:7
+#: devday/templates/django_registration/password_reset_complete.html:7
 msgid "Your password has been set.  You may go ahead and log in now."
 msgstr ""
 "Dein Passwort wurde gesetzt. Du kannst jetzt damit fortfahren dich "
 "einzuloggen."
 
-#: devday/templates/registration/password_reset_confirm.html:6
-#: devday/templates/registration/password_reset_done.html:6
-#: devday/templates/registration/password_reset_form.html:6
+#: devday/templates/django_registration/password_reset_confirm.html:6
+#: devday/templates/django_registration/password_reset_done.html:6
+#: devday/templates/django_registration/password_reset_form.html:6
 msgid "Password recovery"
 msgstr "Passwortwiederherstellung"
 
-#: devday/templates/registration/password_reset_confirm.html:8
+#: devday/templates/django_registration/password_reset_confirm.html:8
 msgid ""
 "Please enter your new password twice so we can verify you typed it in "
 "correctly."
@@ -271,7 +267,7 @@ msgstr ""
 "Bitte gib dein neues Passwort doppelt ein, damit wir prüfen können, dass du "
 "es richtig getippt hast."
 
-#: devday/templates/registration/password_reset_confirm.html:11
+#: devday/templates/django_registration/password_reset_confirm.html:11
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
@@ -279,7 +275,7 @@ msgstr ""
 "Der Link für die Passwortrücksetzung war ungültig, vielleicht wurde er schon "
 "einmal benutzt. Bitte fordere eine neue Passwortrücksetzung an."
 
-#: devday/templates/registration/password_reset_done.html:7
+#: devday/templates/django_registration/password_reset_done.html:7
 msgid ""
 "We've emailed you instructions for setting your password, if an account "
 "exists with the email you entered. You should receive them shortly."
@@ -288,7 +284,7 @@ msgstr ""
 "Nutzerkonto mit der eingegebenen E-Mailadresse existiert. Du solltest diese "
 "in Kürze erhalten."
 
-#: devday/templates/registration/password_reset_done.html:8
+#: devday/templates/django_registration/password_reset_done.html:8
 msgid ""
 "If you don't receive an email, please make sure you've entered the address "
 "you registered with, and check your spam folder."
@@ -297,7 +293,7 @@ msgstr ""
 "Mailadresse die ist, mit der du dich bei uns angemeldet hast und prüfe "
 "deinen Spam-Ordner."
 
-#: devday/templates/registration/password_reset_email.txt:2
+#: devday/templates/django_registration/password_reset_email.txt:2
 #, python-format
 msgid ""
 "You're receiving this email because you requested a password reset for your "
@@ -306,24 +302,24 @@ msgstr ""
 "Du bekommst diese E-Mail weil eine Passwortrücksetzung für dein Nutzerkonto "
 "auf %(site_name)s angefordert wurde."
 
-#: devday/templates/registration/password_reset_email.txt:3
+#: devday/templates/django_registration/password_reset_email.txt:3
 msgid "Please go to the following page and choose a new password:"
 msgstr "Bitte klicke folgenden Link und wähle ein neues Passwort:"
 
-#: devday/templates/registration/password_reset_email.txt:7
+#: devday/templates/django_registration/password_reset_email.txt:7
 msgid "Your username, in case you've forgotten:"
 msgstr "Dein Nutzername, falls du diesen vergessen hast:"
 
-#: devday/templates/registration/password_reset_email.txt:8
+#: devday/templates/django_registration/password_reset_email.txt:8
 msgid "Thanks for using our site!"
 msgstr "Danke, dass du unsere Webseite nutzt!"
 
-#: devday/templates/registration/password_reset_email.txt:9
+#: devday/templates/django_registration/password_reset_email.txt:9
 #, python-format
 msgid "The %(site_name)s team"
 msgstr "Dein %(site_name)s team"
 
-#: devday/templates/registration/password_reset_form.html:7
+#: devday/templates/django_registration/password_reset_form.html:7
 msgid ""
 "Forgotten your password? Enter your email address below, and we'll email "
 "instructions for setting a new one."
@@ -331,17 +327,17 @@ msgstr ""
 "Hast du dein Passwort vergessen? Gib unten deine E-Mailadresse ein und wir "
 "werden dir Hinweise schicken, wie du ein neues Passwort setzen kannst."
 
-#: devday/templates/registration/password_reset_subject.txt:2
+#: devday/templates/django_registration/password_reset_subject.txt:2
 #, python-format
 msgid "Password reset on %(site_name)s"
 msgstr "Passwortrücksetzung auf %(site_name)s"
 
-#: devday/templates/registration/registration_closed.html:3
-#: devday/templates/registration/registration_closed.html:5
+#: devday/templates/django_registration/registration_closed.html:3
+#: devday/templates/django_registration/registration_closed.html:5
 msgid "Registration closed"
 msgstr "Anmeldung geschlossen"
 
-#: devday/templates/registration/registration_closed.html:6
+#: devday/templates/django_registration/registration_closed.html:6
 msgid ""
 "Our registration is closed. Thanks for your interest. Unfortunately we "
 "cannot accept more\n"
@@ -350,11 +346,11 @@ msgstr ""
 "Unsere Anmeldung ist geschlossen. Danke für dein Interesse. Leider können "
 "wir keine weiteren Teilnehmer annehmen."
 
-#: devday/templates/registration/registration_complete.html:3
+#: devday/templates/django_registration/registration_complete.html:3
 msgid "Registration: confirm email address"
 msgstr "Anmeldung: Email-Adresse bestätigen"
 
-#: devday/templates/registration/registration_complete.html:5
+#: devday/templates/django_registration/registration_complete.html:5
 msgid ""
 "Thank you for registering for Dev Day. To complete registration, please "
 "click on the confirmation link we just sent you by email!"
@@ -363,6 +359,10 @@ msgstr ""
 "abzuschließen, klicke bitte den Bestätigungslink, den wir dir gerade per "
 "Email geschickt haben!"
 
-#: devday/templates/registration/registration_form.html:3
+#: devday/templates/django_registration/registration_form.html:3
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
+
+#: devday/templates/imprint.html:3
+msgid "Imprint and Data Privacy Policy"
+msgstr "Impressum und Datenschutzhinweis"

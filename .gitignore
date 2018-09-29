@@ -32,3 +32,4 @@ node_modules/
 vault-cluster-*.json
 docker/app/vault.crt
 vault-*.json
+/devday/media/

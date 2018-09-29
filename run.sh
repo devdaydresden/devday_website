@@ -28,6 +28,7 @@ usage: ./run.sh backup
        ./run.sh [-c container] shell
        ./run.sh start
        ./run.sh stop
+       ./run.sh compose [...]
 EOD
 }
 
@@ -72,6 +73,8 @@ case "$cmd" in
   devdata)
     echo "    Starting containers"
     docker_compose_up
+    echo "    Compiling translations"
+    $DOCKER_COMPOSE exec app python manage.py compilemessages
     echo "    Running migrations"
     $DOCKER_COMPOSE exec app python manage.py migrate
     echo "    Filling database"
@@ -128,6 +131,9 @@ case "$cmd" in
     ;;
   stop)
     $DOCKER_COMPOSE down
+    ;;
+  compose)  # run plain docker-compose command
+    $DOCKER_COMPOSE $@
     ;;
   *)
     echo -e "error: unknown action \"${cmd}\":\n" >&2

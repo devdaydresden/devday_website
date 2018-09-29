@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from django.apps import apps, AppConfig
 from django.db.models.signals import post_migrate
-from django.conf import settings
 
 
 class SessionsConfig(AppConfig):
@@ -28,7 +27,7 @@ def create_talk_committee(**kwargs):
 
 def set_default_event(verbosity=2, **kwargs):
     Event = apps.get_model('event', 'Event')
-    default_event = Event.current_event()
+    default_event = Event.objects.current_event()
 
     Room = apps.get_model('talk', 'Room')
     rooms = Room.objects.filter(event=None)

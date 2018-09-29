@@ -78,6 +78,7 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('user')
         verbose_name_plural = _('users')
         abstract = False
+        default_manager_name = 'objects'
 
     def get_full_name(self):
         """

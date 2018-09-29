@@ -261,7 +261,7 @@ tiefer in ein Thema einsteigen.</p>
                         a = Attendee(user=user, event=e)
                         a.save()
         g = Group.objects.get(name='talk_committee')
-        for u in self.rng.sample(User.objects.all(), 7):
+        for u in self.rng.sample(list(User.objects.all()), 7):
             u.groups.add(g)
             u.save()
         return self.get_committee_members()
@@ -269,7 +269,7 @@ tiefer in ein Thema einsteigen.</p>
     def create_speakers(self):
         nspeakerperevent = 50
         nspeaker = Event.objects.count() * nspeakerperevent
-        attendees = self.rng.sample(Attendee.objects.all(), nspeaker)
+        attendees = self.rng.sample(list(Attendee.objects.all()), nspeaker)
         self.write_action(
             'creating {} speakers for each of the {} events'.format(
                 nspeakerperevent, Event.objects.count()))
@@ -333,7 +333,7 @@ tiefer in ein Thema einsteigen.</p>
                 'The Human Side', 'Exkursion',
             ],
         }
-        for (e, ts) in tracks.iteritems():
+        for (e, ts) in tracks.items():
             event = Event.objects.get(title=e)
             for n in ts:
                 track = Track(name=n, event=event)
@@ -391,7 +391,7 @@ tiefer in ein Thema einsteigen.</p>
                         "\n").format(event.title, ntalks, len(keynotes),
                                      len(sessions), len(rooms))
             talks = self.rng.sample(
-                Talk.objects.filter(speaker__user__event=event), ntalks)
+                list(Talk.objects.filter(speaker__user__event=event)), ntalks)
             for ts in keynotes:
                 talk = talks.pop()
                 s = TalkSlot(time=ts, room=keynote_room, talk=talk)

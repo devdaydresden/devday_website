@@ -51,6 +51,7 @@ class DevData:
                                  speaker_portrait_media_path)
 
     def __init__(self, stdout=None, style=None):
+        self.user = None
         self.stdout = stdout
         self.style = style
 
@@ -67,10 +68,10 @@ class DevData:
         self.stdout.write(' OK', style_func=self.style.SUCCESS, ending='')
         self.stdout.write(', ' + msg, style_func=self.style.NOTICE)
 
-    def create_objects(self, name, object, min, create, already=None):
+    def create_objects(self, name, thing, min_count, create, already=None):
         self.write_action('Create {}'.format(name))
-        count = object.objects.count()
-        if count >= min:
+        count = thing.objects.count()
+        if count >= min_count:
             self.write_notice('{} {} already exist'.format(count, name))
             if already:
                 self.stdout.write(already(), ending='')
@@ -119,6 +120,7 @@ class DevData:
             title='Deutsche Homepage', language='de',
             template='devday_index.html',
             parent=None, slug='de', in_navigation=False)
+        index.set_as_homepage()
         eventinfo = index.placeholders.get(slot='eventinfo')
         api.add_plugin(
             eventinfo, 'TextPlugin', 'de', body=u'''<h4>Fünf Jahre
@@ -155,7 +157,8 @@ tiefer in ein Thema einsteigen.</p>
         save_the_date = index.placeholders.get(slot='save_the_date')
         api.add_plugin(
             save_the_date, 'TextPlugin', 'de', body=u'''<h4>Save the Date</h4>
-<p>Der Dev Day 19 findet am <strong>21. Mai 2019</strong> am gewohnten Ort, der <strong>Börse Dresden</strong> statt.</p>'''
+<p>Der Dev Day 19 findet am <strong>21. Mai 2019</strong> am gewohnten Ort, der
+<strong>Börse Dresden</strong> statt.</p>'''
         )
         sign_up = index.placeholders.get(slot='sign_up')
         api.add_plugin(

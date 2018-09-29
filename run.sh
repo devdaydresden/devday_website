@@ -72,6 +72,8 @@ case "$cmd" in
   devdata)
     echo "    Starting containers"
     docker_compose_up
+    echo "    Compiling translations"
+    $DOCKER_COMPOSE exec app python manage.py compilemessages
     echo "    Running migrations"
     $DOCKER_COMPOSE exec app python manage.py migrate
     echo "    Filling database"

@@ -68,9 +68,8 @@ LOGGING = {
     },
 }
 
-MIDDLEWARE_CLASSES = [
-                         'debug_toolbar.middleware.DebugToolbarMiddleware',
-                     ] + MIDDLEWARE_CLASSES
+MIDDLEWARE_CLASSES = ['debug_toolbar.middleware.DebugToolbarMiddleware',
+                      ] + MIDDLEWARE_CLASSES
 
 TWITTERFEED_PROXIES = {
     'http': 'http://proxy.mms-dresden.de:8080/',

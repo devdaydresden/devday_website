@@ -5,7 +5,7 @@ The project consists of a Django CMS content management part and some custom Dja
 
 ## Developing
 
-Information on how to set up a development environment on your machine, running the application, and performing various development and maintaince tasks is detailed in [README.dev.md](README.dev.md). It also includes some application design information.
+Information on how to set up a development environment on your machine, running the application, and performing various development and maintaince tasks is detailed in [README-DEV.md](README-DEV.md). It also includes some application design information.
 
 ### Quickstart
 
@@ -20,7 +20,7 @@ To get a local development instance up and running:
 
 ## Running A Production Environment
 
-To set up a test or production environment, see [README.prod.md](README.prod.md).
+To set up a test or production environment, see [README-PROD.md](README-PROD.md).
 
 ## Contributing
 

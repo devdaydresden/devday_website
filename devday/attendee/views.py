@@ -1,5 +1,6 @@
 import csv
-from StringIO import StringIO
+
+from io import StringIO
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -12,8 +13,8 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.generic import TemplateView, View, UpdateView, DeleteView
 from django.views.generic.list import BaseListView
-from registration import signals
-from registration.backends.hmac.views import RegistrationView
+from django_registration import signals
+from django_registration.backends.activation.views import RegistrationView
 
 from attendee.forms import (AttendeeRegistrationForm, EventRegistrationForm,
                             RegistrationAuthenticationForm, AttendeeProfileForm)
@@ -154,11 +155,12 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
 
     def get_queryset(self):
         return super(ContactableAttendeeView, self).get_queryset().raw(
-            '''
-SELECT * FROM attendee_devdayuser WHERE contact_permission_date IS NOT NULL OR EXISTS (
-  SELECT id FROM attendee_attendee WHERE event_id={:d} AND attendee_attendee.user_id=attendee_devdayuser.id
-) ORDER BY email
-'''.format(settings.EVENT_ID)
+            '''SELECT * FROM attendee_devdayuser WHERE contact_permission_date
+             IS NOT NULL OR EXISTS (
+               SELECT id FROM attendee_attendee
+                WHERE event_id={:d}
+                  AND attendee_attendee.user_id=attendee_devdayuser.id)
+                ORDER BY email'''.format(settings.EVENT_ID)
         )
 
     def render_to_response(self, context):

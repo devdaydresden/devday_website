@@ -108,7 +108,7 @@ mimetypes.add_type("image/svg+xml", ".svg", True)
 # see: https://django-registration.readthedocs.io/en/2.1.1/index.html
 ACCOUNT_ACTIVATION_DAYS = 14
 ALLOWED_HOSTS = []
-AUTH_USER_MODEL = 'attendee.devdayuser'
+AUTH_USER_MODEL = 'attendee.DevDayUser'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))))
@@ -131,7 +131,7 @@ CMS_LANGUAGES = {
     },
 }
 CMS_PLACEHOLDER_CONF = {}
-CMS_STYLE_NAMES = (
+DJANGOCMS_STYLE_CHOICES = (
     # styles for bootstrap grid model
     ('row', gettext('row')),
     ('container', gettext('container')),
@@ -187,13 +187,10 @@ INSTALLED_APPS = [
     'djangocms_style',
     'djangocms_column',
     'djangocms_file',
-    'djangocms_googlemap',
-    'djangocms_inherit',
     'djangocms_link',
     'djangocms_picture',
     'djangocms_teaser',
     'djangocms_video',
-    'reversion',
     'crispy_forms',
     'django_file_form',
     'django_file_form.ajaxuploader',

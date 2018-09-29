@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.edit import FormView
-from registration.forms import RegistrationFormUniqueEmail
+from django_registration.forms import RegistrationFormUniqueEmail
 
 from attendee.models import DevDayUser
 from devday.forms import AuthenticationForm

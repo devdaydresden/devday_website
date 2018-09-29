@@ -29,9 +29,11 @@ We welcome your ideas and improvements! Please see [CONTRIBUTING.md](CONTRIBUTIN
 # Credits
 
 This Django project has been made possible by the contributions of:
+
 * Jan Dittberner
 * Jeremias Arnstadt
 * Felix Herzog
 * Stefan Bethke
 * Daniel Sy
+
 and the Software Engineering Community at T-Systems Multimedia Solutions GmbH.

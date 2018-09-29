@@ -28,6 +28,7 @@ usage: ./run.sh backup
        ./run.sh [-c container] shell
        ./run.sh start
        ./run.sh stop
+       ./run.sh compose [...]
 EOD
 }
 
@@ -130,6 +131,9 @@ case "$cmd" in
     ;;
   stop)
     $DOCKER_COMPOSE down
+    ;;
+  compose)  # run plain docker-compose command
+    $DOCKER_COMPOSE $@
     ;;
   *)
     echo -e "error: unknown action \"${cmd}\":\n" >&2

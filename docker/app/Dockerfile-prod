@@ -34,7 +34,7 @@ RUN apt-get update && \
            /usr/lib/python2.7/ && \
     update-ca-certificates && \
     pip install --upgrade pip && \
-    pip install -r requirements.txt && \
+    pipenv install --deploy --system && \
     rm -rf /root/.cache && \
     find /usr/local -type f -name '*.pyc' -delete && \
     python manage.py compilemessages && \

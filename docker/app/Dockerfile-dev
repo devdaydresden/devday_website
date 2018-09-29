@@ -49,5 +49,4 @@ RUN pipenv install --system --deploy --ignore-pipfile --dev
 
 WORKDIR /srv/devday/devday
 
-# tail /dev/null to keep container alive
 ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]

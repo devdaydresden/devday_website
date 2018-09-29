@@ -1,6 +1,5 @@
 import csv
-
-from io import StringIO
+from StringIO import StringIO
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -155,12 +154,11 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
 
     def get_queryset(self):
         return super(ContactableAttendeeView, self).get_queryset().raw(
-            '''SELECT * FROM attendee_devdayuser WHERE contact_permission_date
-             IS NOT NULL OR EXISTS (
-               SELECT id FROM attendee_attendee
-                WHERE event_id={:d}
-                  AND attendee_attendee.user_id=attendee_devdayuser.id)
-                ORDER BY email'''.format(settings.EVENT_ID)
+            '''
+SELECT * FROM attendee_devdayuser WHERE contact_permission_date IS NOT NULL OR EXISTS (
+  SELECT id FROM attendee_attendee WHERE event_id={:d} AND attendee_attendee.user_id=attendee_devdayuser.id
+) ORDER BY email
+'''.format(settings.EVENT_ID)
         )
 
     def render_to_response(self, context):

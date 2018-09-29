@@ -66,6 +66,6 @@ case "$cmd" in
     $DOCKER_COMPOSE up --no-deps app
     ;;
   *)
-    $DOCKER_COMPOSE $cmd $@
+    $DOCKER_COMPOSE $cmd "$@"
     ;;
 esac

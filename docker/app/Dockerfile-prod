@@ -1,43 +1,71 @@
-FROM python:2-slim
+FROM python:3.6-alpine
 MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
-LABEL vendor=T-Systems\ Multimedia\ Solutions\ GmbH
+LABEL vendor="T-Systems Multimedia Solutions GmbH"
 LABEL devday.release=0.1
 
 ARG http_proxy
 ARG no_proxy
 
-ENV http_proxy ${http_proxy}
-ENV https_proxy ${http_proxy}
-ENV no_proxy ${no_proxy}
-ENV PYTHONUNBUFFERED 1
-ENV DEVDAY_PG_DBNAME devday
-ENV DEVDAY_PG_HOST db
-ENV DEVDAY_PG_PORT 5432
-ENV DEVDAY_PG_USER devday
-ENV REQUESTS_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
+ENV \
+  http_proxy=${http_proxy} \
+  https_proxy=${http_proxy} \
+  no_proxy=${no_proxy} \
+  PYTHONUNBUFFERED=1 \
+  PYTHONFAULTHANDLER=1 \
+  PIP_NO_CACHE_DIR=off \
+  PIP_DISABLE_VERSION_CHECK=on \
+  PIP_DEFAULT_TIMEOUT=100 \
+  PIPENV_HIDE_EMOJIS=true \
+  PIPENV_COLORBLIND=true \
+  PIPENV_NOSPIN=true \
+  PIPENV_DOTENV_LOCATION=config/.env \
+  DEVDAY_PG_DBNAME=devday \
+  DEVDAY_PG_HOST=db \
+  DEVDAY_PG_PORT=5432 \
+  DEVDAY_PG_USER=devday \
+  REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 EXPOSE 7000
 
 VOLUME /srv/devday/media /srv/devday/static /srv/devday/logs
-COPY devday docker/app/start-application.sh docker/app/uwsgi.ini docker/app/devday.wsgi /srv/devday/
+COPY Pipfile Pipfile.lock devday docker/app/start-application.sh \
+  docker/app/uwsgi.ini docker/app/devday.wsgi /srv/devday/
 COPY docker/app/vault.crt /usr/local/share/ca-certificates/
 
 WORKDIR /srv/devday
 
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y \
-        uwsgi-plugin-python uwsgi libmagic1 gettext-base libpq5 \
-        gettext build-essential && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    ln -fs /usr/lib/python2.7/plat-x86_64-linux-gnu/_sysconfigdata_nd.py \
-           /usr/lib/python2.7/ && \
-    update-ca-certificates && \
-    pip install --upgrade pip && \
-    pipenv install --deploy --system && \
-    rm -rf /root/.cache && \
-    find /usr/local -type f -name '*.pyc' -delete && \
-    python manage.py compilemessages && \
-    apt-get autoremove --purge -y gettext build-essential
+RUN apk --no-cache add \
+    build-base \
+    ca-certificates \
+    gcc \
+    gettext \
+    jpeg \
+    jpeg-dev \
+    libffi-dev \
+    libmagic \
+    libpng \
+    libpng-dev \
+    libpq \
+    linux-headers \
+    musl-dev \
+    postgresql-dev \
+    uwsgi-http \
+    uwsgi-python3 \
+    zlib-dev \
+  && pip install pipenv \
+  && pipenv install --system --deploy --ignore-pipfile \
+  && rm -rf /root/.cache \
+  && find /usr/local -type f -name '*.pyc' -delete \
+  && update-ca-certificates \
+  && apk --no-cache del \
+    build-base \
+    gcc \
+    jpeg-dev \
+    libffi-dev \
+    libpng-dev \
+    linux-headers \
+    musl-dev \
+    postgresql-dev \
+    zlib-dev
 
 CMD /srv/devday/start-application.sh

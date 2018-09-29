@@ -1,5 +1,5 @@
 import csv
-from StringIO import StringIO
+from io import StringIO
 
 from django.conf import settings
 from django.contrib.auth import get_user_model

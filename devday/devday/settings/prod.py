@@ -85,8 +85,6 @@ LOGGING = {
 
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 
-REGISTRATION_OPEN = False
-
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 STATIC_ROOT = os.path.join(DATA_DIR, 'static')
 
@@ -94,5 +92,3 @@ TWITTERFEED_PROXIES = {
     'http': 'http://iproxy.mms-dresden.de:8080/',
     'https': 'http://iproxy.mms-dresden.de:8080/',
 }
-
-TALK_SUBMISSION_OPEN = False

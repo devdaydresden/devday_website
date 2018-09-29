@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.apps import apps
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -18,6 +19,8 @@ class Event(models.Model):
                                    default=False)
     start_time = models.DateTimeField(verbose_name=_("Start time"))
     end_time = models.DateTimeField(verbose_name=_("End time"))
+    published = models.BooleanField(
+        verbose_name=_('Event is visible on the website'), default=True)
     registration_open = models.BooleanField(
         verbose_name=_('People can register as attendees'), default=False)
     submission_open = models.BooleanField(
@@ -39,3 +42,31 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('session_list', kwargs={'event': self.slug})
+
+    @staticmethod
+    def current_event():
+        try:
+            return Event.objects.filter(published=True) \
+                .order_by('-start_time').first()
+        except ObjectDoesNotExist:
+            return None
+
+    @staticmethod
+    def current_event_id():
+        e = Event.current_event()
+        if e:
+            return e.id
+        return None
+
+    @staticmethod
+    def current_registration_open():
+        e = Event.current_event()
+        if e:
+            return e.registration_open
+        return False
+
+    @staticmethod
+    def current_submission_open():
+        e = Event.current_event()
+        if e:
+            return e.submission_open

@@ -26,7 +26,6 @@ To set up a test or production environment, see [README.prod.md](README.prod.md)
 
 We welcome your ideas and improvements! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-
 # Credits
 
 This Django project has been made possible by the contributions of:

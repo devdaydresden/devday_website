@@ -7,7 +7,9 @@ from os.path import isfile, join
 from shutil import copyfile
 
 import errno
+import os
 import random
+import sys
 
 import lorem
 
@@ -16,6 +18,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.management.base import OutputWrapper
+from django.core.management.color import no_style
 from django.utils import timezone
 
 from cms import api
@@ -51,8 +55,9 @@ class DevData:
                                  speaker_portrait_media_path)
 
     def __init__(self, stdout=None, style=None):
-        self.stdout = stdout
-        self.style = style
+        self.stdout = stdout if stdout else OutputWrapper(open(os.devnull,
+                                                               'w'))
+        self.style = style if style else no_style()
 
     def write_action(self, msg):
         self.stdout.write(msg + '... ', ending='')
@@ -333,7 +338,7 @@ tiefer in ein Thema einsteigen.</p>
     def vote_for_talk(self):
         committee = User.objects.filter(groups__name='talk_committee')
         for talk in Talk.objects.filter(
-                speaker__user__event=Event.objects.get(pk=settings.EVENT_ID)):
+                speaker__user__event=Event.current_event()):
             for u in committee:
                 p = self.rng.randint(0, 6)
                 if p > 0:
@@ -361,7 +366,7 @@ tiefer in ein Thema einsteigen.</p>
     def create_rooms(self):
         p = 0
         for n in ['Hamburg', 'Gartensaal', 'St. Petersburg', 'Rotterdam']:
-            room = Room(name=n, event=Event.objects.get(pk=settings.EVENT_ID), priority=p)
+            room = Room(name=n, event=Event.current_event(), priority=p)
             room.save()
             p += 1
 
@@ -396,7 +401,7 @@ tiefer in ein Thema einsteigen.</p>
         keynote_room = Room.objects.get(name='Hamburg')
         rooms = Room.objects.all()
         details = ''
-        for event in Event.objects.exclude(pk=settings.EVENT_ID):
+        for event in Event.objects.exclude(pk=Event.current_event_id()):
             tracks = Track.objects.filter(event=event) \
                 .exclude(name='Keynote')
             keynote_track = Track.objects.get(event=event, name='Keynote')

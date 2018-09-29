@@ -1,9 +1,9 @@
-from django.test import SimpleTestCase
+from django.test import TestCase
 
 from devday.contextprocessors import devdaysettings_contextprocessor
 
 
-class TestDevDaySettingsContextProcessor(SimpleTestCase):
+class TestDevDaySettingsContextProcessor(TestCase):
     def test_twitter_url_in_context(self):
         context = devdaysettings_contextprocessor(None)
         self.assertIn('twitter_url', context)

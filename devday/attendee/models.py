@@ -98,9 +98,8 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
 
     def get_attendee(self, event):
         """
-        Return the attendee object for this user and the given event.  If event
-        is None, use settings.EVENT_ID.  If no attendee object exists, return
-        None.
+        Return the attendee object for this user and the given event. If no
+        attendee object exists, return None.
         """
         return Attendee.objects.filter(user=self, event=event).first()
 
@@ -112,9 +111,8 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
 
     def get_speaker(self, event):
         """
-        Return the speaker object for this user and the given event.  If event
-        is None, use settings.EVENT_ID.  If no attendee or speaker object
-        exists, return None.
+        Return the speaker object for this user and the given event. If no
+        attendee or speaker object exists, return None.
         """
         attendee = self.get_attendee(event)
         if attendee:

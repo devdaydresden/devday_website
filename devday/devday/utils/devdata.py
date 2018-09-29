@@ -179,6 +179,10 @@ tiefer in ein Thema einsteigen.</p>
             title='Sponsoring', language='de', published=True,
             template=TEMPLATE_INHERITANCE_MAGIC,
             reverse_id='sponsoring', parent=None)
+        api.create_page(
+            title='Impressum', language='de', published=True,
+            template=TEMPLATE_INHERITANCE_MAGIC,
+            reverse_id='imprint', parent=None)
 
     def create_static_placeholder_text(self, name, lang='de', paras=3,
                                        title=None, text=None):
@@ -239,8 +243,6 @@ tiefer in ein Thema einsteigen.</p>
                 u'talk_submitted',
         ):
             self.create_static_placeholder_text(placeholder)
-        self.create_static_placeholder_text(
-            u'imprint_text', title=u'Impressum', paras=5)
 
     def update_events(self):
         self.write_action('Updating events')

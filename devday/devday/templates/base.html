@@ -96,7 +96,7 @@
     {% endif %}
 
     <footer>
-        <img src="{% static 'images/seco-logo.svg' %}" alt="Software Engineering Community"> | <a href="{% url 'imprint' %}">IMPRESSUM</a>
+        <img src="{% static 'images/seco-logo.svg' %}" alt="Software Engineering Community"> | <a href="{% page_url 'imprint' %}">IMPRESSUM</a>
     </footer>
 
     {% render_block "js" %}

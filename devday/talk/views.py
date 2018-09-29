@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
 
 import logging
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ElementTree
 from datetime import date, timedelta
+from pathlib import Path
 
 from django.conf import settings
 from django.contrib import messages
@@ -23,19 +24,24 @@ from django.views.generic import ListView, RedirectView
 from django.views.generic import TemplateView
 from django.views.generic import View
 from django.views.generic.detail import DetailView, SingleObjectMixin
-from django.views.generic.edit import BaseFormView, UpdateView, CreateView, FormView
+from django.views.generic.edit import (
+    BaseFormView, UpdateView, CreateView,
+    FormView)
 from django.views.generic.list import BaseListView
 from django_file_form.forms import ExistingFile
 from django_file_form.uploader import FileFormUploader
-from pathlib import Path
 from django_registration import signals
 from django_registration.backends.activation.views import RegistrationView
 
 from attendee.models import Attendee
 from event.models import Event
-from talk.forms import CreateTalkForm, ExistingFileForm, TalkAuthenticationForm, CreateSpeakerForm, BecomeSpeakerForm, \
-    EditTalkForm, TalkCommentForm, TalkVoteForm, TalkSpeakerCommentForm, EditSpeakerForm
-from talk.models import Speaker, Talk, Vote, TalkComment, Room, TimeSlot, TalkSlot
+from talk.forms import (
+    CreateTalkForm, ExistingFileForm, TalkAuthenticationForm,
+    CreateSpeakerForm, BecomeSpeakerForm,
+    EditTalkForm, TalkCommentForm, TalkVoteForm, TalkSpeakerCommentForm,
+    EditSpeakerForm)
+from talk.models import (Speaker, Talk, Vote, TalkComment, Room, TimeSlot,
+                         TalkSlot)
 
 logger = logging.getLogger('talk')
 
@@ -57,15 +63,18 @@ def submit_session_view(request):
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
             pass
 
-    return login(request, template_name=template_name, authentication_form=TalkAuthenticationForm)
+    return login(
+        request, template_name=template_name,
+        authentication_form=TalkAuthenticationForm)
 
 
 class TalkSubmissionOpenMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        if not Event.current_submission_open():
+        if not Event.objects.current_submission_open():
             return redirect('talk_submission_closed')
         # noinspection PyUnresolvedReferences
-        return super(TalkSubmissionOpenMixin, self).dispatch(request, *args, **kwargs)
+        return super(TalkSubmissionOpenMixin, self).dispatch(request, *args,
+                                                             **kwargs)
 
 
 class TalkSubmissionClosed(TemplateView):
@@ -81,10 +90,11 @@ class SpeakerRequiredMixin(AccessMixin):
         user = request.user
         if not user.is_authenticated():
             return self.handle_no_permission()
-        if not user.get_speaker(Event.current_event()):
+        if not user.get_speaker(Event.objects.current_event()):
             return redirect(reverse('create_speaker'))
         # noinspection PyUnresolvedReferences
-        return super(SpeakerRequiredMixin, self).dispatch(request, *args, **kwargs)
+        return super(SpeakerRequiredMixin, self).dispatch(request, *args,
+                                                          **kwargs)
 
 
 class TalkSubmittedView(SpeakerRequiredMixin, TemplateView):
@@ -93,7 +103,7 @@ class TalkSubmittedView(SpeakerRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TalkSubmittedView, self).get_context_data(**kwargs)
         context['speaker'] = self.request.user.get_speaker(
-            Event.current_event())
+            Event.objects.current_event())
         return context
 
 
@@ -105,7 +115,7 @@ class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
     def get_form_kwargs(self):
         form_kwargs = super(CreateTalkView, self).get_form_kwargs()
         form_kwargs['speaker'] = self.request.user.get_speaker(
-            Event.current_event())
+            Event.objects.current_event())
         return form_kwargs
 
 
@@ -148,7 +158,8 @@ class SpeakerProfileView(SpeakerRequiredMixin, UpdateView):
         return kwargs
 
     def get_queryset(self):
-        return super(SpeakerProfileView, self).get_queryset().select_related('user', 'user__user').filter(
+        return super(SpeakerProfileView, self).get_queryset().select_related(
+            'user', 'user__user').filter(
             user__user=self.request.user)
 
     def get_success_url(self):
@@ -171,7 +182,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
     def dispatch(self, *args, **kwargs):
         user = self.request.user
         if user.is_authenticated():
-            if not user.get_attendee(Event.current_event()):
+            if not user.get_attendee(Event.objects.current_event()):
                 self.auth_level = 'user'
             elif not user.get_speaker():
                 self.auth_level = 'attendee'
@@ -191,7 +202,8 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         return kw
 
     def get_email_context(self, activation_key):
-        context = super(CreateSpeakerView, self).get_email_context(activation_key)
+        context = super(CreateSpeakerView, self).get_email_context(
+            activation_key)
         context.update({'request': self.request})
         return context
 
@@ -226,10 +238,10 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
             user = self.request.user
 
         if self.auth_level in ('anonymous', 'user'):
-            attendee = Attendee.objects.create(user=user,
-                                               event=Event.current_event())
+            attendee = Attendee.objects.create(
+                user=user, event=Event.objects.current_event())
         else:
-            attendee = user.attendees.get(event=Event.current_event())
+            attendee = user.attendees.get(event=Event.objects.current_event())
 
         speaker = form.speakerform.save(commit=False)
         speaker.user = attendee
@@ -237,7 +249,8 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         try:
             form.speakerform.delete_temporary_files()
         except Exception as e:  # pragma: nocover
-            # may be Windows error on Windows when file is locked by another process
+            # may be Windows error on Windows when file is locked by another
+            # process
             logger.warning("Error deleting temporary files: %s", e)
 
         if do_send_mail:
@@ -259,7 +272,9 @@ class TalkDetails(DetailView):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
 
         if slugify(talk.title) != kwargs.get('slug') or event != talk.event:
-            return HttpResponseRedirect('/{}/talk/{}/{}'.format(event.slug, slugify(talk.title), talk.id))
+            return HttpResponseRedirect(
+                '/{}/talk/{}/{}'.format(event.slug, slugify(talk.title),
+                                        talk.id))
         return super(TalkDetails, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -282,11 +297,14 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super(CommitteeTalkOverview, self).get_queryset().filter(
-            speaker__user__event=Event.current_event()).annotate(
+            speaker__user__event=Event.objects.current_event()
+        ).annotate(
             average_score=Avg('vote__score'),
             vote_sum=Sum('vote__score'),
-            vote_count=Count('vote__id')).select_related(
-            'speaker', 'speaker__user', 'speaker__user__user').order_by('title')
+            vote_count=Count('vote__id')
+        ).select_related(
+            'speaker', 'speaker__user', 'speaker__user__user'
+        ).order_by('title')
         sort_order = self.request.GET.get('sort_order', 'title')
         sort_order = CommitteeTalkOverview.ORDER_MAP.get(sort_order, sort_order)
         if self.request.GET.get('sort_dir') == 'desc':
@@ -296,7 +314,8 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(CommitteeTalkOverview, self).get_context_data(**kwargs)
         talk_list = context['talk_list']
-        for item in Talk.objects.values('id').annotate(comment_count=Count('talkcomment__id')).all():
+        for item in Talk.objects.values('id').annotate(comment_count=Count(
+                'talkcomment__id')).all():
             for talk in talk_list:
                 if item['id'] == talk.id:
                     setattr(talk, 'comment_count', item['comment_count'])
@@ -317,11 +336,13 @@ class SpeakerPublic(DetailView):
     template_name_suffix = '_public'
 
     def get_queryset(self):
-        return super(SpeakerPublic, self).get_queryset().filter(talk__track__isnull=False).prefetch_related('talk_set')
+        return super(SpeakerPublic, self).get_queryset().filter(
+            talk__track__isnull=False).prefetch_related('talk_set')
 
     def get_context_data(self, **kwargs):
         context = super(SpeakerPublic, self).get_context_data(**kwargs)
-        context['talks'] = context['speaker'].talk_set.filter(track__isnull=False)
+        context['talks'] = context['speaker'].talk_set.filter(
+            track__isnull=False)
         return context
 
 
@@ -331,8 +352,9 @@ class TalkListView(ListView):
     def dispatch(self, request, *args, **kwargs):
         event = self.kwargs.get('event')
         if not event:
-            event = Event.current_event()
-            return HttpResponseRedirect('/{}/talk/'.format(event.slug))
+            event = Event.objects.current_event()
+            return HttpResponseRedirect(
+                reverse_lazy('session_list', kwargs={'event': event.slug}))
         return super(TalkListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -343,7 +365,7 @@ class TalkListView(ListView):
             talkslot__time__event=event).select_related(
             'track',
             'speaker', 'speaker__user', 'speaker__user__event',
-            'speaker__user__user', 'speaker__user__event__slug',
+            'speaker__user__user',
             'talkslot', 'talkslot__time', 'talkslot__room'
         ).order_by('talkslot__time__start_time', 'talkslot__room__name')
 
@@ -389,8 +411,9 @@ class TalkListPreviewView(ListView):
 
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        return super(TalkListPreviewView, self).get_queryset().filter(track__isnull=False,
-                                                                      speaker__user__event=event).select_related(
+        return super(TalkListPreviewView, self).get_queryset().filter(
+            track__isnull=False, speaker__user__event=event
+        ).select_related(
             'speaker__user__event', 'speaker__user__event__slug',
             'track',
             'speaker', 'speaker__user', 'speaker__user__user'
@@ -429,7 +452,7 @@ class InfoBeamerXMLView(BaseListView):
         event = self.kwargs.get('event')
         if not event:
             return HttpResponseRedirect('/{}/schedule.xml'.format(
-                Event.current_event().slug))
+                Event.objects.current_event().slug))
         return super(InfoBeamerXMLView, self).dispatch(
             request, *args, **kwargs)
 
@@ -495,42 +518,55 @@ class InfoBeamerXMLView(BaseListView):
 
     def render_to_response(self, context, **response_kwargs):
         event = context['event']
-        schedule_xml = ET.Element('schedule')
+        schedule_xml = ElementTree.Element('schedule')
         # TODO: use event argument and render proper event title
-        ET.SubElement(schedule_xml, 'version').text = event.title
-        conference = ET.SubElement(schedule_xml, 'conference')
-        ET.SubElement(conference, 'acronym').text = 'DevDay'
-        ET.SubElement(conference, 'title').text = event.title
-        ET.SubElement(conference, 'start').text = self.to_xml_date(event.start_time, context)
-        ET.SubElement(conference, 'end').text = self.to_xml_date(event.end_time, context)
-        ET.SubElement(conference, 'days').text = '1'  # FIXME compute days
-        ET.SubElement(conference, 'timeslot_duration').text = '00:15'
-        day_xml = ET.SubElement(schedule_xml, 'day', index='1',
-                                date=self.to_xml_date(context['min_time'], context),
-                                start=self.to_xml_timestamp(context['min_time'], context),
-                                end=self.to_xml_timestamp(context['max_time'], context))
+        ElementTree.SubElement(schedule_xml, 'version').text = event.title
+        conference = ElementTree.SubElement(schedule_xml, 'conference')
+        ElementTree.SubElement(conference, 'acronym').text = 'DevDay'
+        ElementTree.SubElement(conference, 'title').text = event.title
+        ElementTree.SubElement(conference, 'start').text = self.to_xml_date(
+            event.start_time, context)
+        ElementTree.SubElement(conference, 'end').text = self.to_xml_date(
+            event.end_time, context)
+        ElementTree.SubElement(conference,
+                               'days').text = '1'  # FIXME compute days
+        ElementTree.SubElement(conference, 'timeslot_duration').text = '00:15'
+        day_xml = ElementTree.SubElement(
+            schedule_xml, 'day', index='1',
+            date=self.to_xml_date(context['min_time'], context),
+            start=self.to_xml_timestamp(context['min_time'], context),
+            end=self.to_xml_timestamp(context['max_time'], context))
         for room in context['rooms']:
-            room_xml = ET.SubElement(day_xml, 'room', name=room.name)
+            room_xml = ElementTree.SubElement(day_xml, 'room', name=room.name)
             room_talks = context['talks_by_room_and_time']
             if room in room_talks:
                 for talk in room_talks[room]:
-                    event_xml = ET.SubElement(room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
+                    event_xml = ElementTree.SubElement(
+                        room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
                     start_time = talk.talkslot.time.start_time
                     duration = talk.talkslot.time.end_time - start_time
-                    ET.SubElement(event_xml, 'date').text = self.to_xml_timestamp(start_time, context)
-                    ET.SubElement(event_xml, 'start').text = self.to_xml_localtime(start_time, context)
-                    ET.SubElement(event_xml, 'duration').text = "%02d:%02d" % (
+                    ElementTree.SubElement(
+                        event_xml, 'date'
+                    ).text = self.to_xml_timestamp(start_time, context)
+                    ElementTree.SubElement(
+                        event_xml, 'start'
+                    ).text = self.to_xml_localtime(start_time, context)
+                    ElementTree.SubElement(event_xml,
+                                           'duration').text = "%02d:%02d" % (
                         duration.seconds / 3600, duration.seconds % 3600 / 60)
-                    ET.SubElement(event_xml, 'room').text = room.name
-                    ET.SubElement(event_xml, 'title').text = talk.title
-                    ET.SubElement(event_xml, 'abstract').text = talk.abstract
-                    ET.SubElement(event_xml, 'language').text = 'de'
-                    persons_xml = ET.SubElement(event_xml, 'persons')
-                    ET.SubElement(persons_xml, 'person', id=str(talk.speaker_id)).text = \
+                    ElementTree.SubElement(event_xml, 'room').text = room.name
+                    ElementTree.SubElement(event_xml, 'title').text = talk.title
+                    ElementTree.SubElement(event_xml,
+                                           'abstract').text = talk.abstract
+                    ElementTree.SubElement(event_xml, 'language').text = 'de'
+                    persons_xml = ElementTree.SubElement(event_xml, 'persons')
+                    ElementTree.SubElement(persons_xml, 'person',
+                                           id=str(talk.speaker_id)).text = \
                         talk.speaker.user.user.get_full_name()
 
         response_kwargs.setdefault('content_type', 'application/xml')
-        return HttpResponse(content=ET.tostring(schedule_xml, 'utf-8'), **response_kwargs)
+        return HttpResponse(content=ElementTree.tostring(schedule_xml, 'utf-8'),
+                            **response_kwargs)
 
 
 class CommitteeTalkDetails(CommitteeRequiredMixin, DetailView):
@@ -556,12 +592,14 @@ class CommitteeTalkDetails(CommitteeRequiredMixin, DetailView):
             'comment_form': TalkCommentForm(instance=talk),
             'user_vote': user_score,
             'average_votes': talk.average_score,
-            'comments': talk.talkcomment_set.select_related('commenter').order_by('-modified').all()
+            'comments': talk.talkcomment_set.select_related(
+                'commenter').order_by('-modified').all()
         })
         return context
 
 
-class CommitteeSubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, FormView):
+class CommitteeSubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin,
+                                 FormView):
     model = Talk
     form_class = TalkCommentForm
     http_method_names = ['post']
@@ -579,10 +617,12 @@ class CommitteeSubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin, Form
         }
 
     def get_email_subject(self):
-        return render_to_string(self.email_subject_template, self.get_email_context())
+        return render_to_string(self.email_subject_template,
+                                self.get_email_context())
 
     def get_email_text_body(self):
-        return render_to_string(self.email_body_template, self.get_email_context())
+        return render_to_string(self.email_body_template,
+                                self.get_email_context())
 
     def form_invalid(self, form):
         messages.warning(self.request, form.errors)
@@ -647,12 +687,14 @@ class CommitteeTalkVoteClear(CommitteeRequiredMixin, SingleObjectMixin, View):
         return JsonResponse({'message': 'vote deleted'})
 
 
-class CommitteeTalkCommentDelete(CommitteeRequiredMixin, SingleObjectMixin, View):
+class CommitteeTalkCommentDelete(CommitteeRequiredMixin, SingleObjectMixin,
+                                 View):
     model = TalkComment
     http_method_names = ['post']
 
     def get_queryset(self):
-        return super(CommitteeTalkCommentDelete, self).get_queryset().filter(commenter=self.request.user)
+        return super(CommitteeTalkCommentDelete, self).get_queryset().filter(
+            commenter=self.request.user)
 
     # noinspection PyUnusedLocal
     def post(self, request, *args, **kwargs):
@@ -669,17 +711,21 @@ class SpeakerTalkDetails(SpeakerRequiredMixin, UpdateView):
         return reverse('speaker_talk_details', kwargs={'pk': self.object.pk})
 
     def get_queryset(self):
-        return super(SpeakerTalkDetails, self).get_queryset().select_related('speaker').filter(
-            speaker__user__user=self.request.user)
+        return super(SpeakerTalkDetails, self).get_queryset().select_related(
+            'speaker').filter(speaker__user__user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(SpeakerTalkDetails, self).get_context_data(**kwargs)
-        context['comments'] = context['talk'].talkcomment_set.filter(is_visible=True).all()
-        context['comment_form'] = TalkSpeakerCommentForm(instance=context['talk'])
+        context['comments'] = context['talk'].talkcomment_set.filter(
+            is_visible=True).all()
+        context['comment_form'] = TalkSpeakerCommentForm(
+            instance=context['talk'])
         return context
 
 
-class SubmitTalkSpeakerComment(SpeakerRequiredMixin, SingleObjectMixin, FormView):
+class SubmitTalkSpeakerComment(
+    SpeakerRequiredMixin, SingleObjectMixin, FormView
+):
     model = Talk
     form_class = TalkSpeakerCommentForm
     http_method_names = ['post']
@@ -707,7 +753,8 @@ class SubmitTalkSpeakerComment(SpeakerRequiredMixin, SingleObjectMixin, FormView
         return kwargs
 
     def get_queryset(self):
-        return super(SubmitTalkSpeakerComment, self).get_queryset().filter(speaker__user__user=self.request.user)
+        return super(SubmitTalkSpeakerComment, self).get_queryset().filter(
+            speaker__user__user=self.request.user)
 
 
 class TalkSpeakerCommentDelete(SpeakerRequiredMixin, SingleObjectMixin, View):
@@ -715,7 +762,8 @@ class TalkSpeakerCommentDelete(SpeakerRequiredMixin, SingleObjectMixin, View):
     http_method_names = ['post']
 
     def get_queryset(self):
-        return super(TalkSpeakerCommentDelete, self).get_queryset().filter(commenter=self.request.user)
+        return super(TalkSpeakerCommentDelete, self).get_queryset().filter(
+            commenter=self.request.user)
 
     # noinspection PyUnusedLocal
     def post(self, request, *args, **kwargs):
@@ -727,10 +775,14 @@ class SpeakerListView(ListView):
     model = Speaker
 
     def get_queryset(self):
-        return super(SpeakerListView, self).get_queryset().filter(talk__track__isnull=False).order_by(
-            'user__user__last_name', 'user__user__first_name').prefetch_related('user', 'user__user')
+        return super(SpeakerListView, self).get_queryset().filter(
+            talk__track__isnull=False
+        ).order_by(
+            'user__user__last_name', 'user__user__first_name'
+        ).prefetch_related('user', 'user__user')
 
 
 class RedirectVideoView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        return reverse('video_list', kwargs={'event': Event.current_event().slug})
+        return reverse(
+            'video_list', kwargs={'event': Event.objects.current_event().slug})

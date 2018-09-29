@@ -47,7 +47,7 @@ class TestSubmitSessionView(TestCase):
     def test_submit_session_attendee(self):
         user = User.objects.create_user(email=u'test@example.org',
                                         password=u's3cr3t')
-        event = Event.current_event()
+        event = Event.objects.current_event()
         Attendee.objects.create(user=user, event=event)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(u'/session/submit-session/')
@@ -55,7 +55,7 @@ class TestSubmitSessionView(TestCase):
 
     def test_submit_session_speaker(self):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
-        event = Event.current_event()
+        event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
@@ -89,7 +89,7 @@ class TestTalkSubmittedView(TestCase):
 
     def test_needs_speaker_not_attendee(self):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
-        event = Event.current_event()
+        event = Event.objects.current_event()
         Attendee.objects.create(user=user, event=event)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         with override_settings(EVENT_ID=event.id):
@@ -99,7 +99,7 @@ class TestTalkSubmittedView(TestCase):
 
     def test_template(self):
         user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
-        event = Event.current_event()
+        event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         speaker = Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
@@ -114,7 +114,7 @@ class TestTalkSubmittedView(TestCase):
 
     def test_get_context_data(self):
         user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
-        event = Event.current_event()
+        event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         speaker = Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
@@ -160,7 +160,7 @@ class TestCreateTalkView(TestCase):
 
     def test_template(self):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
-        event = Event.current_event()
+        event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
@@ -173,7 +173,7 @@ class TestCreateTalkView(TestCase):
     def test_get_form_kwargs(self):
         user = User.objects.create_user(email=u'test@example.org',
                                         password=u's3cr3t')
-        event = Event.current_event()
+        event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         speaker = Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True,
@@ -187,7 +187,7 @@ class TestCreateTalkView(TestCase):
 
     def test_redirect_after_success(self):
         user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
-        event = Event.current_event()
+        event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
@@ -231,7 +231,7 @@ class TestExistingFileView(TestCase):
 class TestSpeakerProfileView(TestCase):
     def setUp(self):
         user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
-        self.event = Event.current_event()
+        self.event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=self.event)
         self.speaker = Speaker.objects.create(
             user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text',
@@ -454,7 +454,7 @@ class TestTalkOverView(TestCase):
     def test_get_queryset(self):
         user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
-        event = Event.current_event()
+        event = Event.objects.current_event()
         talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
@@ -476,7 +476,7 @@ class TestTalkOverView(TestCase):
     def test_get_queryset_sorting(self):
         user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
-        event = Event.current_event()
+        event = Event.objects.current_event()
         speaker1 = Speaker.objects.create(
             user=Attendee.objects.create(
                 user=User.objects.create_user(first_name=u'Frodo', email=u'speaker@example.org', password=u'g3h31m'),
@@ -666,7 +666,7 @@ class TestSubmitTalkComment(TestCase):
 
 class TestTalkVote(TestCase):
     def setUp(self):
-        self.event = Event.current_event()
+        self.event = Event.objects.current_event()
         self.talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
@@ -746,7 +746,7 @@ class TestTalkVote(TestCase):
 
 class TestTalkVoteClear(TestCase):
     def setUp(self):
-        self.event = Event.current_event()
+        self.event = Event.objects.current_event()
         self.talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
@@ -803,7 +803,7 @@ class TestTalkVoteClear(TestCase):
 
 class TestTalkCommentDelete(TestCase):
     def setUp(self):
-        self.event = Event.current_event()
+        self.event = Event.objects.current_event()
         self.talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
@@ -859,7 +859,7 @@ class TestTalkCommentDelete(TestCase):
 
 class TestSpeakerTalkDetails(TestCase):
     def setUp(self):
-        self.event = Event.current_event()
+        self.event = Event.objects.current_event()
         self.speaker = Speaker.objects.create(
             user=Attendee.objects.create(
                 user=User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t'),
@@ -952,7 +952,7 @@ class TestSpeakerTalkDetails(TestCase):
 
 class TestSubmitTalkSpeakerComment(TestCase):
     def setUp(self):
-        self.event = Event.current_event()
+        self.event = Event.objects.current_event()
         self.speaker = Speaker.objects.create(
             user=Attendee.objects.create(
                 user=User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t'),
@@ -1027,7 +1027,7 @@ class TestSubmitTalkSpeakerComment(TestCase):
 
 class TestTalkSpeakerCommentDelete(TestCase):
     def setUp(self):
-        self.event = Event.current_event()
+        self.event = Event.objects.current_event()
         self.speaker = Speaker.objects.create(
             user=Attendee.objects.create(
                 user=User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t'),

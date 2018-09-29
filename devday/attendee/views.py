@@ -1,7 +1,6 @@
 import csv
 from io import StringIO
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import login
@@ -36,7 +35,7 @@ class AttendeeProfileView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(AttendeeProfileView, self).get_context_data(**kwargs)
         context['events'] = self.request.user.get_events().order_by('id')
-        context['event_id'] = Event.current_event_id()
+        context['event_id'] = Event.objects.current_event_id()
         return context
 
 
@@ -47,7 +46,7 @@ class AttendeeRegistrationView(RegistrationView):
     }
 
     def create_attendee(self, user):
-        attendee = Attendee(user=user, event=Event.current_event())
+        attendee = Attendee(user=user, event=Event.objects.current_event())
         attendee.save()
 
     def dispatch(self, *args, **kwargs):
@@ -157,7 +156,7 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
 SELECT * FROM attendee_devdayuser WHERE contact_permission_date IS NOT NULL OR EXISTS (
   SELECT id FROM attendee_attendee WHERE event_id={:d} AND attendee_attendee.user_id=attendee_devdayuser.id
 ) ORDER BY email
-'''.format(Event.current_event_id())
+'''.format(Event.objects.current_event_id())
         )
 
     def render_to_response(self, context):
@@ -178,7 +177,8 @@ class AttendeeListView(StaffUserMixin, BaseListView):
 
     def get_queryset(self):
         return super(AttendeeListView, self).get_queryset().filter(
-            event_id=Event.current_event_id()).order_by("user__last_name", "user__first_name")
+            event_id=Event.objects.current_event_id()
+        ).order_by("user__last_name", "user__first_name")
 
     def render_to_response(self, context):
         output = StringIO()

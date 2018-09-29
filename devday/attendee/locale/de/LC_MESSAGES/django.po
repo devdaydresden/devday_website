@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 23:58+0200\n"
-"PO-Revision-Date: 2018-09-26 23:58+0200\n"
+"POT-Creation-Date: 2018-09-29 16:02+0000\n"
+"PO-Revision-Date: 2018-09-29 18:02+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: attendee/apps.py:11 attendee/tests/test_appconfig.py:10
+#: attendee/apps.py:10 attendee/tests/test_appconfig.py:10
 msgid "Attendee management"
 msgstr "Teilnehmerverwaltung"
 
@@ -141,23 +141,23 @@ msgstr "Nutzer"
 msgid "users"
 msgstr "Nutzer"
 
-#: attendee/models.py:140
+#: attendee/models.py:139
 msgid "source"
 msgstr "Informationsquelle"
 
-#: attendee/models.py:140
+#: attendee/models.py:139
 msgid "How have you become aware of this event?"
 msgstr "Wie bist du auf den Dev Day aufmerksam geworden?"
 
-#: attendee/models.py:141
+#: attendee/models.py:140
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: attendee/models.py:144
+#: attendee/models.py:143
 msgid "Attendee"
 msgstr "Teilnehmer"
 
-#: attendee/models.py:145
+#: attendee/models.py:144
 msgid "Attendees"
 msgstr "Teilnehmer"
 

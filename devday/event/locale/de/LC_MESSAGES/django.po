@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-27 00:46+0200\n"
-"PO-Revision-Date: 2018-09-27 00:48+0200\n"
+"POT-Creation-Date: 2018-09-29 16:02+0000\n"
+"PO-Revision-Date: 2018-09-29 18:01+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: jan.dittberner@t-systems.com\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: event/apps.py:11 event/models.py:31
+#: event/apps.py:11 event/models.py:65
 msgid "Events"
 msgstr "Veranstaltungen"
 
@@ -27,38 +27,50 @@ msgstr "Veranstaltungen"
 msgid "Archive"
 msgstr "Archiv"
 
-#: event/models.py:12
+#: event/models.py:39
 msgid "Event title"
 msgstr "Veranstaltungsname"
 
-#: event/models.py:14
+#: event/models.py:41
 msgid "Short name for URLs"
 msgstr "Kurzname für URLs"
 
-#: event/models.py:15
+#: event/models.py:42
 msgid "Description"
 msgstr "Beschreibung"
 
-#: event/models.py:16
+#: event/models.py:43
 msgid "Location"
 msgstr "Veranstaltungsort"
 
-#: event/models.py:17
+#: event/models.py:44
 msgid "Full day event"
 msgstr "Ganztagsveranstaltung"
 
-#: event/models.py:19
+#: event/models.py:46
 msgid "Start time"
 msgstr "Beginn"
 
-#: event/models.py:20
+#: event/models.py:47
 msgid "End time"
 msgstr "Ende"
 
-#: event/models.py:27
+#: event/models.py:49
+msgid "Event is visible on the website"
+msgstr "Veranstaltung ist auf Webseite sichtbar"
+
+#: event/models.py:51
+msgid "People can register as attendees"
+msgstr "Teilnehmer können sich registrieren"
+
+#: event/models.py:53
+msgid "People can register as speakers"
+msgstr "Sprecher können sich registrieren"
+
+#: event/models.py:60
 msgid "Registration Count"
 msgstr "Anmeldungen"
 
-#: event/models.py:30
+#: event/models.py:64
 msgid "Event"
 msgstr "Veranstaltung"

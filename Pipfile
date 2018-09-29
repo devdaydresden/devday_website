@@ -1,0 +1,35 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django-cms = "*"
+requests = "*"
+"psycopg2-binary" = "*"
+python-magic = "*"
+pillow = "*"
+django-crispy-forms = "*"
+djangocms-admin-style = "*"
+djangocms-link = "*"
+djangocms-teaser = "*"
+djangocms-video = "*"
+djangocms-picture = "*"
+djangocms-style = "*"
+djangocms-attributes-field = "*"
+django-model-utils = "*"
+djangocms-text-ckeditor = "*"
+djangocms-column = "*"
+djangocms-file = "*"
+django-file-form = "*"
+django-registration = "*"
+"django-select2" = "*"
+
+[dev-packages]
+coverage = "*"
+django-debug-toolbar = "*"
+lorem = "*"
+mock = "*"
+
+[requires]
+python_version = "3.6"

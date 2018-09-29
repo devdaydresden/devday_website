@@ -383,12 +383,17 @@ class TestCreateSpeakerView(TestCase):
         self.assertEqual(context[u'request'], request)
 
     def test_form_valid_anonymous(self):
-        image_file = open(os.path.join(os.path.dirname(__file__), u'mu_at_mil_house.jpg'), 'rb')
+        image_file = open(
+            os.path.join(os.path.dirname(__file__), u'mu_at_mil_house.jpg'),
+            'rb')
         data = {
-            u'email': u'speaker@example.org', u'firstname': u'Special', u'lastname': u'Tester', u'password1': u's3cr3t',
-            u'password2': u's3cr3t', u'shirt_size': u'2', u'accept_contact': u'checked', u'videopermission': u'checked',
-            u'shortbio': u'A guy from somewhere having something great to talk about', u'phone': '+49-351-28200815',
-            u'uploaded_image': image_file
+            u'email': u'speaker@example.org', u'firstname': u'Special',
+            u'lastname': u'Tester', u'password1': u's3cr3t',
+            u'password2': u's3cr3t', u'shirt_size': u'2',
+            u'accept_contact': u'checked', u'videopermission': u'checked',
+            u'shortbio': u'A guy from somewhere having something great'
+                         u' to talk about',
+            u'phone': '+49-351-28200815', u'uploaded_image': image_file
         }
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 302)

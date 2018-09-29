@@ -171,7 +171,7 @@ msgid ""
 "\n"
 "thank you for registering for Dev Day!\n"
 "\n"
-"To complete your registration please confirm your email address by clicking "
+"To complete your django_registration please confirm your email address by clicking "
 "the following link.\n"
 msgstr ""
 "Hallo %(shortname)s,\n"
@@ -201,7 +201,7 @@ msgid "The Dev Day team\n"
 msgstr "Das Dev Day Team\n"
 
 #: devday/templates/registration/activation_email_subject.txt:1
-msgid "Confirm your registration"
+msgid "Confirm your django_registration"
 msgstr "Bestätige deine Anmeldung"
 
 #: devday/templates/registration/login.html:9
@@ -343,7 +343,7 @@ msgstr "Anmeldung geschlossen"
 
 #: devday/templates/registration/registration_closed.html:6
 msgid ""
-"Our registration is closed. Thanks for your interest. Unfortunately we "
+"Our django_registration is closed. Thanks for your interest. Unfortunately we "
 "cannot accept more\n"
 "        attendees."
 msgstr ""
@@ -356,7 +356,7 @@ msgstr "Anmeldung: Email-Adresse bestätigen"
 
 #: devday/templates/registration/registration_complete.html:5
 msgid ""
-"Thank you for registering for Dev Day. To complete registration, please "
+"Thank you for registering for Dev Day. To complete django_registration, please "
 "click on the confirmation link we just sent you by email!"
 msgstr ""
 "Vielen Dank, dass du dich für den Dev Day angemeldet hast! Um die Anmeldung "

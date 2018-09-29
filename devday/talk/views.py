@@ -57,7 +57,7 @@ def submit_session_view(request):
     """
     template_name = 'talk/submit_session.html'
 
-    if not request.user.is_anonymous() and "edit" not in request.GET:
+    if not request.user.is_anonymous and "edit" not in request.GET:
         try:
             return redirect(reverse('create_session'))
         except (Attendee.DoesNotExist, Speaker.DoesNotExist):
@@ -88,7 +88,7 @@ class SpeakerRegisteredView(TemplateView):
 class SpeakerRequiredMixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
         user = request.user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return self.handle_no_permission()
         if not user.get_speaker(Event.objects.current_event()):
             return redirect(reverse('create_speaker'))
@@ -181,7 +181,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
-        if user.is_authenticated():
+        if user.is_authenticated:
             if not user.get_attendee(Event.objects.current_event()):
                 self.auth_level = 'user'
             elif not user.get_speaker():

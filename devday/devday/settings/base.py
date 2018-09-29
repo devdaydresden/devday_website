@@ -104,7 +104,7 @@ def get_variable_cascade(var_name, type=str, default_value=None):
 
 mimetypes.add_type("image/svg+xml", ".svg", True)
 
-# settings for django-registration
+# settings for django-django_registration
 # see: https://django-registration.readthedocs.io/en/2.1.1/index.html
 ACCOUNT_ACTIVATION_DAYS = 14
 ALLOWED_HOSTS = []

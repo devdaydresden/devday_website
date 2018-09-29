@@ -4,7 +4,7 @@ URL patterns for the views included in ``django.contrib.auth``.
 Including these URLs (via the ``include()`` directive) will set up
 these patterns based at whatever URL prefix they are included under.
 
-The URLconfs in the built-in registration workflows already have an
+The URLconfs in the built-in django_registration workflows already have an
 ``include()`` for these URLs, so if you're using one of them it is not
 necessary to manually include these views.
 
@@ -18,12 +18,12 @@ from devday.forms import AuthenticationForm, PasswordChangeForm, PasswordResetFo
 urlpatterns = [
     url(r'^login/$',
         auth_views.login,
-        {'template_name': 'registration/login.html',
+        {'template_name': 'django_registration/login.html',
          'authentication_form': AuthenticationForm},
         name='auth_login'),
     url(r'^logout/$',
         auth_views.logout,
-        {'template_name': 'registration/logout.html'},
+        {'template_name': 'django_registration/logout.html'},
         name='auth_logout'),
     url(r'^password/change/$',
         auth_views.password_change,
@@ -37,7 +37,7 @@ urlpatterns = [
         auth_views.password_reset,
         {'post_reset_redirect': 'auth_password_reset_done',
          'password_reset_form': PasswordResetForm,
-         'email_template_name': 'registration/password_reset_email.txt'},
+         'email_template_name': 'django_registration/password_reset_email.txt'},
         name='auth_password_reset'),
     url(r'^password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/'
         r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',

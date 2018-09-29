@@ -51,7 +51,7 @@ class AttendeeRegistrationView(RegistrationView):
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
-        if user.is_authenticated():
+        if user.is_authenticated:
             if not user.get_attendee():
                 self.auth_level = 'user'
                 if self.request.method == 'POST':
@@ -110,7 +110,7 @@ def login_or_register_attendee_view(request):
     """
     template_name = 'attendee/login_or_register.html'
 
-    if not request.user.is_anonymous() and "edit" not in request.GET:
+    if not request.user.is_anonymous and "edit" not in request.GET:
         try:
             # noinspection PyStatementEffect
             # request.user.attendee and request.user.attendee.speaker

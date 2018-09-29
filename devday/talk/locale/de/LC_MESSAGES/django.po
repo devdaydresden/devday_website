@@ -240,7 +240,7 @@ msgid ""
 "\n"
 "thank you for your interest to speak at Dev Day 2018.\n"
 "\n"
-"To finish your registration please click the following link to verify your "
+"To finish your django_registration please click the following link to verify your "
 "email address.\n"
 msgstr ""
 "Hallo %(shortname)s,\n"
@@ -291,7 +291,7 @@ msgstr ""
 "https://www.devday.de/"
 
 #: talk/templates/talk/speaker_activation_email_subject.txt:1
-msgid "Confirm your speaker registration"
+msgid "Confirm your speaker django_registration"
 msgstr "Bestätige deine Sprecheranmeldung"
 
 #: talk/templates/talk/speaker_details.html:3

@@ -64,6 +64,7 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
     position = forms.fields.CharField(required=False)
 
     class Meta(RegistrationFormUniqueEmail.Meta):
+        model = User
         fields = [
             'email',
             'password1',

@@ -32,6 +32,7 @@ class EventManager(models.Manager):
         e = self.current_event()
         if e:
             return e.submission_open
+        return False
 
 
 @python_2_unicode_compatible

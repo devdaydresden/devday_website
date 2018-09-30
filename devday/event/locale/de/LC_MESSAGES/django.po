@@ -60,8 +60,8 @@ msgid "End time"
 msgstr "Ende"
 
 #: event/models.py:50
-msgid "Pubished"
-msgstr ""
+msgid "Published"
+msgstr "Publiziert"
 
 #: event/models.py:52
 msgid "Registration Open"

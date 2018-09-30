@@ -47,7 +47,7 @@ class Event(models.Model):
     start_time = models.DateTimeField(verbose_name=_("Start time"))
     end_time = models.DateTimeField(verbose_name=_("End time"))
     published = models.BooleanField(
-        verbose_name=_('Pubished'), default=True)
+        verbose_name=_('Published'), default=True)
     registration_open = models.BooleanField(
         verbose_name=_('Registration Open'), default=False)
     submission_open = models.BooleanField(

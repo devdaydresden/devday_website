@@ -17,7 +17,7 @@ from event.models import Event
 from talk.forms import TalkForm, SpeakerForm, ExistingFileForm, DevDayRegistrationForm, CreateTalkForm, \
     TalkAuthenticationForm, BecomeSpeakerForm, CreateSpeakerForm, EditTalkForm, TalkCommentForm, TalkVoteForm, \
     TalkSpeakerCommentForm
-from talk.models import Talk, Speaker
+from talk.models import Talk, TalkFormat, Speaker
 
 try:
     from unittest import mock
@@ -31,7 +31,8 @@ class TalkFormTest(TestCase):
     def test_fields(self):
         form = TalkForm()
         self.assertListEqual(
-            list(form.fields.keys()), ['title', 'abstract', 'remarks'])
+            list(form.fields.keys()), ['title', 'abstract', 'remarks',
+                                       'talkformat'])
 
     def test_model(self):
         form = TalkForm()
@@ -151,22 +152,28 @@ class CreateTalkFormTest(TestCase):
         speaker = mock.Mock()
         form = CreateTalkForm(speaker=speaker)
         self.assertIsInstance(form.helper.layout, Layout)
-        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
-        self.assertEqual(len(layout_fields), 3)
+        layout_fields = [name for [_, name] in
+                         form.helper.layout.get_field_names()]
+        self.assertEqual(len(layout_fields), 4)
         self.assertIn('title', layout_fields)
         self.assertIn('abstract', layout_fields)
         self.assertIn('remarks', layout_fields)
+        self.assertIn('talkformat', layout_fields)
 
     def test_save(self):
         user = User.objects.create_user(email='test@example.org')
-        event = Event.objects.create(title="Test event", slug="test_event", start_time=now(), end_time=now())
+        tf = TalkFormat.objects.create(name='A Talk', duration=60)
+        event = Event.objects.create(title="Test event", slug="test_event",
+                                     start_time=now(), end_time=now())
+        event.talkform = tf
         attendee = Attendee.objects.create(user=user, event=event)
         speaker = Speaker.objects.create(
             videopermission=True, user=attendee, shirt_size=1)
         form = CreateTalkForm(speaker=speaker, data={
             'title': 'Test',
             'abstract': 'Test abstract',
-            'remarks': 'Test remarks'
+            'remarks': 'Test remarks',
+            'talkformat': [tf.id],
         })
         talk = form.save(commit=False)
         self.assertIsInstance(talk, Talk)
@@ -183,11 +190,13 @@ class EditTalkFormTest(TestCase):
     def test_init_creates_layout(self):
         form = EditTalkForm()
         self.assertIsInstance(form.helper.layout, Layout)
-        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
-        self.assertEqual(len(layout_fields), 3)
+        layout_fields = [name for [_, name]
+                         in form.helper.layout.get_field_names()]
+        self.assertEqual(len(layout_fields), 4)
         self.assertIn('title', layout_fields)
         self.assertIn('abstract', layout_fields)
         self.assertIn('remarks', layout_fields)
+        self.assertIn('talkformat', layout_fields)
 
 
 class TalkAuthenticationFormTest(SimpleTestCase):

@@ -52,6 +52,8 @@ class Event(models.Model):
         verbose_name=_('People can register as attendees'), default=False)
     submission_open = models.BooleanField(
         verbose_name=_('People can register as speakers'), default=False)
+    talkformat = models.ManyToManyField('talk.TalkFormat',
+                                        verbose_name=_('Talk Formats'))
 
     def registration_count(self):
         "Returns the count of registered attendees."

@@ -184,7 +184,7 @@ class CreateSpeakerView(TalkSubmissionOpenMixin, RegistrationView):
         if user.is_authenticated:
             if not user.get_attendee(Event.objects.current_event()):
                 self.auth_level = 'user'
-            elif not user.get_speaker():
+            elif not user.get_speaker(Event.objects.current_event()):
                 self.auth_level = 'attendee'
             else:
                 return redirect(self.get_success_url())

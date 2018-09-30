@@ -17,7 +17,7 @@ from event.models import Event
 from event.test.testutils import create_test_event, update_current_event
 from talk.forms import (CreateSpeakerForm, BecomeSpeakerForm, TalkCommentForm,
                         EditTalkForm, TalkSpeakerCommentForm)
-from talk.models import Speaker, Talk, Vote, TalkComment
+from talk.models import Speaker, Talk, TalkFormat, TalkComment, Vote
 from talk.views import CreateTalkView, ExistingFileView, CreateSpeakerView
 
 User = get_user_model()
@@ -51,14 +51,17 @@ class TestSubmitSessionView(TestCase):
         Attendee.objects.create(user=user, event=event)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(u'/session/submit-session/')
-        self.assertRedirects(response, u'/session/create-session/', 302, fetch_redirect_response=False)
+        self.assertRedirects(response, u'/session/create-session/', 302,
+                             fetch_redirect_response=False)
 
     def test_submit_session_speaker(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
         event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         Speaker.objects.create(
-            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
+            user=attendee, shirt_size=2, videopermission=True,
+            shortbio=u'A short biography text')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(u'/session/submit-session/')
         self.assertRedirects(response, u'/session/create-session/', 302)
@@ -78,7 +81,8 @@ class TestTalkSubmittedView(TestCase):
     def test_needs_login(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={}'.format(self.url))
 
     def test_needs_speaker_not_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
@@ -88,24 +92,26 @@ class TestTalkSubmittedView(TestCase):
         self.assertEqual(response.url, u'/session/new-speaker/')
 
     def test_needs_speaker_not_attendee(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
         event = Event.objects.current_event()
         Attendee.objects.create(user=user, event=event)
-        self.client.login(username=u'test@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=event.id):
-            response = self.client.get(self.url)
+        self.client.login(username=u'test@example.org',
+                          password=u's3cr3t')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, u'/session/new-speaker/')
 
     def test_template(self):
-        user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'speaker@example.org',
+                                        password=u's3cr3t')
         event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         speaker = Speaker.objects.create(
-            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
+            user=attendee, shirt_size=2, videopermission=True,
+            shortbio=u'A short biography text')
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, u'talk/submitted.html')
         self.assertIn(
@@ -113,14 +119,15 @@ class TestTalkSubmittedView(TestCase):
             response.content.decode('utf8'))
 
     def test_get_context_data(self):
-        user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'speaker@example.org',
+                                        password=u's3cr3t')
         event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         speaker = Speaker.objects.create(
-            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
+            user=attendee, shirt_size=2, videopermission=True,
+            shortbio=u'A short biography text')
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertIn(u'speaker', response.context)
         self.assertEqual(response.context[u'speaker'], speaker)
@@ -141,7 +148,8 @@ class TestCreateTalkView(TestCase):
         update_current_event(submission_open=True)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={}'.format(self.url))
 
     def test_needs_speaker_not_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
@@ -151,7 +159,8 @@ class TestCreateTalkView(TestCase):
         self.assertEqual(response.url, u'/session/new-speaker/')
 
     def test_needs_speaker_not_attendee(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
         Attendee.objects.create(user=user, event=create_test_event())
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
@@ -159,16 +168,17 @@ class TestCreateTalkView(TestCase):
         self.assertEqual(response.url, u'/session/new-speaker/')
 
     def test_template(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
         event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=event)
         Speaker.objects.create(
-            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
+            user=attendee, shirt_size=2, videopermission=True,
+            shortbio=u'A short biography text')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=event.id):
-            response = self.client.get(self.url)
-            self.assertEqual(response.status_code, 200)
-            self.assertTemplateUsed(response, u'talk/create_talk.html')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, u'talk/create_talk.html')
 
     def test_get_form_kwargs(self):
         user = User.objects.create_user(email=u'test@example.org',
@@ -186,43 +196,56 @@ class TestCreateTalkView(TestCase):
         self.assertEqual(kwargs[u'speaker'], speaker)
 
     def test_redirect_after_success(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
         event = Event.objects.current_event()
+        talkformat = TalkFormat.objects.create(name='A Talk', duration=60)
+        event.talkformat.add(talkformat)
         attendee = Attendee.objects.create(user=user, event=event)
         Speaker.objects.create(
-            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text')
+            user=attendee, shirt_size=2, videopermission=True,
+            shortbio=u'A short biography text')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=event.id):
-            response = self.client.post(
-                self.url,
-                data={u'title': u'A fantastic session', u'abstract': u'News for nerds, stuff that matters'})
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, u'/session/submitted/')
+        response = self.client.post(
+            self.url,
+            data={u'title': u'A fantastic session',
+                  u'abstract': u'News for nerds, stuff that matters',
+                  u'talkformat': [talkformat.id]})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, u'/session/submitted/')
 
 
 class TestExistingFileView(TestCase):
     def setUp(self):
-        user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
-        attendee = Attendee.objects.create(user=user, event=create_test_event())
+        user = User.objects.create_user(email=u'speaker@example.org',
+                                        password=u's3cr3t')
+        attendee = Attendee.objects.create(user=user,
+                                           event=create_test_event())
         self.speaker = Speaker.objects.create(
-            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text',
+            user=attendee, shirt_size=2, videopermission=True,
+            shortbio=u'A short biography text',
             portrait=SimpleUploadedFile(
                 name=u'testspeaker.jpg',
-                content=open(os.path.join(os.path.dirname(__file__), u'mu_at_mil_house.jpg'), 'rb').read(),
+                content=open(
+                    os.path.join(os.path.dirname(__file__),
+                                 u'mu_at_mil_house.jpg'), 'rb').read(),
                 content_type=u'image/jpeg')
         )
 
     def test_get_form_kwargs(self):
-        view = ExistingFileView(kwargs={u'id': self.speaker.id}, request=HttpRequest())
+        view = ExistingFileView(kwargs={u'id': self.speaker.id},
+                                request=HttpRequest())
         kwargs = view.get_form_kwargs()
         self.assertIn(u'initial', kwargs)
         self.assertIn(u'uploaded_image', kwargs[u'initial'])
-        self.assertIsInstance(kwargs[u'initial'][u'uploaded_image'], ExistingFile)
+        self.assertIsInstance(kwargs[u'initial'][u'uploaded_image'],
+                              ExistingFile)
 
     def test_get_form_kwargs_no_portrait(self):
         self.speaker.portrait = None
         self.speaker.save()
-        view = ExistingFileView(kwargs={u'id': self.speaker.id}, request=HttpRequest())
+        view = ExistingFileView(kwargs={u'id': self.speaker.id},
+                                request=HttpRequest())
         kwargs = view.get_form_kwargs()
         self.assertIn(u'initial', kwargs)
         self.assertNotIn(u'uploaded_image', kwargs[u'initial'])
@@ -230,52 +253,53 @@ class TestExistingFileView(TestCase):
 
 class TestSpeakerProfileView(TestCase):
     def setUp(self):
-        user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'speaker@example.org',
+                                        password=u's3cr3t')
         self.event = Event.objects.current_event()
         attendee = Attendee.objects.create(user=user, event=self.event)
         self.speaker = Speaker.objects.create(
-            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text',
+            user=attendee, shirt_size=2, videopermission=True,
+            shortbio=u'A short biography text',
             portrait=SimpleUploadedFile(
                 name=u'testspeaker.jpg',
-                content=open(os.path.join(os.path.dirname(__file__), u'mu_at_mil_house.jpg'), 'rb').read(),
+                content=open(
+                    os.path.join(os.path.dirname(__file__),
+                                 u'mu_at_mil_house.jpg'), 'rb').read(),
                 content_type=u'image/jpeg')
         )
         self.url = u'/speaker/profile/{0:d}/'.format(self.speaker.pk)
 
     def test_needs_login(self):
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_speaker_not_user(self):
         User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/session/new-speaker/'.format(self.url))
+        self.assertEqual(response.url, u'/session/new-speaker/')
 
     def test_needs_speaker_not_attendee(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
         Attendee.objects.create(user=user, event=self.event)
         self.client.login(username=u'test@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/session/new-speaker/'.format(self.url))
+        self.assertEqual(response.url, u'/session/new-speaker/')
 
     def test_template(self):
         self.client.login(username=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(u'talk/speaker_profile.html')
 
     def test_get_context_data_no_talks(self):
         self.client.login(username=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         context = response.context
         self.assertIn(u'attendee', context)
@@ -285,10 +309,10 @@ class TestSpeakerProfileView(TestCase):
         self.assertEqual(len(context[u'talks']), 0)
 
     def test_get_context_data_with_talk(self):
-        Talk.objects.create(speaker=self.speaker, title=u'Test talk', abstract=u'A tragedy of testing and errors')
+        Talk.objects.create(speaker=self.speaker, title=u'Test talk',
+                            abstract=u'A tragedy of testing and errors')
         self.client.login(username=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         context = response.context
         self.assertIn(u'attendee', context)
@@ -299,25 +323,28 @@ class TestSpeakerProfileView(TestCase):
         self.assertEqual(context[u'talks'][0].title, u'Test talk')
 
     def test_submit_changes_data(self):
-        Talk.objects.create(speaker=self.speaker, title=u'Test talk', abstract=u'A tragedy of testing and errors')
+        Talk.objects.create(speaker=self.speaker, title=u'Test talk',
+                            abstract=u'A tragedy of testing and errors')
         self.client.login(username=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url, data={
-                'videopermission': 'checked',
-                'shortbio': 'A nice guy from high above the sky',
-                'shirt_size': 4,
-            })
+        response = self.client.post(self.url, data={
+            'videopermission': 'checked',
+            'shortbio': 'A nice guy from high above the sky',
+            'shirt_size': 4,
+        })
         self.assertEqual(response.status_code, 302)
         self.speaker.refresh_from_db()
-        self.assertEqual(self.speaker.shortbio, 'A nice guy from high above the sky')
+        self.assertEqual(self.speaker.shortbio,
+                         'A nice guy from high above the sky')
 
 
 class TestCreateSpeakerView(TestCase):
     def setUp(self):
         self.url = u'/session/new-speaker/'
+
     @classmethod
     def setUpTestData(cls):
         cls.devdata = DevData()
+        cls.devdata.create_talk_formats()
         cls.devdata.update_events()
 
     def test_redirect_if_talk_submission_closed(self):
@@ -349,7 +376,8 @@ class TestCreateSpeakerView(TestCase):
         self.assertIsInstance(response.context[u'form'], BecomeSpeakerForm)
 
     def test_dispatch_attendee(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
         Attendee.objects.create(user=user, event=create_test_event())
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
@@ -357,17 +385,21 @@ class TestCreateSpeakerView(TestCase):
         self.assertTemplateUsed(u'talk/create_speaker.html')
 
     def test_get_form_class_attendee(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
         Attendee.objects.create(user=user, event=create_test_event())
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
         self.assertIsInstance(response.context[u'form'], BecomeSpeakerForm)
 
     def test_dispatch_speaker(self):
-        user = User.objects.create_user(email=u'test@example.org', password=u's3cr3t')
-        attendee = Attendee.objects.create(user=user, event=create_test_event())
+        user = User.objects.create_user(email=u'test@example.org',
+                                        password=u's3cr3t')
+        attendee = Attendee.objects.create(user=user,
+                                           event=create_test_event())
         Speaker.objects.create(
-            user=attendee, shirt_size=2, videopermission=True, shortbio=u'A short biography text'
+            user=attendee, shirt_size=2, videopermission=True,
+            shortbio=u'A short biography text'
         )
         self.client.login(username=u'test@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
@@ -404,12 +436,16 @@ class TestCreateSpeakerView(TestCase):
         self.assertTrue(user.check_password(u's3cr3t'))
 
     def test_form_valid_user(self):
-        User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
-        image_file = open(os.path.join(os.path.dirname(__file__), u'mu_at_mil_house.jpg'), 'rb')
+        User.objects.create_user(email=u'speaker@example.org',
+                                 password=u's3cr3t')
+        image_file = open(
+            os.path.join(os.path.dirname(__file__),
+                         u'mu_at_mil_house.jpg'), 'rb')
         data = {
-            u'firstname': u'Special', u'lastname': u'Tester', u'shirt_size': u'2',
-            u'accept_contact': u'checked', u'videopermission': u'checked',
-            u'shortbio': u'A guy from somewhere having something great to talk about',
+            u'firstname': u'Special', u'lastname': u'Tester',
+            u'shirt_size': u'2', u'accept_contact': u'checked',
+            u'videopermission': u'checked',
+            u'shortbio': u'A guy from somewhere having something great',
             u'uploaded_image': image_file
         }
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
@@ -419,14 +455,18 @@ class TestCreateSpeakerView(TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     def test_form_valid_attendee(self):
-        user = User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'speaker@example.org',
+                                        password=u's3cr3t')
         Attendee.objects.create(user=user, event=create_test_event())
-        image_file = open(os.path.join(os.path.dirname(__file__), u'mu_at_mil_house.jpg'), 'rb')
+        image_file = open(
+            os.path.join(os.path.dirname(__file__),
+                         u'mu_at_mil_house.jpg'), 'rb')
         data = {
-            u'firstname': u'Special', u'lastname': u'Tester', u'shirt_size': u'2',
-            u'accept_contact': u'checked', u'videopermission': u'checked',
-            u'shortbio': u'A guy from somewhere having something great to talk about', u'phone': u'+49-351-28200815',
-            u'uploaded_image': image_file
+            u'firstname': u'Special', u'lastname': u'Tester',
+            u'shirt_size': u'2', u'accept_contact': u'checked',
+            u'videopermission': u'checked',
+            u'shortbio': u'A guy from somewhere having something great',
+            u'phone': u'+49-351-28200815', u'uploaded_image': image_file
         }
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
         response = self.client.post(self.url, data=data)
@@ -439,17 +479,20 @@ class TestTalkOverView(TestCase):
     def test_needs_authentication(self):
         response = self.client.get(u'/committee/talks/')
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next=/committee/talks/')
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next=/committee/talks/')
 
     def test_needs_committee_permissions(self):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
         response = self.client.get(u'/committee/talks/')
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next=/committee/talks/')
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next=/committee/talks/')
 
     def test_template(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
         response = self.client.get(u'/committee/talks/')
@@ -457,13 +500,15 @@ class TestTalkOverView(TestCase):
         self.assertTemplateUsed(response, u'talk/talk_committee_overview.html')
 
     def test_get_queryset(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         event = Event.objects.current_event()
         talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
-                    user=User.objects.create_user(email=u'speaker@example.org', password=u'g3h31m'),
+                    user=User.objects.create_user(email=u'speaker@example.org',
+                                                  password=u'g3h31m'),
                     event=event
                 ),
                 videopermission=True,
@@ -471,20 +516,22 @@ class TestTalkOverView(TestCase):
             )
         )
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=event.id):
-            response = self.client.get(u'/committee/talks/')
+        response = self.client.get(u'/committee/talks/')
         talks = list(response.context[u'talk_list'])
         self.assertIn(talk, talks)
         self.assertTrue(hasattr(talks[0], 'average_score'))
         self.assertTrue(hasattr(talks[0], 'comment_count'))
 
     def test_get_queryset_sorting(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         event = Event.objects.current_event()
         speaker1 = Speaker.objects.create(
             user=Attendee.objects.create(
-                user=User.objects.create_user(first_name=u'Frodo', email=u'speaker@example.org', password=u'g3h31m'),
+                user=User.objects.create_user(first_name=u'Frodo',
+                                              email=u'speaker@example.org',
+                                              password=u'g3h31m'),
                 event=event
             ),
             videopermission=True,
@@ -492,7 +539,9 @@ class TestTalkOverView(TestCase):
         )
         speaker2 = Speaker.objects.create(
             user=Attendee.objects.create(
-                user=User.objects.create_user(first_name=u'Bilbo', email=u'speaker2@example.org', password=u'g3h31m'),
+                user=User.objects.create_user(first_name=u'Bilbo',
+                                              email=u'speaker2@example.org',
+                                              password=u'g3h31m'),
                 event=event
             ),
             videopermission=True,
@@ -501,16 +550,15 @@ class TestTalkOverView(TestCase):
         talk1 = Talk.objects.create(speaker=speaker1, title=u'Test Session 1')
         talk2 = Talk.objects.create(speaker=speaker2, title=u'Test Session 2')
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=event.id):
-            response = self.client.get(u'/committee/talks/')
+        response = self.client.get(u'/committee/talks/')
         talks = list(response.context[u'talk_list'])
         self.assertListEqual([talk1, talk2], talks)
-        with override_settings(EVENT_ID=event.id):
-            response = self.client.get(u'/committee/talks/?sort_order=speaker&sort_dir=asc')
+        response = self.client.get(
+            u'/committee/talks/?sort_order=speaker&sort_dir=asc')
         talks = list(response.context[u'talk_list'])
         self.assertListEqual([talk2, talk1], talks)
-        with override_settings(EVENT_ID=event.id):
-            response = self.client.get(u'/committee/talks/?sort_order=title&sort_dir=desc')
+        response = self.client.get(
+            u'/committee/talks/?sort_order=title&sort_dir=desc')
         talks = list(response.context[u'talk_list'])
         self.assertListEqual([talk2, talk1], talks)
 
@@ -520,7 +568,8 @@ class TestTalkDetails(TestCase):
         self.talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
-                    user=User.objects.create_user(email=u'speaker@example.org', password=u'g3h31m'),
+                    user=User.objects.create_user(email=u'speaker@example.org',
+                                                  password=u'g3h31m'),
                     event=create_test_event()
                 ),
                 videopermission=True,
@@ -532,17 +581,20 @@ class TestTalkDetails(TestCase):
     def test_needs_authentication(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_committee_permissions(self):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_template(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
@@ -550,7 +602,8 @@ class TestTalkDetails(TestCase):
         self.assertTemplateUsed(response, u'talk/talk_committee_details.html')
 
     def test_get_queryset(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
@@ -559,7 +612,8 @@ class TestTalkDetails(TestCase):
         self.assertTrue(hasattr(response.context['talk'], 'average_score'))
 
     def test_get_context_data_unvoted(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
@@ -571,7 +625,8 @@ class TestTalkDetails(TestCase):
         self.assertIn('comments', context)
 
     def test_get_context_data_voted(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.talk.vote_set.create(voter=user, score=3)
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
@@ -589,7 +644,8 @@ class TestSubmitTalkComment(TestCase):
         self.talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
-                    user=User.objects.create_user(email=u'speaker@example.org', password=u'g3h31m'),
+                    user=User.objects.create_user(email=u'speaker@example.org',
+                                                  password=u'g3h31m'),
                     event=create_test_event()
                 ),
                 videopermission=True,
@@ -601,29 +657,34 @@ class TestSubmitTalkComment(TestCase):
     def test_needs_authentication(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_committee_permissions(self):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_post(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 405)
 
     def test_form_invalid_sets_message(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/committee/talks/{0:d}/'.format(self.talk.pk))
+        self.assertEqual(response.url,
+                         u'/committee/talks/{0:d}/'.format(self.talk.pk))
         response = self.client.get(response.url)
         self.assertEqual(response.status_code, 200)
         messages = list(response.context[u'messages'])
@@ -633,12 +694,15 @@ class TestSubmitTalkComment(TestCase):
         self.assertIn(_(u'This field is required.'), messages[0].message)
 
     def test_form_valid_redirects_to_talk_details(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        response = self.client.post(self.url, data={u'comment': u'A little comment for you'})
+        response = self.client.post(
+            self.url, data={u'comment': u'A little comment for you'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/committee/talks/{0:d}/'.format(self.talk.pk))
+        self.assertEqual(response.url,
+                         u'/committee/talks/{0:d}/'.format(self.talk.pk))
         response = self.client.get(response.url)
         self.assertEqual(response.status_code, 200)
         comments = list(response.context[u'comments'])
@@ -648,13 +712,16 @@ class TestSubmitTalkComment(TestCase):
         self.assertEqual(comments[0].commenter, user)
 
     def test_visible_comment_triggers_mail_to_speaker(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
         response = self.client.post(self.url, data={
-            u'comment': u'A little comment for you', u'is_visible': u'checked'})
+            u'comment': u'A little comment for you',
+            u'is_visible': u'checked'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/committee/talks/{0:d}/'.format(self.talk.pk))
+        self.assertEqual(response.url,
+                         u'/committee/talks/{0:d}/'.format(self.talk.pk))
         response = self.client.get(response.url)
         self.assertEqual(response.status_code, 200)
         comments = list(response.context[u'comments'])
@@ -664,7 +731,8 @@ class TestSubmitTalkComment(TestCase):
         self.assertEqual(comments[0].commenter, user)
         self.assertEqual(len(mail.outbox), 1)
         speaker_mail = mail.outbox[0]
-        self.assertIn(self.talk.speaker.user.user.email, speaker_mail.recipients())
+        self.assertIn(self.talk.speaker.user.user.email,
+                      speaker_mail.recipients())
         self.assertIn(self.talk.title, speaker_mail.subject)
         self.assertIn(self.talk.title, speaker_mail.body)
 
@@ -675,7 +743,8 @@ class TestTalkVote(TestCase):
         self.talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
-                    user=User.objects.create_user(email=u'speaker@example.org', password=u'g3h31m'),
+                    user=User.objects.create_user(email=u'speaker@example.org',
+                                                  password=u'g3h31m'),
                     event=self.event
                 ),
                 videopermission=True,
@@ -685,65 +754,67 @@ class TestTalkVote(TestCase):
         self.url = u'/committee/talks/{0:d}/vote/'.format(self.talk.pk)
 
     def test_needs_authentication(self):
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_committee_permissions(self):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_post(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 405)
 
     def test_form_invalid_returns_json_error(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url)
+        response = self.client.post(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             response.content.decode('utf8'),
-            {u'message': u'error', u'errors': {u'score': [_(u'This field is required.')]}})
+            {u'message': u'error',
+             u'errors': {u'score': [_(u'This field is required.')]}})
 
     def test_form_valid_returns_json(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url, data={'score': 4})
+        response = self.client.post(self.url, data={'score': 4})
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content.decode('utf8'), {u'message': u'ok'})
+        self.assertJSONEqual(response.content.decode('utf8'),
+                             {u'message': u'ok'})
         votes = list(self.talk.vote_set.all())
         self.assertEqual(len(votes), 1)
         self.assertEqual(votes[0].score, 4)
         self.assertEqual(votes[0].voter, user)
 
     def test_second_post_updates_vote(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url, data={'score': 4})
+        response = self.client.post(self.url, data={'score': 4})
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content.decode('utf8'), {u'message': u'ok'})
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url, data={'score': 3})
+        self.assertJSONEqual(response.content.decode('utf8'),
+                             {u'message': u'ok'})
+        response = self.client.post(self.url, data={'score': 3})
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content.decode('utf8'), {u'message': u'ok'})
-        with override_settings(EVENT_ID=self.event.id):
-            votes = list(self.talk.vote_set.all())
+        self.assertJSONEqual(response.content.decode('utf8'),
+                             {u'message': u'ok'})
+        votes = list(self.talk.vote_set.all())
         self.assertEqual(len(votes), 1)
         self.assertEqual(votes[0].score, 3)
         self.assertEqual(votes[0].voter, user)
@@ -755,7 +826,8 @@ class TestTalkVoteClear(TestCase):
         self.talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
-                    user=User.objects.create_user(email=u'speaker@example.org', password=u'g3h31m'),
+                    user=User.objects.create_user(email=u'speaker@example.org',
+                                                  password=u'g3h31m'),
                     event=self.event
                 ),
                 videopermission=True,
@@ -765,43 +837,44 @@ class TestTalkVoteClear(TestCase):
         self.url = u'/committee/talks/{0:d}/vote/clear/'.format(self.talk.pk)
 
     def test_needs_authentication(self):
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_committee_permissions(self):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_post(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 405)
 
     def test_post_returns_json(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url)
+        response = self.client.post(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content.decode('utf8'), {u'message': u'vote deleted'})
+        self.assertJSONEqual(response.content.decode('utf8'),
+                             {u'message': u'vote deleted'})
 
     def test_post_deletes_vote(self):
-        user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        user = User.objects.create_user(email=u'committee@example.org',
+                                        password=u's3cr3t')
         user.groups.add(Group.objects.get(name=u'talk_committee'))
         vote = self.talk.vote_set.create(voter=user, score=3)
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url)
+        response = self.client.post(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertRaises(Vote.DoesNotExist, Vote.objects.get, pk=vote.pk)
 
@@ -812,30 +885,36 @@ class TestTalkCommentDelete(TestCase):
         self.talk = Talk.objects.create(
             speaker=Speaker.objects.create(
                 user=Attendee.objects.create(
-                    user=User.objects.create_user(email=u'speaker@example.org', password=u'g3h31m'),
+                    user=User.objects.create_user(email=u'speaker@example.org',
+                                                  password=u'g3h31m'),
                     event=self.event
                 ),
                 videopermission=True,
                 shirt_size=1,
             )
         )
-        self.user = User.objects.create_user(email=u'committee@example.org', password=u's3cr3t')
+        self.user = User.objects.create_user(email=u'committee@example.org',
+                                             password=u's3cr3t')
         self.user.groups.add(Group.objects.get(name=u'talk_committee'))
         self.talk_comment = self.talk.talkcomment_set.create(
-            commenter=self.user, comment=u'A little anoying comment', is_visible=False)
-        self.url = u'/committee/talks/{0:d}/delete_comment/'.format(self.talk_comment.pk)
+            commenter=self.user, comment=u'A little anoying comment',
+            is_visible=False)
+        self.url = u'/committee/talks/{0:d}/delete_comment/' \
+            .format(self.talk_comment.pk)
 
     def test_needs_authentication(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_committee_permissions(self):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_post(self):
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
@@ -843,7 +922,8 @@ class TestTalkCommentDelete(TestCase):
         self.assertEqual(response.status_code, 405)
 
     def test_delete_of_other_users_comments_rejected(self):
-        member2 = User.objects.create_user(email=u'committee2@example.org', password=u's3cr3t')
+        member2 = User.objects.create_user(email=u'committee2@example.org',
+                                           password=u's3cr3t')
         member2.groups.add(Group.objects.get(name=u'talk_committee'))
         self.client.login(email=u'committee2@example.org', password=u's3cr3t')
         response = self.client.post(self.url)
@@ -853,13 +933,15 @@ class TestTalkCommentDelete(TestCase):
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content.decode('utf8'), {u'message': u'comment deleted'})
+        self.assertJSONEqual(response.content.decode('utf8'),
+                             {u'message': u'comment deleted'})
 
     def test_post_deletes_comment(self):
         self.client.login(email=u'committee@example.org', password=u's3cr3t')
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertRaises(TalkComment.DoesNotExist, TalkComment.objects.get, pk=self.talk_comment.pk)
+        self.assertRaises(TalkComment.DoesNotExist, TalkComment.objects.get,
+                          pk=self.talk_comment.pk)
 
 
 class TestSpeakerTalkDetails(TestCase):
@@ -867,66 +949,69 @@ class TestSpeakerTalkDetails(TestCase):
         self.event = Event.objects.current_event()
         self.speaker = Speaker.objects.create(
             user=Attendee.objects.create(
-                user=User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t'),
+                user=User.objects.create_user(email=u'speaker@example.org',
+                                              password=u's3cr3t'),
                 event=self.event,
             ),
             videopermission=True, shirt_size=1,
         )
-        self.talk = Talk.objects.create(speaker=self.speaker, title=u'Something important',
-                                        abstract=u'I have something important to say')
-        self.committee_member = User.objects.create_user(email=u'committee@example.org', password=u'g3h31m')
-        self.committee_member.groups.add(Group.objects.get(name=u'talk_committee'))
+        self.talk = Talk.objects.create(
+            speaker=self.speaker, title=u'Something important',
+            abstract=u'I have something important to say')
+        self.committee_member = User.objects.create_user(
+            email=u'committee@example.org', password=u'g3h31m')
+        self.committee_member.groups.add(
+            Group.objects.get(name=u'talk_committee'))
         self.comment = self.talk.talkcomment_set.create(
-            commenter=self.committee_member, comment=u'Is this really important?', is_visible=True)
+            commenter=self.committee_member,
+            comment=u'Is this really important?', is_visible=True)
         self.url = '/session/speaker/talks/{0:d}/'.format(self.talk.pk)
 
     def test_needs_authentication(self):
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_speaker(self):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/session/new-speaker/'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/session/new-speaker/'.format(self.url))
 
     def test_needs_talk_speaker(self):
         Speaker.objects.create(
             user=Attendee.objects.create(
-                user=User.objects.create_user(email=u'other@example.org', password=u's3cr3t'),
+                user=User.objects.create_user(email=u'other@example.org',
+                                              password=u's3cr3t'),
                 event=self.event
             ),
             videopermission=True, shirt_size=1,
         )
         self.client.login(email=u'other@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 404)
 
     def test_template(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(u'talk/talk_speaker_details.html')
 
     def test_form_class(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.context['form'], EditTalkForm)
 
     def test_get_context_data(self):
         other_comment = self.talk.talkcomment_set.create(
-            commenter=self.committee_member, comment=u'Committee eyes only', is_visible=False)
+            commenter=self.committee_member, comment=u'Committee eyes only',
+            is_visible=False)
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         context = response.context
         comments = list(context[u'comments'])
@@ -937,10 +1022,13 @@ class TestSpeakerTalkDetails(TestCase):
 
     def test_changes_session_data(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url, data={
-                u'title': u'A good talk', u'abstract': u'This is a really good talk',
-            })
+        talkformat, created = TalkFormat.objects.get_or_create(name='A Talk',
+                                                               duration=60)
+        response = self.client.post(self.url, data={
+            u'title': u'A good talk',
+            u'abstract': u'This is a really good talk',
+            u'talkformat': [talkformat.id],
+        })
         self.assertEqual(response.status_code, 302)
         self.talk.refresh_from_db()
         self.assertEqual(self.talk.title, u'A good talk')
@@ -948,11 +1036,14 @@ class TestSpeakerTalkDetails(TestCase):
 
     def test_success_redirects_to_talk_details(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url, data={
-                u'title': u'A good talk', u'abstract': u'This is a really good talk',
-            })
-            self.assertRedirects(response, self.url, status_code=302)
+        talkformat, created = TalkFormat.objects.get_or_create(name='A Talk',
+                                                               duration=60)
+        response = self.client.post(self.url, data={
+            u'title': u'A good talk',
+            u'abstract': u'This is a really good talk',
+            u'talkformat': [talkformat.id],
+        })
+        self.assertRedirects(response, self.url, status_code=302)
 
 
 class TestSubmitTalkSpeakerComment(TestCase):
@@ -960,54 +1051,57 @@ class TestSubmitTalkSpeakerComment(TestCase):
         self.event = Event.objects.current_event()
         self.speaker = Speaker.objects.create(
             user=Attendee.objects.create(
-                user=User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t'),
+                user=User.objects.create_user(email=u'speaker@example.org',
+                                              password=u's3cr3t'),
                 event=self.event
             ),
             videopermission=True, shirt_size=1,
         )
-        self.talk = Talk.objects.create(speaker=self.speaker, title=u'Something important',
-                                        abstract=u'I have something important to say')
-        self.url = u'/session/speaker/talks/{0:d}/comment/'.format(self.talk.pk)
+        self.talk = Talk.objects.create(
+            speaker=self.speaker, title=u'Something important',
+            abstract=u'I have something important to say')
+        self.url = u'/session/speaker/talks/{0:d}/comment/' \
+            .format(self.talk.pk)
 
     def test_needs_authentication(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_speaker(self):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/session/new-speaker/'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/session/new-speaker/'.format(self.url))
 
     def test_needs_talk_speaker(self):
         Speaker.objects.create(
             user=Attendee.objects.create(
-                user=User.objects.create_user(email=u'other@example.org', password=u's3cr3t'),
+                user=User.objects.create_user(email=u'other@example.org',
+                                              password=u's3cr3t'),
                 event=self.event
             ),
             videopermission=True, shirt_size=1,
         )
         self.client.login(email=u'other@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url)
+        response = self.client.post(self.url)
         self.assertEqual(response.status_code, 404)
 
     def test_needs_post(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 405)
 
     def test_form_invalid_sets_message(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url)
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, u'/session/speaker/talks/{0:d}/'.format(self.talk.pk))
-            response = self.client.get(response.url)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         u'/session/speaker/talks/{0:d}/'.format(self.talk.pk))
+        response = self.client.get(response.url)
         self.assertEqual(response.status_code, 200)
         messages = list(response.context[u'messages'])
         self.assertEqual(len(messages), 1)
@@ -1017,11 +1111,12 @@ class TestSubmitTalkSpeakerComment(TestCase):
 
     def test_form_valid_redirects_to_talk_details(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url, data={u'comment': u'A little comment for you'})
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, u'/session/speaker/talks/{0:d}/'.format(self.talk.pk))
-            response = self.client.get(response.url)
+        response = self.client.post(
+            self.url, data={u'comment': u'A little comment for you'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         u'/session/speaker/talks/{0:d}/'.format(self.talk.pk))
+        response = self.client.get(response.url)
         self.assertEqual(response.status_code, 200)
         comments = list(response.context[u'comments'])
         self.assertEqual(len(comments), 1)
@@ -1035,60 +1130,63 @@ class TestTalkSpeakerCommentDelete(TestCase):
         self.event = Event.objects.current_event()
         self.speaker = Speaker.objects.create(
             user=Attendee.objects.create(
-                user=User.objects.create_user(email=u'speaker@example.org', password=u's3cr3t'),
+                user=User.objects.create_user(email=u'speaker@example.org',
+                                              password=u's3cr3t'),
                 event=self.event
             ),
             videopermission=True, shirt_size=1,
         )
-        self.talk = Talk.objects.create(speaker=self.speaker, title=u'Something important',
-                                        abstract=u'I have something important to say')
+        self.talk = Talk.objects.create(
+            speaker=self.speaker, title=u'Something important',
+            abstract=u'I have something important to say')
         self.talk_comment = self.talk.talkcomment_set.create(
-            commenter=self.speaker.user.user, comment='A little anoying comment', is_visible=True)
-        self.url = u'/session/speaker/talks/delete_comment/{0:d}/'.format(self.talk_comment.pk)
+            commenter=self.speaker.user.user,
+            comment='A little anoying comment', is_visible=True)
+        self.url = u'/session/speaker/talks/delete_comment/{0:d}/' \
+            .format(self.talk_comment.pk)
 
     def test_needs_authentication(self):
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/accounts/login/?next={0:s}'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/accounts/login/?next={0:s}'.format(self.url))
 
     def test_needs_post(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 405)
 
     def test_needs_speaker(self):
         User.objects.create_user(email=u'user@example.org', password=u's3cr3t')
         self.client.login(email=u'user@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.get(self.url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, u'/session/new-speaker/'.format(self.url))
+        self.assertEqual(response.url,
+                         u'/session/new-speaker/'.format(self.url))
 
     def test_needs_talk_speaker(self):
         Speaker.objects.create(
             user=Attendee.objects.create(
-                user=User.objects.create_user(email=u'other@example.org', password=u's3cr3t'),
+                user=User.objects.create_user(email=u'other@example.org',
+                                              password=u's3cr3t'),
                 event=self.event
             ),
             videopermission=True, shirt_size=1,
         )
         self.client.login(email=u'other@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url)
+        response = self.client.post(self.url)
         self.assertEqual(response.status_code, 404)
 
     def test_post_returns_json_response(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url)
+        response = self.client.post(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content.decode('utf8'), {u'message': u'comment deleted'})
+        self.assertJSONEqual(response.content.decode('utf8'),
+                             {u'message': u'comment deleted'})
 
     def test_post_deletes_comment(self):
         self.client.login(email=u'speaker@example.org', password=u's3cr3t')
-        with override_settings(EVENT_ID=self.event.id):
-            response = self.client.post(self.url)
+        response = self.client.post(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertRaises(TalkComment.DoesNotExist, TalkComment.objects.get, pk=self.talk_comment.pk)
+        self.assertRaises(TalkComment.DoesNotExist, TalkComment.objects.get,
+                          pk=self.talk_comment.pk)

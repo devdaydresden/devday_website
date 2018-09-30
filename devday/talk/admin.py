@@ -3,7 +3,8 @@ from django.forms import ModelChoiceField
 from django.utils.translation import gettext_lazy as _
 
 from attendee.models import Attendee
-from .models import Speaker, Talk, Track, Room, TimeSlot, TalkSlot, TalkMedia
+from .models import (Speaker, Talk, TalkFormat, Track, Room, TimeSlot,
+                     TalkSlot, TalkMedia)
 
 
 class AttendeeModelChoiceField(ModelChoiceField):
@@ -63,6 +64,7 @@ class TalkAdmin(admin.ModelAdmin):
     ]
     ordering = ['title']
     list_select_related = ['speaker', 'speaker__user', 'speaker__user__event', 'speaker__user__user', 'track']
+    filter_horizontal = ('talkformat', )
 
     def event(self, obj):
         return obj.speaker.user.event

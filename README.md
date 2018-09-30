@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/devdaydresden/devday_website.svg?branch=development)](https://travis-ci.org/devdaydresden/devday_website)
+
 # Dev Day website
 
 The Dev Day website is built using [Django CMS](https://www.django-cms.org/).

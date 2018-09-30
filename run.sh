@@ -6,13 +6,7 @@ dbdump=''
 mediadump=''
 container='app'
 DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
-
-if [ -n "${DOCKER_USERNAME}" ]; then
-  DOCKER_HUB_USERNAME="${DOCKER_USERNAME}/"  # note trailing /
-else
-  DOCKER_HUB_USERNAME=""
-fi
-export DOCKER_HUB_USERNAME
+export DOCKER_REGISTRY="${DOCKER_REGISTRY:-devdaydresden}/"  # note trailing /
 
 docker_compose_up() {
   $DOCKER_COMPOSE up -d
@@ -90,13 +84,12 @@ case "$cmd" in
     $DOCKER_COMPOSE exec "${container}" python manage.py devdata
     ;;
   docker-push)
-    if [ -z "${DOCKER_USERNAME}" ]; then
-      echo "To push images to Docker Hub, you need to set DOCKER_USERNAME" >&2
-      echo "DOCKER_PASSWORD." >&2
-      exit 64
+    if [ -n "$DOCKER_USERNAME" ]; then
+      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    else
+      echo "WARNING: \$DOCKER_USERNAME is not set.  Assuming you're already logged in to Docker" >&2
     fi
     echo "*** Pushing Docker images to Docker hub"
-    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     $DOCKER_COMPOSE push
     ;;
   log|logs)

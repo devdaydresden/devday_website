@@ -69,7 +69,7 @@ Creating volume "devday_hp_devday_static" with default driver
 
 ### `docker-push`: Push out custom images to Docker Hub
 
-You need to set DOCKER_USERNAME and DOCKER_PASSWORD environment variables before building the images, so they get tagged for the correct repository.
+Make sure you're logged in to Docker Hub with a user that is allowed to push to the `devdaydresden` organization.  For Travis etc., set DOCKER_USERNAME and DOCKER_PASSWORD to have run.sh log in before pushing.
 
 ## `logs`: Show Logs of the App Container
 

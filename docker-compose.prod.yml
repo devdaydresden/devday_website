@@ -1,13 +1,13 @@
 version: '3'
 services:
   db:
-    image: ${DOCKER_HUB_USERNAME}devday-website-db:prod
+    image: ${DOCKER_REGISTRY}devday-website-db:prod
     build:
       dockerfile: Dockerfile-prod
     env_file:
       prod-env-db
   vault:
-    image: ${DOCKER_HUB_USERNAME}devday-website-vault:prod
+    image: ${DOCKER_REGISTRY}devday-website-vault:prod
     build:
       context: docker/vault
     volumes:
@@ -15,7 +15,7 @@ services:
       - "vaultfile:/vault/file"
     command: server
   mail:
-    image: ${DOCKER_HUB_USERNAME}devday-website-mail:prod
+    image: ${DOCKER_REGISTRY}devday-website-mail:prod
     build:
       context: docker/mail
       args:
@@ -25,7 +25,7 @@ services:
       prod-env-mail
   app:
     # Tag image as prod to distinguish from dev
-    image: ${DOCKER_HUB_USERNAME}devday-website-app:prod
+    image: ${DOCKER_REGISTRY}devday-website-app:prod
     build:
       context: .
       dockerfile: docker/app/Dockerfile-prod
@@ -46,7 +46,7 @@ services:
       - vault
       - mail
   revproxy:
-    image: ${DOCKER_HUB_USERNAME}devday-website-revproxy:prod
+    image: ${DOCKER_REGISTRY}devday-website-revproxy:prod
     build:
       context: docker/revproxy
     ports:

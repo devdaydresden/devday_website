@@ -1,7 +1,7 @@
 version: '3'
 services:
   db:
-    image: ${DOCKER_HUB_USERNAME}devday-website-db:dev
+    image: ${DOCKER_REGISTRY}devday-website-db:dev
     ports:
       - "15432:5432"
   vault:
@@ -12,7 +12,7 @@ services:
     command: "server -dev"
   app:
     # Tag image as dev to distinguish from prod
-    image: ${DOCKER_HUB_USERNAME}devday-website-app:dev
+    image: ${DOCKER_REGISTRY}devday-website-app:dev
     build:
       context: .
       dockerfile: docker/app/Dockerfile-dev

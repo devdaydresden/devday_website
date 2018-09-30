@@ -48,6 +48,10 @@ Successfully built bb9f9690b35b
 Successfully tagged devday_hp_revproxy:latest
 ```
 
+### `compose`: Run `docker-compose`
+
+This invokes Docker Compose with the compose files appropriate for the development setup.
+
 ### `devdata`: Create database contents suitable for development
 
 This will fill an empty database with pages, events, and attendees.
@@ -62,6 +66,10 @@ Creating volume "devday_hp_devday_media" with default driver
 Creating volume "devday_hp_devday_static" with default driver
 ...
 ```
+
+### `docker-push`: Push out custom images to Docker Hub
+
+You need to set DOCKER_USERNAME and DOCKER_PASSWORD environment variables before building the images, so they get tagged for the correct repository.
 
 ## `logs`: Show Logs of the App Container
 
@@ -183,6 +191,11 @@ Removing devday_hp_app_1      ... done
 Removing devday_hp_db_1       ... done
 Removing network devday_hp_default
 ```
+
+### `test`: Run Python Tests
+
+This command runs `manage.py test` inside the app container.
+
 
 ## Structure of the project
 

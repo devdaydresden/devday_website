@@ -1,0 +1,15 @@
+sudo: true
+services:
+- docker
+notifications:
+  slack:
+    secure: VfV8YV2MG/ngFXfA+CV1+6O6QIFBdMP9w29m+dgHDaVRJ7GUyS1UtfcXAOX8m5MOg30vysL1wfmnh4d4H7GnjscitwDtxCuVWRCjU8J5Kn4H6bKE3+XNRj2Nmj1NcZmDWluDtksAsb4r34qNhjgEClAy4aOvvNGWhA8p1q6FE2sR5znG3cw0SbAZeuuuNglXYTTSuaOWjY2riVQXPLjNuArUNdli30wvXJmWpBTC/3fJ3U0+s0qunFV0827epaSEL9ECygTPjCbFSWQdyS2h5W5E4LzygiY9aFRwB/s6zkMSJFwPpqbRs598XRCztPMn4UO3q1a3x1nYSC7U6om/5n+vYgp4YddAXkhPHnvarQjfjSwjkI2ll9rBgEU6YevZAB98wyRK8euud9/ZJ6M8aQS9WOzHOhbvrRO6jWTpAeqmrWExckyGEwotSkEMuFSnQJyKr1/Ytg0BtGWYWeuiZpU8wmpbAdNpeMNwWlc8wU1h8nN59djkPpBTjxffyrRty/SuKAtJBc9alLvaMLWslQ2y9HMJEVoP3CLZRS0XxZXiBG0KmKW1EvYObpB8JI32d75ifPXVLEM4jAGWuJxomeqn4aBSVZ8nl6N4dBCdkO6Bm8UwvjxCy/sYUlFT2CirW70t6IojgYlhDZj9i8jTpOy5lop9pweLA5Im6FnC49E=
+install:
+- "./run.sh build"
+script:
+- "./run.sh test"
+deploy:
+  provider: script
+  script: "./run.sh docker-push"
+  on:
+    branch: development

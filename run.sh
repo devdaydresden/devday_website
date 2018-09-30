@@ -5,8 +5,14 @@ set -e
 dbdump=''
 mediadump=''
 container='app'
-
 DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
+
+if [ -n "${DOCKER_USERNAME}" ]; then
+  DOCKER_HUB_USERNAME="${DOCKER_USERNAME}/"  # note trailing /
+else
+  DOCKER_HUB_USERNAME=""
+fi
+export DOCKER_HUB_USERNAME
 
 docker_compose_up() {
   $DOCKER_COMPOSE up -d
@@ -68,23 +74,36 @@ case "$cmd" in
     ;;
   build)
     echo "*** Building Docker images"
-    $DOCKER_COMPOSE build
+    $DOCKER_COMPOSE build $@
+    ;;
+  compose)
+    $DOCKER_COMPOSE $@
     ;;
   devdata)
     echo "    Starting containers"
     docker_compose_up
     echo "    Compiling translations"
-    $DOCKER_COMPOSE exec app python manage.py compilemessages
+    $DOCKER_COMPOSE exec "${container}" python manage.py compilemessages
     echo "    Running migrations"
-    $DOCKER_COMPOSE exec app python manage.py migrate
+    $DOCKER_COMPOSE exec "${container}" python manage.py migrate
     echo "    Filling database"
-    $DOCKER_COMPOSE exec app python manage.py devdata
+    $DOCKER_COMPOSE exec "${container}" python manage.py devdata
+    ;;
+  docker-push)
+    if [ -z "${DOCKER_USERNAME}" ]; then
+      echo "To push images to Docker Hub, you need to set DOCKER_USERNAME" >&2
+      echo "DOCKER_PASSWORD." >&2
+      exit 64
+    fi
+    echo "*** Pushing Docker images to Docker hub"
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    $DOCKER_COMPOSE push
     ;;
   log|logs)
-    $DOCKER_COMPOSE logs -f app
+    $DOCKER_COMPOSE logs -f "${container}"
     ;;
   manage)
-    $DOCKER_COMPOSE exec app python manage.py $@
+    $DOCKER_COMPOSE exec "${container}" python manage.py $@
     ;;
   purge)
     echo "*** Purge data"
@@ -112,9 +131,9 @@ case "$cmd" in
     echo "    Importing database dump"
     gunzip -c "${dbdump}" | $DOCKER_COMPOSE exec -T db psql -U devday devday
     echo "    Unpacking media dump"
-    $DOCKER_COMPOSE exec -T app tar xz -C /srv/devday/devday/media < "${mediadump}"
+    $DOCKER_COMPOSE exec -T "${container}" tar xz -C /srv/devday/devday/media < "${mediadump}"
     echo "*** Running migrations"
-    $DOCKER_COMPOSE exec app python manage.py migrate
+    $DOCKER_COMPOSE exec "${container}" python manage.py migrate
     echo "*** Import completed"
     ;;
   shell)
@@ -126,14 +145,17 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker_compose_up
     fi
-    #$DOCKER_COMPOSE exec app python manage.py runserver 0.0.0.0:8000
-    $DOCKER_COMPOSE logs -f app
+    $DOCKER_COMPOSE logs -f "${container}"
     ;;
   stop)
     $DOCKER_COMPOSE down
     ;;
-  compose)  # run plain docker-compose command
-    $DOCKER_COMPOSE $@
+  test)
+    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
+      echo "*** Starting all containers"
+      docker_compose_up
+    fi
+    $DOCKER_COMPOSE exec "${container}" python manage.py test -v1
     ;;
   *)
     echo -e "error: unknown action \"${cmd}\":\n" >&2

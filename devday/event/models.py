@@ -47,11 +47,13 @@ class Event(models.Model):
     start_time = models.DateTimeField(verbose_name=_("Start time"))
     end_time = models.DateTimeField(verbose_name=_("End time"))
     published = models.BooleanField(
-        verbose_name=_('Event is visible on the website'), default=True)
+        verbose_name=_('Pubished'), default=True)
     registration_open = models.BooleanField(
-        verbose_name=_('People can register as attendees'), default=False)
+        verbose_name=_('Registration Open'), default=False)
     submission_open = models.BooleanField(
-        verbose_name=_('People can register as speakers'), default=False)
+        verbose_name=_('Submission Open'), default=False)
+    sessions_published = models.BooleanField(
+        verbose_name=_('Grid Published'), default=False)
 
     def registration_count(self):
         "Returns the count of registered attendees."

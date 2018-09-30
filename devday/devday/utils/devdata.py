@@ -172,10 +172,6 @@ tiefer in ein Thema einsteigen.</p>
         api.publish_page(index, self.user, 'de')
 
         api.create_page(
-            title='Sessions', language='de', published=True,
-            template=TEMPLATE_INHERITANCE_MAGIC, in_navigation=True,
-            parent=None)
-        api.create_page(
             title='Sponsoring', language='de', published=True,
             template=TEMPLATE_INHERITANCE_MAGIC,
             reverse_id='sponsoring', parent=None)

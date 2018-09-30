@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-29 16:02+0000\n"
+"POT-Creation-Date: 2018-09-30 13:50+0000\n"
 "PO-Revision-Date: 2018-09-29 18:02+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -362,7 +362,3 @@ msgstr ""
 #: devday/templates/django_registration/registration_form.html:3
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
-
-#: devday/templates/imprint.html:3
-msgid "Imprint and Data Privacy Policy"
-msgstr "Impressum und Datenschutzhinweis"

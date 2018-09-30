@@ -15,7 +15,8 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Avg, Count, Sum, Min, Max
 from django.db.transaction import atomic
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import (Http404, HttpResponse, HttpResponseRedirect,
+                         JsonResponse)
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -359,6 +360,8 @@ class TalkListView(ListView):
 
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        if not event.sessions_published:
+            raise Http404
         return super(TalkListView, self).get_queryset().filter(
             track__isnull=False,
             speaker__user__event=event,

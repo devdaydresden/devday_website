@@ -56,16 +56,21 @@ msgid "End time"
 msgstr "Ende"
 
 #: event/models.py:50
-msgid "Event is visible on the website"
-msgstr "Veranstaltung ist auf Webseite sichtbar"
+
+msgid "Published"
+msgstr "Publiziert"
 
 #: event/models.py:52
-msgid "People can register as attendees"
-msgstr "Teilnehmer können sich registrieren"
+msgid "Registration Open"
+msgstr "Anmeldungen offen"
 
 #: event/models.py:54
-msgid "People can register as speakers"
-msgstr "Sprecher können sich registrieren"
+msgid "Submission Open"
+msgstr "Einreichen offen"
+
+#: event/models.py:56
+msgid "Grid Published"
+msgstr "Sessions veröffentlicht"
 
 #: event/models.py:56
 msgid "Talk Formats"

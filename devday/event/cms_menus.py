@@ -13,5 +13,16 @@ class EventArchiveMenu(Menu):
         for event in Event.objects.filter(end_time__lt=timezone.now()).exclude(
                 id=Event.objects.current_event_id()).order_by('start_time'):
             archive.children.append(
-                NavigationNode(event.title, event.get_absolute_url(), event.id))
+                NavigationNode(event.title, event.get_absolute_url(),
+                               event.id))
         return [archive]
+
+
+@menu_pool.register_menu
+class EventSessionMenu(Menu):
+    def get_nodes(self, request):
+        event = Event.objects.current_event()
+        if not event.sessions_published:
+            return []
+        return [NavigationNode(_('Sessions'), event.get_absolute_url(),
+                               event.id)]

@@ -19,6 +19,7 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import OutputWrapper
 from django.core.management.color import no_style
+from django.core.paginator import Paginator
 from django.utils import timezone
 
 from cms import api
@@ -30,7 +31,8 @@ from cms.models.static_placeholder import StaticPlaceholder
 
 from attendee.models import Attendee
 from event.models import Event
-from talk.models import Room, Speaker, Talk, TalkSlot, TimeSlot, Track, Vote
+from talk.models import (Room, Speaker, Talk, TalkFormat, TalkSlot, TimeSlot,
+                         Track, Vote)
 from twitterfeed.models import Tweet, TwitterProfileImage
 
 from devday.utils.words import Words
@@ -240,18 +242,31 @@ tiefer in ein Thema einsteigen.</p>
         ):
             self.create_static_placeholder_text(placeholder)
 
+    def create_talk_formats(self):
+        formats = [
+            {'name': 'Vortrag', 'duration': 45},
+            {'name': 'Lightning Talk', 'duration': 10},
+            {'name': 'Workshop', 'duration': 180},
+        ]
+        for i in formats:
+            format = TalkFormat(name=i['name'], duration=i['duration'])
+            format.save()
+
     def update_events(self):
         self.write_action('Updating events')
         events = list(Event.objects.order_by('start_time'))
+        stdformat = TalkFormat.objects.get(name='Vortrag', duration=60)
         try:
             for e in events[:-1]:
                 e.registration_open = False
                 e.submission_open = False
                 e.save()
+                e.talkformat.add(stdformat)
             e = events[-1]
             e.registration_open = True
             e.submission_open = True
             e.save()
+            e.talkformat.add(*TalkFormat.objects.all())
             self.write_ok()
         except Exception:
             self.write_error()
@@ -293,6 +308,15 @@ tiefer in ein Thema einsteigen.</p>
             u.save()
         return self.get_committee_members()
 
+    def get_speakers(self):
+        e = Event.objects.current_event()
+        r = "The first couple of speakers for {}:\n".format(e)
+        speakers = Speaker.objects.filter(user__event=e) \
+            .order_by('user__user__last_name', 'user__user__first_name')
+        for s in Paginator(speakers, 10).page(1).object_list:
+            r += "    {}\n".format(s.user.user.email)
+        return r
+
     def create_speakers(self):
         nspeakerperevent = 50
         nspeaker = Event.objects.count() * nspeakerperevent
@@ -316,12 +340,15 @@ tiefer in ein Thema einsteigen.</p>
                 .attr_class(speaker, speaker.portrait.field,
                             self.speaker_portrait_media_path)
             speaker.save()
+        return self.get_speakers()
 
-    def create_talk(self, speaker):
+    def create_talk(self, speaker, formats):
         talk = Talk(speaker=speaker, title=Words.sentence(self.rng).title(),
                     abstract=lorem.paragraph(),
                     remarks=lorem.paragraph())
         talk.save()
+        talk.talkformat.add(*self.rng.sample(
+            formats, self.rng.randint(1, len(formats))))
         return talk
 
     def create_talks(self):
@@ -331,12 +358,13 @@ tiefer in ein Thema einsteigen.</p>
         remaining probability of 5% will not submit any talk for the event the
         speaker registered for.
         """
+        formats = list(TalkFormat.objects.all())
         for speaker in Speaker.objects.all():
             p = self.rng.random()
             if p < 0.85:
-                self.create_talk(speaker)
+                self.create_talk(speaker, formats)
             if p < 0.10:
-                self.create_talk(speaker)
+                self.create_talk(speaker, formats)
 
     def vote_for_talk(self):
         committee = User.objects.filter(groups__name='talk_committee')
@@ -469,11 +497,14 @@ tiefer in ein Thema einsteigen.</p>
         self.create_admin_user()
         self.update_site()
         self.update_static_placeholders()
+        self.create_objects('talk formats', TalkFormat, 3,
+                            self.create_talk_formats)
         self.update_events()
         self.create_objects('pages', Page, 3, self.create_pages)
         self.create_objects('users', User, 3, self.create_attendees,
                             self.get_committee_members)
-        self.create_objects('speakers', Speaker, 1, self.create_speakers)
+        self.create_objects('speakers', Speaker, 1, self.create_speakers,
+                            self.get_speakers)
         self.create_objects('talks', Talk, 1, self.create_talks)
         self.create_objects('votes', Vote, 1, self.vote_for_talk)
         self.create_objects('tracks', Track, 1, self.create_tracks)

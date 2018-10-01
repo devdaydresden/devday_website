@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Layout, Field, Submit, Hidden, HTML
+from crispy_forms.layout import Div, Field, Hidden, HTML, Layout, Submit
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
@@ -11,18 +11,23 @@ from django_registration.forms import RegistrationFormUniqueEmail
 
 from attendee.forms import DevDayUserForm
 from devday.utils.forms import CombinedFormBase, DevDayFormHelper
-from talk.models import Talk, Speaker, TalkComment, Vote
+from talk.models import Speaker, Talk, TalkFormat, TalkComment, Vote
 
 User = get_user_model()
 
 
 class TalkForm(forms.models.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TalkForm, self).__init__(*args, **kwargs)
+        self.fields['talkformat'].initial = TalkFormat.objects.all()
+
     class Meta:
         model = Talk
-        fields = ["title", "abstract", "remarks"]
+        fields = ['title', 'abstract', 'remarks', 'talkformat']
         widgets = {
             'abstract': forms.Textarea(attrs={'rows': 3}),
             'remarks': forms.Textarea(attrs={'rows': 3}),
+            'talkformat': forms.CheckboxSelectMultiple(),
         }
 
 
@@ -97,9 +102,11 @@ class CreateTalkForm(TalkForm):
 
         self.helper.layout = Layout(
             Div(
-                Field("title", template='devday/form/field.html', autofocus='autofocus'),
-                "abstract",
-                "remarks",
+                Field("title", template='devday/form/field.html',
+                      autofocus='autofocus'),
+                Field("abstract", template='devday/form/field.html', rows=2),
+                Field("remarks", template='devday/form/field.html', rows=2),
+                Field('talkformat'),
                 css_class="col-md-12 offset-lg-2 col-lg-8"
             ),
             Div(
@@ -127,6 +134,7 @@ class EditTalkForm(TalkForm):
                 Field("title", template='devday/form/field.html', autofocus='autofocus'),
                 Field("abstract", template='devday/form/field.html', rows=2),
                 Field("remarks", template='devday/form/field.html', rows=2),
+                Field('talkformat'),
                 css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 offset-lg-2"
             ),
             Div(

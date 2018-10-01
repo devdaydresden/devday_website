@@ -16,15 +16,19 @@
 {% placeholder "save_the_date" or %}Edit save_the_date{% endplaceholder %}
 {% endif %}
 {% if attendee_registration_open or has_change_permissions %}
+  <div class="{% if not attendee_registration_open %}visible-to-editor-only{% endif %}">
     {% placeholder "sign_up"  or %}Edit sign_up{% endplaceholder %}
     <p><a class="btn btn-outline btn-call-action m-t-1"
           href="{% url 'login_or_register_attendee' %}"
           role="button">{% trans "Sign up now - Be part of it!" %}</a></p>
+  </div>
 {% endif %}
 {% if talk_submission_open or has_change_permissions %}
+  <div class="{% if not talk_submission_open %}visible-to-editor-only{% endif %}">
     {% placeholder "cfp_open" or %}Edit cfp_open{% endplaceholder %}
     <p><a class="btn btn-outline btn-call-action m-t-1"
           href="{% url 'submit_session' %}">{% trans "Submit session now" %}</a></p>
+  </div>
 {% endif %}
 {% endblock %}
 

@@ -1,5 +1,5 @@
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -10369,7 +10369,7 @@ return jQuery;
 } );
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -12915,7 +12915,7 @@ return Popper;
 //# sourceMappingURL=popper.js.map
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -14054,7 +14054,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 //# sourceMappingURL=popper-utils.js.map
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18004,7 +18004,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 //# sourceMappingURL=bootstrap.js.map
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18092,7 +18092,7 @@ var ClassInstanceManager = function(dataTag, className, args) {
 };
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18182,7 +18182,7 @@ var EventHandler = function () {
 };
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18228,7 +18228,7 @@ var CSRFHandler = function () {
 }
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18384,7 +18384,7 @@ var ResizeListener = function () {
 };
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18427,7 +18427,7 @@ var navbarCollapse = function ($element, args) {
 };
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18481,7 +18481,7 @@ var Navbar = function ($element, args) {
 
 
 /**
- * Build on 2018-9-29
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */

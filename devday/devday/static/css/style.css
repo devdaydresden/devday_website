@@ -1,5 +1,5 @@
 /**
- * Build on 2018-9-24
+ * Build on 2018-10-1
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8736,3 +8736,6 @@ table.table.session {
         color: #171034; }
       table.session tbody tr td:nth-child(9)::after {
         background: #171034; } }
+
+.visible-to-editor-only {
+  outline: 2px solid yellow; }

@@ -72,8 +72,8 @@
     </div>
     {% endblock content_block_2 %}
 
-    {% if sponsoring_open %}
-    <div class="stripe c-gray">
+    {% if sponsoring_open or has_change_permissions %}
+    <div class="stripe c-gray{% if not sponsoring_open %} visible-to-editor-only{% endif %}">
         <div class="container">
             <div class="row ">
                 <div class="col-12 col-lg-9 order-2 order-lg-1">

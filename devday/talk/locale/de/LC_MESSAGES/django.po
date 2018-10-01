@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 21:15+0000\n"
+"POT-Creation-Date: 2018-10-01 09:19+0000\n"
 "PO-Revision-Date: 2018-09-29 18:00+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -19,12 +19,12 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:25 talk/admin.py:72 talk/admin.py:91 talk/models.py:138
+#: talk/admin.py:41 talk/admin.py:82 talk/admin.py:103 talk/models.py:138
 #: talk/models.py:209 talk/models.py:226
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: talk/admin.py:30
+#: talk/admin.py:46
 msgid "Fullname"
 msgstr "Voller Name"
 
@@ -235,6 +235,10 @@ msgstr "Zeitslots"
 #: talk/models.py:254
 msgid "Duration"
 msgstr "Länge"
+
+#: talk/models.py:259 talk/models.py:260
+msgid "Talk Format"
+msgstr "Session-Format"
 
 #: talk/templates/talk/create_talk.html:3
 #: talk/templates/talk/speaker_profile.html:51
@@ -624,7 +628,7 @@ msgstr "Keine Videos, Folien oder Beispielcode gefunden."
 msgid "Videos and Slides for %(event)s have not been published yet."
 msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."
 
-#: talk/tests/test_views.py:633 talk/tests/test_views.py:718
-#: talk/tests/test_views.py:1016
+#: talk/tests/test_views.py:694 talk/tests/test_views.py:788
+#: talk/tests/test_views.py:1110
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."

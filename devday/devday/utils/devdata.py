@@ -244,9 +244,8 @@ tiefer in ein Thema einsteigen.</p>
 
     def create_talk_formats(self):
         formats = [
-            {'name': '60 Minuten', 'duration': 60},
-            {'name': '45 Minuten', 'duration': 45},
-            {'name': 'Lightning', 'duration': 10},
+            {'name': 'Vortrag', 'duration': 45},
+            {'name': 'Lightning Talk', 'duration': 10},
             {'name': 'Workshop', 'duration': 180},
         ]
         for i in formats:
@@ -256,7 +255,7 @@ tiefer in ein Thema einsteigen.</p>
     def update_events(self):
         self.write_action('Updating events')
         events = list(Event.objects.order_by('start_time'))
-        stdformat = TalkFormat.objects.get(name='60 Minuten')
+        stdformat = TalkFormat.objects.get(name='Vortrag', duration=60)
         try:
             for e in events[:-1]:
                 e.registration_open = False
@@ -349,7 +348,7 @@ tiefer in ein Thema einsteigen.</p>
                     remarks=lorem.paragraph())
         talk.save()
         talk.talkformat.add(*self.rng.sample(
-            formats, self.rng.randint(0, len(formats))))
+            formats, self.rng.randint(1, len(formats))))
         return talk
 
     def create_talks(self):

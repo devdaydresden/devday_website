@@ -254,5 +254,11 @@ class TalkFormat(models.Model):
     duration = models.PositiveSmallIntegerField(verbose_name=_('Duration'),
                                                 default=60)
 
+    class Meta:
+        unique_together = (('name', 'duration'),)
+        verbose_name = _('Talk Format')
+        verbose_name_plural = _('Talk Format')
+
     def __str__(self):
-        return self.name
+        h, m = divmod(self.duration, 60)
+        return '{} ({:d}:{:02d}h)'.format(self.name, h, m)

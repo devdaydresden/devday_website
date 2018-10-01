@@ -75,6 +75,7 @@ class TalkAdmin(admin.ModelAdmin):
     list_select_related = ['speaker', 'speaker__user', 'speaker__user__event',
                            'speaker__user__user', 'track']
     filter_horizontal = ('talkformat', )
+    prepopulated_fields = {'slug': ("title",)}
 
     def event(self, obj):
         return obj.speaker.user.event
@@ -84,7 +85,8 @@ class TalkAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == 'speaker':
             kwargs['queryset'] = Speaker.objects.select_related(
-                'user', 'user__user', 'user__event').order_by(
+                'user', 'user__user', 'user__event'
+            ).order_by(
                 'user__user__first_name', 'user__user__last_name')
             kwargs['form_class'] = SpeakerModelChoiceField
         return super(TalkAdmin, self).formfield_for_foreignkey(

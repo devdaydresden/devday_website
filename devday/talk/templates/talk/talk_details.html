@@ -1,36 +1,63 @@
 {% extends "devday_site.html" %}
 {% load i18n sekizai_tags static l10n crispy_forms_tags %}
-{% block title %}{% trans "Talk" %} - {{ talk.title }}{% endblock %}
-{% block content_body %}
-    {% addtoblock "css" %}
-        <link rel="stylesheet" href="{% static "css/theme-krajee-svg.css" %}">
-    {% endaddtoblock %}
-    <div class="offset-lg-2 col-lg-8 col-md-12">
-        <h1>{% spaceless %}{{ talk.title }}{% endspaceless %}</h1>
-        <dl class="definition-list">
-            <dt>{% trans "Title" %}</dt>
-            <dd>{{ talk.title }}</dd>
-            <dt>{% trans "Abstract" %}</dt>
-            <dd>{{ talk.abstract }}</dd>
-            <dt>{% trans "Remarks" %}</dt>
-            <dd>{{ talk.remarks }}</dd>
-        </dl>
+{% block title %}{{ block.super }} // {% trans "Talk" %} -
+    {{ talk.title }}{% endblock %}
+{% addtoblock "css" %}
+    <link rel="stylesheet" href="{% static "css/theme-krajee-svg.css" %}">
+{% endaddtoblock %}
+{% block content_block_1 %}
+    <div class="stripe c-white">
+        <div class="container">
+            <div class="row ">
+                <div class="col-12 col-lg-9 order-2 order-lg-1  col-center info">
+                    <div class="content">
+                        <h1>{{ talk.title }}</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a
+                                        href="{% url 'session_list' event=event.slug %}">{{ event }}</a>
+                                </li>
+                                <li class="breadcrumb-item"><a
+                                        href="{% url 'public_speaker_profile' pk=speaker.pk %}">{{ speaker }}</a>
+                                </li>
+                            </ol>
+                        </nav>
+                        <p>{{ talk.abstract|linebreaksbr }}</p>
+                        {% if talk.media.youtube %}
+                            <p>
+                                <strong>{% trans "Video" %}:</strong><br>
+                                <iframe width="560" height="315"
+                                        src="https://www.youtube.com/embed/{{ talk.media.youtube }}"
+                                        frameborder="0"
+                                        allowfullscreen></iframe>
+                            </p>
+                        {% endif %}
+                        {% if talk.media.slideshare %}
+                            <p>
+                                <strong>{% trans "Slide deck" %}:</strong><br>
+                                <iframe width="595" height="485"
+                                        src="https://www.slideshare.net/slideshow/embed_code/key/{{ talk.media.slideshare }}"
+                                        frameborder="0" marginwidth="0"
+                                        scrolling="no" style=""
+                                        allowfullscreen></iframe>
+                            </p>
+                        {% endif %}
+                        {% if talk.media.codelink %}
+                            <p>
+                                <strong>{% trans "Example code" %}:</strong><br>
+                                <a href="{{ talk.media.codelink }}">{{ talk.media.codelink }}</a>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-12 col-lg-3  order-1 order-lg-2 col-center col-highlight">
+                    <div class="content-center">
+                        <img src="{{ speaker.public_image.url }}"
+                             class="speaker-image"
+                             alt="{{ speaker }}">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="offset-lg-2 col-lg-8 col-md-12">
-      <h3>{{ speaker }}{% if speaker.user.organization %} // {{ speaker.user.organization }}{% endif %}
-          {% if speaker.user.user.twitter_handle %} //
-              <a href="https://www.twitter.com/{{ speaker.user.user.twitter_handle }}">@{{ speaker.user.user.twitter_handle }}</a>{% endif %}
-      </h3>
-      {% if speaker.public_image %}
-      <div class="col-xs-12 col-sm-4">
-          <img src="{{ speaker.public_image.url }}" alt="{{ speaker }}" style="width:100%">
-      </div>
-      {% endif %}
-      <div class="col-xs-12 col-sm-8">
-        <p>{{ speaker.shortbio|linebreaksbr }}</p>
-      </div>
-{% comment %}
-        <a class="btn" href="{% url 'talk_overview' %}">{% trans "Back to list of sessions" %}</a>
-{% endcomment %}
-    </div>
-{% endblock %}
+{% endblock content_block_1 %}

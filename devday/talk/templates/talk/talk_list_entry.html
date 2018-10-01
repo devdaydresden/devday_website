@@ -1,2 +1,8 @@
 {% load i18n %}
-<a href="{% url "public_speaker_profile" pk=talk.speaker.pk %}" class="talk-entry"><span class="track">{% trans "Track" %} «{{ talk.track.name }}»</span> <span class="title">{{ talk.title }}</span> <span class="speaker">{{ talk.speaker }}</span></a>
+<span class="talk-entry">
+    <span class="track">{% trans "Track" %} «{{ talk.track.name }}»</span>
+    <span class="title"><a
+            href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a></span>
+    <span class="speaker"><a
+            href="{% url 'public_speaker_profile' pk=talk.speaker.pk %}">{{ talk.speaker }}</a></span>
+</span>

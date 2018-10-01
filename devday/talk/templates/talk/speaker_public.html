@@ -5,24 +5,31 @@
     <div class="row ">
         <div class="col-12 col-lg-9 order-2 order-lg-1 content-area">
             <div class="content-center">
-                <h1>{{ speaker }}{% if speaker.user.organization %} // {{ speaker.user.organization }}{% endif %}
-                            {% if speaker.user.user.twitter_handle %} //
+                <h1>{{ speaker }}{% if speaker.user.organization %} //
+                    {{ speaker.user.organization }}{% endif %}
+                    {% if speaker.user.user.twitter_handle %} //
                         <a href="https://www.twitter.com/{{ speaker.user.user.twitter_handle }}">@{{ speaker.user.user.twitter_handle }}</a>{% endif %}
                 </h1>
 
                 <p>{{ speaker.shortbio|linebreaksbr }}</p>
-
-                {% for talk in talks %}
-                    <div class="talk">
-                        <h1>{% trans "Session information" %} // {{ talk.title }}</h1>
-                        <p>{{ talk.abstract|linebreaksbr }}</p>
-                    </div>
-                {% endfor %}
+                {% if talks %}
+                    {% with speaker.user.event as event %}
+                        <h3>{% blocktrans %}Talks: {{ event }}{% endblocktrans %}</h3>
+                        <ul>
+                            {% for talk in talks %}
+                                <li>
+                                    <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endwith %}
+                {% endif %}
             </div>
         </div>
         <div class="col-12 col-lg-3  order-1 order-lg-2 col-center col-highlight">
             <div class="content-center">
-                <img src="{{ speaker.public_image.url }}" class="speaker-image" alt="{{ speaker }}">
+                <img src="{{ speaker.public_image.url }}" class="speaker-image"
+                     alt="{{ speaker }}">
             </div>
         </div>
     </div>

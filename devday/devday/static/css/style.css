@@ -8278,6 +8278,9 @@ body {
           background: transparent;
           color: #35a4a3; }
 
+div#cms-top ~ nav#mainNav.fixed-top {
+  top: 46px; }
+
 header {
   background: #171034;
   background: url("../img/eyecatcher.svg"), -webkit-linear-gradient(119deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);

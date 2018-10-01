@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-29 16:02+0000\n"
+"POT-Creation-Date: 2018-10-01 09:19+0000\n"
 "PO-Revision-Date: 2018-09-29 18:00+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -19,40 +19,40 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:24 talk/admin.py:70 talk/admin.py:89 talk/models.py:138
-#: talk/models.py:207 talk/models.py:224
+#: talk/admin.py:41 talk/admin.py:82 talk/admin.py:103 talk/models.py:138
+#: talk/models.py:209 talk/models.py:226
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: talk/admin.py:29
+#: talk/admin.py:46
 msgid "Fullname"
 msgstr "Voller Name"
 
-#: talk/forms.py:30
+#: talk/forms.py:35
 msgid "Speaker portrait"
 msgstr "Speakerbild"
 
-#: talk/forms.py:61
+#: talk/forms.py:66
 msgid "Phone"
 msgstr "Telefon"
 
-#: talk/forms.py:79
+#: talk/forms.py:84
 msgid "You need to agree to be contacted by us."
 msgstr "Es ist notwendig, dass du der Kontaktaufnahme zustimmst."
 
-#: talk/forms.py:107
+#: talk/forms.py:114
 msgid "Submit"
 msgstr "Session einreichen"
 
-#: talk/forms.py:134
+#: talk/forms.py:142
 msgid "Update session"
 msgstr "Session aktualisieren"
 
-#: talk/forms.py:157
+#: talk/forms.py:165
 msgid "Login"
 msgstr "Anmelden"
 
-#: talk/forms.py:202 talk/forms.py:279
+#: talk/forms.py:210 talk/forms.py:287
 msgid ""
 "<label><p class=\"help-block\">By registering as a speaker, I agree to be "
 "contacted by the Dev Day organizers about conference details and my talk "
@@ -62,20 +62,20 @@ msgstr ""
 "ich zu, dass mich die Dev Day-Organisatoren über Details zur Konferenz und "
 "zu meinen Vortragsvorschlägen kontaktieren dürfen.</p></label>"
 
-#: talk/forms.py:208 talk/forms.py:286
+#: talk/forms.py:216 talk/forms.py:294
 #: talk/templates/talk/submit_session.html:30
 msgid "Register as speaker"
 msgstr "Als Sprecher registrieren"
 
-#: talk/forms.py:233
+#: talk/forms.py:241
 msgid "Update your speaker information"
 msgstr "Sprecherinformationen aktualisieren"
 
-#: talk/forms.py:254
+#: talk/forms.py:262
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: talk/forms.py:305 talk/forms.py:321
+#: talk/forms.py:313 talk/forms.py:329
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
@@ -172,61 +172,73 @@ msgstr "Kurzbeschreibung"
 msgid "Remarks"
 msgstr "Anmerkungen"
 
-#: talk/models.py:159
+#: talk/models.py:158
+msgid "Talk Formats"
+msgstr "Session-Formate"
+
+#: talk/models.py:161
 msgid "Session"
 msgstr "Session"
 
-#: talk/models.py:160
+#: talk/models.py:162
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:169
+#: talk/models.py:171
 msgid "Youtube video id"
 msgstr "Youtube-Video-ID"
 
-#: talk/models.py:170
+#: talk/models.py:172
 msgid "Slideshare id"
 msgstr "Slideshare-ID"
 
-#: talk/models.py:171
+#: talk/models.py:173
 msgid "Source code"
 msgstr "Quellcode"
 
-#: talk/models.py:192
+#: talk/models.py:194
 msgid "Comment"
 msgstr "Kommentar"
 
-#: talk/models.py:194
+#: talk/models.py:196
 msgid "Visible for Speaker"
 msgstr "Sichtbar für den Sprecher"
 
-#: talk/models.py:196
+#: talk/models.py:198
 msgid "Indicates whether the comment is visible to the speaker."
 msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
 
-#: talk/models.py:205
+#: talk/models.py:207
 msgid "Name"
 msgstr "Name"
 
-#: talk/models.py:206
+#: talk/models.py:208
 msgid "Priority"
 msgstr "Priorität"
 
-#: talk/models.py:210
+#: talk/models.py:212
 msgid "Room"
 msgstr "Raum"
 
-#: talk/models.py:211
+#: talk/models.py:213
 msgid "Rooms"
 msgstr "Räume"
 
-#: talk/models.py:227
+#: talk/models.py:229
 msgid "Time slot"
 msgstr "Zeitslot"
 
-#: talk/models.py:228
+#: talk/models.py:230
 msgid "Time slots"
 msgstr "Zeitslots"
+
+#: talk/models.py:254
+msgid "Duration"
+msgstr "Länge"
+
+#: talk/models.py:259 talk/models.py:260
+msgid "Talk Format"
+msgstr "Session-Format"
 
 #: talk/templates/talk/create_talk.html:3
 #: talk/templates/talk/speaker_profile.html:51
@@ -616,7 +628,7 @@ msgstr "Keine Videos, Folien oder Beispielcode gefunden."
 msgid "Videos and Slides for %(event)s have not been published yet."
 msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."
 
-#: talk/tests/test_views.py:633 talk/tests/test_views.py:718
-#: talk/tests/test_views.py:1016
+#: talk/tests/test_views.py:694 talk/tests/test_views.py:788
+#: talk/tests/test_views.py:1110
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."

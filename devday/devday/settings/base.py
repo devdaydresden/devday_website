@@ -265,6 +265,14 @@ TEMPLATES = [
         },
     },
 ]
+THUMBNAIL_HIGH_RESOLUTION = True
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    #'easy_thumbnails.processors.scale_and_crop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters',
+)
 TIME_ZONE = 'Europe/Berlin'
 TWITTERFEED_PROXIES = {}
 TWITTERFEED_PATHS = ['/']

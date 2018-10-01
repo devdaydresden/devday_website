@@ -154,6 +154,8 @@ class Talk(models.Model):
     abstract = models.TextField(verbose_name=_("Abstract"))
     remarks = models.TextField(verbose_name=_("Remarks"), blank=True)
     track = models.ForeignKey(Track, null=True, blank=True)
+    talkformat = models.ManyToManyField('TalkFormat',
+                                        verbose_name=_('Talk Formats'))
 
     class Meta:
         verbose_name = _("Session")
@@ -244,3 +246,19 @@ class TalkSlot(TimeStampedModel):
 
     def __str__(self):
         return "{} {}".format(self.room, self.time)
+
+
+@python_2_unicode_compatible
+class TalkFormat(models.Model):
+    name = models.CharField(max_length=40, blank=False)
+    duration = models.PositiveSmallIntegerField(verbose_name=_('Duration'),
+                                                default=60)
+
+    class Meta:
+        unique_together = (('name', 'duration'),)
+        verbose_name = _('Talk Format')
+        verbose_name_plural = _('Talk Format')
+
+    def __str__(self):
+        h, m = divmod(self.duration, 60)
+        return '{} ({:d}:{:02d}h)'.format(self.name, h, m)

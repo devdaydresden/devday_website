@@ -9,6 +9,7 @@ class EventAdmin(admin.ModelAdmin):
                     'registration_open', 'submission_open',
                     'sessions_published')
     prepopulated_fields = {'slug': ("title",)}
+    filter_horizontal = ('talkformat', )
 
 
 admin.site.register(Event, EventAdmin)

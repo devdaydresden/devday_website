@@ -54,6 +54,8 @@ class Event(models.Model):
         verbose_name=_('Submission Open'), default=False)
     sessions_published = models.BooleanField(
         verbose_name=_('Grid Published'), default=False)
+    talkformat = models.ManyToManyField('talk.TalkFormat',
+                                        verbose_name=_('Talk Formats'))
 
     def registration_count(self):
         "Returns the count of registered attendees."

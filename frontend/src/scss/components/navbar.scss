@@ -152,3 +152,7 @@
         }
     }
 }
+
+div#cms-top ~ nav#mainNav.fixed-top {
+    top: 46px;
+}

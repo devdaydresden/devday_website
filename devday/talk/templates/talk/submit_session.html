@@ -6,7 +6,7 @@
             {% static_placeholder "create-talk-introtext" %}
         </div>
         {% if request.user.is_staff %}
-            <div class="offset-lg-2 col-lg-8 col-md-12 hide">
+            <div class="offset-lg-2 col-lg-8 col-md-12 hide visible-to-editor-only">
                 {% static_placeholder "submit-session-introtext" %}
             </div>
         {% endif %}

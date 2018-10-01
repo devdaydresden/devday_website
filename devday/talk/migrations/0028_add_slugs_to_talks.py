@@ -16,7 +16,7 @@ def create_default_slug(apps, schema_manager):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('talk', '0026_timeslot_unique_name_and_event'),
+        ('talk', '0027_talkformats'),
     ]
 
     operations = [

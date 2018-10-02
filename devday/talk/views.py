@@ -266,22 +266,21 @@ class CommitteeRequiredMixin(PermissionRequiredMixin):
 
 class TalkDetails(DetailView):
     model = Talk
+    slug_url_kwarg = 'slug'
+    slug_field = 'slug'
     template_name_suffix = '_details'
 
-    def dispatch(self, request, *args, **kwargs):
-        talk = get_object_or_404(Talk, pk=self.kwargs.get('pk'))
-        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-
-        if slugify(talk.title) != kwargs.get('slug') or event != talk.event:
-            return HttpResponseRedirect(
-                '/{}/talk/{}/{}'.format(event.slug, slugify(talk.title),
-                                        talk.id))
-        return super(TalkDetails, self).dispatch(request, *args, **kwargs)
+    def get_queryset(self):
+        return super(TalkDetails, self).get_queryset().filter(
+            speaker__user__event__slug=self.kwargs['event']
+        ).prefetch_related(
+            'media', 'speaker', 'speaker__user', 'speaker__user__event')
 
     def get_context_data(self, **kwargs):
         context = super(TalkDetails, self).get_context_data(**kwargs)
         context.update({
             'speaker': context['talk'].speaker,
+            'event': context['talk'].speaker.user.event,
         })
         return context
 

@@ -13,6 +13,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 from six import BytesIO
@@ -150,9 +151,10 @@ class Track(TimeStampedModel):
 @python_2_unicode_compatible
 class Talk(models.Model):
     speaker = models.ForeignKey(Speaker)
-    title = models.CharField(verbose_name=_("Session title"), max_length=255)
-    abstract = models.TextField(verbose_name=_("Abstract"))
-    remarks = models.TextField(verbose_name=_("Remarks"), blank=True)
+    title = models.CharField(verbose_name=_('Session title'), max_length=255)
+    slug = models.SlugField(verbose_name=_('Slug'))
+    abstract = models.TextField(verbose_name=_('Abstract'))
+    remarks = models.TextField(verbose_name=_('Remarks'), blank=True)
     track = models.ForeignKey(Track, null=True, blank=True)
     talkformat = models.ManyToManyField('TalkFormat',
                                         verbose_name=_('Talk Formats'))
@@ -161,6 +163,12 @@ class Talk(models.Model):
         verbose_name = _("Session")
         verbose_name_plural = _("Sessions")
         ordering = ['title']
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.slug is None or self.slug.strip() == '':
+            self.slug = slugify(self.title)
+        super(Talk, self).save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return "%s - %s" % (self.speaker, self.title)

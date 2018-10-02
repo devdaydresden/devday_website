@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
-from attendee.views import (AttendeeCancelView, AttendeeProfileView,
-                            AttendeeRegistrationView, RegisterSuccessView,
-                            login_or_register_attendee_view, AttendeeDeleteView)
 from cms.sitemaps import CMSSitemap
-from devday.views import exception_test_view
 from django.conf import settings
-from django.conf.urls import url, include
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap as sitemap_view
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve as serve_static
-from talk.views import (SpeakerProfileView, SpeakerListView, TalkDetails,
-                        TalkListView, InfoBeamerXMLView, TalkVideoView,
-                        TalkListPreviewView, RedirectVideoView)
+
+from attendee.views import (
+    AttendeeCancelView, AttendeeDeleteView, AttendeeProfileView,
+    AttendeeRegistrationView, RegisterSuccessView,
+    login_or_register_attendee_view)
+from devday.views import exception_test_view
+from talk.views import (
+    InfoBeamerXMLView, RedirectVideoView, SpeakerListView, SpeakerProfileView,
+    TalkDetails, TalkListPreviewView, TalkListView, TalkVideoView)
 
 admin.autodiscover()
 
@@ -41,7 +43,7 @@ urlpatterns = [
     url(r'^(?P<event>[^/]+)/talk-preview/$', TalkListPreviewView.as_view(), name='session_list_preview'),
     url(r'^(?P<event>[^/]+)/talk/$', TalkListView.as_view(), name='session_list'),
     url(r'^(?P<event>[^/]+)/videos/$', TalkVideoView.as_view(), name='video_list'),
-    url(r'^(?P<event>[^/]+)/talk/((?P<slug>[-\w]+)/)*(?P<pk>\d+)', TalkDetails.as_view(), name='talk_details'),
+    url(r'^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/$', TalkDetails.as_view(), name='talk_details'),
     url(r'^', include('cms.urls')),
     url(r'^csvviews/', include('attendee.csv_urls')),
 ]

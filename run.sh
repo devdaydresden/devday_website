@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: sw=2 ts=2 et si ai
 
 set -e
 
@@ -28,6 +29,8 @@ usage: ./run.sh backup
        ./run.sh [-c container] shell
        ./run.sh start
        ./run.sh stop
+       ./run.sh test
+       ./run.sh coverage
        ./run.sh compose [...]
 EOD
 }
@@ -148,7 +151,16 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker_compose_up
     fi
-    $DOCKER_COMPOSE exec "${container}" python manage.py test -v1
+    $DOCKER_COMPOSE exec "${container}" python manage.py test -v1 -k
+    ;;
+  coverage)
+    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
+      echo "*** Starting all containers"
+      docker_compose_up
+    fi
+    $DOCKER_COMPOSE exec "${container}" coverage run --branch manage.py test -v1 -k
+    $DOCKER_COMPOSE exec "${container}" coverage report -m
+    $DOCKER_COMPOSE exec "${container}" coverage html
     ;;
   *)
     echo -e "error: unknown action \"${cmd}\":\n" >&2

@@ -37,6 +37,19 @@ case "$cmd" in
       (echo -n "POSTGRES_PASSWORD=" ; dd if=/dev/urandom bs=32 count=1 2>/dev/null | \
         base64 -w 0) > prod-env-db
     fi
+    if [ ! -f "prod-env-mail" ]; then
+cat >prod-env-mail <<EOF
+MAILNAME=mail.devday.de
+POSTFIX_ROOT_ALIAS=${USER}
+POSTFIX_RELAY_HOST=$(hostname -f)
+EOF
+    fi
+    if [ ! -f "prod-env" ]; then
+	touch prod-env
+    fi
+    if ! grep -q DEVDAY_ADMINUSER_EMAIL prod-env; then
+	echo "DEVDAY_ADMINUSER_EMAIL=admin@devday.de" >> prod-env
+    fi
     $DOCKER_COMPOSE build $@
     ;;
   manage)

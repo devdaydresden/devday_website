@@ -21,8 +21,14 @@ fi
 
 case "$cmd" in
   backup)
+    $DOCKER_COMPOSE up -d
     echo "*** Running backup"
-    $DOCKER_COMPOSE -f docker-compose.tools.yml run --rm backup
+    # sleep a few seconds to wait for the database to finish start
+    sleep 5
+    BACKUPDATA=$(date +%Y%m%d-%H%M%S%z)
+    mkdir -p backup
+    $DOCKER_COMPOSE exec db pg_dump -U postgres devday | gzip > "backup/prod-db-${BACKUPDATA}.sql.gz"
+    $DOCKER_COMPOSE exec -T app tar cz -C /srv/devday/media . > "backup/prod-media-${BACKUPDATA}.tar.gz"
     ;;
   build)
     # Relevant for production/test environments with full vault setup

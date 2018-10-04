@@ -26,7 +26,9 @@ To build the images run:
 ./prod.sh build
 ```
 
-which should work™.
+which should work™. You might want to have a look into the generated
+`prod-env`, `prod-env-db` and `prod-env-mail` files and adapt the environment
+variables inside these files to fit your environment.
 
 The build process creates a self signed certificate for Vault. You may also
 create a CSR by running
@@ -61,7 +63,7 @@ top of the `init_unseal_fill_vault.sh` output. Keep the generated
 ```
 # start the db container
 ./prod.sh up -d db
-echo "ALTER USER devday PASSWORD '<password from above>'"|./prod.sh exec -T db psql -U postgres -d postgres
+./prod.sh exec db psql -U postgres -d postgres -c "ALTER USER devday PASSWORD '<password from above>'"
 ```
 
 **Note:**
@@ -71,6 +73,13 @@ echo "ALTER USER devday PASSWORD '<password from above>'"|./prod.sh exec -T db p
 >
 > ```
 > zcat "<database dump>.sql" | ./prod.sh exec -T db psql -U devday devday
+> ```
+>
+> If you want to use a set of synthetic development data instead you can
+> run the following instead:
+>
+> ```
+> ./prod.sh manage devdata
 > ```
 
 # Start the application, the mail server and the reverse proxy

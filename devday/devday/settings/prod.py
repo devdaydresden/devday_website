@@ -9,6 +9,8 @@ ADMINS = [
     ('Jan Dittberner', 'jan.dittberner@t-systems.com'),
     ('Stefan Bethke', 'stefan.bethke@t-systems.com'),
 ]
+ADMINUSER_EMAIL = get_env_variable('DEVDAY_ADMINUSER_EMAIL')
+
 ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'app',
                  'localhost', 'devday-test.t-systems-mms.eu']
 

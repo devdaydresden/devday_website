@@ -24,11 +24,11 @@ djangocms-file = "*"
 django-file-form = "*"
 django-registration = "*"
 "django-select2" = "*"
+lorem = "*"
 
 [dev-packages]
 coverage = "*"
 django-debug-toolbar = "*"
-lorem = "*"
 mock = "*"
 
 [requires]

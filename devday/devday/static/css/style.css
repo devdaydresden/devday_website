@@ -8186,6 +8186,9 @@ body {
 .content-area {
   padding-top: 1.5rem; }
 
+.hide {
+  display: none; }
+
 @media (max-width: 1599.98px) {
   .container {
     width: 100%;

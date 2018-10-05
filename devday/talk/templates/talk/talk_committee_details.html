@@ -49,7 +49,7 @@
                                         class="rating-loading" value="{{ user_vote }}">
         {% addtoblock "js" %}
             <script type="text/javascript">
-                $(document).on('ready', function () {
+                $(document).ready(function () {
                     $('#talk-average-id').rating({
                         theme: 'krajee-svg',
                         filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
@@ -112,7 +112,7 @@
             {% endfor %}
             {% addtoblock "js" %}
                 <script type="text/javascript">
-                    $(document).on('ready', function () {
+                    $(document).ready(function () {
                         $('.delete-comment-link').on('click', function () {
                             var comment_paragraph_id = $(this).data('comment-id');
                             $.ajax(

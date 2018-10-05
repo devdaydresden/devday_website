@@ -21,8 +21,14 @@ fi
 
 case "$cmd" in
   backup)
+    $DOCKER_COMPOSE up -d
     echo "*** Running backup"
-    $DOCKER_COMPOSE -f docker-compose.tools.yml run --rm backup
+    # sleep a few seconds to wait for the database to finish start
+    sleep 5
+    BACKUPDATA=$(date +%Y%m%d-%H%M%S%z)
+    mkdir -p backup
+    $DOCKER_COMPOSE exec db pg_dump -U postgres devday | gzip > "backup/prod-db-${BACKUPDATA}.sql.gz"
+    $DOCKER_COMPOSE exec -T app tar cz -C /srv/devday/media . > "backup/prod-media-${BACKUPDATA}.tar.gz"
     ;;
   build)
     # Relevant for production/test environments with full vault setup
@@ -36,6 +42,19 @@ case "$cmd" in
     if [ ! -f "prod-env-db" ]; then
       (echo -n "POSTGRES_PASSWORD=" ; dd if=/dev/urandom bs=32 count=1 2>/dev/null | \
         base64 -w 0) > prod-env-db
+    fi
+    if [ ! -f "prod-env-mail" ]; then
+cat >prod-env-mail <<EOF
+MAILNAME=mail.devday.de
+POSTFIX_ROOT_ALIAS=${USER}
+POSTFIX_RELAY_HOST=$(hostname -f)
+EOF
+    fi
+    if [ ! -f "prod-env" ]; then
+	touch prod-env
+    fi
+    if ! grep -q DEVDAY_ADMINUSER_EMAIL prod-env; then
+	echo "DEVDAY_ADMINUSER_EMAIL=admin@devday.de" >> prod-env
     fi
     $DOCKER_COMPOSE build $@
     ;;

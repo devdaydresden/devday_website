@@ -67,6 +67,14 @@ Creating volume "devday_hp_devday_static" with default driver
 ...
 ```
 
+### `coverage`: Run Coverage Report
+
+Using [coverage](https://coverage.readthedocs.io/), generate a report of test code coverage. The report will be printed, and a HTML version will be generated in devday/coverage-report.  `coverage` will run `manage.py test` to check test code coverage.
+
+### `coverage`: Run Coverage Report
+
+Using [coverage](https://coverage.readthedocs.io/), generate a report of test code coverage. The report will be printed, and a HTML version will be generated in devday/coverage-report.  `coverage` will run `manage.py test` to check test code coverage.
+
 ### `docker-push`: Push out custom images to Docker Hub
 
 Make sure you're logged in to Docker Hub with a user that is allowed to push to the `devdaydresden` organization.  For Travis etc., set DOCKER_USERNAME and DOCKER_PASSWORD to have run.sh log in before pushing.

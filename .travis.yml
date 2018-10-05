@@ -7,4 +7,6 @@ notifications:
 install:
 - "./run.sh build"
 script:
-- "./run.sh test"
+- "./run.sh coverage"
+after_success:
+- "./run.sh coveralls"

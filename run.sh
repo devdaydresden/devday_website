@@ -24,6 +24,7 @@ usage: ./run.sh backup
        ./run.sh build
        ./run.sh compose [...]
        ./run.sh coverage
+       ./run.sh coveralls
        ./run.sh devdata
        ./run.sh manage [...]
        ./run.sh purge

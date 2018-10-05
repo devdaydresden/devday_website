@@ -45,17 +45,18 @@ class AttendeeRegistrationView(RegistrationView):
         'user': EventRegistrationForm,
     }
 
-    def create_attendee(self, user):
-        attendee = Attendee(user=user, event=Event.objects.current_event())
+    def create_attendee(self, user, event):
+        attendee = Attendee(user=user, event=event)
         attendee.save()
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
         if user.is_authenticated:
-            if not user.get_attendee():
+            current_event = Event.objects.current_event()
+            if not user.get_attendee(event=current_event):
                 self.auth_level = 'user'
                 if self.request.method == 'POST':
-                    self.create_attendee(self.request.user)
+                    self.create_attendee(self.request.user, event=current_event)
                     return redirect(reverse('register_success'))
             else:
                 return redirect(reverse('register_success'))
@@ -68,7 +69,8 @@ class AttendeeRegistrationView(RegistrationView):
         return self.form_classes.get(self.auth_level, None)
 
     def get_email_context(self, activation_key):
-        context = super(AttendeeRegistrationView, self).get_email_context(activation_key)
+        context = super(AttendeeRegistrationView, self).get_email_context(
+            activation_key)
         context.update({'request': self.request})
         return context
 
@@ -84,7 +86,7 @@ class AttendeeRegistrationView(RegistrationView):
         signals.user_registered.send(sender=self.__class__, user=user,
                                      request=self.request)
 
-        self.create_attendee(user)
+        self.create_attendee(user, Event.objects.current_event())
 
         self.send_activation_email(user)
 

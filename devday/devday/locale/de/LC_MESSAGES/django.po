@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 13:50+0000\n"
-"PO-Revision-Date: 2018-09-29 18:02+0200\n"
+"POT-Creation-Date: 2018-10-05 20:56+0000\n"
+"PO-Revision-Date: 2018-10-05 22:56+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -112,11 +112,11 @@ msgstr "Profil"
 msgid "Login"
 msgstr "Login"
 
-#: devday/templates/devday_index.html:23
+#: devday/templates/devday_index.html:24
 msgid "Sign up now - Be part of it!"
 msgstr "Jetzt anmelden - Sei dabei!"
 
-#: devday/templates/devday_index.html:28
+#: devday/templates/devday_index.html:31
 msgid "Submit session now"
 msgstr "Jetzt eine Session einreichen"
 
@@ -143,22 +143,26 @@ msgstr ""
 "bereits abgelaufen."
 
 #: devday/templates/django_registration/activation_complete.html:3
-msgid "Activation complete"
-msgstr "Aktivierung abgeschlossen"
+msgid "Registration: activation complete"
+msgstr "Registrierung: Aktivierung abgeschlossen"
 
 #: devday/templates/django_registration/activation_complete.html:6
 msgid "Account activated"
 msgstr "Benutzerkonto aktiviert"
 
 #: devday/templates/django_registration/activation_complete.html:7
-msgid "Your account is now activated."
-msgstr "Dein Benutzerkonto ist jetzt aktiviert."
+msgid "You have activated your Dev Day account successfully."
+msgstr "Dein Dev Day Benutzerkonto wurde erfolgreich aktiviert."
 
-#: devday/templates/django_registration/activation_complete.html:8
-#: devday/templates/django_registration/logout.html:8
+#: devday/templates/django_registration/activation_complete.html:9
 #, python-format
-msgid "Back to <a href=\"%(root_page)s\">home page</a>."
-msgstr "Zurück zur <a href=\"%(root_page)s\">Startseite</a>."
+msgid "Continue to <a href=\"%(root_page)s\">home page</a>."
+msgstr "Weiter zur <a href=\"%(root_page)s\">Startseite</a>."
+
+#: devday/templates/django_registration/activation_complete.html:11
+#, python-format
+msgid "Continue to <a href=\"%(login_page)s\">login</a>."
+msgstr "Weiter zum <a href=\"%(login_page)s\">Login</a>."
 
 #: devday/templates/django_registration/activation_email_body.txt:1
 #, python-format
@@ -199,6 +203,20 @@ msgstr "Das Dev Day Team\n"
 #: devday/templates/django_registration/activation_email_subject.txt:1
 msgid "Confirm your registration"
 msgstr "Bestätige deine Anmeldung"
+
+#: devday/templates/django_registration/activation_failed.html:3
+msgid "Registration: activation failed"
+msgstr "Registrierung: Aktivierung fehlgeschlagen"
+
+#: devday/templates/django_registration/activation_failed.html:6
+msgid "Account activation failed"
+msgstr "Aktivierung des Benutzerkontos fehlgeschlagen"
+
+#: devday/templates/django_registration/activation_failed.html:10
+#: devday/templates/django_registration/logout.html:8
+#, python-format
+msgid "Back to <a href=\"%(root_page)s\">home page</a>."
+msgstr "Zurück zur <a href=\"%(root_page)s\">Startseite</a>."
 
 #: devday/templates/django_registration/login.html:9
 #: devday/templates/django_registration/password_reset_complete.html:8
@@ -350,7 +368,11 @@ msgstr ""
 msgid "Registration: confirm email address"
 msgstr "Anmeldung: Email-Adresse bestätigen"
 
-#: devday/templates/django_registration/registration_complete.html:5
+#: devday/templates/django_registration/registration_complete.html:6
+msgid "Almost done"
+msgstr "Fast fertig"
+
+#: devday/templates/django_registration/registration_complete.html:7
 msgid ""
 "Thank you for registering for Dev Day. To complete registration, please "
 "click on the confirmation link we just sent you by email!"

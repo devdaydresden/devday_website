@@ -5,7 +5,7 @@ This is the documentation for going to test/production.
 ## Clone the repository
 
 ```
-git clone https://git.t-systems-mms.eu/scm/saec/devday_hp.git
+git clone https://github.com/devdaydresden/devday_website.git
 ```
 
 ## Build the images

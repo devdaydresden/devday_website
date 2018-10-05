@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% trans "Logged out" %}{% endblock %}
 {% block content_body %}
-    <div class="offset-sm-3 offset-md-4 col-sm-6 col-md-4 col-12 content-area">
+    <div class="offset-md-2 col-md-8 col-12 content-area">
         <h2>{% trans "Logged out" %}</h2>
         <p>{% trans "You are now logged out." %}</p>
         <p>{% url "pages-root" as root_page %}{% blocktrans %}Back to <a href="{{ root_page }}">home page</a>.{% endblocktrans %}</p>

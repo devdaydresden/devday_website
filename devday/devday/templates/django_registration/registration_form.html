@@ -3,9 +3,9 @@
 {% block title %}{% trans "Register for Dev Day" %}{% endblock %}
 {% block content_body %}
     <div class="row">
-        <div class="offset-lg-2 col-lg-8 col-md-12">
+        <div class="col-md-8 offset-md-2 col-12 content-area">
             {% static_placeholder "register-attendee-introtext" %}
+            {% crispy form %}
         </div>
     </div>
-    {% crispy form %}
 {% endblock %}

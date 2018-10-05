@@ -45,9 +45,14 @@ class AttendeeRegistrationView(RegistrationView):
         'user': EventRegistrationForm,
     }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.auth_level = None
+
     def create_attendee(self, user, event):
         attendee = Attendee(user=user, event=event)
         attendee.save()
+        return attendee
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
@@ -56,14 +61,20 @@ class AttendeeRegistrationView(RegistrationView):
             if not user.get_attendee(event=current_event):
                 self.auth_level = 'user'
                 if self.request.method == 'POST':
-                    self.create_attendee(self.request.user, event=current_event)
-                    return redirect(reverse('register_success'))
+                    self.create_attendee(
+                        self.request.user, event=current_event)
+                    return redirect(self.get_success_url())
             else:
-                return redirect(reverse('register_success'))
+                return redirect(self.get_success_url())
         else:
             # noinspection PyAttributeOutsideInit
             self.auth_level = 'anonymous'
         return super(AttendeeRegistrationView, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self, user=None):
+        if self.auth_level == 'anonymous':
+            return reverse_lazy('django_registration_complete')
+        return reverse_lazy('register_success')
 
     def get_form_class(self, request=None):
         return self.form_classes.get(self.auth_level, None)
@@ -86,7 +97,9 @@ class AttendeeRegistrationView(RegistrationView):
         signals.user_registered.send(sender=self.__class__, user=user,
                                      request=self.request)
 
-        self.create_attendee(user, Event.objects.current_event())
+        attendee = self.create_attendee(user, Event.objects.current_event())
+        attendee.source = form.cleaned_data.get('source')
+        attendee.save()
 
         self.send_activation_email(user)
 

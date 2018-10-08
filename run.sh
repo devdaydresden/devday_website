@@ -91,11 +91,12 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker_compose_up
     fi
-    $DOCKER_COMPOSE exec -e CI_BRANCH="${CI_BRANCH}" \
-      -e CI_BUILD_URL="${CI_BUILD_URL}" \
-      -e CI_NAME="${CI_NAME}" \
-      -e COVERALLS_REPO_TOKEN="${COVERALLS_REPO_TOKEN}" \
-      "${container}" coveralls
+    $DOCKER_COMPOSE exec "${container}" env \
+      CI_BRANCH="${CI_BRANCH}" \
+      CI_BUILD_URL="${CI_BUILD_URL}" \
+      CI_NAME="${CI_NAME}" \
+      COVERALLS_REPO_TOKEN="${COVERALLS_REPO_TOKEN}" \
+       coveralls
     ;;
   devdata)
     echo "    Starting containers"

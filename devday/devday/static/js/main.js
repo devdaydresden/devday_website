@@ -1,5 +1,5 @@
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -10369,7 +10369,7 @@ return jQuery;
 } );
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -12915,7 +12915,7 @@ return Popper;
 //# sourceMappingURL=popper.js.map
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -14054,7 +14054,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 //# sourceMappingURL=popper-utils.js.map
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18004,7 +18004,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 //# sourceMappingURL=bootstrap.js.map
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18092,7 +18092,7 @@ var ClassInstanceManager = function(dataTag, className, args) {
 };
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18182,7 +18182,7 @@ var EventHandler = function () {
 };
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18228,7 +18228,7 @@ var CSRFHandler = function () {
 }
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18384,7 +18384,59 @@ var ResizeListener = function () {
 };
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
+ * @package devday17-frontend
+ * @version v1.0.0
+ */
+/**
+ *
+ * @param  {[Object]} $element The Element the function fires to
+ * @param  {[type]} args     Arguments
+ */
+var ImageModal = function ($element, args) {
+
+    'use strict';
+
+    var that = this;
+
+    /**
+     * jQuery and controll Vars
+     */
+    that.$baseElement = $element || $('[data-ui-image-modal]');
+    that.$element = that.$baseElement;
+    that.$imageModal = $('#imageModal');
+    that.$modalContent = that.$imageModal.find('.modal-body');
+    that.$modalTitle = that.$imageModal.find('.modal-title');
+    that.imageSource = that.$element.attr('src');
+    that.imageTitle = that.$element.attr('title');
+
+
+    /**
+     * Init of the whole function
+     */
+    that.initImageModal = function () {
+        that.handleClick();
+    };
+
+    that.handleClick = function() {
+        that.$element.on('click', function () {
+            that.setImageToModal();
+        });
+    };
+
+    that.setImageToModal = function() {
+        var img = '<img src="'+that.imageSource+'" />';
+        that.$modalContent.html(img);
+        that.$modalTitle.html(that.imageTitle);
+        that.$imageModal.modal('show');
+    }
+
+
+    that.initImageModal();
+};
+
+/**
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18427,7 +18479,7 @@ var navbarCollapse = function ($element, args) {
 };
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18481,7 +18533,7 @@ var Navbar = function ($element, args) {
 
 
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -18521,6 +18573,7 @@ var devdayUIRegistry = function () {
         // init single class instances
         that.navbarCollapse = new ClassInstanceManager('.navbar-collapse', 'navbarCollapse');
         that.navbar = new ClassInstanceManager('[data-ui-navbar]', 'Navbar');
+        that.imageModal = new ClassInstanceManager('[data-ui-image-modal]', 'ImageModal');
     };
 
     that.addInstances = function ($container) {

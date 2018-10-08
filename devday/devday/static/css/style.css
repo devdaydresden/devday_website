@@ -1,5 +1,5 @@
 /**
- * Build on 2018-10-1
+ * Build on 2018-10-8
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8376,6 +8376,26 @@ header {
       background: #3f8b89;
       color: #ffffff; }
 
+[data-ui-image-modal] {
+  cursor: pointer; }
+
+.modal .modal-xl {
+  max-width: 90%;
+  top: 30px;
+  border: 1px solid #3f8b89; }
+  .modal .modal-xl .modal-content {
+    background: #171034;
+    color: #ffffff; }
+    .modal .modal-xl .modal-content .modal-header {
+      background: #3f8b89;
+      border-radius: 0; }
+      .modal .modal-xl .modal-content .modal-header .close {
+        color: #ffffff; }
+    .modal .modal-xl .modal-content .modal-body {
+      padding: 0; }
+      .modal .modal-xl .modal-content .modal-body img {
+        width: 100%; }
+
 p {
   font-size: 14px; }
 
@@ -8399,6 +8419,13 @@ h1 {
     font-size: 26px;
     color: #171034;
     margin-bottom: 1rem; }
+  .info img,
+  .content-area img {
+    max-width: 100%; }
+    .info img.align-center,
+    .content-area img.align-center {
+      margin: 0 auto;
+      display: block; }
 
 .stripe {
   width: 100%; }

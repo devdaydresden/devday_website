@@ -16,4 +16,13 @@
         margin-bottom: 1rem;
     }
 
+    img {
+        max-width: 100%;
+
+        &.align-center {
+            margin: 0 auto;
+            display: block;
+        }
+    }
+
 }

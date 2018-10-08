@@ -92,11 +92,11 @@ case "$cmd" in
       docker_compose_up
     fi
     $DOCKER_COMPOSE exec "${container}" env \
-      CI_BRANCH="${CI_BRANCH}" \
-      CI_BUILD_URL="${CI_BUILD_URL}" \
-      CI_NAME="${CI_NAME}" \
+      CI_BRANCH="${TRAVIS_BRANCH}" \
+      CI_BUILD_URL="${TRAVIS_BUILD_WEB_URL}" \
+      CI_NAME="Travis" \
       COVERALLS_REPO_TOKEN="${COVERALLS_REPO_TOKEN}" \
-       coveralls
+      coveralls
     ;;
   devdata)
     echo "    Starting containers"

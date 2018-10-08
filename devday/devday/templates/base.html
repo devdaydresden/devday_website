@@ -18,7 +18,8 @@
     {% block navigation %}
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" data-ui-navbar>
             <div class="container">
-                <a href="{% url 'pages-root' %}" class="navbar-brand"><img src="{% static "img/logo-19.svg" %}" alt="{{ event.title }}"></a>
+                <a href="{% url 'pages-root' %}" class="navbar-brand"><img src="{% static "img/logo-19.svg" %}" alt="{{ current_event.title }}"></a>
+                {% block top_menu %}
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -27,6 +28,7 @@
                       {% include "base_menu.html" %}
                     </ul>
                 </div>
+                {% endblock %}
             </div>
         </nav>
     {% endblock navigation %}
@@ -72,6 +74,7 @@
     </div>
     {% endblock content_block_2 %}
 
+    {% block content_block_3 %}
     {% if sponsoring_open or has_change_permissions %}
     <div class="stripe c-gray{% if not sponsoring_open %} visible-to-editor-only{% endif %}">
         <div class="container">
@@ -94,6 +97,7 @@
         </div>
     </div>
     {% endif %}
+    {% endblock %}
 
     <footer>
         <img src="{% static 'images/seco-logo.svg' %}" alt="Software Engineering Community"> | <a href="{% page_url 'imprint' %}">IMPRESSUM</a>

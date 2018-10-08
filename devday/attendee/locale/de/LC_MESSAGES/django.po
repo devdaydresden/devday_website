@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-29 16:02+0000\n"
-"PO-Revision-Date: 2018-09-29 18:02+0200\n"
+"POT-Creation-Date: 2018-10-05 20:56+0000\n"
+"PO-Revision-Date: 2018-10-05 22:56+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -43,19 +43,19 @@ msgstr ""
 "Ich möchte Updates zu Veranstaltungen der T-Systems Multimedia Solutions "
 "GmbH Software Engineering Community per E-Mail erhalten."
 
-#: attendee/forms.py:91
+#: attendee/forms.py:97
 msgid "Delete your account"
 msgstr "Dein Teilnehmerprofil löschen"
 
-#: attendee/forms.py:98
+#: attendee/forms.py:104
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: attendee/forms.py:129
+#: attendee/forms.py:135
 msgid "Update your profile"
 msgstr "Profil aktualisieren"
 
-#: attendee/forms.py:149 attendee/forms.py:230
+#: attendee/forms.py:155 attendee/forms.py:246
 msgid ""
 "<label><p class=\"help-block\">By registering as an attendee, I agree to be "
 "contacted by the Dev Day organizers about conference details.</p></label>"
@@ -64,15 +64,15 @@ msgstr ""
 "stimme ich zu, dass mich die Dev Day-Organisatoren über Details zur "
 "Konferenz kontaktieren dürfen.</p></label>"
 
-#: attendee/forms.py:155 attendee/forms.py:237
+#: attendee/forms.py:161 attendee/forms.py:253
 msgid "Register as attendee"
 msgstr "Als Teilnehmer anmelden"
 
-#: attendee/forms.py:183
+#: attendee/forms.py:189
 msgid "Login"
 msgstr "Login"
 
-#: attendee/forms.py:205
+#: attendee/forms.py:211
 msgid "E-Mail"
 msgstr "E-Mail"
 
@@ -188,29 +188,29 @@ msgstr ""
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: attendee/templates/attendee/login_or_register.html:23
-msgid "Register now for Dev Day"
-msgstr "Registrier dich jetzt für den Dev Day"
+#: attendee/templates/attendee/login_or_register.html:18
+#, python-format
+msgid "Register for %(current_event)s"
+msgstr "Für %(current_event)s anmelden"
 
-#: attendee/templates/attendee/login_or_register.html:25
-#: attendee/templates/attendee/login_or_register.html:43
+#: attendee/templates/attendee/login_or_register.html:22
+#: attendee/templates/attendee/login_or_register.html:42
 msgid "Register"
 msgstr "Anmelden"
 
-#: attendee/templates/attendee/login_or_register.html:29
+#: attendee/templates/attendee/login_or_register.html:26
 msgid "Have you ever attended Dev Day? Use your old credentials!"
 msgstr "Du warst schon mal beim Dev Day? Dann nutze deine alten Anmeldedaten!"
 
-#: attendee/templates/attendee/login_or_register.html:31
-msgid "Forgot password"
-msgstr "Passwort ändern"
+#: attendee/templates/attendee/login_or_register.html:28
+msgid "Forgotten password?"
+msgstr "Passwort vergessen?"
 
-#: attendee/templates/attendee/login_or_register.html:32
-msgid "Reset it"
-msgstr "Zurücksetzen"
+#: attendee/templates/attendee/login_or_register.html:29
+msgid "Reset it!"
+msgstr "Zurücksetzen!"
 
 #: attendee/templates/attendee/profile.html:3
-#: attendee/templates/attendee/register_success.html:3
 msgid "Attendee profile"
 msgstr "Teilnehmerprofil"
 
@@ -230,3 +230,7 @@ msgstr "Anmeldung stornieren"
 #: attendee/templates/attendee/profile.html:29
 msgid "You are not currently registered to participate in any event."
 msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."
+
+#: attendee/templates/attendee/register_success.html:3
+msgid "Registration successful"
+msgstr "Registrierung erfolgreich"

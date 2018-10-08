@@ -4,7 +4,7 @@ thank you for your interest to speak at Dev Day 2018.
 
 To finish your registration please click the following link to verify your email address.
 {% endblocktrans %}
-{% if request.is_secure %}https{% else %}http{% endif %}://{{ site.domain }}{% url 'registration_activate' activation_key %}
+{% if request.is_secure %}https{% else %}http{% endif %}://{{ site.domain }}{% url 'django_registration_activate' activation_key %}
 {% blocktrans count days=expiration_days %}
 The link is valid for one day.
 {% plural %}

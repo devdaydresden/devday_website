@@ -1,0 +1,12 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Registration: activation failed" %}{% endblock %}
+{% block content_body %}
+    <div class="content-area">
+        <h2>{% trans "Account activation failed" %}</h2>
+        {% with activation_error as e %}
+            <p>{{ e.code }}: {% trans e.message %}</p>
+        {% endwith %}
+        <p>{% url "pages-root" as root_page %}{% blocktrans %}Back to <a href="{{ root_page }}">home page</a>.{% endblocktrans %}</p>
+    </div>
+{% endblock %}

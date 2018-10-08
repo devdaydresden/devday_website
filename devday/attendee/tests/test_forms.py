@@ -46,10 +46,11 @@ class AttendeeRegistrationFormTest(TestCase):
     def test_init_creates_layout(self):
         form = AttendeeRegistrationForm()
         self.assertIsInstance(form.helper.layout, Layout)
-        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        layout_fields = [name for [_, name] in
+                         form.helper.layout.get_field_names()]
         self.assertListEqual(
             layout_fields,
-            ['email', 'first_name', 'last_name', 'password1', 'password2',
-             'position', 'organization', 'twitter_handle', 'source',
+            ['email', 'twitter_handle', 'first_name', 'last_name', 'password1',
+             'password2', 'position', 'organization', 'source',
              'accept_general_contact']
         )

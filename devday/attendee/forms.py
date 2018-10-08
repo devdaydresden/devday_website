@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic.edit import FormView
 from django_registration.forms import RegistrationFormUniqueEmail
 
-from attendee.models import DevDayUser
+from attendee.models import DevDayUser, Attendee
 from devday.forms import AuthenticationForm
 from devday.utils.forms import (
     CombinedFormBase, DevDayFormHelper, DevDayField, DevDayContactField)
@@ -49,6 +49,12 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
             'position',
             'organization',
         ]
+
+
+class AttendeeSourceForm(ModelForm):
+    class Meta:
+        model = Attendee
+        fields = ['source']
 
 
 class DevDayUserForm(ModelForm):
@@ -187,7 +193,7 @@ class RegistrationAuthenticationForm(AuthenticationForm):
 
 
 class AttendeeRegistrationForm(CombinedFormBase):
-    form_classes = [DevDayRegistrationForm]
+    form_classes = [DevDayRegistrationForm, AttendeeSourceForm]
 
     def _get_form_by_class(self, clazz):
         return getattr(self, clazz.__name__.lower())
@@ -206,23 +212,33 @@ class AttendeeRegistrationForm(CombinedFormBase):
         self.fields['password1'].help_text = None
         self.fields['password2'].help_text = None
         self.fields['accept_devday_contact'].initial = True
-        self.fields['accept_general_contact'].initial = True
+        self.fields['accept_general_contact'].initial = False
 
         self.helper.layout = Layout(
             Div(
-                DevDayField('email', autofocus='autofocus'),
-                'first_name',
-                'last_name',
-                'password1',
-                'password2',
-                css_class='col-md-12 offset-lg-2 col-lg-4'
+                DevDayField('email', autofocus='autofocus',
+                            wrapper_class='col-12 col-md-6'),
+                Field('twitter_handle', wrapper_class='col-12 col-md-6'),
+                css_class='form-row'
             ),
             Div(
-                'position',
-                'organization',
-                'twitter_handle',
-                DevDayField('source', rows=2),
-                css_class='col-md-12 col-lg-4',
+                Field('first_name', wrapper_class='col-12 col-md-6'),
+                Field('last_name', wrapper_class='col-12 col-md-6'),
+                css_class='form-row'
+            ),
+            Div(
+                Field('password1', wrapper_class='col-12 col-md-6'),
+                Field('password2', wrapper_class='col-12 col-md-6'),
+                css_class='form-row'
+            ),
+            Div(
+                Field('position', wrapper_class='col-12 col-md-6'),
+                Field('organization', wrapper_class='col-12 col-md-6'),
+                css_class='form-row'
+            ),
+            Div(
+                DevDayField('source', rows=1, wrapper_class='col-12'),
+                css_class='form-row',
             ),
             Div(
                 Div(
@@ -235,6 +251,6 @@ class AttendeeRegistrationForm(CombinedFormBase):
                 Hidden('accept_devday_contact', value='1'),
                 DevDayContactField('accept_general_contact'),
                 Submit('submit', _('Register as attendee')),
-                css_class='col-md-12 offset-lg-2 col-lg-8 text-center',
+                css_class='col-12 text-center',
             )
         )

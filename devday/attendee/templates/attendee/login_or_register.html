@@ -2,45 +2,44 @@
 {% load cms_tags crispy_forms_tags i18n %}
 {% block content_body %}
     <div class="row">
-        <div class="offset-lg-2 col-lg-8 col-md-12">
+        <div class="col-12 col-md-10 offset-md-1 content-area">
             {% static_placeholder "register-intro" %}
         </div>
         {% if request.user.is_staff %}
-          <div class="offset-lg-2 col-lg-8 col-md-12 hide visible-to-editor-only">
-            {% static_placeholder "register-intro-anonymous" %}
-            {% static_placeholder "register-attendee-introtext" %}
-          </div>
+            <div class="col-12 col-md-10 offset-md-1 visible-to-editor-only">
+                {% static_placeholder "register-intro-anonymous" %}
+                {% static_placeholder "register-attendee-introtext" %}
+            </div>
         {% endif %}
     </div>
     {% if request.user.is_anonymous %}
         <div class="row">
-            <div class="offset-lg-2 col-lg-8 col-md-12">
-                {% static_placeholder "register-intro-anonymous" %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="offset-lg-2 col-lg-4 col-md-12">
-                <h2>{% trans "Register now for Dev Day" %}</h2>
+            <div class="col-12 col-md-5 offset-md-1">
+                <h2>{% blocktrans %}Register for {{ current_event }}{% endblocktrans %}</h2>
+                <p>{% static_placeholder "register-intro-anonymous" %}</p>
                 <p class="text-center">
-                    <a class="btn btn-primary" href="{% url "registration_register" %}">{% trans "Register" %}</a>
+                    <a class="btn btn-primary"
+                       href="{% url "registration_register" %}">{% trans "Register" %}</a>
                 </p>
             </div>
-            <div class="col-lg-4 col-md-12">
+            <div class="col-12 col-md-5">
                 <h3>{% trans "Have you ever attended Dev Day? Use your old credentials!" %}</h3>
                 {% crispy form %}
-                <p style="margin-top: 1em;">{% trans "Forgot password" %}? <a
-                        href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+                <p style="margin-top: 1em;">{% trans "Forgotten password?" %} <a
+                        href="{% url 'auth_password_reset' %}">{% trans "Reset it!" %}</a>
+                </p>
             </div>
         </div>
     {% else %}
         <div class="row">
-            <div class="offset-lg-2 col-lg-8 col-md-12">
+            <div class="col-12 col-md-10 offset-md-1">
                 {% static_placeholder "register-intro-introtext-authenticated" %}
             </div>
         </div>
         <div class="row">
-            <div class="offset-lg-2 col-lg-8 col-md-12 text-center">
-                <a class="btn btn-primary" href="{% url "registration_register" %}">{% trans "Register" %}</a>
+            <div class="col-12 col-md-10 offset-md-1 text-center">
+                <a class="btn btn-primary"
+                   href="{% url "registration_register" %}">{% trans "Register" %}</a>
             </div>
         </div>
     {% endif %}

@@ -1,11 +1,13 @@
 from django.core import mail
 from django.http import HttpRequest
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 
-from attendee.forms import AttendeeRegistrationForm
+from attendee.forms import AttendeeRegistrationForm, EventRegistrationForm
 from attendee.models import DevDayUser, Attendee
 from attendee.views import AttendeeRegistrationView
+from event.models import Event
 from event.test.testutils import create_test_event
 from talk.tests.testutils import create_test_speaker, create_test_talk
 
@@ -32,13 +34,15 @@ class AttendeeProfileViewTest(TestCase):
 class AttendeeRegistrationViewTest(TestCase):
     def test_get_email_context(self):
         request = HttpRequest()
-        context = AttendeeRegistrationView(request=request).get_email_context('testkey')
+        context = AttendeeRegistrationView(request=request).get_email_context(
+            'testkey')
         self.assertIn('request', context)
         self.assertEqual(context.get('request'), request)
 
     def test_register_minimum_fields(self):
         form = AttendeeRegistrationForm(
-            data={'email': 'test@example.org', 'password1': 's3cr3t', 'password2': 's3cr3t'})
+            data={'email': 'test@example.org', 'password1': 's3cr3t',
+                  'password2': 's3cr3t'})
         valid = form.is_valid()
         self.assertTrue(valid, form.errors)
 
@@ -60,8 +64,9 @@ class AttendeeRegistrationViewTest(TestCase):
 
     def test_register_permit_contact(self):
         form = AttendeeRegistrationForm(
-            data={'email': 'test@example.org', 'password1': 's3cr3t', 'password2': 's3cr3t',
-                  'accept_general_contact': 'checked', 'accept_devday_contact': 'checked'})
+            data={'email': 'test@example.org', 'password1': 's3cr3t',
+                  'password2': 's3cr3t', 'accept_general_contact': 'checked',
+                  'accept_devday_contact': 'checked'})
         valid = form.is_valid()
         self.assertTrue(valid, form.errors)
 
@@ -82,6 +87,61 @@ class AttendeeRegistrationViewTest(TestCase):
         self.assertIsInstance(attendee, Attendee)
 
         self.assertEqual(len(mail.outbox), 1)
+
+    def test_get_anonymous(self):
+        response = self.client.get(reverse('registration_register'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response, 'django_registration/registration_form.html')
+        self.assertIn('form', response.context)
+        self.assertIsInstance(
+            response.context['form'], AttendeeRegistrationForm)
+
+    def test_get_with_existing_non_attendee(self):
+        user = DevDayUser.objects.create_user('test@example.org', 'test')
+        self.client.login(username='test@example.org', password='test')
+        response = self.client.get(reverse('registration_register'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response, 'django_registration/registration_form.html')
+        self.assertIn('form', response.context)
+        self.assertIsInstance(
+            response.context['form'], EventRegistrationForm)
+        self.assertIn('user', response.context)
+        self.assertEqual(response.context['user'], user)
+
+    def test_post_with_existing_non_attendee(self):
+        user = DevDayUser.objects.create_user('test@example.org', 'test')
+        self.client.login(username='test@example.org', password='test')
+        response = self.client.post(reverse('registration_register'))
+
+        self.assertRedirects(response, reverse('register_success'))
+        try:
+            attendee = Attendee.objects.get(
+                user=user, event=Event.objects.current_event())
+        except Attendee.DoesNotExist:
+            self.fail('Attendee expected')
+        self.assertEqual(attendee.user, user)
+
+    def test_get_with_existing_attendee(self):
+        user = DevDayUser.objects.create_user('test@example.org', 'test')
+        Attendee.objects.create(user=user, event=Event.objects.current_event())
+
+        self.client.login(username='test@example.org', password='test')
+        response = self.client.get(reverse('registration_register'))
+
+        self.assertRedirects(response, reverse('register_success'))
+
+    def test_post_with_existing_attendee(self):
+        user = DevDayUser.objects.create_user('test@example.org', 'test')
+        Attendee.objects.create(user=user, event=Event.objects.current_event())
+
+        self.client.login(username='test@example.org', password='test')
+        response = self.client.post(reverse('registration_register'))
+
+        self.assertRedirects(response, reverse('register_success'))
 
 
 class AttendeeDeleteViewTest(TestCase):

@@ -38,7 +38,9 @@ var ImageModal = function ($element, args) {
         var img = '<img src="'+that.imageSource+'" />';
         that.$modalContent.html(img);
         that.$modalTitle.html(that.imageTitle);
-        that.$imageModal.modal('show');
+        if (!$('html').hasClass('cms-structure-mode-content')) {
+            that.$imageModal.modal('show');
+        }
     }
 
 

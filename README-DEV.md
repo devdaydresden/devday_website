@@ -52,6 +52,14 @@ Successfully tagged devday_hp_revproxy:latest
 
 This invokes Docker Compose with the compose files appropriate for the development setup.
 
+### `coverage`: Run Coverage Report
+
+Using [coverage](https://coverage.readthedocs.io/), generate a report of test code coverage. The report will be printed, and a HTML version will be generated in devday/coverage-report.  `coverage` will run `manage.py test` to check test code coverage.
+
+### `coveralls`: Submit `coverage` report to coveralls.io
+
+Submit the `coverage` results to [coveralls.io](https://coveralls.io/github/devdaydresden/devday_website).  If you're running this outside of Travis CI, you need to supply the necessary environment variables. See [Supported CI Services](https://docs.coveralls.io/supported-ci-services).
+
 ### `devdata`: Create database contents suitable for development
 
 This will fill an empty database with pages, events, and attendees.
@@ -71,7 +79,7 @@ Creating volume "devday_hp_devday_static" with default driver
 
 Make sure you're logged in to Docker Hub with a user that is allowed to push to the `devdaydresden` organization.  For Travis etc., set DOCKER_USERNAME and DOCKER_PASSWORD to have run.sh log in before pushing.
 
-## `logs`: Show Logs of the App Container
+### `logs`: Show Logs of the App Container
 
 Tail the logs from the app container, which is running `manage.py runserver`.
 

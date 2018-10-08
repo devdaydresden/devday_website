@@ -28,6 +28,7 @@ lorem = "*"
 
 [dev-packages]
 coverage = "*"
+coveralls = "*"
 django-debug-toolbar = "*"
 mock = "*"
 

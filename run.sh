@@ -22,6 +22,9 @@ usage() {
     cat >&2 <<EOD
 usage: ./run.sh backup
        ./run.sh build
+       ./run.sh compose [...]
+       ./run.sh coverage
+       ./run.sh coveralls
        ./run.sh devdata
        ./run.sh manage [...]
        ./run.sh purge
@@ -30,8 +33,6 @@ usage: ./run.sh backup
        ./run.sh start
        ./run.sh stop
        ./run.sh test
-       ./run.sh coverage
-       ./run.sh compose [...]
 EOD
 }
 
@@ -75,6 +76,26 @@ case "$cmd" in
     ;;
   compose)
     $DOCKER_COMPOSE $@
+    ;;
+  coverage)
+    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
+      echo "*** Starting all containers"
+      docker_compose_up
+    fi
+    $DOCKER_COMPOSE exec "${container}" coverage run --branch manage.py test -v1 -k
+    $DOCKER_COMPOSE exec "${container}" coverage report -m
+    $DOCKER_COMPOSE exec "${container}" coverage html
+    ;;
+  coveralls)
+    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
+      echo "*** Starting all containers"
+      docker_compose_up
+    fi
+    $DOCKER_COMPOSE exec -e CI_BRANCH="${CI_BRANCH}" \
+      -e CI_BUILD_URL="${CI_BUILD_URL}" \
+      -e CI_NAME="${CI_NAME}" \
+      -e COVERALLS_REPO_TOKEN="${COVERALLS_REPO_TOKEN}" \
+      "${container}" coveralls
     ;;
   devdata)
     echo "    Starting containers"
@@ -152,15 +173,6 @@ case "$cmd" in
       docker_compose_up
     fi
     $DOCKER_COMPOSE exec "${container}" python manage.py test -v1 -k
-    ;;
-  coverage)
-    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
-      echo "*** Starting all containers"
-      docker_compose_up
-    fi
-    $DOCKER_COMPOSE exec "${container}" coverage run --branch manage.py test -v1 -k
-    $DOCKER_COMPOSE exec "${container}" coverage report -m
-    $DOCKER_COMPOSE exec "${container}" coverage html
     ;;
   *)
     echo -e "error: unknown action \"${cmd}\":\n" >&2

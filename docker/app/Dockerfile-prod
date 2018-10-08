@@ -37,6 +37,7 @@ WORKDIR /srv/devday
 RUN apk --no-cache add \
     build-base \
     ca-certificates \
+    dumb-init \
     gcc \
     gettext \
     jpeg \
@@ -68,4 +69,4 @@ RUN apk --no-cache add \
     postgresql-dev \
     zlib-dev
 
-CMD /srv/devday/start-application.sh
+ENTRYPOINT ["dumb-init", "/srv/devday/start-application.sh"]

@@ -1,0 +1,33 @@
+[data-ui-image-modal] {
+    cursor: pointer;
+}
+
+.modal {
+    .modal-xl {
+        max-width: 90%;
+        top: 30px;
+        border: 1px solid $highlight-darker;
+
+        .modal-content {
+            background: $base;
+            color: $white;
+
+            .modal-header {
+                background: $highlight-darker;
+                border-radius: 0;
+
+                .close {
+                    color: $white;
+                }
+            }
+
+            .modal-body {
+                padding: 0;
+
+                img {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

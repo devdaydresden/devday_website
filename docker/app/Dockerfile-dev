@@ -30,15 +30,16 @@ RUN apk --no-cache add \
   bash \
   build-base \
   curl \
+  dumb-init \
   gcc \
   gettext \
   git \
+  jpeg-dev \
   libffi-dev \
   linux-headers \
   musl-dev \
-  zlib-dev \
   postgresql-dev \
-  jpeg-dev
+  zlib-dev
 RUN pip install pipenv
 
 VOLUME /srv/devday /srv/devday/devday/media /srv/devday/devday/static
@@ -49,4 +50,4 @@ RUN pipenv install --system --deploy --ignore-pipfile --dev
 
 WORKDIR /srv/devday/devday
 
-ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["dumb-init", "python", "manage.py", "runserver", "0.0.0.0:8000"]

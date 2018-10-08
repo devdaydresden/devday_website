@@ -45,30 +45,43 @@ class AttendeeRegistrationView(RegistrationView):
         'user': EventRegistrationForm,
     }
 
-    def create_attendee(self, user):
-        attendee = Attendee(user=user, event=Event.objects.current_event())
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.auth_level = None
+
+    def create_attendee(self, user, event):
+        attendee = Attendee(user=user, event=event)
         attendee.save()
+        return attendee
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
         if user.is_authenticated:
-            if not user.get_attendee():
+            current_event = Event.objects.current_event()
+            if not user.get_attendee(event=current_event):
                 self.auth_level = 'user'
                 if self.request.method == 'POST':
-                    self.create_attendee(self.request.user)
-                    return redirect(reverse('register_success'))
+                    self.create_attendee(
+                        self.request.user, event=current_event)
+                    return redirect(self.get_success_url())
             else:
-                return redirect(reverse('register_success'))
+                return redirect(self.get_success_url())
         else:
             # noinspection PyAttributeOutsideInit
             self.auth_level = 'anonymous'
         return super(AttendeeRegistrationView, self).dispatch(*args, **kwargs)
 
+    def get_success_url(self, user=None):
+        if self.auth_level == 'anonymous':
+            return reverse_lazy('django_registration_complete')
+        return reverse_lazy('register_success')
+
     def get_form_class(self, request=None):
         return self.form_classes.get(self.auth_level, None)
 
     def get_email_context(self, activation_key):
-        context = super(AttendeeRegistrationView, self).get_email_context(activation_key)
+        context = super(AttendeeRegistrationView, self).get_email_context(
+            activation_key)
         context.update({'request': self.request})
         return context
 
@@ -84,7 +97,9 @@ class AttendeeRegistrationView(RegistrationView):
         signals.user_registered.send(sender=self.__class__, user=user,
                                      request=self.request)
 
-        self.create_attendee(user)
+        attendee = self.create_attendee(user, Event.objects.current_event())
+        attendee.source = form.cleaned_data.get('source')
+        attendee.save()
 
         self.send_activation_email(user)
 

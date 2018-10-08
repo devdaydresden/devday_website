@@ -152,7 +152,7 @@ class Track(TimeStampedModel):
 class Talk(models.Model):
     speaker = models.ForeignKey(Speaker)
     title = models.CharField(verbose_name=_('Session title'), max_length=255)
-    slug = models.SlugField(verbose_name=_('Slug'))
+    slug = models.SlugField(verbose_name=_('Slug'), max_length=255)
     abstract = models.TextField(verbose_name=_('Abstract'))
     remarks = models.TextField(verbose_name=_('Remarks'), blank=True)
     track = models.ForeignKey(Track, null=True, blank=True)

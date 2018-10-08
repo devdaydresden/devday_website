@@ -10,8 +10,11 @@ from .models import Event
 class EventArchiveMenu(Menu):
     def get_nodes(self, request):
         archive = NavigationNode(_('Archive'), '#', 0)
-        for event in Event.objects.filter(end_time__lt=timezone.now()).exclude(
-                id=Event.objects.current_event_id()).order_by('start_time'):
+        events = Event.objects.filter(end_time__lt=timezone.now())
+        if not request.user.is_staff:
+            events = events.filter(published=True, sessions_published=True)
+        events = events.exclude(id=Event.objects.current_event_id())
+        for event in events.order_by('start_time'):
             archive.children.append(
                 NavigationNode(event.title, event.get_absolute_url(),
                                event.id))

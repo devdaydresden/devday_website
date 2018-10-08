@@ -80,6 +80,7 @@ module.exports = {
             srcDir + '/js/core/event-handler.js',
             srcDir + '/js/core/csrf-handler.js',
             srcDir + '/js/core/resize-listener.js',
+            srcDir + '/js/components/image-modal.js',
             srcDir + '/js/components/collapse.js',
             srcDir + '/js/components/navbar.js',
             srcDir + '/js/core/devday-registry.js',

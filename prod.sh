@@ -27,7 +27,7 @@ case "$cmd" in
     BACKUPDATA=$(date +%Y%m%d-%H%M%S%z)
     mkdir -p backup
     $DOCKER_COMPOSE exec db pg_dump -U postgres devday | gzip > "backup/prod-db-${BACKUPDATA}.sql.gz"
-    $DOCKER_COMPOSE run --rm --no-deps -T app tar cz -C /srv/devday/media . > "backup/prod-media-${BACKUPDATA}.tar.gz"
+    $DOCKER_COMPOSE run --rm --no-deps -T --entrypoint "tar cz -C /srv/devday/media ." app > "backup/prod-media-${BACKUPDATA}.tar.gz"
     ;;
   build)
     # Relevant for production/test environments with full vault setup

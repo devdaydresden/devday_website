@@ -43,14 +43,15 @@ class DevDataTests(TestCase):
             objects = FooManager()
 
         def create():
-            pass
+            raise Exception('testing')
 
         try:
             self.devdata.create_objects('foo', Foo, 1, create)
-        except Exception as e:
-            print(e)
-            self.assertTrue('FAILED' in self.stdout.getvalue(),
-                            self.stdout.getvalue())
+        except Exception:
+            pass
+        self.assertTrue('FAILED' in self.stdout.getvalue(),
+                        'should have FAILED, but got: {}'
+                        .format(self.stdout.getvalue()))
 
     def subtest_create_admin_user(self):
         self.devdata.create_admin_user()

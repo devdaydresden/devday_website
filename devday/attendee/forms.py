@@ -1,19 +1,19 @@
 from __future__ import unicode_literals
 
+from attendee.models import DevDayUser, Attendee
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Layout, Field, Submit, Hidden, HTML
+from devday.forms import AuthenticationForm
+from devday.utils.forms import (
+    CombinedFormBase, DevDayFormHelper, DevDayField, DevDayContactField)
 from django import forms
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, password_validation
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.edit import FormView
 from django_registration.forms import RegistrationFormUniqueEmail
-
-from attendee.models import DevDayUser, Attendee
-from devday.forms import AuthenticationForm
-from devday.utils.forms import (
-    CombinedFormBase, DevDayFormHelper, DevDayField, DevDayContactField)
 from talk.models import Talk
 
 User = get_user_model()
@@ -49,6 +49,38 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
             'position',
             'organization',
         ]
+
+
+class DevDayUserCreationForm(UserCreationForm):
+    """
+    A form that creates a user, with no privileges, from the given username and
+    password.
+    """
+
+    class Meta:
+        model = DevDayUser
+        fields = ("email",)
+        field_classes = {'email': forms.EmailField}
+
+    def __init__(self, *args, **kwargs):
+        super(DevDayUserCreationForm, self).__init__(*args, **kwargs)
+        if self._meta.model.USERNAME_FIELD in self.fields:
+            self.fields[self._meta.model.USERNAME_FIELD].widget.attrs.update({'autofocus': True})
+
+    def save(self, commit=True):
+        user = super(DevDayUserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
+
+
+class DevDayUserChangeForm(UserChangeForm):
+    class Meta:
+        model = DevDayUser
+        fields = '__all__'
+        field_classes = {'email': forms.EmailField}
+
 
 
 class AttendeeSourceForm(ModelForm):

@@ -1,3 +1,4 @@
+language: python
 sudo: true
 services:
 - docker
@@ -9,4 +10,5 @@ install:
 script:
 - "./run.sh coverage"
 after_success:
-- "./run.sh coveralls"
+- pip install coveralls
+- "cd devday && coverage combine .coverage && coveralls"

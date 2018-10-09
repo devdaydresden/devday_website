@@ -9,6 +9,7 @@ from shutil import copyfile
 import errno
 import os
 import random
+import sys
 
 import lorem
 
@@ -206,7 +207,6 @@ tiefer in ein Thema einsteigen.</p>
                 # to an empty placeholder.
                 sph = StaticPlaceholder.objects.get(name=name)
                 ph = sph.draft
-            # p = lorem.paragraph()
             if not text:
                 text = ''
                 for i in range(paras):
@@ -279,7 +279,7 @@ tiefer in ein Thema einsteigen.</p>
             r += "    {}\n".format(u.email)
         return r
 
-    def create_attendees(self):
+    def create_users_and_attendees(self, amount=sys.maxsize):
         events = Event.objects.all()
         first = ['Alexander', 'Barbara', 'Christian', 'Daniela', 'Erik',
                  'Fatima', 'Georg', 'Heike', 'Ingo', 'Jana', 'Klaus',
@@ -290,18 +290,27 @@ tiefer in ein Thema einsteigen.</p>
                 'Becker', 'Lehmann', 'Koch', 'Richter', 'Neumann',
                 'Fuchs', 'Vogel', 'Keller', 'Jung', 'Hahn',
                 'Schubert', 'Winkler', 'Berger', 'Lorenz', 'Albrecht']
-        self.write_action(
-            'Creating {:d} attendees'.format(len(first) * len(last)))
+        length = len(first) * len(last)
+        if length > amount:
+            length = amount
+        self.write_action('Creating {:d} attendees'.format(length))
         for f in first:
             for l in last:
                 user = User.objects.create_user(
                     '{}.{}@example.com'.format(f.lower(), l.lower()),
-                    password='attendee', first_name=f, last_name=l)
+                    password='attendee', first_name=f, last_name=l,
+                    contact_permission_date=timezone.now())
                 user.save()
                 for e in events:
                     if self.rng.random() < 0.8:
                         a = Attendee(user=user, event=e)
                         a.save()
+                amount -= 1
+                if (amount <= 0):
+                    return
+
+    def create_attendees(self, amount=sys.maxsize):
+        self.create_users_and_attendees(amount)
         g = Group.objects.get(name='talk_committee')
         for u in self.rng.sample(list(User.objects.all()), 7):
             u.groups.add(g)
@@ -355,7 +364,7 @@ tiefer in ein Thema einsteigen.</p>
         """
         Create talks. With a probability of 10%, a speaker will submit two
         talks, with a probability of 75% will submit one talk, and with a
-        remaining probability of 5% will not submit any talk for the event the
+        remaining probability of 15% will not submit any talk for the event the
         speaker registered for.
         """
         formats = list(TalkFormat.objects.all())

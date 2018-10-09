@@ -337,7 +337,7 @@ class SpeakerPublic(DetailView):
 
     def get_queryset(self):
         return super(SpeakerPublic, self).get_queryset().filter(
-            talk__track__isnull=False).prefetch_related('talk_set')
+            talk__track__isnull=False).prefetch_related('talk_set').distinct()
 
     def get_context_data(self, **kwargs):
         context = super(SpeakerPublic, self).get_context_data(**kwargs)

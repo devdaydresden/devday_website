@@ -1,6 +1,9 @@
+import errno
 import logging
 import os
+import shutil
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core import mail
@@ -17,7 +20,7 @@ from event.models import Event
 from event.test.testutils import create_test_event, update_current_event
 from talk.forms import (CreateSpeakerForm, BecomeSpeakerForm, TalkCommentForm,
                         EditTalkForm, TalkSpeakerCommentForm)
-from talk.models import Speaker, Talk, TalkFormat, TalkComment, Vote
+from talk.models import Speaker, Talk, TalkFormat, TalkComment, Vote, Track
 from talk.views import CreateTalkView, ExistingFileView, CreateSpeakerView
 
 User = get_user_model()
@@ -1190,3 +1193,82 @@ class TestTalkSpeakerCommentDelete(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertRaises(TalkComment.DoesNotExist, TalkComment.objects.get,
                           pk=self.talk_comment.pk)
+
+
+class TestSpeakerPublic(TestCase):
+    def setUp(self):
+        self.event = Event.objects.current_event()
+        speaker_placeholder_file = 'icons8-contacts-26.png'
+        speaker_placeholder_source_path = os.path.join(
+            settings.STATICFILES_DIRS[0], 'img', speaker_placeholder_file)
+        speaker_portrait_media_dir = 'speakers'
+        self.speaker_portrait_media_path = os.path.join(
+            speaker_portrait_media_dir, speaker_placeholder_file)
+        speaker_portrait_dir = os.path.join(settings.MEDIA_ROOT,
+                                            speaker_portrait_media_dir)
+        speaker_portrait_path = os.path.join(settings.MEDIA_ROOT,
+                                             self.speaker_portrait_media_path)
+        self.speaker = Speaker.objects.create(
+            user=Attendee.objects.create(
+                user=User.objects.create_user(
+                    email=u'speaker@example.org',
+                    password=u's3cr3t'),
+                event=self.event
+            ),
+            videopermission=True, shirt_size=1,
+        )
+        if not os.path.isfile(speaker_portrait_path):
+            try:
+                os.makedirs(speaker_portrait_dir)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+            shutil.copyfile(speaker_placeholder_source_path,
+                            speaker_portrait_path)
+        self.speaker.portrait = self.speaker.portrait.field \
+            .attr_class(self.speaker, self.speaker.portrait.field,
+                        self.speaker_portrait_media_path)
+        self.speaker.save()
+        self.track = Track.objects.create(event=self.event, name='Track 1')
+        self.talk = Talk.objects.create(
+            speaker=self.speaker, title=u'Something important',
+            abstract=u'I have something important to say',
+            track=self.track)
+
+    def test_template_used(self):
+        response = self.client.get(
+            '/session/speaker/{}/'.format(self.speaker.id))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'talk/speaker_public.html')
+
+    def test_speaker_with_two_talks(self):
+        Talk.objects.create(
+            speaker=self.speaker, title=u'Some other talk',
+            abstract='Been there, done that',
+            track=self.track)
+        response = self.client.get(
+            '/session/speaker/{}/'.format(self.speaker.id))
+        self.assertEqual(response.status_code, 200)
+
+    def test_context_has_speaker(self):
+        response = self.client.get(
+            '/session/speaker/{}/'.format(self.speaker.id))
+        self.assertIn('speaker', response.context)
+        self.assertEqual(response.context['speaker'], self.speaker)
+
+    def test_context_has_talk(self):
+        response = self.client.get(
+            '/session/speaker/{}/'.format(self.speaker.id))
+        self.assertIn('talks', response.context)
+        self.assertEqual(list(response.context['talks']), [self.talk])
+
+    def test_context_has_all_talks(self):
+        talk2 = Talk.objects.create(
+            speaker=self.speaker, title=u'Some other talk',
+            abstract='Been there, done that',
+            track=self.track)
+        response = self.client.get(
+            '/session/speaker/{}/'.format(self.speaker.id))
+        self.assertIn('talks', response.context)
+        self.assertEqual(
+            set(response.context['talks']), {self.talk, talk2})

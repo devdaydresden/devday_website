@@ -1,14 +1,26 @@
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from .forms import DevDayUserCreationForm, DevDayUserChangeForm
-from .models import DevDayUser
+from .forms import AttendeeInlineForm, DevDayUserCreationForm, DevDayUserChangeForm
+from .models import DevDayUser, Attendee
 
 
-class AttendeeAdmin(ModelAdmin):
-    list_display = ['__str__']
+@admin.register(Attendee)
+class AttendeeAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'user', 'event')
+    fields = ('user', 'source', 'event')
+    list_filter = ('event',)
+    search_fields = ('user__email', 'user__first_name', 'user__last_name')
+    ordering = ('event__title', 'user__email')
+
+
+class AttendeeInline(admin.TabularInline):
+    model = Attendee
+    fields = (('event', 'source'),)
+    ordering = ('event__title',)
+    extra = 0
+    form = AttendeeInlineForm
 
 
 @admin.register(DevDayUser)
@@ -22,7 +34,7 @@ class DevDayUserAdmin(UserAdmin):
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined', 'contact_permission_date')}),
-        (_('Miscellaneous'), {'fields': ('twitter_handle', 'phone', 'position', 'organization')})
+        (_('Miscellaneous'), {'fields': ('twitter_handle', 'phone', 'position', 'organization')}),
     )
     add_fieldsets = (
         (None, {
@@ -33,3 +45,4 @@ class DevDayUserAdmin(UserAdmin):
     ordering = ('email',)
     add_form = DevDayUserCreationForm
     form = DevDayUserChangeForm
+    inlines = (AttendeeInline,)

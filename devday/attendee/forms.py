@@ -82,6 +82,14 @@ class DevDayUserChangeForm(UserChangeForm):
         field_classes = {'email': forms.EmailField}
 
 
+class AttendeeInlineForm(ModelForm):
+    class Meta:
+        model = Attendee
+        fields = ['event', 'source']
+        widgets = {
+            'source': forms.Textarea(attrs={'cols': 40, 'rows': 1})
+        }
+
 
 class AttendeeSourceForm(ModelForm):
     class Meta:

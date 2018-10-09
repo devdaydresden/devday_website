@@ -355,12 +355,15 @@ class TalkListView(ListView):
             event = Event.objects.current_event()
             return HttpResponseRedirect(
                 reverse_lazy('session_list', kwargs={'event': event.slug}))
-        return super(TalkListView, self).dispatch(request, *args, **kwargs)
+        event = get_object_or_404(Event, slug=event)
+        print('user.is_staff {}'.format(request.user.is_staff))
+        if (event.published and event.sessions_published) \
+                or request.user.is_staff:
+            return super(TalkListView, self).dispatch(request, *args, **kwargs)
+        raise Http404
 
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        if not event.sessions_published:
-            raise Http404
         return super(TalkListView, self).get_queryset().filter(
             track__isnull=False,
             speaker__user__event=event,

@@ -5,12 +5,12 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
-from django.test import override_settings, TransactionTestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from django.utils.text import slugify
 
 from event.models import Event
-from speaker.models import Speaker, PublishedSpeaker
+from speaker.models import PublishedSpeaker, Speaker
 
 
 def copy_speaker_image(field):
@@ -20,7 +20,7 @@ def copy_speaker_image(field):
         field.save('speaker-dummy.png', source, save=False)
 
 
-class TestSpeaker(TransactionTestCase):
+class TestSpeaker(TestCase):
     def test___str__(self):
         speaker = Speaker(
             name='Test Speaker',
@@ -53,7 +53,7 @@ class TestSpeaker(TransactionTestCase):
         self.assertEqual(speaker.slug, 'a-slugger-by-heart')
 
 
-class TestPublishedSpeaker(TransactionTestCase):
+class TestPublishedSpeaker(TestCase):
     def test___str__(self):
         event = Event.objects.create(
             title='Test event', slug='test-event', submission_open=True,
@@ -71,10 +71,11 @@ class TestPublishedSpeaker(TransactionTestCase):
 
 
 @override_settings(MEDIA_ROOT=tempfile.mkdtemp())
-class TestPublishedSpeakerManager(TransactionTestCase):
+class TestPublishedSpeakerManager(TestCase):
     @classmethod
     def tearDownClass(cls):
-        shutil.rmtree(settings.MEDIA_ROOT)
+        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        super().tearDownClass()
 
     def test_copy_from_speaker(self):
         speaker = Speaker(

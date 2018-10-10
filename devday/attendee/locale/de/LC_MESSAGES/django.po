@@ -321,7 +321,7 @@ msgstr "Du hast bereits eingecheckt."
 
 #: attendee/views.py:49
 msgid "You are not registered for the current event."
-msgstr "Du bist nicht für die aktuellen Veranstaltung angemeldet."
+msgstr "Du bist nicht für die aktuelle Veranstaltung angemeldet."
 
 #: attendee/views.py:286
 #, python-brace-format

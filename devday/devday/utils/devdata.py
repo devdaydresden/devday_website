@@ -65,6 +65,7 @@ class DevData:
 
     def write_action(self, msg):
         self.stdout.write(msg + '... ', ending='')
+        self.stdout.flush()
 
     def write_ok(self):
         self.stdout.write(' OK', style_func=self.style.SUCCESS)
@@ -227,6 +228,7 @@ tiefer in ein Thema einsteigen.</p>
         # find devday -name "*.html" | xargs grep static_placeholder \
         # | sed -nEe 's#^.*static_placeholder "([^"]*)".*$#\1#p' | sort -u
         for placeholder in (
+                u'checkin-instructions',
                 u'create-talk-introtext',
                 u'gdpr_teaser',
                 u'register-attendee-introtext',
@@ -295,7 +297,7 @@ tiefer in ein Thema einsteigen.</p>
         length = len(first) * len(last)
         if length > amount:
             length = amount
-        self.write_action('Creating {:d} attendees'.format(length))
+        self.write_action('{:d} attendees'.format(length))
         for f in first:
             for l in last:
                 user = User.objects.create_user(
@@ -305,8 +307,7 @@ tiefer in ein Thema einsteigen.</p>
                 user.save()
                 for e in events:
                     if self.rng.random() < 0.8:
-                        a = Attendee(user=user, event=e)
-                        a.save()
+                        Attendee.objects.create(user=user, event=e)
                 amount -= 1
                 if (amount <= 0):
                     return

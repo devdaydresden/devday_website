@@ -25,6 +25,7 @@ django-file-form = "*"
 django-registration = "*"
 "django-select2" = "*"
 lorem = "*"
+luhn = "*"
 
 [dev-packages]
 coverage = "*"

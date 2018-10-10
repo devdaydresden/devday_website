@@ -1,5 +1,4 @@
 import errno
-import logging
 import os
 import shutil
 
@@ -24,10 +23,6 @@ from talk.models import Speaker, Talk, TalkFormat, TalkComment, Vote, Track
 from talk.views import CreateTalkView, ExistingFileView, CreateSpeakerView
 
 User = get_user_model()
-
-# FIXME this should be in a central location for all tests, not randomly in
-# one of the modules.
-logging.disable(logging.CRITICAL)
 
 
 class TestSubmitSessionView(TestCase):

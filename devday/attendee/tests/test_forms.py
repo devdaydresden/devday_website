@@ -4,8 +4,15 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from django.test import TestCase
 
-from attendee.forms import DevDayRegistrationForm, AttendeeRegistrationForm
+from attendee.forms import (
+    AttendeeRegistrationForm, CheckInAttendeeForm, DevDayRegistrationForm)
 from attendee.models import Attendee, DevDayUser
+from event.models import Event
+
+ADMIN_EMAIL = 'admin@example.org'
+ADMIN_PASSWORD = 'sUp3rS3cr3t'
+USER_EMAIL = 'test@example.org'
+USER_PASSWORD = 's3cr3t'
 
 
 class DevDayRegistrationFormTest(TestCase):
@@ -14,8 +21,8 @@ class DevDayRegistrationFormTest(TestCase):
         self.assertListEqual(
             list(form.fields.keys()),
             ['email', 'password1', 'password2', 'first_name', 'last_name',
-             'twitter_handle', 'phone', 'position', 'organization', 'accept_devday_contact',
-             'accept_general_contact']
+             'twitter_handle', 'phone', 'position', 'organization',
+             'accept_devday_contact', 'accept_general_contact']
         )
 
     def test_model(self):
@@ -28,7 +35,8 @@ class DevDayRegistrationFormTest(TestCase):
         form = DevDayRegistrationForm()
         form.cleaned_data = {'email': 'dummy@example.org'}
         form.clean()
-        self.assertEqual(form.cleaned_data[DevDayUser.USERNAME_FIELD], form.cleaned_data['email'])
+        self.assertEqual(form.cleaned_data[DevDayUser.USERNAME_FIELD],
+                         form.cleaned_data['email'])
 
 
 class AttendeeRegistrationFormTest(TestCase):
@@ -54,3 +62,20 @@ class AttendeeRegistrationFormTest(TestCase):
              'password2', 'position', 'organization', 'source',
              'accept_general_contact']
         )
+
+
+class CheckInAttendeeFormTest(TestCase):
+    def test_submit_form(self):
+        event = Event.objects.current_event()
+        user = DevDayUser.objects.create_user(
+            USER_EMAIL, USER_PASSWORD, first_name='Test', last_name='User')
+        attendee = Attendee.objects.create(user=user, event=event)
+        form = CheckInAttendeeForm(data={'attendee': attendee.checkin_code})
+        self.assertIsInstance(form.helper, FormHelper)
+        self.assertTrue(form.is_valid())
+        form = CheckInAttendeeForm(data={'attendee': attendee.user.email})
+        self.assertTrue(form.is_valid())
+        form = CheckInAttendeeForm(data={})
+        self.assertFalse(form.is_valid())
+        form = CheckInAttendeeForm(data={'attendee': '12345678'})
+        self.assertFalse(form.is_valid())

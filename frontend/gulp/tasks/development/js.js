@@ -19,8 +19,8 @@ gulp.task('js', function(callback) {
         .pipe(gulpif(options.env === config.environment.production, sourcemaps.init({
             loadMaps: true
         }))) // init source maps in production
-        .pipe(plumber())
-        .pipe(header(config.strings.banner))
+        //.pipe(plumber())
+        //.pipe(header(config.strings.banner))
         .pipe(concat(config.js.filename))
         .pipe(gulpif(options.env === config.environment.production, uglify())) // only minify in production
         .pipe(gulpif(options.env === config.environment.production, sourcemaps.write('.'))) //write sourcemap in production

@@ -1,3 +1,5 @@
+from urllib.parse import quote
+
 from django.core import mail
 from django.http import HttpRequest
 from django.test import TestCase
@@ -11,6 +13,11 @@ from event.models import Event
 from event.test.testutils import create_test_event
 from talk.tests.testutils import create_test_speaker, create_test_talk
 
+ADMIN_EMAIL = 'admin@example.org'
+ADMIN_PASSWORD = 'sUp3rS3cr3t'
+USER_EMAIL = 'test@example.org'
+USER_PASSWORD = 's3cr3t'
+
 
 class AttendeeProfileViewTest(TestCase):
     """
@@ -21,7 +28,8 @@ class AttendeeProfileViewTest(TestCase):
     def test_needs_login(self):
         response = self.client.get('/accounts/profile/')
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/accounts/login/?next=/accounts/profile/')
+        self.assertEqual(response.url,
+                         '/accounts/login/?next=/accounts/profile/')
 
     def test_used_template(self):
         DevDayUser.objects.create_user('test@example.org', 's3cr3t')
@@ -154,7 +162,8 @@ class AttendeeDeleteViewTest(TestCase):
         self.assertRedirects(r, '/accounts/login/?next=/accounts/delete/')
 
     def test_cannot_delete_speaker_with_talk(self):
-        attendee = Attendee.objects.create(user=self.user, event=create_test_event())
+        attendee = Attendee.objects.create(user=self.user,
+                                           event=create_test_event())
         speaker = create_test_speaker(attendee)
         create_test_talk(speaker)
 
@@ -166,7 +175,8 @@ class AttendeeDeleteViewTest(TestCase):
         self.assertIsNotNone(self.user.id)
 
     def test_can_delete_speaker_without_talk(self):
-        attendee = Attendee.objects.create(user=self.user, event=create_test_event())
+        attendee = Attendee.objects.create(user=self.user,
+                                           event=create_test_event())
         create_test_speaker(attendee)
 
         self.client.login(username='test@example.org', password='test')
@@ -178,7 +188,8 @@ class AttendeeDeleteViewTest(TestCase):
             self.user.refresh_from_db()
 
     def test_post_delete_with_attendee(self):
-        attendee = Attendee.objects.create(user=self.user, event=create_test_event())
+        attendee = Attendee.objects.create(user=self.user,
+                                           event=create_test_event())
 
         self.client.login(username='test@example.org', password='test')
         r = self.client.post('/accounts/delete/')
@@ -194,3 +205,123 @@ class AttendeeDeleteViewTest(TestCase):
         self.client.login(username='test@example.org', password='test')
         r = self.client.get('/accounts/delete/')
         self.assertTemplateUsed(r, 'attendee/devdayuser_confirm_delete.html')
+
+
+class CheckInAttendeeViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.url = reverse('attendee_checkin')
+        cls.staff_password = 'foo'
+        cls.staff = DevDayUser.objects.create_user(
+            'staff@example.com', cls.staff_password, is_staff=True)
+        cls.user = DevDayUser.objects.create_user('test@example.org', 'test')
+        cls.attendee = Attendee.objects.create(
+            user=cls.user, event=Event.objects.current_event())
+        cls.other_attendee = Attendee.objects.create(
+            user=cls.user, event=create_test_event())
+
+    def setUp(self):
+        self.attendee.checked_in = None
+
+    def login(self):
+        self.client.login(
+            username=self.staff.email, password=self.staff_password)
+
+    def test_get_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 302)
+        self.assertEquals(r.url, '/accounts/login/?next={}'.format(self.url),
+                          'should redirect to login page')
+
+    def test_get_staff(self):
+        self.login()
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+
+    def test_post_empty(self):
+        self.login()
+        r = self.client.post(self.url, data={})
+        self.assertEquals(r.status_code, 200, 'should not redirect')
+        # FIXME attendee never changes over here, but does in the view
+        # self.assertIsNone(self.attendee.checked_in,
+        #                   'attendee should not be checked in')
+
+    def test_post_checkin_code(self):
+        self.login()
+        r = self.client.post(
+            self.url, data={'attendee': self.attendee.checkin_code})
+        self.assertEquals(r.status_code, 302, 'should redirect to self')
+        self.assertEquals(r.url, self.url, 'should redirect to self')
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        # FIXME attendee never changes over here, but does in the view
+        # self.assertIsNotNone(self.attendee.checked_in,
+        #                      'attendee should be checked in')
+
+    def test_post_email(self):
+        self.login()
+        r = self.client.post(
+            self.url, data={'attendee': self.attendee.user.email})
+        self.assertEquals(r.status_code, 302, 'should redirect to self')
+        self.assertEquals(r.url, self.url, 'should redirect to self')
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        # FIXME attendee never changes over here, but does in the view
+        # self.assertIsNotNone(self.attendee.checked_in,
+        #                      'attendee should be checked in')
+
+
+class CheckInAttendeeViewUrlTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.staff_password = 'foo'
+        cls.staff = DevDayUser.objects.create_user(
+            'staff@example.com', cls.staff_password, is_staff=True)
+        cls.user = DevDayUser.objects.create_user('test@example.org', 'test')
+        cls.attendee = Attendee.objects.create(
+            user=cls.user, event=Event.objects.current_event())
+        cls.other_attendee = Attendee.objects.create(
+            user=cls.user, event=create_test_event())
+
+    def setUp(self):
+        self.attendee.checked_in = None
+
+    def get_url(self, id, verification):
+        return reverse(
+            'attendee_checkin_url',
+            kwargs={'id': id, 'verification': verification}
+            )
+
+    def get_url_for_attendee(self, attendee):
+        return self.get_url(attendee.id, attendee.get_verification())
+
+    def login(self):
+        self.client.login(
+            username=self.staff.email, password=self.staff_password)
+
+    def test_get_anonymous(self):
+        url = self.get_url_for_attendee(self.attendee)
+        r = self.client.get(url)
+        self.assertEquals(r.status_code, 302)
+        self.assertEquals(
+            r.url, '/accounts/login/?next={}'.format(quote(quote(url))),
+            'should redirect to login page')
+
+    def test_get_staff(self):
+        url = self.get_url(12345678, 'somestring')
+        self.login()
+        r = self.client.get(url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        self.assertContains(r, 'Invalid verification URL')
+
+    def test_get_valid(self):
+        url = self.get_url_for_attendee(self.attendee)
+        self.login()
+        r = self.client.get(url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        self.assertContains(r, 'was successfully checked in')

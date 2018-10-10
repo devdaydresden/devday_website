@@ -7,13 +7,15 @@ from devday.forms import AuthenticationForm
 from devday.utils.forms import (
     CombinedFormBase, DevDayFormHelper, DevDayField, DevDayContactField)
 from django import forms
-from django.contrib.auth import get_user_model, password_validation
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.edit import FormView
 from django_registration.forms import RegistrationFormUniqueEmail
+
 from talk.models import Talk
 
 User = get_user_model()
@@ -65,7 +67,8 @@ class DevDayUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(DevDayUserCreationForm, self).__init__(*args, **kwargs)
         if self._meta.model.USERNAME_FIELD in self.fields:
-            self.fields[self._meta.model.USERNAME_FIELD].widget.attrs.update({'autofocus': True})
+            self.fields[self._meta.model.USERNAME_FIELD] \
+                .widget.attrs.update({'autofocus': True})
 
     def save(self, commit=True):
         user = super(DevDayUserCreationForm, self).save(commit=False)
@@ -294,3 +297,40 @@ class AttendeeRegistrationForm(CombinedFormBase):
                 css_class='col-12 text-center',
             )
         )
+
+
+class CheckInAttendeeForm(forms.Form):
+    attendee = forms.CharField(label='Check in code or email address',
+                               max_length=100)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = DevDayFormHelper()
+        self.helper.form_action = 'attendee_checkin'
+        self.helper.form_method = 'post'
+        self.helper.html5_required = True
+        self.helper.layout = Layout(
+            Div(
+                Field('attendee', autofocus='autofocus',
+                      help_text=_('Attendee check in code or  email address'),
+                      wrapper_class='col-12 col-md-6'),
+                css_class='form-row'
+            ),
+            Div(
+                Submit('submit', _('Check in this attendee')),
+                css_class='col-12 text-center',
+            )
+        )
+
+    def clean_attendee(self):
+        checkin_code = self.cleaned_data['attendee']
+        attendee = Attendee.objects.get_by_checkin_code_or_email(checkin_code)
+        if not attendee:
+            raise ValidationError(_('Unknown checkin code or email address, or'
+                                    ' attendee is not registered for the'
+                                    ' current event.'))
+        if attendee.checked_in is not None:
+            raise ValidationError(
+                _('{} is already checked in!'.format(attendee.user)))
+
+        return attendee

@@ -1,10 +1,16 @@
-from __future__ import unicode_literals
+import luhn
+
+from base64 import urlsafe_b64encode
+from hashlib import sha1
+from random import SystemRandom
 
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.core.mail import send_mail
-from django.db import models
+from django.db import models, IntegrityError
+from django.db.models import Q
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
@@ -52,7 +58,8 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
-        help_text=_('Designates whether the user can log into the admin site.'),
+        help_text=_(('Designates whether the user can log into the admin'
+                     ' site.')),
     )
     is_active = models.BooleanField(
         _('active'),
@@ -62,12 +69,18 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
             "Unselect this instead of deleting accounts."
         ),
     )
-    date_joined = models.DateTimeField(pgettext_lazy('devday website', 'date joined'), default=timezone.now)
-    twitter_handle = models.CharField(_('twitter handle'), blank=True, max_length=64)
-    phone = models.CharField(verbose_name=_("Phone"), blank=True, max_length=32)
-    position = models.CharField(_('job or study subject'), blank=True, max_length=128)
-    organization = models.CharField(_('company or institution'), blank=True, max_length=128)
-    contact_permission_date = models.DateTimeField(_('contact permission date'), null=True, blank=True)
+    date_joined = models.DateTimeField(
+        pgettext_lazy('devday website', 'date joined'), default=timezone.now)
+    twitter_handle = models.CharField(
+        _('twitter handle'), blank=True, max_length=64)
+    phone = models.CharField(
+        verbose_name=_("Phone"), blank=True, max_length=32)
+    position = models.CharField(
+        _('job or study subject'), blank=True, max_length=128)
+    organization = models.CharField(
+        _('company or institution'), blank=True, max_length=128)
+    contact_permission_date = models.DateTimeField(
+        _('contact permission date'), null=True, blank=True)
 
     objects = DevDayUserManager()
 
@@ -130,19 +143,82 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-@python_2_unicode_compatible
+class AttendeeManager(models.Manager):
+    def get_by_checkin_code_or_email(self, key):
+        '''
+        Returns the attendee with the given checkin code or email address. It
+        is the responsibility of the caller to verify that the attendee matches
+        the desired event, and that the attendee is not checked in already.
+        '''
+        return self.filter(Q(checkin_code=key) | Q(user__email=key),
+                           event=Event.objects.current_event()).first()
+
+    def is_verification_valid(self, id, verification):
+        return self.get_verification(id) == verification
+
+    def get_verification(self, id):
+        m = sha1(settings.SECRET_KEY.encode())
+        m.update('{:08d}'.format(int(id)).encode())
+        return urlsafe_b64encode(m.digest()).decode('utf-8')
+
+
 class Attendee(models.Model):
     """
-    This is a model class for an attendee.
+    Attendee stores information related to users attending an Event. In
+    addition to the user and event objects, it stores a comment field for
+    how the user learned of this event, a check-in code to manually check
+    the user in to the event, and the date and time the user checked in to
+    the event.
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="attendees")
-    source = models.TextField(_('source'), help_text=_('How have you become aware of this event?'), blank=True)
-    event = models.ForeignKey(Event, verbose_name=_("Event"))
+    event = models.ForeignKey(
+        Event, verbose_name=_("Event"), null=False)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="attendees")
+
+    checkin_code = models.CharField(
+        _('Check-In Code'), help_text=_('Code to check in attendee manually'),
+        max_length=30, null=True, unique=True)
+    checked_in = models.DateTimeField(
+        _('Checked-In'), help_text=_('Date and time the attendee checked in'),
+        null=True, blank=True)
+    source = models.TextField(
+        _('source'), help_text=_('How have you become aware of this event?'),
+        blank=True)
+
+    objects = AttendeeManager()
 
     class Meta:
         verbose_name = _("Attendee")
         verbose_name_plural = _("Attendees")
         unique_together = [('user', 'event')]
 
+    def save(self, *args, **kwargs):
+        '''
+        Ensure that the checkin code is filled in correctly.
+        '''
+        if not self.checkin_code:
+            u = False
+            while not u:
+                r = str(SystemRandom().randrange(1000000, 9999999))
+                self.checkin_code = luhn.append(r)
+                u = Attendee.objects.filter(
+                    checkin_code=self.checkin_code).count() == 0
+        return super().save(*args, **kwargs)
+
+    def get_verification(self):
+        return Attendee.objects.get_verification(self.id)
+
+    def get_checkin_url(self):
+        return reverse(
+            'attendee_checkin_url',
+            kwargs={'id': self.id, 'verification': self.get_verification()}
+            )
+
+    def check_in(self):
+        if self.checked_in:
+            raise IntegrityError('attendee is already checked in')
+        self.checked_in = timezone.now()
+
     def __str__(self):
-        return self.user.get_full_name() or self.user.email
+        return '{} at {}'.format(self.user.get_full_name() or self.user.email,
+                                 self.event)

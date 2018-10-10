@@ -1,0 +1,22 @@
+{% extends "devday_site.html" %}
+{% load cms_tags i18n %}
+{% block content_body %}
+  <div class="row">
+    <div class="col-12 col-md-10 offset-md-1 content-area">
+      {% static_placeholder "checkin-result" %}
+    </div>
+  </div>
+  <div class="row">
+    {% if checked_in %}
+    <div class="col-12 col-md-10 offset-md-1 content-area">
+      <h4>{{ message }}<h4>
+    </div>
+    {% else %}
+    <div class="col-12 col-md-10 offset-md-1 content-area">
+      <h4>{% blocktrans %}QR Code to check in at {{ current_event }}{% endblocktrans %}</h4>
+      <div class='qrcode' data-src='{{ url }}'></div>
+      <p>{% trans 'Your check in code:' %} <strong>{{ checkin_code }}</strong>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}

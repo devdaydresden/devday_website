@@ -1,0 +1,14 @@
+{% extends "devday_site.html" %}
+{% load cms_tags crispy_forms_tags i18n %}
+{% block content_body %}
+    <div class="row">
+        <div class="col-12 col-md-10 offset-md-1 content-area">
+            {% static_placeholder "checkin-instructions" %}
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-10 offset-md-1 content-area">
+            {% crispy form %}
+        </div>
+    </div>
+{% endblock %}

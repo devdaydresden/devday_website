@@ -36,6 +36,8 @@ RUN apk --no-cache add \
   git \
   jpeg-dev \
   libffi-dev \
+  libxml2-dev \
+  libxslt-dev \
   linux-headers \
   musl-dev \
   postgresql-dev \

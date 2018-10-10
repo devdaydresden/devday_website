@@ -28,9 +28,11 @@ lorem = "*"
 luhn = "*"
 
 [dev-packages]
+beautifulsoup4 = "*"
 coverage = "*"
 coveralls = "*"
 django-debug-toolbar = "*"
+lxml = "*"
 mock = "*"
 
 [requires]

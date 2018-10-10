@@ -30,7 +30,29 @@ from talk.models import Attendee, Talk
 User = get_user_model()
 
 
-class AttendeeProfileView(LoginRequiredMixin, UpdateView):
+class AttendeeQRCodeMixIn:
+    def attendee_qrcode_context(self, context):
+        attendee = Attendee.objects.filter(
+            user=self.request.user, event=Event.objects.current_event()
+            ).first()
+        if attendee:
+            context['checked_in'] = attendee.checked_in is not None
+            if context['checked_in']:
+                context['message'] = _('You are already checked in.')
+                context['message_code'] = 'already'
+            else:
+                context['url'] = self.request.build_absolute_uri(
+                    attendee.get_checkin_url())
+                context['checkin_code'] = attendee.checkin_code
+                context['message_code'] = 'OK'
+        else:
+            context['checked_in'] = False
+            context['message'] = \
+                _('You are not registered for the current event.')
+            context['message_code'] = 'notregistered'
+
+
+class AttendeeProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView):
     model = User
     template_name = 'attendee/profile.html'
     form_class = AttendeeProfileForm
@@ -44,21 +66,7 @@ class AttendeeProfileView(LoginRequiredMixin, UpdateView):
         context['events'] = self.request.user.get_events().order_by('id')
         context['current_event'] = Event.objects.current_event()
         context['event_id'] = Event.objects.current_event_id()
-        attendee = Attendee.objects.filter(
-            user=self.request.user, event=Event.objects.current_event()
-            ).first()
-        if attendee:
-            context['checked_in'] = attendee.checked_in is not None
-            if context['checked_in']:
-                context['message'] = _('You are already checked in.')
-            else:
-                context['url'] = self.request.build_absolute_uri(
-                    attendee.get_checkin_url())
-                context['checkin_code'] = attendee.checkin_code
-        else:
-            context['checked_in'] = False
-            context['message'] = \
-                _('You are not registered for the current event.')
+        self.attendee_qrcode_context(context)
         return context
 
 
@@ -301,21 +309,13 @@ class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
         return self.success_message.format_map(m)
 
 
-class CheckInAttendeeQRView(LoginRequiredMixin, TemplateView):
+class CheckInAttendeeQRView(LoginRequiredMixin, AttendeeQRCodeMixIn,
+                            TemplateView):
     template_name = 'attendee/checkin_qrcode.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        attendee = Attendee.objects.get(
-            user=self.request.user, event=Event.objects.current_event())
-        context['current_event'] = Event.objects.current_event()
-        context['checked_in'] = attendee.checked_in is not None
-        context['checkin_code'] = attendee.checkin_code
-        if context['checked_in']:
-            context['message'] = _('You are already checked in.')
-        else:
-            context['url'] = self.request.build_absolute_uri(
-                attendee.get_checkin_url())
+        self.attendee_qrcode_context(context)
         return context
 
 

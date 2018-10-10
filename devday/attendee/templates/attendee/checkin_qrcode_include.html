@@ -1,0 +1,14 @@
+{% load cms_tags i18n %}
+<div class="row">
+  {% if message %}
+  <div class="col-12 col-md-10 offset-md-1 content-area">
+    <h4 id='qrcodemessage' data-code='{{ message_code }}'>{{ message }}<h4>
+  </div>
+  {% else %}
+  <div class="col-12 col-md-10 offset-md-1 content-area">
+    <h4 id='qrcodemessage' data-code='{{ message_code }}'>{% blocktrans %}QR Code to check in at {{ current_event }} on location{% endblocktrans %}</h4>
+    <div class='qrcode' data-src='{{ url }}'></div>
+    <p>{% trans 'Your check in code:' %} <strong>{{ checkin_code }}</strong>
+  </div>
+  {% endif %}
+</div>

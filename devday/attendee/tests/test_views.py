@@ -1,4 +1,7 @@
+import re
 from urllib.parse import quote
+
+from bs4 import BeautifulSoup
 
 from django.core import mail
 from django.http import HttpRequest
@@ -325,3 +328,65 @@ class CheckInAttendeeViewUrlTest(TestCase):
         self.assertEquals(r.status_code, 200,
                           'should retrieve form')
         self.assertContains(r, 'was successfully checked in')
+
+
+class CheckInAttendeeViewQRCodeTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.url = reverse('attendee_checkin_qrcode')
+        cls.user_password = 'test'
+        cls.user = DevDayUser.objects.create_user(
+            'testqrcode@example.org', cls.user_password)
+        Attendee.objects.filter(user=cls.user).delete()
+
+    def login(self):
+        self.client.login(
+            username=self.user.email, password=self.user_password)
+
+    def get_code(self, r):
+        s = BeautifulSoup(r.content, 'lxml')
+        m = s.find(re.compile('.*'), {'id': 'qrcodemessage'})
+        if m:
+            return m.get('data-code')
+        else:
+            return None
+
+    def test_get_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 302)
+        self.assertEquals(
+            r.url, '/accounts/login/?next={}'.format(quote(quote(self.url))),
+            'should redirect to login page')
+
+    def test_get_qrcode_no_current_event(self):
+        self.login()
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        self.assertEquals(self.get_code(r), 'notregistered',
+                          ('attendee should not be registered for'
+                           ' current event'))
+
+    def test_get_qrcode_current_event(self):
+        self.attendee = Attendee.objects.create(
+            user=self.user, event=Event.objects.current_event())
+        self.login()
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        self.assertEquals(self.get_code(r), 'OK',
+                          ('attendee should be registered for current event'
+                           ' and not checked in yet'))
+        self.assertContains(r, self.attendee.get_checkin_url())
+
+    def test_get_qrcode_current_event_checkedin(self):
+        self.attendee = Attendee.objects.create(
+            user=self.user, event=Event.objects.current_event(),
+            checked_in=timezone.now())
+        self.login()
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        self.assertEquals(self.get_code(r), 'already',
+                          'attendee should be already checked in')
+        self.assertNotContains(r, self.attendee.get_checkin_url())

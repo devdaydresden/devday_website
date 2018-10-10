@@ -356,7 +356,6 @@ class TalkListView(ListView):
             return HttpResponseRedirect(
                 reverse_lazy('session_list', kwargs={'event': event.slug}))
         event = get_object_or_404(Event, slug=event)
-        print('user.is_staff {}'.format(request.user.is_staff))
         if (event.published and event.sessions_published) \
                 or request.user.is_staff:
             return super(TalkListView, self).dispatch(request, *args, **kwargs)

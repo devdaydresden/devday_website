@@ -55,6 +55,7 @@ class DevData:
                                 speaker_portrait_media_dir)
     speaker_portrait_path = join(settings.MEDIA_ROOT,
                                  speaker_portrait_media_path)
+    nspeakerperevent = 50
 
     def __init__(self, stdout=None, style=None):
         self.user = None
@@ -279,8 +280,9 @@ tiefer in ein Thema einsteigen.</p>
             r += "    {}\n".format(u.email)
         return r
 
-    def create_users_and_attendees(self, amount=sys.maxsize):
-        events = Event.objects.all()
+    def create_users_and_attendees(self, amount=sys.maxsize, events=None):
+        if not events:
+            events = Event.objects.all()
         first = ['Alexander', 'Barbara', 'Christian', 'Daniela', 'Erik',
                  'Fatima', 'Georg', 'Heike', 'Ingo', 'Jana', 'Klaus',
                  'Lena', 'Martin', 'Natalie', 'Olaf', 'Peggy', 'Quirin',
@@ -309,8 +311,8 @@ tiefer in ein Thema einsteigen.</p>
                 if (amount <= 0):
                     return
 
-    def create_attendees(self, amount=sys.maxsize):
-        self.create_users_and_attendees(amount)
+    def create_attendees(self, amount=sys.maxsize, events=None):
+        self.create_users_and_attendees(amount=amount, events=events)
         g = Group.objects.get(name='talk_committee')
         for u in self.rng.sample(list(User.objects.all()), 7):
             u.groups.add(g)
@@ -326,13 +328,15 @@ tiefer in ein Thema einsteigen.</p>
             r += "    {}\n".format(s.user.user.email)
         return r
 
-    def create_speakers(self):
-        nspeakerperevent = 50
-        nspeaker = Event.objects.count() * nspeakerperevent
-        attendees = self.rng.sample(list(Attendee.objects.all()), nspeaker)
+    def create_speakers(self, events=None):
+        if not events:
+            events = Event.objects.all()
+        nspeaker = len(events) * self.nspeakerperevent
+        attendees = Attendee.objects.filter(event__in=events)
+        attendees = self.rng.sample(list(attendees), nspeaker)
         self.write_action(
             'creating {} speakers for each of the {} events'.format(
-                nspeakerperevent, Event.objects.count()))
+                self.nspeakerperevent, len(events)))
         if not isfile(self.speaker_portrait_path):
             try:
                 makedirs(self.speaker_portrait_dir)
@@ -411,7 +415,7 @@ tiefer in ein Thema einsteigen.</p>
             room.save()
             p += 1
 
-    def create_time_slots(self):
+    def create_time_slots(self, events=None):
         time_slots = [
             [10, 30, 12, 0, 'Exkursion'],
             [12, 0, 13, 0, 'Registrierung'],
@@ -427,10 +431,12 @@ tiefer in ein Thema einsteigen.</p>
             [17, 45, 18, 45, 'Keynote'],
             [18, 45, 20, 30, 'Get Together'],
         ]
+        if not events:
+            events = Event.objects.all()
         for t in time_slots:
             n = u'{:02d}:{:02d} \u2014 {:02d}:{:02d}'.format(t[0], t[1],
                                                              t[2], t[3])
-            for event in Event.objects.all():
+            for event in events:
                 s = event.start_time.replace(hour=t[0], minute=t[1])
                 e = event.end_time.replace(hour=t[2], minute=t[3])
                 timeslot = TimeSlot(name=n, event=event,
@@ -438,12 +444,14 @@ tiefer in ein Thema einsteigen.</p>
                                     text_body=t[4])
                 timeslot.save()
 
-    def create_talk_slots(self):
+    def create_talk_slots(self, events=None):
         keynote_room = Room.objects.get(name='Hamburg')
         rooms = Room.objects.all()
         details = ''
-        for event in Event.objects.exclude(
-                pk=Event.objects.current_event_id()):
+        if not events:
+            events = Event.objects.exclude(
+                    pk=Event.objects.current_event_id())
+        for event in events:
             tracks = Track.objects.filter(event=event) \
                 .exclude(name='Keynote')
             keynote_track = Track.objects.get(event=event, name='Keynote')

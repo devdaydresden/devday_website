@@ -1190,3 +1190,30 @@ class TestTalkSpeakerCommentDelete(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertRaises(TalkComment.DoesNotExist, TalkComment.objects.get,
                           pk=self.talk_comment.pk)
+
+
+class TestTalkListView(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = Event.objects.get(title='devdata.18')
+        cls.devdata = DevData()
+        cls.devdata.create_talk_formats()
+        cls.devdata.update_events()
+        # we need to create more users because of the stochastic
+        # subsampling for attendees
+        cls.devdata.create_users_and_attendees(
+            amount=cls.devdata.nspeakerperevent * 2,
+            events=[cls.event])
+        cls.devdata.create_speakers(events=[cls.event])
+        cls.devdata.create_talks()
+        cls.devdata.create_tracks()
+        cls.devdata.create_rooms()
+        cls.devdata.create_time_slots()
+        cls.devdata.create_talk_slots(events=[cls.event])
+
+        cls.url = '/{}/talk/'.format(cls.event.slug)
+
+    def test_talklistview(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.event.title)

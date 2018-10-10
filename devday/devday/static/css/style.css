@@ -1,5 +1,5 @@
 /**
- * Build on 2018-10-8
+ * Build on 2018-10-10
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8400,9 +8400,24 @@ p {
   font-size: 14px; }
 
 h1 {
-  font-size: 26px;
+  font-size: 30px;
   color: #171034;
   margin-bottom: 1rem; }
+
+h2 {
+  font-size: 26px; }
+
+h3 {
+  font-size: 22px; }
+
+h4 {
+  font-size: 20px; }
+
+h5 {
+  font-size: 18px; }
+
+h6 {
+  font-size: 16px; }
 
 .info,
 .content-area {
@@ -8416,8 +8431,6 @@ h1 {
     text-align: left; }
   .info h1,
   .content-area h1 {
-    font-size: 26px;
-    color: #171034;
     margin-bottom: 1rem; }
   .info img,
   .content-area img {

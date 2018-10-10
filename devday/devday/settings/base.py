@@ -194,6 +194,7 @@ INSTALLED_APPS = [
     'django_file_form',
     'django_file_form.ajaxuploader',
     'twitterfeed',
+    'speaker',
 ]
 
 LANGUAGE_CODE = 'de'

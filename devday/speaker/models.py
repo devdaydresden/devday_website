@@ -144,6 +144,7 @@ class PublishedSpeaker(SpeakerBase):
         verbose_name = _('published speaker')
         verbose_name_plural = _('published speakers')
         abstract = False
+        unique_together = [('slug', 'event')]
 
     def __str__(self):
         return '{0} ({1})'.format(self.name, self.event.title)

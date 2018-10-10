@@ -225,10 +225,12 @@ tiefer in ein Thema einsteigen.</p>
 
     def update_static_placeholders(self):
         self.stdout.write("Update static placeholders")
+        self.create_static_placeholder_text(
+            u'checkin-instructions',
+            title='Check attendee in manually')
         # find devday -name "*.html" | xargs grep static_placeholder \
         # | sed -nEe 's#^.*static_placeholder "([^"]*)".*$#\1#p' | sort -u
         for placeholder in (
-                u'checkin-instructions',
                 u'create-talk-introtext',
                 u'gdpr_teaser',
                 u'register-attendee-introtext',

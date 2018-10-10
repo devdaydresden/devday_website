@@ -240,6 +240,36 @@ class AttendeeListViewTest(TestCase):
                           'should retrieve data')
 
 
+class InactiveAttendeeViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.url = reverse('admin_csv_inactive')
+        cls.staff_password = 'foo'
+        cls.staff = DevDayUser.objects.create_user(
+            'staff@example.com', cls.staff_password, is_staff=True)
+        cls.user = DevDayUser.objects.create_user('test@example.org', 'test')
+        cls.attendee = Attendee.objects.create(
+            user=cls.user, event=Event.objects.current_event())
+        cls.other_attendee = Attendee.objects.create(
+            user=cls.user, event=create_test_event())
+
+    def login(self):
+        self.client.login(
+            username=self.staff.email, password=self.staff_password)
+
+    def test_get_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 302)
+        self.assertEquals(r.url, '/accounts/login/?next={}'.format(self.url),
+                          'should redirect to login page')
+
+    def test_get_staff(self):
+        self.login()
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve data')
+
+
 class CheckInAttendeeViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):

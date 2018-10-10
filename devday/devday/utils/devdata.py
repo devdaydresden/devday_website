@@ -108,7 +108,7 @@ class DevData:
                 self.user.is_staff = True
                 self.user.save()
                 self.write_ok()
-            except Exception:
+            except Exception:  # pragma: no cover
                 self.write_error()
                 raise
 
@@ -120,7 +120,7 @@ class DevData:
             site.name = 'Dev Data'
             site.save()
             self.write_ok()
-        except Exception:
+        except Exception:  # pragma: no cover
             self.write_error()
             raise
 
@@ -219,7 +219,7 @@ tiefer in ein Thema einsteigen.</p>
             p.save()
             sph.publish(None, lang, True)
             self.stdout.write('Created', style_func=self.style.SUCCESS)
-        except Exception:
+        except Exception:  # pragma: no cover
             self.write_error()
             raise
 
@@ -271,7 +271,7 @@ tiefer in ein Thema einsteigen.</p>
             e.save()
             e.talkformat.add(*TalkFormat.objects.all())
             self.write_ok()
-        except Exception:
+        except Exception:  # pragma: no cover
             self.write_error()
             raise
 
@@ -341,7 +341,7 @@ tiefer in ein Thema einsteigen.</p>
         if not isfile(self.speaker_portrait_path):
             try:
                 makedirs(self.speaker_portrait_dir)
-            except OSError as e:
+            except OSError as e:  # pragma: no cover
                 if e.errno != errno.EEXIST:
                     raise
             copyfile(self.speaker_placeholder_source_path,

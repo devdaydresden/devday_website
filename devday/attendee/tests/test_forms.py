@@ -5,7 +5,8 @@ from crispy_forms.layout import Layout
 from django.test import TestCase
 
 from attendee.forms import (
-    AttendeeRegistrationForm, CheckInAttendeeForm, DevDayRegistrationForm)
+    AttendeeRegistrationForm, CheckInAttendeeForm, DevDayRegistrationForm,
+    DevDayUserCreationForm, RegistrationAuthenticationForm)
 from attendee.models import Attendee, DevDayUser
 from event.models import Event
 
@@ -39,6 +40,18 @@ class DevDayRegistrationFormTest(TestCase):
                          form.cleaned_data['email'])
 
 
+class DevDayUserCreationFormTest(TestCase):
+    def test_get_user_form(self):
+        form = DevDayUserCreationForm()
+        self.assertIsNotNone(form)
+
+
+class RegistrationAuthenticationFormTest(TestCase):
+    def test_get_user_form(self):
+        form = RegistrationAuthenticationForm()
+        self.assertIsNotNone(form)
+
+
 class AttendeeRegistrationFormTest(TestCase):
     def test_get_user_form(self):
         form = AttendeeRegistrationForm()
@@ -65,17 +78,42 @@ class AttendeeRegistrationFormTest(TestCase):
 
 
 class CheckInAttendeeFormTest(TestCase):
-    def test_submit_form(self):
-        event = Event.objects.current_event()
-        user = DevDayUser.objects.create_user(
-            USER_EMAIL, USER_PASSWORD, first_name='Test', last_name='User')
-        attendee = Attendee.objects.create(user=user, event=event)
-        form = CheckInAttendeeForm(data={'attendee': attendee.checkin_code})
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = Event.objects.current_event()
+        cls.user_password = 'test'
+        cls.user = DevDayUser.objects.create_user(
+            'testqrcode@example.org', cls.user_password)
+        cls.attendee = Attendee.objects.create(user=cls.user, event=cls.event)
+
+    def test_form_valid_code(self):
+        form = CheckInAttendeeForm(
+            data={'attendee': self.attendee.checkin_code})
         self.assertIsInstance(form.helper, FormHelper)
-        self.assertTrue(form.is_valid())
-        form = CheckInAttendeeForm(data={'attendee': attendee.user.email})
-        self.assertTrue(form.is_valid())
+        self.assertTrue(form.is_valid(),
+                        'should be valid because code matches')
+
+    def test_form_valid_email(self):
+        form = CheckInAttendeeForm(
+            data={'attendee': self.attendee.user.email})
+        self.assertTrue(form.is_valid(),
+                        'should be valid because email matches')
+
+    def test_form_invalid_no_data(self):
         form = CheckInAttendeeForm(data={})
-        self.assertFalse(form.is_valid())
+        self.assertFalse(form.is_valid(),
+                         'should invalid because no code was entered')
+
+    def test_form_invalid_code(self):
         form = CheckInAttendeeForm(data={'attendee': '12345678'})
-        self.assertFalse(form.is_valid())
+        self.assertFalse(form.is_valid(),
+                         'should be invalid because the code is wrong')
+
+    def test_form_invalid_already(self):
+        self.attendee.check_in()
+        self.attendee.save()
+        form = CheckInAttendeeForm(
+            data={'attendee': self.attendee.user.email})
+        self.assertFalse(form.is_valid(),
+                         ('should be invalid because attendee is already'
+                          ' checked in'))

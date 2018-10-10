@@ -210,6 +210,36 @@ class AttendeeDeleteViewTest(TestCase):
         self.assertTemplateUsed(r, 'attendee/devdayuser_confirm_delete.html')
 
 
+class AttendeeListViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.url = reverse('admin_csv_attendees')
+        cls.staff_password = 'foo'
+        cls.staff = DevDayUser.objects.create_user(
+            'staff@example.com', cls.staff_password, is_staff=True)
+        cls.user = DevDayUser.objects.create_user('test@example.org', 'test')
+        cls.attendee = Attendee.objects.create(
+            user=cls.user, event=Event.objects.current_event())
+        cls.other_attendee = Attendee.objects.create(
+            user=cls.user, event=create_test_event())
+
+    def login(self):
+        self.client.login(
+            username=self.staff.email, password=self.staff_password)
+
+    def test_get_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 302)
+        self.assertEquals(r.url, '/accounts/login/?next={}'.format(self.url),
+                          'should redirect to login page')
+
+    def test_get_staff(self):
+        self.login()
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve data')
+
+
 class CheckInAttendeeViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -287,10 +317,12 @@ class CheckInAttendeeViewUrlTest(TestCase):
         cls.attendee = Attendee.objects.create(
             user=cls.user, event=Event.objects.current_event())
         cls.other_attendee = Attendee.objects.create(
-            user=cls.user, event=create_test_event())
+            user=DevDayUser.objects.create_user('other@example.org', 'test'),
+            event=create_test_event())
 
     def setUp(self):
         self.attendee.checked_in = None
+        self.attendee.save()
 
     def get_url(self, id, verification):
         return reverse(
@@ -300,6 +332,14 @@ class CheckInAttendeeViewUrlTest(TestCase):
 
     def get_url_for_attendee(self, attendee):
         return self.get_url(attendee.id, attendee.get_verification())
+
+    def get_code(self, r):
+        s = BeautifulSoup(r.content, 'lxml')
+        m = s.find(re.compile('.*'), {'id': 'checkin_result'})
+        if m:
+            return m.get('data-code')
+        else:
+            return None
 
     def login(self):
         self.client.login(
@@ -319,7 +359,8 @@ class CheckInAttendeeViewUrlTest(TestCase):
         r = self.client.get(url)
         self.assertEquals(r.status_code, 200,
                           'should retrieve form')
-        self.assertContains(r, 'Invalid verification URL')
+        self.assertEquals(self.get_code(r), 'invalid',
+                          ('code should be invalid'))
 
     def test_get_valid(self):
         url = self.get_url_for_attendee(self.attendee)
@@ -327,7 +368,38 @@ class CheckInAttendeeViewUrlTest(TestCase):
         r = self.client.get(url)
         self.assertEquals(r.status_code, 200,
                           'should retrieve form')
-        self.assertContains(r, 'was successfully checked in')
+        self.assertEquals(self.get_code(r), 'OK',
+                          ('should get checked in'))
+
+    def test_get_checked_in(self):
+        url = self.get_url_for_attendee(self.attendee)
+        self.attendee.check_in()
+        self.attendee.save()
+        self.login()
+        r = self.client.get(url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        self.assertEquals(self.get_code(r), 'already',
+                          ('atteendee should be checked in already'))
+
+    def test_get_not_registered(self):
+        url = self.get_url(12345678,
+                           Attendee.objects.get_verification(12345678))
+        self.login()
+        r = self.client.get(url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        self.assertEquals(self.get_code(r), 'notfound',
+                          ('atteendee should not be found'))
+
+    def test_get_otherevent(self):
+        url = self.get_url_for_attendee(self.other_attendee)
+        self.login()
+        r = self.client.get(url)
+        self.assertEquals(r.status_code, 200,
+                          'should retrieve form')
+        self.assertEquals(self.get_code(r), 'wrongevent',
+                          ('code should be for wrong event'))
 
 
 class CheckInAttendeeViewQRCodeTest(TestCase):

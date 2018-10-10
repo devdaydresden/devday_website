@@ -327,26 +327,36 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
         id = self.kwargs['id']
         verification = self.kwargs['verification']
         if not Attendee.objects.is_verification_valid(id, verification):
+            context['checkin_code'] = 'invalid'
             context['checkin_result'] = _('Invalid verification URL')
             context['checkin_message'] = _('Try again scanning the QR code.')
             return context
         try:
             attendee = Attendee.objects.get(id=id)
         except ObjectDoesNotExist:
+            context['checkin_code'] = 'notfound'
             context['checkin_result'] = _('Attendee not found')
             context['checkin_message'] = \
                 _('The attendee is (no longer) registered.')
+            return context
+        if attendee.event != Event.objects.current_event():
+            context['checkin_code'] = 'wrongevent'
+            context['checkin_result'] = _('Code is for the wrong event')
+            context['checkin_message'] = \
+                _('This checkin code is for another event.')
             return context
         try:
             attendee.check_in()
             attendee.save()
         except IntegrityError:
+            context['checkin_code'] = 'already'
             context['checkin_result'] = _('Already checked in')
             context['checkin_message'] = \
                 _('Attendee {} has checked in at {}.') \
                 .format(attendee.user,
                         attendee.checked_in.strftime('%H:%M %d.%m.%y'))
             return context
+        context['checkin_code'] = 'OK'
         context['checkin_result'] = 'Welcome!'
         context['checkin_message'] = \
             _('Attendee {} was successfully checked in.').format(attendee.user)

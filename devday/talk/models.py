@@ -1,9 +1,5 @@
-from __future__ import unicode_literals
-
 import logging
-import hashlib
 import os
-import random
 from mimetypes import MimeTypes
 
 from PIL import Image

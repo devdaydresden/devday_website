@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from crispy_forms.layout import Layout, Submit
 from django.contrib.auth import forms as auth_forms
 from django.core.urlresolvers import reverse

@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from attendee.models import DevDayUser, Attendee
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Layout, Field, Submit, Hidden, HTML

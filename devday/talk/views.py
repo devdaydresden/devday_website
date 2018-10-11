@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import logging
 import xml.etree.ElementTree as ElementTree
 from datetime import date, timedelta

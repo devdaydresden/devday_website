@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
@@ -7,7 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 
 @python_2_unicode_compatible
 class TwitterSetting(models.Model):
-    name = models.CharField(verbose_name=_("setting name"), max_length=100, unique=True, blank=False)
+    name = models.CharField(
+        verbose_name=_("setting name"), max_length=100, unique=True,
+        blank=False)
     value = models.TextField(verbose_name=_("setting value"), blank=False)
 
     class Meta:
@@ -21,7 +21,9 @@ class TwitterSetting(models.Model):
 @python_2_unicode_compatible
 class TwitterProfileImage(models.Model):
     user_profile_image_url = models.CharField(max_length=255, unique=True)
-    image_data = models.ImageField(upload_to='twitter_profile', width_field='image_width', height_field='image_height')
+    image_data = models.ImageField(
+        upload_to='twitter_profile', width_field='image_width',
+        height_field='image_height')
     image_width = models.SmallIntegerField(default=0)
     image_height = models.SmallIntegerField(default=0)
 
@@ -36,14 +38,16 @@ class TwitterProfileImage(models.Model):
 @python_2_unicode_compatible
 class Tweet(models.Model):
     twitter_id = models.BigIntegerField(unique=True, null=False, blank=False)
-    user_profile_image = models.ForeignKey(TwitterProfileImage, blank=True, null=True)
+    user_profile_image = models.ForeignKey(
+        TwitterProfileImage, blank=True, null=True)
     user_name = models.CharField(max_length=255)
     user_screen_name = models.CharField(max_length=255)
     text = models.TextField()
     plain_text = models.CharField(max_length=160)
     entities = models.TextField()
     created_at = models.DateTimeField()
-    show_on_site = models.BooleanField(verbose_name=_('show on site'), default=False)
+    show_on_site = models.BooleanField(
+        verbose_name=_('show on site'), default=False)
 
     class Meta:
         verbose_name = _('Tweet')

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/devdaydresden/devday_website.svg?branch=development)](https://travis-ci.org/devdaydresden/devday_website) [![Coverage Status](https://coveralls.io/repos/github/devdaydresden/devday_website/badge.svg?branch=HEAD)](https://coveralls.io/github/devdaydresden/devday_website?branch=HEAD)
+[![Build Status](https://travis-ci.org/devdaydresden/devday_website.svg?branch=development)](https://travis-ci.org/devdaydresden/devday_website) [![Coverage Status](https://coveralls.io/repos/github/devdaydresden/devday_website/badge.svg?branch=development)](https://coveralls.io/github/devdaydresden/devday_website?branch=development)
 
 # Dev Day website
 

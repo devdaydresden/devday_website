@@ -23,3 +23,8 @@ def update_current_event(*args, **kwargs):
     for attr, value in kwargs.items():
         setattr(e, attr, value)
     e.save()
+
+def unpublish_all_events():
+    for event in Event.objects.all():
+        event.published = False
+        event.save()

@@ -13,7 +13,7 @@ from attendee.forms import AttendeeRegistrationForm, EventRegistrationForm
 from attendee.models import DevDayUser, Attendee
 from attendee.views import AttendeeRegistrationView
 from event.models import Event
-from event.test.testutils import create_test_event
+from event.tests.testutils import create_test_event
 from talk.tests.testutils import create_test_speaker, create_test_talk
 
 ADMIN_EMAIL = 'admin@example.org'

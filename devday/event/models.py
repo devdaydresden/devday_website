@@ -10,11 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 
 class EventManager(models.Manager):
     def current_event(self):
-        try:
-            return self.filter(published=True) \
-                .order_by('-start_time').first()
-        except ObjectDoesNotExist:
-            return None
+        return self.filter(published=True) \
+            .order_by('-start_time').first()
 
     def current_event_id(self):
         e = self.current_event()
@@ -57,20 +54,21 @@ class Event(models.Model):
     talkformat = models.ManyToManyField('talk.TalkFormat',
                                         verbose_name=_('Talk Formats'))
 
-    def registration_count(self):
-        "Returns the count of registered attendees."
-        a = apps.get_app_config('attendee').get_model('Attendee')
-        return a.objects.filter(event=self).count()
-
-    registration_count.short_description = _("Registration Count")
     objects = EventManager()
 
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
 
-    def __str__(self):
-        return self.title
+    def registration_count(self):
+        "Returns the count of registered attendees."
+        a = apps.get_app_config('attendee').get_model('Attendee')
+        return a.objects.filter(event=self).count()
+
+    registration_count.short_description = _("Registration Count")
 
     def get_absolute_url(self):
         return reverse('session_list', kwargs={'event': self.slug})
+
+    def __str__(self):
+        return self.title

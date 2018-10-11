@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from attendee.models import Attendee
-from event.test.testutils import create_test_event
+from event.tests.testutils import create_test_event
 from talk.models import Speaker, Talk, Vote, TalkComment
 
 User = get_user_model()

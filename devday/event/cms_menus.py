@@ -25,7 +25,7 @@ class EventArchiveMenu(Menu):
 class EventSessionMenu(Menu):
     def get_nodes(self, request):
         event = Event.objects.current_event()
-        if not event.sessions_published:
+        if not event:
             return []
         return [NavigationNode(_('Sessions'), event.get_absolute_url(),
                                event.id)]

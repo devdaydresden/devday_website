@@ -16,7 +16,7 @@ from django_file_form.forms import ExistingFile
 from attendee.models import Attendee
 from devday.utils.devdata import DevData
 from event.models import Event
-from event.test.testutils import create_test_event, update_current_event
+from event.tests.testutils import create_test_event, update_current_event
 from talk.forms import (CreateSpeakerForm, BecomeSpeakerForm, TalkCommentForm,
                         EditTalkForm, TalkSpeakerCommentForm)
 from talk.models import Speaker, Talk, TalkFormat, TalkComment, Vote, Track

@@ -9,7 +9,7 @@
 var basepath           = './';
 var assets             = '../devday/devday/static';
 var srcDir             = 'src';
-var nodemodules              = 'node_modules';
+var nodemodules        = 'node_modules';
 var srcTest            = 'src-test';
 var fs                 = require('fs');
 var pkg                = JSON.parse(fs.readFileSync('./package.json'));
@@ -86,6 +86,7 @@ module.exports = {
             srcDir + '/js/components/navbar.js',
             srcDir + '/js/components/qrcodelinks.js',
             srcDir + '/js/core/devday-registry.js',
+            srcDir + '/js/dropzone.js',
         ],
         dest: assets + '/js',
         filename: 'main.js',

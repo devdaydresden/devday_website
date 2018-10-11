@@ -62,11 +62,16 @@ class CreateSpeakerForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.helper.layout = get_edit_speaker_layout(_('Register as speaker'))
+
+    def save(self, commit=True):
+        self.instance.user = self.user
+        return super(CreateSpeakerForm, self).save(commit)
 
 
 class EditSpeakerForm(forms.ModelForm):

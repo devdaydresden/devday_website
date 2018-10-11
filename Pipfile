@@ -25,11 +25,14 @@ django-file-form = "*"
 django-registration = "*"
 "django-select2" = "*"
 lorem = "*"
+luhn = "*"
 
 [dev-packages]
+beautifulsoup4 = "*"
 coverage = "*"
 coveralls = "*"
 django-debug-toolbar = "*"
+lxml = "*"
 mock = "*"
 
 [requires]

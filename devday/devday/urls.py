@@ -49,6 +49,7 @@ urlpatterns = [
     url(r'^(?P<event>[^/]+)/talk/$', TalkListView.as_view(), name='session_list'),
     url(r'^(?P<event>[^/]+)/videos/$', TalkVideoView.as_view(), name='video_list'),
     url(r'^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/$', TalkDetails.as_view(), name='talk_details'),
+    url(r'^', include('speaker.urls')),
     url(r'^', include('cms.urls')),
     url(r'^csvviews/', include('attendee.csv_urls')),
 ]

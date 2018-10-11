@@ -11,7 +11,8 @@ from django.views.static import serve as serve_static
 
 from attendee.views import (
     AttendeeCancelView, AttendeeDeleteView, AttendeeProfileView,
-    AttendeeRegistrationView, RegisterSuccessView,
+    AttendeeRegistrationView, CheckInAttendeeQRView, CheckInAttendeeView,
+    CheckInAttendeeUrlView, RegisterSuccessView,
     login_or_register_attendee_view)
 from devday.views import exception_test_view
 from talk.views import (
@@ -25,7 +26,12 @@ urlpatterns = [
     url(r'^sitemap\.xml$', sitemap_view, {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^attendee/register/$', AttendeeRegistrationView.as_view(), name='registration_register'),
+    url(r'^attendee/qrcode/$', CheckInAttendeeQRView.as_view(), name='attendee_checkin_qrcode'),
     url(r'^attendee/cancel/(?P<event>\d+)$', AttendeeCancelView.as_view(), name='attendee_cancel'),
+    url(r'^attendee/checkin/$', CheckInAttendeeView.as_view(),
+        name='attendee_checkin'),
+    url(r'^ac/(?P<id>[^/]+)/(?P<verification>[^/]+)/$', CheckInAttendeeUrlView.as_view(),
+        name='attendee_checkin_url'),
     url(r'^register/$', login_or_register_attendee_view, name='login_or_register_attendee'),
     url(r'^register/success/$', RegisterSuccessView.as_view(), name='register_success'),
     url(r'^accounts/', include('devday.registration_urls')),

@@ -1,0 +1,26 @@
+{% extends "devday_site.html" %}
+{% load cms_tags i18n %}
+{% block content_body %}
+  <div class="row">
+    <div class="col-12 col-md-10 offset-md-1 content-area">
+      {% static_placeholder "checkin-result" %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-10 offset-md-1 content-area">
+      <h4 id='checkin_result' data-code={{ checkin_code }}>{{ checkin_result }}<h4>
+      <p>{{ checkin_message }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-10 offset-md-1 content-area col-highlight">
+      <h4>{% trans 'QR code not working?' %}</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-10 offset-md-1 content-area col-highlight">
+      <p><a class='btn btn-outline btn-call-action m-t-1'
+        href='{% url 'attendee_checkin' %}'>{% trans 'Go to manual check in' %}</a></p>
+    </div>
+  </div>
+{% endblock %}

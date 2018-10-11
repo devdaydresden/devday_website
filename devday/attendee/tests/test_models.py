@@ -1,9 +1,11 @@
-from __future__ import unicode_literals
+import luhn
 
 from django.core import mail
+from django.db import IntegrityError
 from django.test import TestCase
 
 from attendee.models import DevDayUser, Attendee
+from event.models import Event
 
 ADMIN_EMAIL = 'admin@example.org'
 ADMIN_PASSWORD = 'sUp3rS3cr3t'
@@ -34,22 +36,28 @@ class DevDayUserManagerTest(TestCase):
     def test_manager_enforce_email(self):
         with self.assertRaises(ValueError) as error_context:
             DevDayUser.objects.create_user(None)
-        self.assertEqual(str(error_context.exception), 'The given email must be set')
+        self.assertEqual(str(error_context.exception),
+                         'The given email must be set')
         with self.assertRaises(ValueError) as error_context:
             DevDayUser.objects.create_user('')
-        self.assertEqual(str(error_context.exception), 'The given email must be set')
+        self.assertEqual(str(error_context.exception),
+                         'The given email must be set')
         user = DevDayUser.objects.create_user('noemail')
         self.assertEqual(user.get_username(), 'noemail')
 
     def test_manager_create_superuser_force_staff(self):
         with self.assertRaises(ValueError) as error_context:
-            DevDayUser.objects.create_superuser(ADMIN_EMAIL, ADMIN_PASSWORD, is_staff=False)
-        self.assertEqual(str(error_context.exception), 'Superuser must have is_staff=True.')
+            DevDayUser.objects.create_superuser(
+                ADMIN_EMAIL, ADMIN_PASSWORD, is_staff=False)
+        self.assertEqual(str(error_context.exception),
+                         'Superuser must have is_staff=True.')
 
     def test_manager_create_superuser_force_superuser(self):
         with self.assertRaises(ValueError) as error_context:
-            DevDayUser.objects.create_superuser(ADMIN_EMAIL, ADMIN_PASSWORD, is_superuser=False)
-        self.assertEqual(str(error_context.exception), 'Superuser must have is_superuser=True.')
+            DevDayUser.objects.create_superuser(
+                ADMIN_EMAIL, ADMIN_PASSWORD, is_superuser=False)
+        self.assertEqual(str(error_context.exception),
+                         'Superuser must have is_superuser=True.')
 
 
 class DevDayUserTest(TestCase):
@@ -94,10 +102,29 @@ class DevDayUserTest(TestCase):
 class AttendeeTest(TestCase):
     """
     Tests for attendee.models.Attendee.
-
     """
 
     def test___str__(self):
-        user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD, first_name='Test', last_name='User')
-        attendee = Attendee(user=user)
-        self.assertEqual(str(attendee), "Test User")
+        event = Event.objects.current_event()
+        user = DevDayUser.objects.create_user(
+            USER_EMAIL, USER_PASSWORD, first_name='Test', last_name='User')
+        attendee = Attendee.objects.create(user=user, event=event)
+        self.assertEqual(str(attendee.user), 'Test User <test@example.org>')
+        self.assertTrue(len(attendee.checkin_code) > 0, 'has a checkin-code')
+        self.assertTrue(luhn.verify(attendee.checkin_code),
+                        'checkin-code is valid')
+        self.assertIsNone(attendee.checked_in, 'is not checked in')
+
+        u2 = DevDayUser.objects.create_user(
+            'another@example.com', 'foo', first_name='Tony',
+            last_name='Tester')
+        a2 = Attendee.objects.create(user=u2, event=event)
+        self.assertNotEquals(attendee.checkin_code, a2.checkin_code)
+        a3 = Attendee.objects.get_by_checkin_code_or_email(
+            attendee.checkin_code)
+        self.assertEquals(attendee, a3)
+
+        attendee.check_in()
+        self.assertIsNotNone(attendee.checked_in)
+        with self.assertRaises(IntegrityError):
+            attendee.check_in()

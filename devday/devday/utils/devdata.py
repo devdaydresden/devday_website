@@ -65,6 +65,7 @@ class DevData:
 
     def write_action(self, msg):
         self.stdout.write(msg + '... ', ending='')
+        self.stdout.flush()
 
     def write_ok(self):
         self.stdout.write(' OK', style_func=self.style.SUCCESS)
@@ -107,7 +108,7 @@ class DevData:
                 self.user.is_staff = True
                 self.user.save()
                 self.write_ok()
-            except Exception:
+            except Exception:  # pragma: no cover
                 self.write_error()
                 raise
 
@@ -119,7 +120,7 @@ class DevData:
             site.name = 'Dev Data'
             site.save()
             self.write_ok()
-        except Exception:
+        except Exception:  # pragma: no cover
             self.write_error()
             raise
 
@@ -218,12 +219,15 @@ tiefer in ein Thema einsteigen.</p>
             p.save()
             sph.publish(None, lang, True)
             self.stdout.write('Created', style_func=self.style.SUCCESS)
-        except Exception:
+        except Exception:  # pragma: no cover
             self.write_error()
             raise
 
     def update_static_placeholders(self):
         self.stdout.write("Update static placeholders")
+        self.create_static_placeholder_text(
+            u'checkin-instructions',
+            title='Check attendee in manually')
         # find devday -name "*.html" | xargs grep static_placeholder \
         # | sed -nEe 's#^.*static_placeholder "([^"]*)".*$#\1#p' | sort -u
         for placeholder in (
@@ -269,7 +273,7 @@ tiefer in ein Thema einsteigen.</p>
             e.save()
             e.talkformat.add(*TalkFormat.objects.all())
             self.write_ok()
-        except Exception:
+        except Exception:  # pragma: no cover
             self.write_error()
             raise
 
@@ -295,7 +299,7 @@ tiefer in ein Thema einsteigen.</p>
         length = len(first) * len(last)
         if length > amount:
             length = amount
-        self.write_action('Creating {:d} attendees'.format(length))
+        self.write_action('{:d} attendees'.format(length))
         for f in first:
             for l in last:
                 user = User.objects.create_user(
@@ -305,8 +309,7 @@ tiefer in ein Thema einsteigen.</p>
                 user.save()
                 for e in events:
                     if self.rng.random() < 0.8:
-                        a = Attendee(user=user, event=e)
-                        a.save()
+                        Attendee.objects.create(user=user, event=e)
                 amount -= 1
                 if (amount <= 0):
                     return
@@ -340,7 +343,7 @@ tiefer in ein Thema einsteigen.</p>
         if not isfile(self.speaker_portrait_path):
             try:
                 makedirs(self.speaker_portrait_dir)
-            except OSError as e:
+            except OSError as e:  # pragma: no cover
                 if e.errno != errno.EEXIST:
                     raise
             copyfile(self.speaker_placeholder_source_path,

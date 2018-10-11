@@ -3,6 +3,18 @@
 The Dev Day website is built using [Django CMS](https://www.django-cms.org/).
 The project consists of a Django CMS content management part and some custom Django apps for talk, attendee and speaker management.
 
+## Documentation
+
+This project uses a number of tools and frameworks. Here are the major
+documentation links:
+
+- Django: https://docs.djangoproject.com/en/1.11/
+- Django-CMS: http://docs.django-cms.org/en/release-3.5.x/
+- Python 3: https://docs.python.org/3.6/
+- yarn: https://yarnpkg.com/en/docs
+- Sass: https://sass-lang.com/documentation/file.SASS_REFERENCE.html
+- Gulp: https://github.com/gulpjs/gulp/tree/v3.9.1/docs
+- Docker/Docker-Compose: https://docs.docker.com/
 
 ## Running the development environment
 

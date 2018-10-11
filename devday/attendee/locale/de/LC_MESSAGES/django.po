@@ -40,10 +40,8 @@ msgid "Attendee management"
 msgstr "Teilnehmerverwaltung"
 
 #: attendee/cms_menus.py:15
-#, fuzzy
-#| msgid "Checked-In"
 msgid "Check in"
-msgstr "Eingecheckt"
+msgstr "Einchecken"
 
 #: attendee/forms.py:26
 msgid "Accept Dev Day contact"
@@ -103,10 +101,8 @@ msgid "Attendee check in code or  email address"
 msgstr "Teilnehmer-Check-In-Code oder -Email-Adresse"
 
 #: attendee/forms.py:320
-#, fuzzy
-#| msgid "Register as attendee"
 msgid "Check in this attendee"
-msgstr "Als Teilnehmer anmelden"
+msgstr "Diesen Teilnehmer einchecken"
 
 #: attendee/forms.py:329
 msgid ""
@@ -340,10 +336,8 @@ msgid "Try again scanning the QR code."
 msgstr "Den QR-Code nochmal scannen."
 
 #: attendee/views.py:333
-#, fuzzy
-#| msgid "Attendee profile"
 msgid "Attendee not found"
-msgstr "Teilnehmerprofil"
+msgstr "Teilnehmer nicht gefunden"
 
 #: attendee/views.py:335
 msgid "The attendee is (no longer) registered."

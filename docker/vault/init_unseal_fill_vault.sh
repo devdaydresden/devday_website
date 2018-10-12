@@ -115,5 +115,5 @@ else
   ENVDATA="VAULT_TOKEN=${APP_TOKEN}"
 fi
 
-echo ${ENVDATA} > ../../prod-env
+echo "${ENVDATA}" > ../../prod-env
 echo "Updated ../../prod-env"

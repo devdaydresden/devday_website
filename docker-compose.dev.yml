@@ -26,6 +26,10 @@ services:
       VAULT_TOKEN: devday_root
       DJANGO_SETTINGS_MODULE: devday.settings.dev
     volumes:
-      - "./:/srv/devday"
-      - "devday_media:/srv/devday/devday/media"
-      - "devday_static:/srv/devday/devday/static"
+      - "devday_media:/srv/devday/media"
+      - "devday_static:/srv/devday/static"
+      - "devday_logs:/srv/devday/logs"
+      - "./devday:/srv/devday"
+
+volumes:
+  devday_logs:

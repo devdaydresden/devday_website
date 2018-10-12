@@ -2,7 +2,6 @@
 Django production settings for devday.
 
 """
-# noinspection PyUnresolvedReferences
 from .base import *
 
 ADMINS = [
@@ -11,84 +10,49 @@ ADMINS = [
 ]
 ADMINUSER_EMAIL = get_env_variable('DEVDAY_ADMINUSER_EMAIL')
 
-ALLOWED_HOSTS = ['devday.de', 'www.devday.de', 'app',
-                 'localhost', 'devday-test.t-systems-mms.eu']
+ALLOWED_HOSTS = ['devday.de', 'www.devday.de',
+                 'localhost', 'devday-test.mms-at-work.de']
 
-DATA_DIR = '/srv/devday'
 DEFAULT_FROM_EMAIL = 'info@devday.de'
 
 EMAIL_HOST = 'mail'
 EMAIL_SUBJECT_PREFIX = '[Dev Day] '
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)s %(message)s'
-        },
-        'simple': {
-            'format': '%(asctime)s %(levelname)s %(message)s'
-        }
-
-    },
+LOGGING.update({
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse',
         }
     },
-    'handlers': {
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(DATA_DIR, 'logs', 'devday.log'),
-            'formatter': 'simple',
-            'level': 'INFO',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'include_html': True,
-            'filters': ['require_debug_false'],
-        },
-    },
     'loggers': {
-        'django': {
-            'handlers': ['file', 'mail_admins'],
-            'level': 'INFO',
-            'propagate': True,
-        },
         'django.request': {
             'handlers': ['file', 'mail_admins'],
             'level': 'ERROR',
             'propagate': False,
-        },
-        'attendee': {
-            'handlers': ['file', 'mail_admins'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'devday': {
-            'handlers': ['file', 'mail_admins'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'talk': {
-            'handlers': ['file', 'mail_admins'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'cms': {
-            'handlers': ['file', 'mail_admins'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-    },
-}
+        }
+    }
+})
 
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+LOGGING['handlers'].update({
+    'mail_admins': {
+        'level': 'ERROR',
+        'class': 'django.utils.log.AdminEmailHandler',
+        'include_html': True,
+        'filters': ['require_debug_false'],
+    },
+})
+
+for logname in [
+    'django', 'cms',
+    'devday', 'attendee', 'event', 'speaker', 'talk', 'twitterfeed'
+]:
+    LOGGING['loggers'][logname] = {
+        'handlers': ['file', 'mail_admins'],
+        'level': 'INFO',
+        'propagate': True,
+    }
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-STATIC_ROOT = os.path.join(DATA_DIR, 'static')
 
 TWITTERFEED_PROXIES = {
     'http': 'http://iproxy.mms-dresden.de:8080/',

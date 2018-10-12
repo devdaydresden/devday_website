@@ -36,6 +36,7 @@ def get_env_variable(var_name):
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
 
+
 _VAULT_DATA = None
 _VAULT_URL = vault_url = "{}/v1/secret/data/devday".format(
     get_env_variable('VAULT_URL'))
@@ -90,8 +91,8 @@ def get_variable_cascade(var_name, type=str, default_value=None):
             if default_value is None:
                 error_msg = ('Define %s in Vault key at %s or set the'
                              ' environment variable %s') % (
-                    var_name, _VAULT_URL, var_name.upper()
-                )
+                                var_name, _VAULT_URL, var_name.upper()
+                            )
                 raise ImproperlyConfigured(error_msg)
             else:
                 return default_value
@@ -201,7 +202,7 @@ LANGUAGES = (
     ('en', gettext('en')),
 )
 
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 MIDDLEWARE_CLASSES = [
     'cms.middleware.utils.ApphookReloadMiddleware',
@@ -227,7 +228,7 @@ SECRET_KEY = get_vault_variable('secret_key')
 SPONSORING_OPEN = get_variable_cascade('sponsoring_open', bool, False)
 
 SITE_ID = 1
-STATIC_ROOT = os.path.join(DATA_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'devday', 'static'),
@@ -270,13 +271,39 @@ THUMBNAIL_HIGH_RESOLUTION = True
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
     'easy_thumbnails.processors.autocrop',
-    #'easy_thumbnails.processors.scale_and_crop',
+    # 'easy_thumbnails.processors.scale_and_crop',
     'filer.thumbnail_processors.scale_and_crop_with_subject_location',
     'easy_thumbnails.processors.filters',
 )
 TIME_ZONE = 'Europe/Berlin'
 TWITTERFEED_PROXIES = {}
 TWITTERFEED_PATHS = ['/']
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)s %(message)s'
+        },
+        'simple': {
+            'format': '%(asctime)s %(levelname)s %(message)s'
+        }
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'devday.log'),
+            'formatter': 'simple',
+            'level': 'INFO',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        }
+    },
+    'loggers': {}
+}
 
 USE_I18N = True
 USE_L10N = True

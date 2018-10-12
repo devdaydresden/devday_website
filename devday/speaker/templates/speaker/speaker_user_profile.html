@@ -23,7 +23,8 @@
                                  data-dz-uploadprogress></div>
                         </div>
                         <div>
-                            <span class="preview"><img class="img-fluid" data-dz-thumbnail></span>
+                            <span class="preview"><img class="img-fluid"
+                                                       data-dz-thumbnail></span>
                         </div>
                         <div class="error text-danger">
                             <strong data-dz-errormessage></strong>
@@ -46,48 +47,63 @@
     {% endaddtoblock %}
     {% addtoblock "js" %}
         <script>
-            var previewNode = document.querySelector("#template");
-            previewNode.id = "";
-            var previewTemplate = previewNode.parentElement.innerHTML;
-            previewNode.parentNode.removeChild(previewNode);
+            $(document).ready(function () {
+                var previewNode = document.querySelector("#template");
+                previewNode.id = "";
+                var previewTemplate = previewNode.parentElement.innerHTML;
+                previewNode.parentNode.removeChild(previewNode);
 
-            var portraitDropZone = new Dropzone(document.body, {
-                url: "{% url "upload_user_speaker_portrait" %}",
-                thumbnailWidth: 500,
-                thumbnailHeight: 700,
-                maxFiles: 1,
-                acceptedFiles: "image/*",
-                previewTemplate: previewTemplate,
-                autoQueue: false,
-                previewsContainer: "#previews",
-                clickable: ".fileinput-button",
-                headers: {"X-CSRFToken": "{{ csrf_token }}"},
-                paramName: "portrait",
-                thumbnailMethod: "contain"
+                var portraitDropZone = new Dropzone(document.body, {
+                    url: "{% url "upload_user_speaker_portrait" %}",
+                    thumbnailWidth: 500,
+                    thumbnailHeight: 700,
+                    maxFiles: 1,
+                    acceptedFiles: "image/*",
+                    previewTemplate: previewTemplate,
+                    autoQueue: true,
+                    previewsContainer: "#previews",
+                    clickable: ".fileinput-button",
+                    headers: {"X-CSRFToken": "{{ csrf_token }}"},
+                    paramName: "portrait",
+                    thumbnailMethod: "contain",
+                    init: function () {
+                        this.on('maxfilesexceeded', function (file) {
+                            this.removeAllFiles();
+                            this.addFile(file);
+                        });
+
+                        this.on('added', function (file) {
+                            console.info("file " + file + " " + file.dataURL);
+                        });
+
+                        this.on('sending', function (file) {
+                            document.getElementById("portrait-upload-btn").setAttribute("disabled", "disabled");
+                        });
+                    }
+                });
+
+                var imgUrl = "{% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static 'img/speaker-dummy.png' %}{% endif %}";
+                var mockFile = {
+                    dataURL: imgUrl,
+                    name: "",
+                    accepted: true,
+                    status: Dropzone.ADDED
+                };
+
+                portraitDropZone.files.push(mockFile);
+                portraitDropZone.emit('addedfile', mockFile);
+                portraitDropZone.createThumbnailFromUrl(
+                    mockFile, null, null, null, null,
+                    function (thumbnail, canvas) {
+                        portraitDropZone.emit('thumbnail', mockFile, thumbnail);
+                    });
+                portraitDropZone._updateMaxFilesReachedClass();
+                portraitDropZone.emit('complete', mockFile);
+
+                document.getElementById("portrait-delete-btn").onclick = function () {
+                    portraitDropZone.removeAllFiles(true);
+                };
             });
-
-            portraitDropZone.on("sending", function (file) {
-                document.getElementById("portrait-upload-btn").setAttribute("disabled", "disabled");
-            });
-
-            portraitDropZone.on("maxfilesexceeded", function(file) {
-                portraitDropZone.removeAllFiles();
-                portraitDropZone.addFile(file);
-            });
-
-            document.getElementById("portrait-delete-btn").onclick = function () {
-                portraitDropZone.removeAllFiles(true);
-            };
-
-            var imgUrl = "{% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static 'img/speaker-dummy.png' %}{% endif %}";
-            var mockFile = {dataURL: imgUrl, name: "", status: Dropzone.ADDED};
-
-            portraitDropZone.emit("addedfile", mockFile);
-            portraitDropZone.createThumbnailFromUrl(mockFile);
-            portraitDropZone.emit("thumbnail", mockFile, mockFile.dataURL);
-            portraitDropZone.files.push(mockFile);
-            portraitDropZone.emit("complete", mockFile);
-
         </script>
     {% endaddtoblock %}
 {% endblock %}

@@ -37,8 +37,6 @@ RUN apk --no-cache add \
     libmagic \
     libpng \
     libpq \
-    libxml2 \
-    libxslt \
     python3
 
 COPY Pipfile Pipfile.lock /srv/devday/
@@ -53,7 +51,6 @@ RUN apk --no-cache add --virtual build-dependencies \
     jpeg-dev \
     libffi-dev \
     libpng-dev \
-    libxml2-dev \
     linux-headers \
     musl-dev \
     postgresql-dev \
@@ -70,5 +67,7 @@ EXPOSE 7000
 COPY docker/app/start-application.sh docker/app/uwsgi.ini docker/app/devday.wsgi /srv/devday/
 COPY docker/app/vault.crt /usr/local/share/ca-certificates/
 COPY devday /srv/devday/
+
+RUN update-ca-certificates
 
 ENTRYPOINT ["dumb-init", "/srv/devday/start-application.sh"]

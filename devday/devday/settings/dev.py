@@ -2,9 +2,6 @@
 Django development settings for local devday development.
 
 """
-
-import os
-
 from .base import *
 
 ADMINUSER_EMAIL = 'admin@devday.de'
@@ -22,58 +19,19 @@ INSTALLED_APPS += [
     'debug_toolbar',
 ]
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)s %(message)s'
-        },
-        'simple': {
-            'format': '%(asctime)s %(levelname)s %(message)s'
-        }
-
-    },
-    'handlers': {
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'devday.log'),
-            'formatter': 'simple',
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        }
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-        },
-        'attendee': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-        },
-        'devday': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-        },
-        'talk': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-        },
-    },
-}
+for logname in [
+    'django', 'django.request', 'cms',
+    'devday', 'attendee', 'event', 'speaker', 'talk', 'twitterfeed'
+]:
+    LOGGING['loggers'][logname] = {
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
+    }
 
 MIDDLEWARE_CLASSES = ['debug_toolbar.middleware.DebugToolbarMiddleware',
                       ] + MIDDLEWARE_CLASSES
 
 TWITTERFEED_PROXIES = {
-    'http': 'http://proxy.mms-dresden.de:8080/',
-    'https': 'http://proxy.mms-dresden.de:8080/',
+    'http': '',
+    'https': '',
 }
-
-DATA_DIR = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
-STATIC_ROOT = os.path.join(DATA_DIR, 'static')

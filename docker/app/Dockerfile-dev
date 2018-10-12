@@ -37,8 +37,6 @@ RUN apk --no-cache add \
     libmagic \
     libpng \
     libpq \
-    libxml2 \
-    libxslt \
     python3
 
 COPY Pipfile Pipfile.lock /srv/devday/
@@ -52,7 +50,9 @@ RUN apk --no-cache add \
     jpeg-dev \
     libffi-dev \
     libpng-dev \
+    libxml2 \
     libxml2-dev \
+    libxslt \
     libxslt-dev \
     linux-headers \
     musl-dev \
@@ -65,6 +65,5 @@ RUN pipenv install --system --deploy --ignore-pipfile --dev
 EXPOSE 8000
 
 VOLUME /srv/devday
-WORKDIR /srv/devday/devday
 
 ENTRYPOINT ["dumb-init", "python", "manage.py", "runserver", "0.0.0.0:8000"]

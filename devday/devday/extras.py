@@ -19,6 +19,19 @@ class ValidatedImageField(ImageField):
         'image/png': '.png',
     }
 
+    @classmethod
+    def name_image_by_contents(cls, file):
+        file.seek(0)
+        m = magic.from_buffer(file.read(1024), mime=True)
+        ext = cls.extensions.get(m)
+        if not ext:
+            raise ValidationError('Unsupported image file format {}'
+                                  .format(m))
+        file.seek(0)
+        h = hashlib.sha224()
+        h.update(file.read())
+        return u'{}{}'.format(h.hexdigest(), ext)
+
     def __init__(self, *args, **kwargs):
         super(ValidatedImageField, self).__init__(*args, **kwargs)
         if 'extensions' in kwargs:
@@ -26,15 +39,7 @@ class ValidatedImageField(ImageField):
 
     def clean(self, *args, **kwargs):
         data = super(ValidatedImageField, self).clean(*args, **kwargs)
-        m = magic.from_buffer(args[0]._file.read(1024), mime=True)
-        if m in self.extensions:
-            ext = self.extensions[m]
-        else:
-            raise ValidationError('Unsupported image file format {}'
-                                  .format(m))
-        h = hashlib.sha224()
-        h.update(data._file.read())
-        data.name = u'{}{}'.format(h.hexdigest(), ext)
+        data.name = self.name_image_by_contents(data._file)
         return data
 
 

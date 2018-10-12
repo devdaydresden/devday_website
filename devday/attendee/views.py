@@ -157,12 +157,7 @@ def login_or_register_attendee_view(request):
     template_name = 'attendee/login_or_register.html'
 
     if not request.user.is_anonymous and "edit" not in request.GET:
-        try:
-            # noinspection PyStatementEffect
-            # request.user.attendee and request.user.attendee.speaker
-            return redirect(reverse('registration_register'))
-        except Attendee.DoesNotExist:
-            pass
+        return redirect(reverse('registration_register'))
 
     return login(request, template_name=template_name,
                  authentication_form=RegistrationAuthenticationForm)

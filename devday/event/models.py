@@ -1,7 +1,4 @@
-from __future__ import unicode_literals
-
 from django.apps import apps
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible

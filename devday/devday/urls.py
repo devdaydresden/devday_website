@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function, unicode_literals
-
 from cms.sitemaps import CMSSitemap
 from django.conf import settings
 from django.conf.urls import include, url
@@ -39,7 +37,8 @@ urlpatterns = [
     url(r'^accounts/profile/$', AttendeeProfileView.as_view(), name='user_profile'),
     url(r'^speakers/$', SpeakerListView.as_view(), name='speaker_list'),
     url(r'^schedule\.xml$', InfoBeamerXMLView.as_view()),
-    url(r'^(?P<event>[^/]+)/schedule\.xml$', InfoBeamerXMLView.as_view()),
+    url(r'^(?P<event>[^/]+)/schedule\.xml$', InfoBeamerXMLView.as_view(),
+        name='infobeamer'),
     url(r'^videos/$', RedirectVideoView.as_view()),
     url(r'^speaker/profile/(?P<pk>\d+)/$', SpeakerProfileView.as_view(), name='speaker_profile'),
     url(r'^upload/', include('django_file_form.urls')),

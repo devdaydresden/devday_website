@@ -210,64 +210,103 @@ class AttendeeDeleteViewTest(TestCase):
         self.assertTemplateUsed(r, 'attendee/devdayuser_confirm_delete.html')
 
 
-class AttendeeListViewTest(TestCase):
+class CSVViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.url = reverse('admin_csv_attendees')
         cls.staff_password = 'foo'
         cls.staff = DevDayUser.objects.create_user(
             'staff@example.com', cls.staff_password, is_staff=True)
         cls.user = DevDayUser.objects.create_user('test@example.org', 'test')
-        cls.attendee = Attendee.objects.create(
-            user=cls.user, event=Event.objects.current_event())
-        cls.other_attendee = Attendee.objects.create(
-            user=cls.user, event=create_test_event())
+        cls.event = Event.objects.current_event()
+        cls.test_event = create_test_event()
+
+    def setUp(self):
+        self.attendee = Attendee.objects.create(
+            user=self.user, event=self.event)
+        self.other_attendee = Attendee.objects.create(
+            user=self.user, event=self.test_event)
 
     def login(self):
         self.client.login(
             username=self.staff.email, password=self.staff_password)
 
-    def test_get_anonymous(self):
-        r = self.client.get(self.url)
+    def get_anonymous(self, rev):
+        url = reverse(rev)
+        r = self.client.get(url)
         self.assertEquals(r.status_code, 302)
-        self.assertEquals(r.url, '/accounts/login/?next={}'.format(self.url),
+        self.assertEquals(r.url, '/accounts/login/?next={}'.format(url),
                           'should redirect to login page')
 
-    def test_get_staff(self):
+    def get_staff(self, rev):
+        url = reverse(rev)
         self.login()
-        r = self.client.get(self.url)
+        r = self.client.get(url)
         self.assertEquals(r.status_code, 200,
-                          'should retrieve data')
+                          'should retrieve data from {}'.format(url))
+        return r
 
+    def test_get_attendees_anonymous(self):
+        self.get_anonymous('admin_csv_attendees')
 
-class InactiveAttendeeViewTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.url = reverse('admin_csv_inactive')
-        cls.staff_password = 'foo'
-        cls.staff = DevDayUser.objects.create_user(
-            'staff@example.com', cls.staff_password, is_staff=True)
-        cls.user = DevDayUser.objects.create_user('test@example.org', 'test')
-        cls.attendee = Attendee.objects.create(
-            user=cls.user, event=Event.objects.current_event())
-        cls.other_attendee = Attendee.objects.create(
-            user=cls.user, event=create_test_event())
-
-    def login(self):
-        self.client.login(
-            username=self.staff.email, password=self.staff_password)
-
-    def test_get_anonymous(self):
-        r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(r.url, '/accounts/login/?next={}'.format(self.url),
-                          'should redirect to login page')
-
-    def test_get_staff(self):
+    def test_get_attendees_staff(self):
         self.login()
-        r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 200,
-                          'should retrieve data')
+        r = self.get_staff('admin_csv_attendees')
+        self.assertTrue(self.user.email in r.content.decode(),
+                        'user should be listed in attendees')
+
+        self.attendee.delete()
+        r = self.get_staff('admin_csv_attendees')
+        self.assertTrue(self.user.email not in r.content.decode(),
+                        'user should not be listed in attendees')
+
+    def test_get_inactive_anonymous(self):
+        self.get_anonymous('admin_csv_inactive')
+
+    def test_get_inactive_staff(self):
+        self.login()
+
+        self.user.is_active = True
+        self.user.save()
+        r = self.get_staff('admin_csv_inactive')
+        self.assertTrue(self.user.email not in r.content.decode(),
+                        'user should not be listed in inactive')
+
+        self.user.is_active = False
+        self.user.save()
+        r = self.get_staff('admin_csv_inactive')
+        self.assertTrue(self.user.email in r.content.decode(),
+                        'user should be listed in inactive')
+
+    def test_get_maycontact_anonymous(self):
+        self.get_anonymous('admin_csv_maycontact')
+
+    def test_get_maycontact_staff(self):
+        self.login()
+
+        self.user.contact_permission_date = timezone.now()
+        self.user.save()
+        r = self.get_staff('admin_csv_maycontact')
+        self.assertTrue(self.user.email in r.content.decode(),
+                        'user should be listed in maycontact')
+
+        self.user.contact_permission_date = None
+        self.user.save()
+        r = self.get_staff('admin_csv_maycontact')
+        self.assertTrue(self.user.email in r.content.decode(),
+                        'user should be listed in maycontact')
+
+        self.user.contact_permission_date = timezone.now()
+        self.attendee.delete()
+        self.user.save()
+        r = self.get_staff('admin_csv_maycontact')
+        self.assertTrue(self.user.email in r.content.decode(),
+                        'user should be listed in maycontact')
+
+        self.user.contact_permission_date = None
+        self.user.save()
+        r = self.get_staff('admin_csv_maycontact')
+        self.assertTrue(self.user.email not in r.content.decode(),
+                        'user should not be listed in maycontact')
 
 
 class CheckInAttendeeViewTest(TestCase):

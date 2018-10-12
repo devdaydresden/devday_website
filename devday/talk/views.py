@@ -416,7 +416,7 @@ class TalkListPreviewView(ListView):
         return super(TalkListPreviewView, self).get_queryset().filter(
             track__isnull=False, speaker__user__event=event
         ).select_related(
-            'speaker__user__event', 'speaker__user__event__slug',
+            'speaker__user__event',
             'track',
             'speaker', 'speaker__user', 'speaker__user__user'
         ).order_by('title')

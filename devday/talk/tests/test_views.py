@@ -7,11 +7,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django_file_form.forms import ExistingFile
 from django.http import HttpRequest
 from django.test import TestCase
 from django.test import override_settings
+from django.urls import reverse
 from django.utils.translation import ugettext as _
-from django_file_form.forms import ExistingFile
 
 from attendee.models import Attendee
 from devday.utils.devdata import DevData
@@ -1292,5 +1293,12 @@ class TestTalkListView(TestCase):
 
     def test_talklistview(self):
         response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.event.title)
+
+    def test_talklistpreviewview(self):
+        response = self.client.get(reverse(
+            'session_list_preview',
+            kwargs={'event': self.event.slug}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.event.title)

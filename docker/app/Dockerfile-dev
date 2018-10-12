@@ -1,6 +1,6 @@
 FROM python:3.6-alpine
 MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
-LABEL vendor=T-Systems\ Multimedia\ Solutions\ GmbH
+LABEL vendor="T-Systems Multimedia Solutions GmbH"
 LABEL devday.release=0.1
 
 ARG http_proxy
@@ -22,34 +22,49 @@ ENV \
   DEVDAY_PG_DBNAME=devday \
   DEVDAY_PG_HOST=db \
   DEVDAY_PG_PORT=5432 \
-  DEVDAY_PG_USER=devday
+  DEVDAY_PG_USER=devday \
+  REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
-EXPOSE 8000
+VOLUME /srv/devday/media /srv/devday/static /srv/devday/logs
+
+WORKDIR /srv/devday
 
 RUN apk --no-cache add \
-  bash \
-  build-base \
-  curl \
-  dumb-init \
-  gcc \
-  gettext \
-  git \
-  jpeg-dev \
-  libffi-dev \
-  libxml2-dev \
-  libxslt-dev \
-  linux-headers \
-  musl-dev \
-  postgresql-dev \
-  zlib-dev
-RUN pip install pipenv
+    ca-certificates \
+    dumb-init \
+    gettext \
+    jpeg \
+    libmagic \
+    libpng \
+    libpq \
+    libxml2 \
+    libxslt \
+    python3
 
-VOLUME /srv/devday /srv/devday/devday/media /srv/devday/devday/static
-WORKDIR /srv/devday
 COPY Pipfile Pipfile.lock /srv/devday/
+
+RUN apk --no-cache add \
+    bash \
+    build-base \
+    curl \
+    gcc \
+    git \
+    jpeg-dev \
+    libffi-dev \
+    libpng-dev \
+    libxml2-dev \
+    libxslt-dev \
+    linux-headers \
+    musl-dev \
+    postgresql-dev \
+    zlib-dev \
+  && pip install pipenv
 
 RUN pipenv install --system --deploy --ignore-pipfile --dev
 
+EXPOSE 8000
+
+VOLUME /srv/devday
 WORKDIR /srv/devday/devday
 
 ENTRYPOINT ["dumb-init", "python", "manage.py", "runserver", "0.0.0.0:8000"]

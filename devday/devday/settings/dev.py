@@ -72,3 +72,8 @@ TWITTERFEED_PROXIES = {
     'http': 'http://proxy.mms-dresden.de:8080/',
     'https': 'http://proxy.mms-dresden.de:8080/',
 }
+
+DATA_DIR = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+STATIC_ROOT = os.path.join(DATA_DIR, 'static')

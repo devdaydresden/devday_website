@@ -25,48 +25,50 @@ ENV \
   DEVDAY_PG_USER=devday \
   REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
-EXPOSE 7000
-
 VOLUME /srv/devday/media /srv/devday/static /srv/devday/logs
-COPY Pipfile Pipfile.lock devday docker/app/start-application.sh \
-  docker/app/uwsgi.ini docker/app/devday.wsgi /srv/devday/
-COPY docker/app/vault.crt /usr/local/share/ca-certificates/
 
 WORKDIR /srv/devday
 
 RUN apk --no-cache add \
-    build-base \
     ca-certificates \
     dumb-init \
-    gcc \
     gettext \
     jpeg \
-    jpeg-dev \
-    libffi-dev \
     libmagic \
     libpng \
-    libpng-dev \
     libpq \
+    libxml2 \
+    libxslt \
+    python3
+
+COPY Pipfile Pipfile.lock /srv/devday/
+
+RUN apk --no-cache add \
+    uwsgi-http \
+    uwsgi-python3
+
+RUN apk --no-cache add --virtual build-dependencies \
+    build-base \
+    gcc \
+    jpeg-dev \
+    libffi-dev \
+    libpng-dev \
+    libxml2-dev \
     linux-headers \
     musl-dev \
     postgresql-dev \
-    uwsgi-http \
-    uwsgi-python3 \
     zlib-dev \
   && pip install pipenv \
   && pipenv install --system --deploy --ignore-pipfile \
   && rm -rf /root/.cache \
   && find /usr/local -type f -name '*.pyc' -delete \
   && update-ca-certificates \
-  && apk --no-cache del \
-    build-base \
-    gcc \
-    jpeg-dev \
-    libffi-dev \
-    libpng-dev \
-    linux-headers \
-    musl-dev \
-    postgresql-dev \
-    zlib-dev
+  && apk del build-dependencies
+
+EXPOSE 7000
+
+COPY docker/app/start-application.sh docker/app/uwsgi.ini docker/app/devday.wsgi /srv/devday/
+COPY docker/app/vault.crt /usr/local/share/ca-certificates/
+COPY devday /srv/devday/
 
 ENTRYPOINT ["dumb-init", "/srv/devday/start-application.sh"]

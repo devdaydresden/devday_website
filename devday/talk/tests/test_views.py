@@ -2,6 +2,8 @@ import errno
 import os
 import shutil
 
+from xml.etree import ElementTree
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -1302,3 +1304,16 @@ class TestTalkListView(TestCase):
             kwargs={'event': self.event.slug}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.event.title)
+
+    def test_infobeamerxmlview(self):
+        response = self.client.get(reverse(
+            'infobeamer',
+            kwargs={'event': self.event.slug}))
+        self.assertEqual(response.status_code, 200)
+        root = ElementTree.fromstring(response.content)
+        self.assertEquals(root.tag, 'schedule')
+        self.assertEquals(
+            root.find('./conference/title').text,
+            self.event.title)
+        self.assertEquals(len(root.findall('day/room')), 4)
+        self.assertEquals(len(root.findall('day/room/event')), 14)

@@ -36,13 +36,6 @@ class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         return get_object_or_404(Speaker, user=self.request.user)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'profile_image_form': UserSpeakerPortraitForm(self.object)
-        })
-        return context
-
 
 class UserSpeakerPortraitUploadView(LoginRequiredMixin, UpdateView):
     model = Speaker

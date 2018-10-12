@@ -82,7 +82,7 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker_compose_up
     fi
-    $DOCKER_COMPOSE exec "${container}" coverage run --branch manage.py test -v1 -k
+    $DOCKER_COMPOSE exec "${container}" coverage run --branch manage.py test -v1 -k $@
     $DOCKER_COMPOSE exec "${container}" coverage report -m
     $DOCKER_COMPOSE exec "${container}" coverage html
     ;;
@@ -173,7 +173,7 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker_compose_up
     fi
-    $DOCKER_COMPOSE exec "${container}" python manage.py test -v1 -k
+    $DOCKER_COMPOSE exec "${container}" python manage.py test -v1 -k $@
     ;;
   *)
     echo -e "error: unknown action \"${cmd}\":\n" >&2

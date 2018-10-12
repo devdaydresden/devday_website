@@ -1,13 +1,13 @@
 from django.conf.urls import url
 
 from talk.views import (
-    CreateTalkView, TalkSubmittedView, handle_upload, ExistingFileView, CreateSpeakerView,
-    submit_session_view, SpeakerRegisteredView, SpeakerTalkDetails, TalkSpeakerCommentDelete, SubmitTalkSpeakerComment,
+    CreateTalkView, TalkSubmittedView, handle_upload, ExistingFileView,
+    submit_session_view, SpeakerRegisteredView, SpeakerTalkDetails,
+    TalkSpeakerCommentDelete, SubmitTalkSpeakerComment,
     TalkSubmissionClosed, SpeakerPublic)
 
 urlpatterns = [
     url(r'^submit-session/$', submit_session_view, name='submit_session'),
-    url(r'^new-speaker/$', CreateSpeakerView.as_view(), name='create_speaker'),
     url(r'^speaker-registered/$', SpeakerRegisteredView.as_view(), name='speaker_registered'),
     url(r'^submission-closed/$', TalkSubmissionClosed.as_view(), name='talk_submission_closed'),
     url(r'^create-session/$', CreateTalkView.as_view(), name='create_session'),

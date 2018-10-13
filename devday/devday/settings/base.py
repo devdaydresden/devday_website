@@ -291,15 +291,10 @@ LOGGING = {
         }
     },
     'handlers': {
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'devday.log'),
-            'formatter': 'simple',
-            'level': 'INFO',
-        },
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
+            'level': 'INFO'
         }
     },
     'loggers': {}

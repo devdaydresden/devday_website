@@ -40,6 +40,12 @@ LOGGING['handlers'].update({
         'include_html': True,
         'filters': ['require_debug_false'],
     },
+    'file': {
+        'class': 'logging.FileHandler',
+        'filename': os.path.join(BASE_DIR, 'logs', 'devday.log'),
+        'formatter': 'simple',
+        'level': 'INFO',
+    },
 })
 
 for logname in [

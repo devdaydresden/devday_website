@@ -24,7 +24,7 @@ for logname in [
     'devday', 'attendee', 'event', 'speaker', 'talk', 'twitterfeed'
 ]:
     LOGGING['loggers'][logname] = {
-        'handlers': ['console', 'file'],
+        'handlers': ['console'],
         'level': 'INFO',
     }
 

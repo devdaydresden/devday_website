@@ -22,7 +22,7 @@ class NoSpeakerYetMixin(object):
 class CreateSpeakerView(LoginRequiredMixin, NoSpeakerYetMixin, CreateView):
     model = Speaker
     form_class = CreateSpeakerForm
-    success_url = reverse_lazy('user_speaker_profile')
+    success_url = reverse_lazy('upload_user_speaker_portrait')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -34,6 +34,7 @@ class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
     model = Speaker
     template_name_suffix = '_user_profile'
     form_class = EditSpeakerForm
+    success_url = reverse_lazy('user_speaker_profile')
 
     def get_object(self, queryset=None):
         return get_object_or_404(Speaker, user=self.request.user)
@@ -42,6 +43,7 @@ class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
 class UserSpeakerPortraitUploadView(LoginRequiredMixin, UpdateView):
     model = Speaker
     form_class = UserSpeakerPortraitForm
+    template_name_suffix = '_portrait_upload'
     success_url = reverse_lazy('user_speaker_profile')
 
     def get_object(self, queryset=None):

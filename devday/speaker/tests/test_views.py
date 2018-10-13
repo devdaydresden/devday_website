@@ -60,7 +60,7 @@ class TestCreateSpeakerView(TestCase):
         }
         self.client.login(email='speaker@example.org', password='s3cr3t')
         response = self.client.post(self.url, data=data)
-        self.assertRedirects(response, '/speaker/profile/')
+        self.assertRedirects(response, '/speaker/upload_portrait/')
 
 
 class TestUserSpeakerProfileView(TestCase):

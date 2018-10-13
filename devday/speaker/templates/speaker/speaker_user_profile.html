@@ -1,37 +1,32 @@
-{% extends "devday_site.html" %}
+{% extends "devday.html" %}
 {% load crispy_forms_tags sekizai_tags staticfiles i18n %}
 {% block content_body %}
-    <div class="content-area">
-        <div class="row">
-            <div class="col-12 col-md-8">
-                {% crispy form %}
+    <div class="row">
+        <div class="col-12">
+            {% crispy form %}
+        </div>
+    </div>
+{% endblock %}
+{% block content_box_2_wrapper_classes %}{% endblock %}
+{% block content_box_2 %}
+    <div class="dropzone-buttons">
+        <button id="portrait-upload-btn"
+                class="btn btn-success fileinput-button dz-clickable">{% trans "Upload portrait image" %}</button>
+        <button id="portrait-delete-btn"
+                class="btn btn-danger cancel{% if not speaker.portrait %} d-none{% endif %}">{% trans "Delete image" %}</button>
+    </div>
+    <div id="previews">
+        <div id="template" class="file-row">
+            <div class="progress progress-bar-striped active"
+                 role="progressbar" aria-valuemin="0"
+                 aria-valuemax="100" aria-valuenow="0">
+                <div class="progress-bar progress-bar-success"
+                     data-dz-uploadprogress></div>
             </div>
-            <div class="col-12 col-md-4">
-                <div class="dropzone-buttons">
-                    <button id="portrait-upload-btn"
-                            class="btn btn-success fileinput-button dz-clickable">{% trans "Upload portrait image" %}</button>
-                    <button id="portrait-delete-btn"
-                            class="btn btn-danger cancel{% if not speaker.portrait %} d-none{% endif %}">{% trans "Delete image" %}</button>
-                </div>
-                <div id="previews">
-                    <div id="template" class="file-row">
-                        <div class="progress progress-bar-striped active"
-                             role="progressbar" aria-valuemin="0"
-                             aria-valuemax="100" aria-valuenow="0">
-                            <div class="progress-bar progress-bar-success"
-                                 style="width:0;"
-                                 data-dz-uploadprogress></div>
-                        </div>
-                        <div>
-                            <span class="preview"><img
-                                    class="img-fluid"
-                                    data-dz-thumbnail src=""></span>
-                        </div>
-                        <div class="error text-danger">
-                            <strong data-dz-errormessage></strong>
-                        </div>
-                    </div>
-                </div>
+            <div><span class="preview"><img
+                    class="img-fluid" data-dz-thumbnail src=""></span></div>
+            <div class="error text-danger">
+                <strong data-dz-errormessage></strong>
             </div>
         </div>
     </div>

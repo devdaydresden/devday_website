@@ -48,10 +48,10 @@
     <div class="stripe c-white">
         <div class="container">
             <div class="row ">
-                <div class="col-12 col-lg-9 order-2 order-lg-1  col-center info">
+                <div class="col-12 col-lg-9 order-2 order-lg-1{% block content_box_1_wrapper_classes %} col-center{% endblock %} info">
                     <div class="content-center">{% block content_box_1 %}override block content_box_1{% endblock %}</div>
                 </div>
-                <div class="col-12 col-lg-3  order-1 order-lg-2 col-center col-highlight">
+                <div class="col-12 col-lg-3  order-1 order-lg-2{% block content_box_2_wrapper_classes %} col-center{% endblock %} col-highlight">
                     <div class="content-center">{% block content_box_2 %}override block content_box_2{% endblock %}</div>
                 </div>
             </div>

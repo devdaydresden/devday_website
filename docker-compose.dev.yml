@@ -28,8 +28,4 @@ services:
     volumes:
       - "devday_media:/srv/devday/media"
       - "devday_static:/srv/devday/static"
-      - "devday_logs:/srv/devday/logs"
       - "./devday:/srv/devday"
-
-volumes:
-  devday_logs:

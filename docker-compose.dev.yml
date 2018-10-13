@@ -2,6 +2,7 @@ version: '3'
 services:
   db:
     image: ${DOCKER_REGISTRY}devday-website-db:dev
+    restart: "no"
     ports:
       - "15432:5432"
   vault:

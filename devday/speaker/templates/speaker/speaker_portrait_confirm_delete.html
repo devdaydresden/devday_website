@@ -1,0 +1,23 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block content_body %}
+    <div class="content-area">
+        <h1>{% trans "Delete speaker image" %}</h1>
+        <div class="col-12">
+            {% trans "Do you want to delete your profile image?" %}
+
+            <p><img src="{{ speaker.portrait.url }}" alt="{% trans "Your current speaker image." %}"></p>
+        </div>
+        <form action="{% url 'delete_user_speaker_portrait' %}" method="post">
+            {{ form }}
+            <div class="form-row">
+                <div class="col-12">
+                    <input type="submit" value="{% trans "Yes please." %}"
+                           class="btn btn-danger">
+                    <a href="{% url 'user_speaker_profile' %}"
+                       class="btn btn-default">{% trans "Cancel" %}</a>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -3,7 +3,7 @@ import os
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from speaker.forms import CreateSpeakerForm
+from speaker.forms import CreateSpeakerForm, UserSpeakerPortraitForm
 from speaker.models import Speaker
 
 User = get_user_model()
@@ -205,3 +205,65 @@ class TestUserSpeakerPortraitUploadView(TestCase):
         self.assertIn('errors', json)
         speaker.refresh_from_db()
         self.assertFalse(bool(speaker.portrait))
+
+
+class TestUserSpeakerPortraitDeleteView(TestCase):
+    def setUp(self):
+        self.url = '/speaker/delete_portrait/'
+
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create_user(
+            email='test@example.org', password='s3cr3t')
+        cls.speaker = Speaker.objects.create(
+            user=user, shirt_size=2, video_permission=True,
+            short_biography='A short biography text'
+        )
+
+    def test_needs_login(self):
+        response = self.client.get(self.url)
+        self.assertRedirects(
+            response, '/accounts/login/?next={}'.format(self.url))
+
+    def test_needs_portrait(self):
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 404)
+
+    def _store_portrait_image(self):
+        with open(os.path.join(
+                os.path.dirname(__file__),
+                'mu_at_mil_house.jpg'), 'rb') as image:
+            self.speaker.portrait.save(
+                os.path.basename(image.name), image)
+
+    def test_used_template(self):
+        self._store_portrait_image()
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("speaker/speaker_portrait_confirm_delete.html")
+
+    def test_form_in_context_data(self):
+        self._store_portrait_image()
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+
+    def test_post_deletes_portrait(self):
+        self._store_portrait_image()
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.post(self.url)
+        self.assertRedirects(response, '/speaker/profile/')
+        self.speaker.refresh_from_db()
+        self.assertFalse(bool(self.speaker.portrait))
+
+    def test_ajax_post_deletes_portrait(self):
+        self._store_portrait_image()
+        self.client.login(username='test@example.org', password='s3cr3t')
+        response = self.client.post(
+            self.url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 204)
+        self.speaker.refresh_from_db()
+        self.assertFalse(bool(self.speaker.portrait))

@@ -52,7 +52,7 @@
                     <div class="content-center">{% block content_box_1 %}override block content_box_1{% endblock %}</div>
                 </div>
                 <div class="col-12 col-lg-3  order-1 order-lg-2{% block content_box_2_wrapper_classes %} col-center{% endblock %} col-highlight">
-                    <div class="content-center">{% block content_box_2 %}override block content_box_2{% endblock %}</div>
+                    {% block content_box_2_wrapper %}<div class="content-center">{% block content_box_2 %}override block content_box_2{% endblock %}</div>{% endblock %}
                 </div>
             </div>
         </div>

@@ -1,6 +1,9 @@
 from io import StringIO
-from unittest.mock import MagicMock
 
+from cms.constants import TEMPLATE_INHERITANCE_MAGIC
+from cms.models import Page
+from cms.models.pluginmodel import CMSPlugin
+from cms.models.static_placeholder import StaticPlaceholder
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
@@ -8,18 +11,12 @@ from django.core.management.base import OutputWrapper
 from django.db.models import Count
 from django.test import TestCase
 
-from cms.constants import TEMPLATE_INHERITANCE_MAGIC
-from cms.models import Page
-from cms.models.pluginmodel import CMSPlugin
-from cms.models.static_placeholder import StaticPlaceholder
-
+from devday.utils.devdata import DevData
 from event.models import Event
-from talk.models import (Room, Speaker, Talk, TalkFormat, TalkSlot, TimeSlot,
+from speaker.models import Speaker
+from talk.models import (Room, Talk, TalkFormat, TalkSlot, TimeSlot,
                          Track, Vote)
 from twitterfeed.models import Tweet, TwitterProfileImage
-
-from devday.utils.devdata import DevData
-
 
 User = get_user_model()
 
@@ -67,9 +64,9 @@ class DevDataTests(TestCase):
         self.assertEquals(site.name, 'Dev Data')
 
     def get_page(self, title):
-        return Page.objects.get(title_set__title=title,
-                                title_set__published=True,
-                                publisher_is_draft=False)
+        return Page.objects.get(
+            title_set__title=title, title_set__published=True,
+            publisher_is_draft=False)
 
     def check_plugin(self, page, slot, plugin_type):
         placeholder = page.placeholders.get(slot=slot)
@@ -171,55 +168,55 @@ class DevDataTests(TestCase):
         self.subtest_get_committee_members()
 
     def subtest_get_speakers(self):
-        count = len(self.devdata.get_speakers()
-                    .strip().split('\n')) - 1  # one extra line
+        count = len(self.devdata.get_speakers().strip().split(
+            '\n')) - 1  # one extra line
         self.assertEquals(count, 10, 'At least 10 speakers')
 
     def subtest_create_speakers(self):
         self.devdata.create_objects(
             'speakers', Speaker, 1, self.devdata.create_speakers,
             self.devdata.get_speakers)
-        speakers = 50
-        events = Event.objects.annotate(nspeaker=Count('attendee__speaker'))
-        for e in events:
-            self.assertTrue(speakers * 0.70 <= e.nspeaker <= speakers * 1.2,
-                            'about {:d} speakers at event {}: actual {}'
-                            .format(speakers, e.title, e.nspeaker))
+        speakers = 150
+        number_of_speakers = Speaker.objects.count()
+        self.assertTrue(
+            speakers * 0.70 <= number_of_speakers <= speakers * 1.2,
+            'about {:d} speakers: actual {}'
+            .format(speakers, number_of_speakers))
         self.subtest_get_speakers()
 
     def subtest_create_talks(self):
-        self.devdata.create_objects('talks', Talk, 1,
-                                    self.devdata.create_talks)
+        self.devdata.create_objects(
+            'talks', Talk, 1, self.devdata.create_talks)
         speakers = 50
         # With a probability of 10% a speaker will submit 2 talks, and with
         # a probability of 75% will submit one talk. For each event, we will
         # have talk in the amount of about 0.95 times the number of speakers.
         talks = speakers * 0.95
         events = Event.objects.annotate(
-            ntalk=Count('attendee__speaker__talk'))
+            ntalk=Count('talk'))
         for e in events:
             self.assertTrue(talks * 0.75 <= e.ntalk <= talks * 1.25,
                             'about {:d} talks at event {}: actual {}'
                             .format(int(talks), e.title, e.ntalk))
 
     def subtest_create_votes(self):
-        self.devdata.create_objects('votes', Vote, 1,
-                                    self.devdata.vote_for_talk)
-        nvotes = Vote.objects.exclude(
-            talk__speaker__user__event=Event.objects.current_event()).count()
-        self.assertEquals(nvotes, 0, 'No votes for older events')
-        nvotes = Vote.objects.count()
-        ntalks = Talk.objects.filter(
-            speaker__user__event=Event.objects.current_event()).count()
-        tvotes = ntalks * \
-            User.objects.filter(groups__name='talk_committee').count()
-        self.assertTrue(tvotes * 0.7 <= nvotes <= tvotes,
-                        'about {} votes for {} talks: actual {}'
-                        .format(int(tvotes*0.8), ntalks, nvotes))
+        event = Event.objects.current_event()
+        self.devdata.create_objects(
+            'votes', Vote, 1, self.devdata.vote_for_talk)
+        number_of_votes = Vote.objects.exclude(talk__event=event).count()
+        self.assertEquals(number_of_votes, 0, 'No votes for older events')
+        number_of_votes = Vote.objects.count()
+        number_of_talks = Talk.objects.filter(event=event).count()
+        potential_votes = number_of_talks * User.objects.filter(
+            groups__name='talk_committee').count()
+        self.assertTrue(
+            potential_votes * 0.7 <= number_of_votes <= potential_votes,
+            'about {} votes for {} talks: actual {}'.format(
+                int(potential_votes * 0.8), number_of_talks, number_of_votes))
 
     def subtest_create_tracks(self):
-        self.devdata.create_objects('tracks', Track, 1,
-                                    self.devdata.create_tracks)
+        self.devdata.create_objects(
+            'tracks', Track, 1, self.devdata.create_tracks)
         # FIXME implement data checks
         ntracks = Track.objects.filter(
             event=Event.objects.current_event()).count()
@@ -234,8 +231,12 @@ class DevDataTests(TestCase):
     def subtest_create_rooms(self):
         self.devdata.create_objects('rooms', Room, 1,
                                     self.devdata.create_rooms)
-        nrooms = Room.objects.count()
-        self.assertEquals(nrooms, 4, 'we have 4 rooms')
+        nrooms = Room.objects.filter(
+            event=Event.objects.get(title='devdata.17')).count()
+        self.assertEquals(nrooms, 4, 'we have 4 rooms for devdata.17')
+        nrooms = Room.objects.filter(
+            event=Event.objects.get(title='devdata.18')).count()
+        self.assertEquals(nrooms, 4, 'we have 4 rooms for devdata.18')
 
     def subtest_create_time_slots(self):
         self.devdata.create_objects('time slots', TimeSlot, 1,
@@ -252,7 +253,7 @@ class DevDataTests(TestCase):
                                     self.devdata.create_talk_slots)
         events = Event.objects.exclude(
             id=Event.objects.current_event_id()).annotate(
-            ntalkslot=Count('attendee__speaker__talk__talkslot'))
+            ntalkslot=Count('talk__talkslot'))
         for e in events:
             self.assertEquals(e.ntalkslot, 14, 'we have 14 talk slots for {}'
                               .format(e))

@@ -26,7 +26,7 @@ def get_edit_speaker_layout(submit_text):
             css_class='form-row'
         ),
         Div(
-            Field('video_permission', wrapper_class='col-12 col-md-6'),
+            Field('video_permission', wrapper_class='col-12'),
             css_class='form-row'
         ),
         Div(
@@ -68,6 +68,11 @@ class CreateSpeakerForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.helper.layout = get_edit_speaker_layout(_('Register as speaker'))
+        self.helper.layout.append(Div(
+            HTML(_('<p class="text-info">By registering as a speaker, I agree'
+                   ' to be contacted by the Dev Day organizers about'
+                   ' conference details and my talk submissions.</p>'))))
+
 
     def save(self, commit=True):
         self.instance.user = self.user

@@ -27,7 +27,7 @@
   <div class="{% if not talk_submission_open %}visible-to-editor-only{% endif %}">
     {% placeholder "cfp_open" or %}Edit cfp_open{% endplaceholder %}
     <p><a class="btn btn-outline btn-call-action m-t-1"
-          href="{% url 'submit_session' %}">{% trans "Submit session now" %}</a></p>
+          href="{% url 'submit_session' event=current_event.slug %}">{% trans "Submit session now" %}</a></p>
   </div>
 {% endif %}
 {% endblock %}

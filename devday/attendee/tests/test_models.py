@@ -121,7 +121,7 @@ class AttendeeTest(TestCase):
         a2 = Attendee.objects.create(user=u2, event=event)
         self.assertNotEquals(attendee.checkin_code, a2.checkin_code)
         a3 = Attendee.objects.get_by_checkin_code_or_email(
-            attendee.checkin_code)
+            attendee.checkin_code, event)
         self.assertEquals(attendee, a3)
 
         attendee.check_in()

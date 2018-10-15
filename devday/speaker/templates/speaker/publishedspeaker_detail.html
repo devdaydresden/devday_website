@@ -1,0 +1,37 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{{ publishedspeaker }}{% endblock %}
+{% block content %}
+    <div class="row ">
+        <div class="col-12 col-lg-9 order-2 order-lg-1 content-area">
+            <div class="content-center">
+                <h1>{{ publishedspeaker }}
+                    {% if publishedspeaker.user.organization %} //
+                        {{ publishedspeaker.user.organization }}{% endif %}
+                    {% if publishedspeaker.user.user.twitter_handle %} //
+                        <a href="https://www.twitter.com/{{ publishedspeaker.user.user.twitter_handle }}">@{{ publishedspeaker.user.user.twitter_handle }}</a>{% endif %}
+                </h1>
+
+                <p>{{ publishedspeaker.shortbio|linebreaksbr }}</p>
+                {% if talks %}
+                    <h3>{% blocktrans %}Talks:
+                        {{ event }}{% endblocktrans %}</h3>
+                    <ul>
+                        {% for talk in talks %}
+                            <li>
+                                <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-12 col-lg-3  order-1 order-lg-2 col-center col-highlight">
+            <div class="content-center">
+                <img src="{{ publishedspeaker.public_image.url }}"
+                     class="publishedspeaker-image"
+                     alt="{{ publishedspeaker }}">
+            </div>
+        </div>
+    </div>
+{% endblock %}

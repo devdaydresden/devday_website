@@ -7,7 +7,7 @@ from attendee.models import Attendee
 from devday.utils.devdata import DevData
 from event.models import Event
 
-from .testutils import unpublish_all_events
+from .event_testutils import unpublish_all_events
 
 User = get_user_model()
 

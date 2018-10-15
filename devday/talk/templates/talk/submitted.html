@@ -4,6 +4,6 @@
 {% block content_body %}
     <div class="offset-lg-2 col-lg-8 col-md-12">
         {% static_placeholder "talk_submitted" %}
-        {% url "speaker_profile" pk=speaker.pk as speaker_profile %}<p>{% blocktrans %}Visit your <a href="{{ speaker_profile }}">speaker profile</a> to see all your sessions.{% endblocktrans %}</p>
+        {% url "user_speaker_profile" as speaker_profile %}<p>{% blocktrans %}Visit your <a href="{{ speaker_profile }}">speaker profile</a> to see all your sessions.{% endblocktrans %}</p>
     </div>
 {% endblock %}

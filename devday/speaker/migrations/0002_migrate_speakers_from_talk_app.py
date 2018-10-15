@@ -58,6 +58,7 @@ def migrate_existing_speakers(apps, schema_manager):
             speaker=speaker,
             date_published=event.start_time,
             event=event,
+            email=user.email,
         )
         copy_image_field(old_speaker.portrait, published.portrait)
         copy_image_field(old_speaker.thumbnail, published.thumbnail)

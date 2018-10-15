@@ -114,7 +114,7 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         Return the attendee object for this user and the given event. If no
         attendee object exists, return None.
         """
-        return Attendee.objects.filter(user=self, event=event).first()
+        return self.attendees.filter(event=event).first()
 
     def get_events(self):
         """
@@ -143,14 +143,14 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
 
 
 class AttendeeManager(models.Manager):
-    def get_by_checkin_code_or_email(self, key):
+    def get_by_checkin_code_or_email(self, key, event):
         '''
         Returns the attendee with the given checkin code or email address. It
         is the responsibility of the caller to verify that the attendee matches
         the desired event, and that the attendee is not checked in already.
         '''
-        return self.filter(Q(checkin_code=key) | Q(user__email=key),
-                           event=Event.objects.current_event()).first()
+        return self.filter(
+            Q(checkin_code=key) | Q(user__email=key), event=event).first()
 
     def is_verification_valid(self, id, verification):
         return self.get_verification(id) == verification
@@ -207,11 +207,11 @@ class Attendee(models.Model):
     def get_verification(self):
         return Attendee.objects.get_verification(self.id)
 
-    def get_checkin_url(self):
+    def get_checkin_url(self, event):
         return reverse(
             'attendee_checkin_url',
-            kwargs={'id': self.id, 'verification': self.get_verification()}
-            )
+            kwargs={'id': self.id, 'verification': self.get_verification(),
+                    'event': event})
 
     def check_in(self):
         if self.checked_in:

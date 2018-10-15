@@ -7,6 +7,7 @@ from attendee.forms import (
     DevDayUserCreationForm, RegistrationAuthenticationForm)
 from attendee.models import Attendee, DevDayUser
 from event.models import Event
+from event.tests import event_testutils
 
 ADMIN_EMAIL = 'admin@example.org'
 ADMIN_PASSWORD = 'sUp3rS3cr3t'
@@ -19,9 +20,7 @@ class DevDayRegistrationFormTest(TestCase):
         form = DevDayRegistrationForm()
         self.assertListEqual(
             list(form.fields.keys()),
-            ['email', 'password1', 'password2', 'first_name', 'last_name',
-             'twitter_handle', 'phone', 'position', 'organization',
-             'accept_devday_contact', 'accept_general_contact']
+            ['email', 'password1', 'password2', 'accept_general_contact']
         )
 
     def test_model(self):
@@ -46,32 +45,32 @@ class DevDayUserCreationFormTest(TestCase):
 
 class RegistrationAuthenticationFormTest(TestCase):
     def test_get_user_form(self):
-        form = RegistrationAuthenticationForm()
+        event = event_testutils.create_test_event()
+        form = RegistrationAuthenticationForm(event=event)
         self.assertIsNotNone(form)
 
 
 class AttendeeRegistrationFormTest(TestCase):
-    def test_get_user_form(self):
-        form = AttendeeRegistrationForm()
-        self.assertIsInstance(form.get_user_form(), DevDayRegistrationForm)
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
 
     def test_init_creates_form_helper(self):
-        form = AttendeeRegistrationForm()
+        form = AttendeeRegistrationForm(event=self.event)
         self.assertIsInstance(form.helper, FormHelper)
-        self.assertEqual(form.helper.form_action, '/attendee/register/')
+        self.assertEqual(
+            form.helper.form_action,
+            '/{}/attendee/register/'.format(self.event.slug))
         self.assertEqual(form.helper.form_method, 'post')
         self.assertTrue(form.helper.html5_required)
 
     def test_init_creates_layout(self):
-        form = AttendeeRegistrationForm()
+        form = AttendeeRegistrationForm(event=self.event)
         self.assertIsInstance(form.helper.layout, Layout)
         layout_fields = [name for [_, name] in
                          form.helper.layout.get_field_names()]
         self.assertListEqual(
             layout_fields,
-            ['email', 'twitter_handle', 'first_name', 'last_name', 'password1',
-             'password2', 'position', 'organization', 'source',
-             'accept_general_contact']
+            ['email', 'password1', 'password2', 'accept_general_contact']
         )
 
 
@@ -86,32 +85,33 @@ class CheckInAttendeeFormTest(TestCase):
 
     def test_form_valid_code(self):
         form = CheckInAttendeeForm(
-            data={'attendee': self.attendee.checkin_code})
+            data={'attendee': self.attendee.checkin_code}, event=self.event)
         self.assertIsInstance(form.helper, FormHelper)
-        self.assertTrue(form.is_valid(),
-                        'should be valid because code matches')
+        self.assertTrue(
+            form.is_valid(), 'should be valid because code matches')
 
     def test_form_valid_email(self):
         form = CheckInAttendeeForm(
-            data={'attendee': self.attendee.user.email})
-        self.assertTrue(form.is_valid(),
-                        'should be valid because email matches')
+            data={'attendee': self.attendee.user.email}, event=self.event)
+        self.assertTrue(
+            form.is_valid(), 'should be valid because email matches')
 
     def test_form_invalid_no_data(self):
-        form = CheckInAttendeeForm(data={})
-        self.assertFalse(form.is_valid(),
-                         'should invalid because no code was entered')
+        form = CheckInAttendeeForm(data={}, event=self.event)
+        self.assertFalse(
+            form.is_valid(), 'should invalid because no code was entered')
 
     def test_form_invalid_code(self):
-        form = CheckInAttendeeForm(data={'attendee': '12345678'})
-        self.assertFalse(form.is_valid(),
-                         'should be invalid because the code is wrong')
+        form = CheckInAttendeeForm(
+            data={'attendee': '12345678'}, event=self.event)
+        self.assertFalse(
+            form.is_valid(), 'should be invalid because the code is wrong')
 
     def test_form_invalid_already(self):
         self.attendee.check_in()
         self.attendee.save()
         form = CheckInAttendeeForm(
-            data={'attendee': self.attendee.user.email})
-        self.assertFalse(form.is_valid(),
-                         ('should be invalid because attendee is already'
-                          ' checked in'))
+            data={'attendee': self.attendee.user.email}, event=self.event)
+        self.assertFalse(
+            form.is_valid(),
+            'should be invalid because attendee is already checked in')

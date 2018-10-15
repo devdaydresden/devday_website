@@ -1,16 +1,18 @@
 import os
 
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from attendee.tests import attendee_testutils
+from event.tests import event_testutils
 from speaker.forms import CreateSpeakerForm, UserSpeakerPortraitForm
-from speaker.models import Speaker
-
-User = get_user_model()
+from speaker.models import Speaker, PublishedSpeaker
+from speaker.tests import speaker_testutils
+from talk.models import Track, Talk
 
 
 class TestCreateSpeakerView(TestCase):
     def setUp(self):
+        self.email = 'test@example.org'
         self.url = '/speaker/register/'
 
     def test_needs_login(self):
@@ -19,46 +21,46 @@ class TestCreateSpeakerView(TestCase):
             response, '/accounts/login/?next={}'.format(self.url))
 
     def test_used_template(self):
-        User.objects.create_user(email='test@example.org', password='s3cr3t')
-        self.client.login(username='test@example.org', password='s3cr3t')
+        _, password = attendee_testutils.create_test_user(self.email)
+        self.client.login(username=self.email, password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('talk/create_speaker.html')
 
     def test_get_form_class(self):
-        User.objects.create_user(email='test@example.org', password='s3cr3t')
-        self.client.login(username='test@example.org', password='s3cr3t')
+        _, password = attendee_testutils.create_test_user(self.email)
+        self.client.login(username=self.email, password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.context['form'], CreateSpeakerForm)
 
     def test_dispatch_user(self):
-        User.objects.create_user(email='test@example.org', password='s3cr3t')
-        self.client.login(username='test@example.org', password='s3cr3t')
+        _, password = attendee_testutils.create_test_user(self.email)
+        self.client.login(username=self.email, password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('speaker/speaker_form.html')
 
     def test_dispatch_speaker(self):
-        user = User.objects.create_user(
-            email='test@example.org', password='s3cr3t')
+        user, password = attendee_testutils.create_test_user(
+            self.email)
         Speaker.objects.create(
             user=user, shirt_size=2, video_permission=True,
             short_biography='A short biography text'
         )
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=password)
         response = self.client.get(self.url)
         self.assertRedirects(response, '/speaker/profile/')
 
     def test_form_valid(self):
-        User.objects.create_user(
-            email='speaker@example.org', password='s3cr3t')
+        _, password = attendee_testutils.create_test_user(
+            'speaker@example.org')
         data = {
             'name': 'Special Tester',
             'shirt_size': '2', 'video_permission': 'checked',
             'short_biography': 'A guy from somewhere having something great',
         }
-        self.client.login(email='speaker@example.org', password='s3cr3t')
+        self.client.login(email='speaker@example.org', password=password)
         response = self.client.post(self.url, data=data)
         self.assertRedirects(response, '/speaker/upload_portrait/')
 
@@ -69,8 +71,9 @@ class TestUserSpeakerProfileView(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create_user(
-            email='test@example.org', password='s3cr3t')
+        cls.email = 'test@example.org'
+        user, cls.password = attendee_testutils.create_test_user(
+            cls.email)
         cls.speaker = Speaker.objects.create(
             user=user, shirt_size=2, video_permission=True,
             short_biography='A short biography text'
@@ -82,13 +85,13 @@ class TestUserSpeakerProfileView(TestCase):
             response, '/accounts/login/?next={}'.format(self.url))
 
     def test_used_template(self):
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('speaker/speaker_user_profile.html')
 
     def test_context_has_speaker(self):
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['speaker'], self.speaker)
@@ -100,8 +103,9 @@ class TestUserSpeakerPortraitUploadView(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_user(
-            email='test@example.org', password='s3cr3t')
+        cls.email = 'test@example.org'
+        cls.user, cls.password = attendee_testutils.create_test_user(
+            email=cls.email)
 
     def test_needs_login(self):
         response = self.client.get(self.url)
@@ -113,7 +117,7 @@ class TestUserSpeakerPortraitUploadView(TestCase):
             user=self.user, shirt_size=2, video_permission=True,
             short_biography='A short biography text'
         )
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('speaker/speaker_form.html')
@@ -123,7 +127,7 @@ class TestUserSpeakerPortraitUploadView(TestCase):
             user=self.user, shirt_size=2, video_permission=True,
             short_biography='A short biography text'
         )
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('speaker', response.context)
@@ -134,7 +138,7 @@ class TestUserSpeakerPortraitUploadView(TestCase):
             user=self.user, shirt_size=2, video_permission=True,
             short_biography='A short biography text'
         )
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('speaker', response.context)
@@ -150,7 +154,7 @@ class TestUserSpeakerPortraitUploadView(TestCase):
             os.path.join(os.path.dirname(__file__),
                          'mu_at_mil_house.jpg'), 'rb')
         data = {'portrait': image_file}
-        self.client.login(email='test@example.org', password='s3cr3t')
+        self.client.login(email=self.email, password=self.password)
         response = self.client.post(self.url, data=data)
         self.assertRedirects(response, '/speaker/profile/')
         speaker.refresh_from_db()
@@ -166,7 +170,7 @@ class TestUserSpeakerPortraitUploadView(TestCase):
             os.path.join(os.path.dirname(__file__),
                          'mu_at_mil_house.jpg'), 'rb')
         data = {'portrait': image_file}
-        self.client.login(email='test@example.org', password='s3cr3t')
+        self.client.login(email=self.email, password=self.password)
         response = self.client.post(self.url, data=data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
@@ -182,7 +186,7 @@ class TestUserSpeakerPortraitUploadView(TestCase):
         )
         self.assertFalse(bool(speaker.portrait))
         data = {}
-        self.client.login(email='test@example.org', password='s3cr3t')
+        self.client.login(email=self.email, password=self.password)
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertIn('form', response.context)
@@ -197,7 +201,7 @@ class TestUserSpeakerPortraitUploadView(TestCase):
         )
         self.assertFalse(bool(speaker.portrait))
         data = {}
-        self.client.login(email='test@example.org', password='s3cr3t')
+        self.client.login(email=self.email, password=self.password)
         response = self.client.post(self.url, data=data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 400)
@@ -213,8 +217,8 @@ class TestUserSpeakerPortraitDeleteView(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create_user(
-            email='test@example.org', password='s3cr3t')
+        cls.email = 'test@example.org'
+        user, cls.password = attendee_testutils.create_test_user(cls.email)
         cls.speaker = Speaker.objects.create(
             user=user, shirt_size=2, video_permission=True,
             short_biography='A short biography text'
@@ -226,7 +230,7 @@ class TestUserSpeakerPortraitDeleteView(TestCase):
             response, '/accounts/login/?next={}'.format(self.url))
 
     def test_needs_portrait(self):
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 404)
 
@@ -239,21 +243,21 @@ class TestUserSpeakerPortraitDeleteView(TestCase):
 
     def test_used_template(self):
         self._store_portrait_image()
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("speaker/speaker_portrait_confirm_delete.html")
 
     def test_form_in_context_data(self):
         self._store_portrait_image()
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('form', response.context)
 
     def test_post_deletes_portrait(self):
         self._store_portrait_image()
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.post(self.url)
         self.assertRedirects(response, '/speaker/profile/')
         self.speaker.refresh_from_db()
@@ -261,9 +265,68 @@ class TestUserSpeakerPortraitDeleteView(TestCase):
 
     def test_ajax_post_deletes_portrait(self):
         self._store_portrait_image()
-        self.client.login(username='test@example.org', password='s3cr3t')
+        self.client.login(username=self.email, password=self.password)
         response = self.client.post(
             self.url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 204)
         self.speaker.refresh_from_db()
         self.assertFalse(bool(self.speaker.portrait))
+
+
+class PublishedSpeakerPublicView(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event(submission_open=False)
+        self.speaker, _, _ = speaker_testutils.create_test_speaker()
+        with open(os.path.join(
+                os.path.dirname(__file__),
+                'mu_at_mil_house.jpg'), 'rb') as image:
+            self.speaker.portrait.save(
+                os.path.basename(image.name), image)
+        self.published_speaker = PublishedSpeaker.objects.copy_from_speaker(
+            self.speaker, self.event)
+        self.track = Track.objects.create(event=self.event, name='Track 1')
+        self.talk = Talk.objects.create(
+            published_speaker=self.published_speaker,
+            title='Something important',
+            abstract='I have something important to say',
+            track=self.track, event=self.event)
+        self.url = '/{}/speaker/{}/'.format(
+            self.event.slug, self.published_speaker.slug)
+
+    def test_template_used(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response, 'speaker/publishedspeaker_detail.html')
+
+    def test_speaker_with_two_talks(self):
+        Talk.objects.create(
+            published_speaker=self.published_speaker, title='Some other talk',
+            abstract='Been there, done that',
+            track=self.track)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_context_has_speaker(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('publishedspeaker', response.context)
+        self.assertEqual(
+            response.context['publishedspeaker'], self.published_speaker)
+
+    def test_context_has_talk(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('talks', response.context)
+        self.assertEqual(list(response.context['talks']), [self.talk])
+
+    def test_context_has_all_talks(self):
+        talk2 = Talk.objects.create(
+            published_speaker=self.published_speaker, title='Some other talk',
+            abstract='Been there, done that',
+            track=self.track, event=self.event)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('talks', response.context)
+        self.assertEqual(
+            set(response.context['talks']), {self.talk, talk2})

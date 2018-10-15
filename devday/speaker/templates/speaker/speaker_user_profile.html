@@ -8,24 +8,36 @@
     </div>
 {% endblock %}
 {% block content_box_2_wrapper_classes %}{% endblock %}
-{% block content_box_2 %}
-    <div class="dropzone-buttons">
+{% block content_box_2_wrapper %}
+    {% if events_open_for_talk_submission %}
+        <div class="row p-2">
+            <h4>{% trans "Submit session" %}</h4>
+            {% if events_open_for_talk_submission.count == 1 %}
+                {% with events_open_for_talk_submission.first as event %}
+                    {% url 'submit_session' event=event.slug as submit_talk_url %}
+                    <p>{% blocktrans with event_title=event.title %}Submit a session for <a href="{{ submit_talk_url }}">{{ event_title }}</a>.{% endblocktrans %}</p>
+                {% endwith %}
+            {% else %}
+                {% blocktrans %}Submit a session for one of these events:{% endblocktrans %}
+                <ul class="list-group">
+                    {% for event in events_open_for_talk_submission %}
+                        <li class="list-group-item"><a href="{% url 'submit_session' event=event.slug %}">{{ event.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+    <h4>{% trans "Speaker image" %}</h4>
+    <div class="dropzone-buttons p-2">
         <button id="portrait-upload-btn"
-                class="btn btn-success fileinput-button dz-clickable">{% trans "Upload portrait image" %}</button>
+                class="btn btn-success fileinput-button dz-clickable">{% trans "Upload new image" %}</button>
         <button id="portrait-delete-btn"
                 class="btn btn-danger cancel{% if not speaker.portrait %} d-none{% endif %}">{% trans "Delete image" %}</button>
     </div>
     <div id="previews">
         <div id="template" class="file-row">
-            <div class="progress progress-bar-striped active"
-                 role="progressbar" aria-valuemin="0"
-                 aria-valuemax="100" aria-valuenow="0">
-                <div class="progress-bar progress-bar-success"
-                     data-dz-uploadprogress></div>
-            </div>
-            <div><span class="preview"><img
-                    class="img-fluid" data-dz-thumbnail src=""></span></div>
-            <div class="error text-danger">
+            <span class="preview"><img class="img-fluid" data-dz-thumbnail src=""></span>
+            <div class="error text-danger d-none">
                 <strong data-dz-errormessage></strong>
             </div>
         </div>
@@ -34,10 +46,9 @@
         <style type="text/css">
             .dropzone-buttons {
                 position: relative;
-                height: 30px;
-                padding-left: 10px;
-                top: 60px;
                 z-index: 10;
+                margin-top: -52px;
+                top: 52px;
             }
         </style>
     {% endaddtoblock %}

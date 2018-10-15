@@ -37,11 +37,13 @@ class Migration(migrations.Migration):
                 ('thumbnail', models.ImageField(blank=True, max_length=500, null=True, upload_to=speaker.models.event_speaker_thumbnail_directory, verbose_name='Speaker image thumbnail')),
                 ('public_image', models.ImageField(blank=True, max_length=500, null=True, upload_to=speaker.models.event_public_speaker_image_directory, verbose_name='Public speaker image')),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='event.Event')),
+                ('email', models.EmailField(max_length=254, verbose_name='email address')),
             ],
             options={
                 'verbose_name': 'published speaker',
                 'verbose_name_plural': 'published speakers',
                 'abstract': False,
+                'unique_together': {('slug', 'event'), ('email', 'event')},
             },
         ),
         migrations.CreateModel(

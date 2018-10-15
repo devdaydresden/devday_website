@@ -2,12 +2,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, TemplateView
+from django.views.generic import CreateView, UpdateView, TemplateView, \
+    DetailView, ListView
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
+from event.models import Event
 from speaker.forms import (
     CreateSpeakerForm, EditSpeakerForm, UserSpeakerPortraitForm)
-from speaker.models import Speaker
+from speaker.models import Speaker, PublishedSpeaker
 
 
 class NoSpeakerYetMixin(object):
@@ -38,6 +40,13 @@ class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(Speaker, user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(UserSpeakerProfileView, self).get_context_data(**kwargs)
+        context['events_open_for_talk_submission'] = Event.objects.filter(
+            submission_open=True
+        ).order_by('start_time')
+        return context
 
 
 class UserSpeakerPortraitUploadView(LoginRequiredMixin, UpdateView):
@@ -88,3 +97,31 @@ class UserSpeakerPortraitDeleteView(
         if self.request.is_ajax():
             return HttpResponse(content_type=None, status=204)
         return redirect(self.success_url)
+
+
+class PublishedSpeakerDetailView(DetailView):
+    model = PublishedSpeaker
+
+    def get_queryset(self):
+        return super(PublishedSpeakerDetailView, self).get_queryset().filter(
+            talk__track__isnull=False  # TODO: replace with talk state check
+        ).prefetch_related('talk_set').distinct()
+
+    def get_context_data(self, **kwargs):
+        context = super(PublishedSpeakerDetailView, self).get_context_data(
+            **kwargs)
+        context['talks'] = context['publishedspeaker'].talk_set.filter(
+            track__isnull=False  # TODO: replace with talk state check
+        )
+        context['event'] = get_object_or_404(
+            Event, slug=self.kwargs.get('event'))
+        return context
+
+
+class PublishedSpeakerListView(ListView):
+    model = Speaker
+
+    def get_queryset(self):
+        return super(PublishedSpeakerListView, self).get_queryset().filter(
+            talk__track__isnull=False  # TODO: replace with talk state check
+        ).order_by('name')

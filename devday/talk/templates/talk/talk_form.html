@@ -1,11 +1,18 @@
 {% extends "devday_site.html" %}
 {% load i18n crispy_forms_tags cms_tags %}
-{% block title %}{% trans "Edit session" %}{% endblock %}
+{% block title %}{{ block.super }} // {% trans "Submit session" %}{% endblock %}
 {% block content_body %}
-    <div class="row">
-        <div class="offset-lg-2 col-lg-8 col-md-12">
-            {% static_placeholder "create-talk-introtext" %}
+    <div class="content-area">
+        <div class="row">
+            <div class="offset-lg-2 col-lg-8 col-md-12">
+                <h1>{% blocktrans with event_title=event.title %}Submit a session for {{ event_title }}{% endblocktrans %}</h1>
+                <div class="text-justify">{% static_placeholder "create-talk-introtext" %}</div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="offset-lg-2 col-lg-8 col-md-12">
+                {% crispy form %}
+            </div>
         </div>
     </div>
-    {% crispy form %}
 {% endblock %}

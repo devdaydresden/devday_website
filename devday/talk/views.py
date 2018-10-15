@@ -1,46 +1,36 @@
 import logging
 import xml.etree.ElementTree as ElementTree
 from datetime import date, timedelta
-from pathlib import Path
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
-from django.contrib.auth.views import login
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Avg, Count, Sum, Min, Max
-from django.db.transaction import atomic
 from django.http import (Http404, HttpResponse, HttpResponseRedirect,
                          JsonResponse)
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.text import slugify
-from django.views.generic import ListView, RedirectView
-from django.views.generic import TemplateView
-from django.views.generic import View
+from django.views.generic import ListView, RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import (
-    BaseFormView, UpdateView, CreateView,
+    UpdateView, CreateView,
     FormView)
 from django.views.generic.list import BaseListView
-from django_file_form.forms import ExistingFile
-from django_file_form.uploader import FileFormUploader
-from django_registration import signals
-from django_registration.backends.activation.views import RegistrationView
 
-from attendee.models import Attendee
+from attendee.forms import DevDayRegistrationForm
 from event.models import Event
+from speaker.models import Speaker
 from talk.forms import (
-    CreateTalkForm, ExistingFileForm, TalkAuthenticationForm,
-    CreateSpeakerForm, BecomeSpeakerForm,
-    EditTalkForm, TalkCommentForm, TalkVoteForm, TalkSpeakerCommentForm,
-    EditSpeakerForm)
-from talk.models import (Speaker, Talk, Vote, TalkComment, Room, TimeSlot,
-                         TalkSlot)
+    CreateTalkForm, EditTalkForm, TalkCommentForm,
+    TalkVoteForm, TalkSpeakerCommentForm)
+from talk.models import (
+    Talk, Vote, TalkComment, Room, TimeSlot, TalkSlot)
 
 logger = logging.getLogger('talk')
 
@@ -49,27 +39,34 @@ User = get_user_model()
 XML_TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 
 
-def submit_session_view(request):
+class PrepareSubmitSessionView(FormView):
     """
-    This view presents a choice of links for anonymous users.
-
+    This view is used to inform a potential speaker about the registration
+    process.
     """
-    template_name = 'talk/submit_session.html'
+    template_name = 'talk/prepare_submit_session.html'
+    form_class = DevDayRegistrationForm
 
-    if not request.user.is_anonymous and "edit" not in request.GET:
+    def get(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            return super(PrepareSubmitSessionView, self).get(
+                request, *args, **kwargs)
         try:
-            return redirect(reverse('create_session'))
-        except (Attendee.DoesNotExist, Speaker.DoesNotExist):
-            pass
-
-    return login(
-        request, template_name=template_name,
-        authentication_form=TalkAuthenticationForm)
+            _ = request.user.speaker
+            return redirect(
+                reverse('create_session',
+                        kwargs={'event': self.kwargs.get('event')}))
+        except ObjectDoesNotExist:
+            return redirect('{}?next={}'.format(
+                reverse('create_speaker'),
+                reverse('create_session',
+                        kwargs={'event': self.kwargs.get('event')})))
 
 
 class TalkSubmissionOpenMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        if not Event.objects.current_submission_open():
+        event = get_object_or_404(Event, slug=kwargs.get('event', ''))
+        if not event.submission_open:
             return redirect('talk_submission_closed')
         # noinspection PyUnresolvedReferences
         return super(TalkSubmissionOpenMixin, self).dispatch(request, *args,
@@ -80,20 +77,21 @@ class TalkSubmissionClosed(TemplateView):
     template_name = 'talk/submission_closed.html'
 
 
-class SpeakerRegisteredView(TemplateView):
-    template_name = "talk/speaker_registered.html"
-
-
 class SpeakerRequiredMixin(AccessMixin):
+    speaker = None
+
     def dispatch(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated:
             return self.handle_no_permission()
-        if not user.get_speaker(Event.objects.current_event()):
-            return redirect(reverse('create_speaker'))
+        try:
+            self.speaker = user.speaker
+        except ObjectDoesNotExist:
+            return redirect("{}?next={}".format(
+                reverse('create_speaker'), request.path))
         # noinspection PyUnresolvedReferences
-        return super(SpeakerRequiredMixin, self).dispatch(request, *args,
-                                                          **kwargs)
+        return super(SpeakerRequiredMixin, self).dispatch(
+            request, *args, **kwargs)
 
 
 class TalkSubmittedView(SpeakerRequiredMixin, TemplateView):
@@ -101,71 +99,34 @@ class TalkSubmittedView(SpeakerRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TalkSubmittedView, self).get_context_data(**kwargs)
-        context['speaker'] = self.request.user.get_speaker(
-            Event.objects.current_event())
+        context['event'] = Event.objects.get(slug=self.kwargs.get('event'))
+        context['speaker'] = self.request.user.speaker
         return context
 
 
 class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
-    template_name = "talk/create_talk.html"
+    model = Talk
     form_class = CreateTalkForm
-    success_url = reverse_lazy('talk_submitted')
+    event = None
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'talk_submitted', kwargs={'event': self.event.slug})
+
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super(CreateTalkView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         form_kwargs = super(CreateTalkView, self).get_form_kwargs()
-        form_kwargs['speaker'] = self.request.user.get_speaker(
-            Event.objects.current_event())
+        form_kwargs['speaker'] = self.request.user.speaker
+        form_kwargs['event'] = Event.objects.get(slug=self.event.slug)
         return form_kwargs
-
-
-class ExistingFileView(BaseFormView):
-    form_class = ExistingFileForm
-
-    def get_form_kwargs(self):
-        form_kwargs = super(ExistingFileView, self).get_form_kwargs()
-
-        speaker = Speaker.objects.get(id=self.kwargs['id'])
-
-        if speaker.portrait:
-            name = Path(speaker.portrait.name).name
-            form_kwargs.update({
-                'initial': dict(uploaded_image=ExistingFile(name))
-            })
-
-        return form_kwargs
-
-
-class SpeakerProfileView(SpeakerRequiredMixin, UpdateView):
-    model = Speaker
-    template_name_suffix = '_profile'
-    form_class = EditSpeakerForm
 
     def get_context_data(self, **kwargs):
-        context = super(SpeakerProfileView, self).get_context_data(**kwargs)
-        speaker = self.get_object()
-        attendee = speaker.user
-        context.update({
-            'attendee': attendee,
-            'speaker': speaker,
-            'talks': attendee.speaker.talk_set.all(),
-        })
+        context = super(CreateTalkView, self).get_context_data(**kwargs)
+        context['event'] = Event.objects.get(slug=self.event.slug)
         return context
-
-    def get_form_kwargs(self):
-        kwargs = super(SpeakerProfileView, self).get_form_kwargs()
-        kwargs['instance'] = self.get_object()
-        return kwargs
-
-    def get_queryset(self):
-        return super(SpeakerProfileView, self).get_queryset().select_related(
-            'user', 'user__user').filter(
-            user__user=self.request.user)
-
-    def get_success_url(self):
-        return reverse('speaker_profile', kwargs={'pk': self.object.pk})
-
-
-handle_upload = FileFormUploader()
 
 
 class CommitteeRequiredMixin(PermissionRequiredMixin):
@@ -198,20 +159,20 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
     template_name_suffix = '_committee_overview'
 
     ORDER_MAP = {
-        'speaker': 'speaker__user__user__first_name',
+        'speaker': 'draft_speaker__name',
         'score': 'average_score',
         'score_sum': 'vote_sum',
     }
 
     def get_queryset(self):
         qs = super(CommitteeTalkOverview, self).get_queryset().filter(
-            speaker__user__event=Event.objects.current_event()
+            event=Event.objects.current_event()
         ).annotate(
             average_score=Avg('vote__score'),
             vote_sum=Sum('vote__score'),
             vote_count=Count('vote__id')
         ).select_related(
-            'speaker', 'speaker__user', 'speaker__user__user'
+            'draft_speaker', 'draft_speaker__user'
         ).order_by('title')
         sort_order = self.request.GET.get('sort_order', 'title')
         sort_order = CommitteeTalkOverview.ORDER_MAP.get(sort_order, sort_order)
@@ -239,21 +200,6 @@ class CommitteeSpeakerDetails(CommitteeRequiredMixin, DetailView):
     template_name_suffix = '_details'
 
 
-class SpeakerPublic(DetailView):
-    model = Speaker
-    template_name_suffix = '_public'
-
-    def get_queryset(self):
-        return super(SpeakerPublic, self).get_queryset().filter(
-            talk__track__isnull=False).prefetch_related('talk_set').distinct()
-
-    def get_context_data(self, **kwargs):
-        context = super(SpeakerPublic, self).get_context_data(**kwargs)
-        context['talks'] = context['speaker'].talk_set.filter(
-            track__isnull=False)
-        return context
-
-
 class TalkListView(ListView):
     model = Talk
 
@@ -272,12 +218,9 @@ class TalkListView(ListView):
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
         return super(TalkListView, self).get_queryset().filter(
-            track__isnull=False,
-            speaker__user__event=event,
+            track__isnull=False, event=event,
             talkslot__time__event=event).select_related(
-            'track',
-            'speaker', 'speaker__user', 'speaker__user__event',
-            'speaker__user__user',
+            'track', 'published_speaker', 'event',
             'talkslot', 'talkslot__time', 'talkslot__room'
         ).order_by('talkslot__time__start_time', 'talkslot__room__name')
 
@@ -289,10 +232,9 @@ class TalkListView(ListView):
         talks_by_room_and_time = {}
         unscheduled = []
         has_footage = Talk.objects.filter(
-            speaker__user__event=event,
-            track__isnull=False).filter(media__isnull=False).select_related(
-            'speaker', 'speaker__user', 'speaker__user__user', 'media'
-        ).count() > 0
+            event=event, track__isnull=False
+        ).filter(media__isnull=False).select_related(
+            'published_speaker', 'media').count() > 0
         for talk in talks:
             try:
                 # build dictionary grouped by time and room (md and lg display)
@@ -321,15 +263,21 @@ class TalkListPreviewView(ListView):
     model = Talk
     template_name_suffix = "_list_preview"
 
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super(TalkListPreviewView, self).dispatch(
+            request, *args, **kwargs)
+
     def get_queryset(self):
-        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
         return super(TalkListPreviewView, self).get_queryset().filter(
-            track__isnull=False, speaker__user__event=event
-        ).select_related(
-            'speaker__user__event',
-            'track',
-            'speaker', 'speaker__user', 'speaker__user__user'
-        ).order_by('title')
+            track__isnull=False, event=self.event
+        ).select_related('event', 'track', 'published_speaker').order_by(
+            'title')
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkListPreviewView, self).get_context_data(**kwargs)
+        context['event'] = self.event
+        return context
 
 
 class TalkVideoView(ListView):
@@ -394,11 +342,9 @@ class InfoBeamerXMLView(BaseListView):
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
         return super(InfoBeamerXMLView, self).get_queryset().filter(
-            track__isnull=False,
-            speaker__user__event=event,
+            track__isnull=False, event=event,
             talkslot__time__event=event).select_related(
-            'track',
-            'speaker', 'speaker__user', 'speaker__user__user',
+            'track', 'published_speaker',
             'talkslot', 'talkslot__time', 'talkslot__room'
         ).order_by('talkslot__time__start_time', 'talkslot__room__name')
 
@@ -472,9 +418,10 @@ class InfoBeamerXMLView(BaseListView):
                                            'abstract').text = talk.abstract
                     ElementTree.SubElement(event_xml, 'language').text = 'de'
                     persons_xml = ElementTree.SubElement(event_xml, 'persons')
-                    ElementTree.SubElement(persons_xml, 'person',
-                                           id=str(talk.speaker_id)).text = \
-                        talk.speaker.user.user.get_full_name()
+                    ElementTree.SubElement(
+                        persons_xml, 'person',
+                        id=str(talk.published_speaker_id)
+                    ).text = talk.published_speaker.name
 
         response_kwargs.setdefault('content_type', 'application/xml')
         return HttpResponse(content=ElementTree.tostring(schedule_xml, 'utf-8'),
@@ -487,8 +434,7 @@ class CommitteeTalkDetails(CommitteeRequiredMixin, DetailView):
 
     def get_queryset(self):
         return super(CommitteeTalkDetails, self).get_queryset().select_related(
-            'speaker', 'speaker__user', 'speaker__user__user'
-        ).annotate(
+            'draft_speaker', 'draft_speaker__user').annotate(
             average_score=Avg('vote__score')
         )
 
@@ -550,7 +496,7 @@ class CommitteeSubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin,
 
         # send email to speaker if comment is visible
         if self.talk_comment.is_visible:
-            recipient = talk.speaker.user.user.email
+            recipient = talk.draft_speaker.user.email
             send_mail(
                 self.get_email_subject(),
                 self.get_email_text_body(),
@@ -560,7 +506,7 @@ class CommitteeSubmitTalkComment(CommitteeRequiredMixin, SingleObjectMixin,
 
     def get_success_url(self):
         talk = self.get_object()
-        return reverse_lazy('talk_details', kwargs={'pk': talk.pk})
+        return reverse_lazy('talk_committee_details', kwargs={'pk': talk.pk})
 
     def get_form_kwargs(self):
         kwargs = super(CommitteeSubmitTalkComment, self).get_form_kwargs()
@@ -624,7 +570,7 @@ class SpeakerTalkDetails(SpeakerRequiredMixin, UpdateView):
 
     def get_queryset(self):
         return super(SpeakerTalkDetails, self).get_queryset().select_related(
-            'speaker').filter(speaker__user__user=self.request.user)
+            'draft_speaker').filter(draft_speaker__user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(SpeakerTalkDetails, self).get_context_data(**kwargs)
@@ -666,7 +612,7 @@ class SubmitTalkSpeakerComment(
 
     def get_queryset(self):
         return super(SubmitTalkSpeakerComment, self).get_queryset().filter(
-            speaker__user__user=self.request.user)
+            draft_speaker__user=self.request.user)
 
 
 class TalkSpeakerCommentDelete(SpeakerRequiredMixin, SingleObjectMixin, View):
@@ -681,17 +627,6 @@ class TalkSpeakerCommentDelete(SpeakerRequiredMixin, SingleObjectMixin, View):
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
         return JsonResponse({'message': 'comment deleted'})
-
-
-class SpeakerListView(ListView):
-    model = Speaker
-
-    def get_queryset(self):
-        return super(SpeakerListView, self).get_queryset().filter(
-            talk__track__isnull=False
-        ).order_by(
-            'user__user__last_name', 'user__user__first_name'
-        ).prefetch_related('user', 'user__user')
 
 
 class RedirectVideoView(RedirectView):

@@ -32,11 +32,26 @@ from cms.models.static_placeholder import StaticPlaceholder
 
 from attendee.models import Attendee
 from event.models import Event
-from talk.models import (Room, Speaker, Talk, TalkFormat, TalkSlot, TimeSlot,
-                         Track, Vote)
+from speaker.models import Speaker, PublishedSpeaker
+from talk.models import (
+    Room, Talk, TalkFormat, TalkSlot, TimeSlot, Track, Vote)
 from twitterfeed.models import Tweet, TwitterProfileImage
 
 from devday.utils.words import Words
+
+LAST_NAMES = [
+    'Schneider', 'Meier', 'Schulze', 'Fischer', 'Weber', 'Becker', 'Lehmann',
+    'Koch', 'Richter', 'Neumann', 'Fuchs', 'Vogel', 'Keller', 'Jung', 'Hahn',
+    'Schubert', 'Winkler', 'Berger', 'Lorenz', 'Albrecht']
+
+FIRST_NAMES = [
+    'Alexander', 'Barbara', 'Christian', 'Daniela', 'Erik', 'Fatima', 'Georg',
+    'Heike', 'Ingo', 'Jana', 'Klaus', 'Lena', 'Martin', 'Natalie', 'Olaf',
+    'Peggy', 'Quirin', 'Rosa', 'Sven', 'Tanja', 'Ulrich', 'Veronika', 'Werner',
+    'Xena', 'Yannick', 'Zahra']
+
+AVAILABLE_ROOMS = (
+    (0, 'Hamburg'), (1, 'Gartensaal'), (2, 'St. Petersburg'), (3, 'Rotterdam'))
 
 User = get_user_model()
 
@@ -46,16 +61,16 @@ class DevData:
     rng = random.Random()
     rng.seed(1)  # we want reproducable pseudo-random numbers here
     speaker_placeholder_file = 'icons8-contacts-26.png'
-    speaker_placeholder_source_path = join(settings.STATICFILES_DIRS[0],
-                                           'img', speaker_placeholder_file)
+    speaker_placeholder_source_path = join(
+        settings.STATICFILES_DIRS[0], 'img', speaker_placeholder_file)
     speaker_portrait_media_dir = 'speakers'
-    speaker_portrait_media_path = join(speaker_portrait_media_dir,
-                                       speaker_placeholder_file)
-    speaker_portrait_dir = join(settings.MEDIA_ROOT,
-                                speaker_portrait_media_dir)
-    speaker_portrait_path = join(settings.MEDIA_ROOT,
-                                 speaker_portrait_media_path)
-    nspeakerperevent = 50
+    speaker_portrait_media_path = join(
+        speaker_portrait_media_dir, speaker_placeholder_file)
+    speaker_portrait_dir = join(
+        settings.MEDIA_ROOT, speaker_portrait_media_dir)
+    speaker_portrait_path = join(
+        settings.MEDIA_ROOT, speaker_portrait_media_path)
+    SPEAKERS_PER_EVENT = 50
 
     def __init__(self, stdout=None, style=None):
         self.user = None
@@ -102,11 +117,8 @@ class DevData:
                               .format(settings.ADMINUSER_EMAIL))
         except ObjectDoesNotExist:
             try:
-                self.user = User.objects.create_user(
+                self.user = User.objects.create_superuser(
                     settings.ADMINUSER_EMAIL, password='admin')
-                self.user.is_superuser = True
-                self.user.is_staff = True
-                self.user.save()
                 self.write_ok()
             except Exception:  # pragma: no cover
                 self.write_error()
@@ -232,6 +244,8 @@ tiefer in ein Thema einsteigen.</p>
         # | sed -nEe 's#^.*static_placeholder "([^"]*)".*$#\1#p' | sort -u
         for placeholder in (
                 u'create-talk-introtext',
+                u'checkin-instructions',
+                u'checkin-result',
                 u'gdpr_teaser',
                 u'register-attendee-introtext',
                 u'register-intro',
@@ -241,7 +255,6 @@ tiefer in ein Thema einsteigen.</p>
                 u'speaker_registered',
                 u'sponsors',
                 u'submit-session-introtext',
-                u'submit-session-introtext-authenticated',
                 u'talk_submission_closed',
                 u'talk_submitted',
         ):
@@ -254,19 +267,18 @@ tiefer in ein Thema einsteigen.</p>
             {'name': 'Workshop', 'duration': 180},
         ]
         for i in formats:
-            format = TalkFormat(name=i['name'], duration=i['duration'])
-            format.save()
+            TalkFormat.objects.create(name=i['name'], duration=i['duration'])
 
     def update_events(self):
         self.write_action('Updating events')
         events = list(Event.objects.order_by('start_time'))
-        stdformat = TalkFormat.objects.get(name='Vortrag', duration=60)
+        standard_format = TalkFormat.objects.get(name='Vortrag', duration=60)
         try:
             for e in events[:-1]:
                 e.registration_open = False
                 e.submission_open = False
                 e.save()
-                e.talkformat.add(stdformat)
+                e.talkformat.add(standard_format)
             e = events[-1]
             e.registration_open = True
             e.submission_open = True
@@ -287,59 +299,52 @@ tiefer in ein Thema einsteigen.</p>
     def create_users_and_attendees(self, amount=sys.maxsize, events=None):
         if not events:
             events = Event.objects.all()
-        first = ['Alexander', 'Barbara', 'Christian', 'Daniela', 'Erik',
-                 'Fatima', 'Georg', 'Heike', 'Ingo', 'Jana', 'Klaus',
-                 'Lena', 'Martin', 'Natalie', 'Olaf', 'Peggy', 'Quirin',
-                 'Rosa', 'Sven', 'Tanja', 'Ulrich', 'Veronika', 'Werner',
-                 'Xena', 'Yannick', 'Zahra']
-        last = ['Schneider', 'Meier', 'Schulze', 'Fischer', 'Weber',
-                'Becker', 'Lehmann', 'Koch', 'Richter', 'Neumann',
-                'Fuchs', 'Vogel', 'Keller', 'Jung', 'Hahn',
-                'Schubert', 'Winkler', 'Berger', 'Lorenz', 'Albrecht']
-        length = len(first) * len(last)
+        length = len(FIRST_NAMES) * len(LAST_NAMES)
         if length > amount:
             length = amount
         self.write_action('{:d} attendees'.format(length))
-        for f in first:
-            for l in last:
+        for first_name in FIRST_NAMES:
+            for last_name in LAST_NAMES:
                 user = User.objects.create_user(
-                    '{}.{}@example.com'.format(f.lower(), l.lower()),
-                    password='attendee', first_name=f, last_name=l,
+                    '{}.{}@example.com'.format(
+                        first_name.lower(), last_name.lower()),
+                    password='attendee',
                     contact_permission_date=timezone.now())
-                user.save()
                 for e in events:
                     if self.rng.random() < 0.8:
                         Attendee.objects.create(user=user, event=e)
                 amount -= 1
-                if (amount <= 0):
+                if amount <= 0:
                     return
+
+    def choose_full_name(self):
+        for first in FIRST_NAMES:
+            for last in LAST_NAMES:
+                yield '{0} {1}'.format(first, last)
 
     def create_attendees(self, amount=sys.maxsize, events=None):
         self.create_users_and_attendees(amount=amount, events=events)
-        g = Group.objects.get(name='talk_committee')
-        for u in self.rng.sample(list(User.objects.all()), 7):
-            u.groups.add(g)
-            u.save()
+        committee_group = Group.objects.get(name='talk_committee')
+        for user in self.rng.sample(list(User.objects.all()), 7):
+            user.groups.add(committee_group)
+            user.save()
         return self.get_committee_members()
 
     def get_speakers(self):
-        e = Event.objects.current_event()
-        r = "The first couple of speakers for {}:\n".format(e)
-        speakers = Speaker.objects.filter(user__event=e) \
-            .order_by('user__user__last_name', 'user__user__first_name')
-        for s in Paginator(speakers, 10).page(1).object_list:
-            r += "    {}\n".format(s.user.user.email)
-        return r
+        result = "The first couple of speakers:\n"
+        speakers = Speaker.objects.all().order_by('name')
+        for speaker in Paginator(speakers, 10).page(1).object_list:
+            result += "    {} {}\n".format(speaker.name, speaker.user.email)
+        return result
 
-    def create_speakers(self, events=None):
-        if not events:
-            events = Event.objects.all()
-        nspeaker = len(events) * self.nspeakerperevent
-        attendees = Attendee.objects.filter(event__in=events)
-        attendees = self.rng.sample(list(attendees), nspeaker)
+    def create_speakers(self, events=Event.objects.all()):
+        number_of_speakers = len(events) * self.SPEAKERS_PER_EVENT
+        # speakers can come from the whole user population and do not need
+        # to be attendees anymore
+        users = self.rng.sample(list(User.objects.all()), number_of_speakers)
         self.write_action(
             'creating {} speakers for each of the {} events'.format(
-                self.nspeakerperevent, len(events)))
+                self.SPEAKERS_PER_EVENT, len(events)))
         if not isfile(self.speaker_portrait_path):
             try:
                 makedirs(self.speaker_portrait_dir)
@@ -348,52 +353,62 @@ tiefer in ein Thema einsteigen.</p>
                     raise
             copyfile(self.speaker_placeholder_source_path,
                      self.speaker_portrait_path)
-        for attendee in attendees:
-            speaker = Speaker(user=attendee, videopermission=True,
-                              shirt_size=3, shortbio='My short bio')
-            # https://stackoverflow.com/a/5256094
-            speaker.portrait = speaker.portrait.field \
-                .attr_class(speaker, speaker.portrait.field,
-                            self.speaker_portrait_media_path)
-            speaker.save()
+        full_name_gen = self.choose_full_name()
+        for user in users:
+            if not Speaker.objects.filter(user=user).exists():
+                speaker = Speaker(
+                    name=next(full_name_gen),
+                    user=user, video_permission=True, shirt_size=3,
+                    short_biography='My short bio')
+                # https://stackoverflow.com/a/5256094
+                speaker.portrait = speaker.portrait.field.attr_class(
+                    speaker, speaker.portrait.field,
+                    self.speaker_portrait_media_path)
+                speaker.save()
         return self.get_speakers()
 
-    def create_talk(self, speaker, formats):
-        talk = Talk(speaker=speaker, title=Words.sentence(self.rng).title(),
+    def create_talk(self, speaker, formats, event):
+        talk = Talk(draft_speaker=speaker,
+                    title=Words.sentence(self.rng).title(),
                     abstract=lorem.paragraph(),
-                    remarks=lorem.paragraph())
+                    remarks=lorem.paragraph(), event=event)
         talk.save()
         talk.talkformat.add(*self.rng.sample(
             formats, self.rng.randint(1, len(formats))))
         return talk
 
-    def create_talks(self):
+    def create_talks(self, events=Event.objects.all()):
         """
         Create talks. With a probability of 10%, a speaker will submit two
         talks, with a probability of 75% will submit one talk, and with a
         remaining probability of 15% will not submit any talk for the event the
         speaker registered for.
         """
-        formats = list(TalkFormat.objects.all())
-        for speaker in Speaker.objects.all():
-            p = self.rng.random()
-            if p < 0.85:
-                self.create_talk(speaker, formats)
-            if p < 0.10:
-                self.create_talk(speaker, formats)
+        event_list = list(events)
+        for event in events:
+            formats = list(TalkFormat.objects.filter(event=event))
+            for speaker in Speaker.objects.all():
+                if event != self.rng.choice(event_list):
+                    continue
+                p = self.rng.random()
+                if p < 0.85:
+                    self.create_talk(speaker, formats, event)
+                if p < 0.10:
+                    self.create_talk(speaker, formats, event)
 
-    def vote_for_talk(self):
+    def vote_for_talk(self, events=(Event.objects.current_event(),)):
         committee = User.objects.filter(groups__name='talk_committee')
-        for talk in Talk.objects.filter(
-                speaker__user__event=Event.objects.current_event()):
-            for u in committee:
-                p = self.rng.randint(0, 6)
-                if p > 0:
-                    vote = Vote(voter=u, talk=talk, score=p)
-                    vote.save()
+        for event in events:
+            for talk in Talk.objects.filter(event=event):
+                for user in committee:
+                    p = self.rng.randint(0, 6)
+                    if p > 0:
+                        Vote.objects.create(voter=user, talk=talk, score=p)
         return 'Cast {} votes'.format(Vote.objects.count())
 
-    def create_tracks(self):
+    def create_tracks(
+            self, events=Event.objects.exclude(
+                id=Event.objects.current_event().id)):
         tracks = {
             'devdata.17': [
                 'The Human Side', 'Architektur', 'Let Data Rule', 'DevOps',
@@ -404,83 +419,80 @@ tiefer in ein Thema einsteigen.</p>
                 'The Human Side', 'Exkursion',
             ],
         }
-        for (e, ts) in tracks.items():
-            event = Event.objects.get(title=e)
-            for n in ts:
-                track = Track(name=n, event=event)
+        for event in events:
+            for track_name in tracks.setdefault(event.title, [
+                'Keynote', 'Coding', 'Philosophy'
+            ]):
+                track = Track(name=track_name, event=event)
                 track.save()
 
-    def create_rooms(self):
-        p = 0
-        for n in ['Hamburg', 'Gartensaal', 'St. Petersburg', 'Rotterdam']:
-            room = Room(
-                name=n, event=Event.objects.current_event(), priority=p)
-            room.save()
-            p += 1
-
-    def create_time_slots(self, events=None):
-        time_slots = [
-            [10, 30, 12, 0, 'Exkursion'],
-            [12, 0, 13, 0, 'Registrierung'],
-            [13, 0, 13, 15, 'Begrüßung durch die SECO'],
-            [13, 15, 14, 15, 'Keynote'],
-            [14, 15, 14, 30, 'Kurze Pause'],
-            [14, 30, 15, 15, ''],
-            [15, 15, 15, 45, 'Kaffeepause'],
-            [15, 45, 16, 30, ''],
-            [16, 30, 16, 45, 'Kurze Pause'],
-            [16, 45, 17, 30, ''],
-            [17, 30, 17, 45, 'Kurze Pause'],
-            [17, 45, 18, 45, 'Keynote'],
-            [18, 45, 20, 30, 'Get Together'],
-        ]
-        if not events:
-            events = Event.objects.all()
-        for t in time_slots:
-            n = u'{:02d}:{:02d} \u2014 {:02d}:{:02d}'.format(t[0], t[1],
-                                                             t[2], t[3])
-            for event in events:
-                s = event.start_time.replace(hour=t[0], minute=t[1])
-                e = event.end_time.replace(hour=t[2], minute=t[3])
-                timeslot = TimeSlot(name=n, event=event,
-                                    start_time=s, end_time=e,
-                                    text_body=t[4])
-                timeslot.save()
-
-    def create_talk_slots(self, events=None):
-        keynote_room = Room.objects.get(name='Hamburg')
-        rooms = Room.objects.all()
-        details = ''
-        if not events:
-            events = Event.objects.exclude(
-                    pk=Event.objects.current_event_id())
+    def create_rooms(
+            self, events=Event.objects.exclude(
+                id=Event.objects.current_event_id())):
         for event in events:
-            tracks = Track.objects.filter(event=event) \
-                .exclude(name='Keynote')
+            [Room.objects.create(name=name, event=event, priority=priority)
+             for priority, name in AVAILABLE_ROOMS]
+
+    def create_time_slots(self, events=Event.objects.all()):
+        time_slots = (
+            (10, 30, 12, 0, 'Exkursion'),
+            (12, 0, 13, 0, 'Registrierung'),
+            (13, 0, 13, 15, 'Begrüßung durch die SECO'),
+            (13, 15, 14, 15, 'Keynote'),
+            (14, 15, 14, 30, 'Kurze Pause'),
+            (14, 30, 15, 15, ''),
+            (15, 15, 15, 45, 'Kaffeepause'),
+            (15, 45, 16, 30, ''),
+            (16, 30, 16, 45, 'Kurze Pause'),
+            (16, 45, 17, 30, ''),
+            (17, 30, 17, 45, 'Kurze Pause'),
+            (17, 45, 18, 45, 'Keynote'),
+            (18, 45, 20, 30, 'Get Together'),
+        )
+        for start_hour, start_minute, end_hour, end_minute, text in time_slots:
+            name = u'{:02d}:{:02d} \u2014 {:02d}:{:02d}'.format(
+                start_hour, start_minute, end_hour, end_minute)
+            for event in events:
+                start = event.start_time.replace(
+                    hour=start_hour, minute=end_hour)
+                end = event.end_time.replace(
+                    hour=end_hour, minute=end_minute)
+                TimeSlot.objects.create(
+                    name=name, event=event, start_time=start, end_time=end,
+                    text_body=text)
+
+    def create_talk_slots(
+            self, events=Event.objects.exclude(
+                pk=Event.objects.current_event_id())):
+        details = ''
+        for event in events:
+            keynote_room = Room.objects.get(name='Hamburg', event=event)
+            tracks = Track.objects.filter(event=event).exclude(name='Keynote')
+            rooms = Room.objects.filter(event=event)
             keynote_track = Track.objects.get(event=event, name='Keynote')
-            keynotes = TimeSlot.objects.filter(event=event,
-                                               text_body='Keynote')
-            sessions = TimeSlot.objects.filter(event=event, text_body='')
-            ntalks = len(keynotes) + len(sessions) * len(rooms)
-            details += ('    {}: {} talks for {} keynotes, and {} sessions'
-                        ' in {} rooms'
-                        "\n").format(event.title, ntalks, len(keynotes),
-                                     len(sessions), len(rooms))
+            keynote_slots = TimeSlot.objects.filter(
+                event=event, text_body='Keynote')
+            session_slots = TimeSlot.objects.filter(event=event, text_body='')
+            number_of_talks = (
+                    len(keynote_slots) + len(session_slots) * len(rooms))
+            details += (
+                '    {}: {} talks for {} keynotes, and {} sessions in {} rooms'
+                "\n").format(
+                event.title, number_of_talks, len(keynote_slots),
+                len(session_slots), len(rooms))
             talks = self.rng.sample(
-                list(Talk.objects.filter(speaker__user__event=event)), ntalks)
-            for ts in keynotes:
+                list(Talk.objects.filter(event=event)), number_of_talks)
+            for time_slot in keynote_slots:
                 talk = talks.pop()
-                s = TalkSlot(time=ts, room=keynote_room, talk=talk)
-                s.save()
-                talk.track = keynote_track
-                talk.save()
-            for ts in sessions:
+                TalkSlot.objects.create(
+                    time=time_slot, room=keynote_room, talk=talk)
+                talk.publish(track=keynote_track)
+            for time_slot in session_slots:
                 for room in rooms:
                     talk = talks.pop()
-                    s = TalkSlot(time=ts, room=room, talk=talk)
-                    s.save()
-                    talk.track = self.rng.choice(tracks)
-                    talk.save()
+                    TalkSlot.objects.create(
+                        time=time_slot, room=room, talk=talk)
+                    talk.publish(self.rng.choice(tracks))
         return details
 
     def create_twitter_profiles(self):
@@ -517,15 +529,19 @@ tiefer in ein Thema einsteigen.</p>
         self.create_admin_user()
         self.update_site()
         self.update_static_placeholders()
-        self.create_objects('talk formats', TalkFormat, 3,
-                            self.create_talk_formats)
+        self.create_objects(
+            'talk formats', TalkFormat, 3, self.create_talk_formats)
         self.update_events()
         self.create_objects('pages', Page, 3, self.create_pages)
-        self.create_objects('users', User, 3, self.create_attendees,
-                            self.get_committee_members)
-        self.create_objects('speakers', Speaker, 1, self.create_speakers,
-                            self.get_speakers)
+        self.create_objects(
+            'users', User, 3, self.create_attendees,
+            self.get_committee_members)
+        # TODO: create some speakers from the user population
+        self.create_objects(
+            'speakers', Speaker, 1, self.create_speakers, self.get_speakers)
+        # TODO: create published speakers for published talks
         self.create_objects('talks', Talk, 1, self.create_talks)
+        # TODO: vote on unpublished talks only
         self.create_objects('votes', Vote, 1, self.vote_for_talk)
         self.create_objects('tracks', Track, 1, self.create_tracks)
         self.create_objects('rooms', Room, 1, self.create_rooms)

@@ -4,6 +4,7 @@ import tempfile
 from datetime import timedelta
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.staticfiles import finders
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -11,6 +12,9 @@ from django.utils.text import slugify
 
 from event.models import Event
 from speaker.models import PublishedSpeaker, Speaker
+
+
+User = get_user_model()
 
 
 def copy_speaker_image(field):
@@ -78,10 +82,13 @@ class TestPublishedSpeakerManager(TestCase):
         super().tearDownClass()
 
     def test_copy_from_speaker(self):
+        user = User.objects.create_user(
+            email='test@example.org', password='s3cr3t')
         speaker = Speaker(
             video_permission=True,
             shirt_size=3,
-            short_biography='My short and lucky biography.'
+            short_biography='My short and lucky biography.',
+            user=user,
         )
         copy_speaker_image(speaker.portrait)
         copy_speaker_image(speaker.thumbnail)
@@ -107,10 +114,13 @@ class TestPublishedSpeakerManager(TestCase):
             'speaker/test-event/public'))
 
     def test_copy_from_speaker_without_images(self):
+        user = User.objects.create_user(
+            email='test@example.org', password='s3cr3t')
         speaker = Speaker(
             video_permission=True,
             shirt_size=3,
-            short_biography='My short and lucky biography.'
+            short_biography='My short and lucky biography.',
+            user=user,
         )
         speaker.save()
 

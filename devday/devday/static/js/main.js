@@ -18327,6 +18327,3523 @@ if (typeof module != "undefined") {
   module.exports = QRCode;
 }
 
+/*!
+ * Cropper.js v1.4.2
+ * https://fengyuanchen.github.io/cropperjs
+ *
+ * Copyright 2015-present Chen Fengyuan
+ * Released under the MIT license
+ *
+ * Date: 2018-10-15T13:27:01.969Z
+ */
+
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.Cropper = factory());
+}(this, (function () { 'use strict';
+
+  function _typeof(obj) {
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      _typeof = function (obj) {
+        return typeof obj;
+      };
+    } else {
+      _typeof = function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+      return arr2;
+    }
+  }
+
+  function _iterableToArray(iter) {
+    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance");
+  }
+
+  var IN_BROWSER = typeof window !== 'undefined';
+  var WINDOW = IN_BROWSER ? window : {};
+  var NAMESPACE = 'cropper'; // Actions
+
+  var ACTION_ALL = 'all';
+  var ACTION_CROP = 'crop';
+  var ACTION_MOVE = 'move';
+  var ACTION_ZOOM = 'zoom';
+  var ACTION_EAST = 'e';
+  var ACTION_WEST = 'w';
+  var ACTION_SOUTH = 's';
+  var ACTION_NORTH = 'n';
+  var ACTION_NORTH_EAST = 'ne';
+  var ACTION_NORTH_WEST = 'nw';
+  var ACTION_SOUTH_EAST = 'se';
+  var ACTION_SOUTH_WEST = 'sw'; // Classes
+
+  var CLASS_CROP = "".concat(NAMESPACE, "-crop");
+  var CLASS_DISABLED = "".concat(NAMESPACE, "-disabled");
+  var CLASS_HIDDEN = "".concat(NAMESPACE, "-hidden");
+  var CLASS_HIDE = "".concat(NAMESPACE, "-hide");
+  var CLASS_INVISIBLE = "".concat(NAMESPACE, "-invisible");
+  var CLASS_MODAL = "".concat(NAMESPACE, "-modal");
+  var CLASS_MOVE = "".concat(NAMESPACE, "-move"); // Data keys
+
+  var DATA_ACTION = "".concat(NAMESPACE, "Action");
+  var DATA_PREVIEW = "".concat(NAMESPACE, "Preview"); // Drag modes
+
+  var DRAG_MODE_CROP = 'crop';
+  var DRAG_MODE_MOVE = 'move';
+  var DRAG_MODE_NONE = 'none'; // Events
+
+  var EVENT_CROP = 'crop';
+  var EVENT_CROP_END = 'cropend';
+  var EVENT_CROP_MOVE = 'cropmove';
+  var EVENT_CROP_START = 'cropstart';
+  var EVENT_DBLCLICK = 'dblclick';
+  var EVENT_POINTER_DOWN = WINDOW.PointerEvent ? 'pointerdown' : 'touchstart mousedown';
+  var EVENT_POINTER_MOVE = WINDOW.PointerEvent ? 'pointermove' : 'touchmove mousemove';
+  var EVENT_POINTER_UP = WINDOW.PointerEvent ? 'pointerup pointercancel' : 'touchend touchcancel mouseup';
+  var EVENT_READY = 'ready';
+  var EVENT_RESIZE = 'resize';
+  var EVENT_WHEEL = 'wheel mousewheel DOMMouseScroll';
+  var EVENT_ZOOM = 'zoom'; // Mime types
+
+  var MIME_TYPE_JPEG = 'image/jpeg'; // RegExps
+
+  var REGEXP_ACTIONS = /^(?:e|w|s|n|se|sw|ne|nw|all|crop|move|zoom)$/;
+  var REGEXP_DATA_URL = /^data:/;
+  var REGEXP_DATA_URL_JPEG = /^data:image\/jpeg;base64,/;
+  var REGEXP_TAG_NAME = /^(?:img|canvas)$/i;
+
+  var DEFAULTS = {
+    // Define the view mode of the cropper
+    viewMode: 0,
+    // 0, 1, 2, 3
+    // Define the dragging mode of the cropper
+    dragMode: DRAG_MODE_CROP,
+    // 'crop', 'move' or 'none'
+    // Define the initial aspect ratio of the crop box
+    initialAspectRatio: NaN,
+    // Define the aspect ratio of the crop box
+    aspectRatio: NaN,
+    // An object with the previous cropping result data
+    data: null,
+    // A selector for adding extra containers to preview
+    preview: '',
+    // Re-render the cropper when resize the window
+    responsive: true,
+    // Restore the cropped area after resize the window
+    restore: true,
+    // Check if the current image is a cross-origin image
+    checkCrossOrigin: true,
+    // Check the current image's Exif Orientation information
+    checkOrientation: true,
+    // Show the black modal
+    modal: true,
+    // Show the dashed lines for guiding
+    guides: true,
+    // Show the center indicator for guiding
+    center: true,
+    // Show the white modal to highlight the crop box
+    highlight: true,
+    // Show the grid background
+    background: true,
+    // Enable to crop the image automatically when initialize
+    autoCrop: true,
+    // Define the percentage of automatic cropping area when initializes
+    autoCropArea: 0.8,
+    // Enable to move the image
+    movable: true,
+    // Enable to rotate the image
+    rotatable: true,
+    // Enable to scale the image
+    scalable: true,
+    // Enable to zoom the image
+    zoomable: true,
+    // Enable to zoom the image by dragging touch
+    zoomOnTouch: true,
+    // Enable to zoom the image by wheeling mouse
+    zoomOnWheel: true,
+    // Define zoom ratio when zoom the image by wheeling mouse
+    wheelZoomRatio: 0.1,
+    // Enable to move the crop box
+    cropBoxMovable: true,
+    // Enable to resize the crop box
+    cropBoxResizable: true,
+    // Toggle drag mode between "crop" and "move" when click twice on the cropper
+    toggleDragModeOnDblclick: true,
+    // Size limitation
+    minCanvasWidth: 0,
+    minCanvasHeight: 0,
+    minCropBoxWidth: 0,
+    minCropBoxHeight: 0,
+    minContainerWidth: 200,
+    minContainerHeight: 100,
+    // Shortcuts of events
+    ready: null,
+    cropstart: null,
+    cropmove: null,
+    cropend: null,
+    crop: null,
+    zoom: null
+  };
+
+  var TEMPLATE = '<div class="cropper-container" touch-action="none">' + '<div class="cropper-wrap-box">' + '<div class="cropper-canvas"></div>' + '</div>' + '<div class="cropper-drag-box"></div>' + '<div class="cropper-crop-box">' + '<span class="cropper-view-box"></span>' + '<span class="cropper-dashed dashed-h"></span>' + '<span class="cropper-dashed dashed-v"></span>' + '<span class="cropper-center"></span>' + '<span class="cropper-face"></span>' + '<span class="cropper-line line-e" data-cropper-action="e"></span>' + '<span class="cropper-line line-n" data-cropper-action="n"></span>' + '<span class="cropper-line line-w" data-cropper-action="w"></span>' + '<span class="cropper-line line-s" data-cropper-action="s"></span>' + '<span class="cropper-point point-e" data-cropper-action="e"></span>' + '<span class="cropper-point point-n" data-cropper-action="n"></span>' + '<span class="cropper-point point-w" data-cropper-action="w"></span>' + '<span class="cropper-point point-s" data-cropper-action="s"></span>' + '<span class="cropper-point point-ne" data-cropper-action="ne"></span>' + '<span class="cropper-point point-nw" data-cropper-action="nw"></span>' + '<span class="cropper-point point-sw" data-cropper-action="sw"></span>' + '<span class="cropper-point point-se" data-cropper-action="se"></span>' + '</div>' + '</div>';
+
+  /**
+   * Check if the given value is not a number.
+   */
+
+  var isNaN = Number.isNaN || WINDOW.isNaN;
+  /**
+   * Check if the given value is a number.
+   * @param {*} value - The value to check.
+   * @returns {boolean} Returns `true` if the given value is a number, else `false`.
+   */
+
+  function isNumber(value) {
+    return typeof value === 'number' && !isNaN(value);
+  }
+  /**
+   * Check if the given value is undefined.
+   * @param {*} value - The value to check.
+   * @returns {boolean} Returns `true` if the given value is undefined, else `false`.
+   */
+
+  function isUndefined(value) {
+    return typeof value === 'undefined';
+  }
+  /**
+   * Check if the given value is an object.
+   * @param {*} value - The value to check.
+   * @returns {boolean} Returns `true` if the given value is an object, else `false`.
+   */
+
+  function isObject(value) {
+    return _typeof(value) === 'object' && value !== null;
+  }
+  var hasOwnProperty = Object.prototype.hasOwnProperty;
+  /**
+   * Check if the given value is a plain object.
+   * @param {*} value - The value to check.
+   * @returns {boolean} Returns `true` if the given value is a plain object, else `false`.
+   */
+
+  function isPlainObject(value) {
+    if (!isObject(value)) {
+      return false;
+    }
+
+    try {
+      var _constructor = value.constructor;
+      var prototype = _constructor.prototype;
+      return _constructor && prototype && hasOwnProperty.call(prototype, 'isPrototypeOf');
+    } catch (e) {
+      return false;
+    }
+  }
+  /**
+   * Check if the given value is a function.
+   * @param {*} value - The value to check.
+   * @returns {boolean} Returns `true` if the given value is a function, else `false`.
+   */
+
+  function isFunction(value) {
+    return typeof value === 'function';
+  }
+  /**
+   * Iterate the given data.
+   * @param {*} data - The data to iterate.
+   * @param {Function} callback - The process function for each element.
+   * @returns {*} The original data.
+   */
+
+  function forEach(data, callback) {
+    if (data && isFunction(callback)) {
+      if (Array.isArray(data) || isNumber(data.length)
+      /* array-like */
+      ) {
+          var length = data.length;
+          var i;
+
+          for (i = 0; i < length; i += 1) {
+            if (callback.call(data, data[i], i, data) === false) {
+              break;
+            }
+          }
+        } else if (isObject(data)) {
+        Object.keys(data).forEach(function (key) {
+          callback.call(data, data[key], key, data);
+        });
+      }
+    }
+
+    return data;
+  }
+  /**
+   * Extend the given object.
+   * @param {*} obj - The object to be extended.
+   * @param {*} args - The rest objects which will be merged to the first object.
+   * @returns {Object} The extended object.
+   */
+
+  var assign = Object.assign || function assign(obj) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    if (isObject(obj) && args.length > 0) {
+      args.forEach(function (arg) {
+        if (isObject(arg)) {
+          Object.keys(arg).forEach(function (key) {
+            obj[key] = arg[key];
+          });
+        }
+      });
+    }
+
+    return obj;
+  };
+  var REGEXP_DECIMALS = /\.\d*(?:0|9){12}\d*$/;
+  /**
+   * Normalize decimal number.
+   * Check out {@link http://0.30000000000000004.com/}
+   * @param {number} value - The value to normalize.
+   * @param {number} [times=100000000000] - The times for normalizing.
+   * @returns {number} Returns the normalized number.
+   */
+
+  function normalizeDecimalNumber(value) {
+    var times = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100000000000;
+    return REGEXP_DECIMALS.test(value) ? Math.round(value * times) / times : value;
+  }
+  var REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/;
+  /**
+   * Apply styles to the given element.
+   * @param {Element} element - The target element.
+   * @param {Object} styles - The styles for applying.
+   */
+
+  function setStyle(element, styles) {
+    var style = element.style;
+    forEach(styles, function (value, property) {
+      if (REGEXP_SUFFIX.test(property) && isNumber(value)) {
+        value += 'px';
+      }
+
+      style[property] = value;
+    });
+  }
+  /**
+   * Check if the given element has a special class.
+   * @param {Element} element - The element to check.
+   * @param {string} value - The class to search.
+   * @returns {boolean} Returns `true` if the special class was found.
+   */
+
+  function hasClass(element, value) {
+    return element.classList ? element.classList.contains(value) : element.className.indexOf(value) > -1;
+  }
+  /**
+   * Add classes to the given element.
+   * @param {Element} element - The target element.
+   * @param {string} value - The classes to be added.
+   */
+
+  function addClass(element, value) {
+    if (!value) {
+      return;
+    }
+
+    if (isNumber(element.length)) {
+      forEach(element, function (elem) {
+        addClass(elem, value);
+      });
+      return;
+    }
+
+    if (element.classList) {
+      element.classList.add(value);
+      return;
+    }
+
+    var className = element.className.trim();
+
+    if (!className) {
+      element.className = value;
+    } else if (className.indexOf(value) < 0) {
+      element.className = "".concat(className, " ").concat(value);
+    }
+  }
+  /**
+   * Remove classes from the given element.
+   * @param {Element} element - The target element.
+   * @param {string} value - The classes to be removed.
+   */
+
+  function removeClass(element, value) {
+    if (!value) {
+      return;
+    }
+
+    if (isNumber(element.length)) {
+      forEach(element, function (elem) {
+        removeClass(elem, value);
+      });
+      return;
+    }
+
+    if (element.classList) {
+      element.classList.remove(value);
+      return;
+    }
+
+    if (element.className.indexOf(value) >= 0) {
+      element.className = element.className.replace(value, '');
+    }
+  }
+  /**
+   * Add or remove classes from the given element.
+   * @param {Element} element - The target element.
+   * @param {string} value - The classes to be toggled.
+   * @param {boolean} added - Add only.
+   */
+
+  function toggleClass(element, value, added) {
+    if (!value) {
+      return;
+    }
+
+    if (isNumber(element.length)) {
+      forEach(element, function (elem) {
+        toggleClass(elem, value, added);
+      });
+      return;
+    } // IE10-11 doesn't support the second parameter of `classList.toggle`
+
+
+    if (added) {
+      addClass(element, value);
+    } else {
+      removeClass(element, value);
+    }
+  }
+  var REGEXP_HYPHENATE = /([a-z\d])([A-Z])/g;
+  /**
+   * Transform the given string from camelCase to kebab-case
+   * @param {string} value - The value to transform.
+   * @returns {string} The transformed value.
+   */
+
+  function hyphenate(value) {
+    return value.replace(REGEXP_HYPHENATE, '$1-$2').toLowerCase();
+  }
+  /**
+   * Get data from the given element.
+   * @param {Element} element - The target element.
+   * @param {string} name - The data key to get.
+   * @returns {string} The data value.
+   */
+
+  function getData(element, name) {
+    if (isObject(element[name])) {
+      return element[name];
+    }
+
+    if (element.dataset) {
+      return element.dataset[name];
+    }
+
+    return element.getAttribute("data-".concat(hyphenate(name)));
+  }
+  /**
+   * Set data to the given element.
+   * @param {Element} element - The target element.
+   * @param {string} name - The data key to set.
+   * @param {string} data - The data value.
+   */
+
+  function setData(element, name, data) {
+    if (isObject(data)) {
+      element[name] = data;
+    } else if (element.dataset) {
+      element.dataset[name] = data;
+    } else {
+      element.setAttribute("data-".concat(hyphenate(name)), data);
+    }
+  }
+  /**
+   * Remove data from the given element.
+   * @param {Element} element - The target element.
+   * @param {string} name - The data key to remove.
+   */
+
+  function removeData(element, name) {
+    if (isObject(element[name])) {
+      try {
+        delete element[name];
+      } catch (e) {
+        element[name] = undefined;
+      }
+    } else if (element.dataset) {
+      // #128 Safari not allows to delete dataset property
+      try {
+        delete element.dataset[name];
+      } catch (e) {
+        element.dataset[name] = undefined;
+      }
+    } else {
+      element.removeAttribute("data-".concat(hyphenate(name)));
+    }
+  }
+  var REGEXP_SPACES = /\s\s*/;
+
+  var onceSupported = function () {
+    var supported = false;
+
+    if (IN_BROWSER) {
+      var once = false;
+
+      var listener = function listener() {};
+
+      var options = Object.defineProperty({}, 'once', {
+        get: function get() {
+          supported = true;
+          return once;
+        },
+
+        /**
+         * This setter can fix a `TypeError` in strict mode
+         * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Getter_only}
+         * @param {boolean} value - The value to set
+         */
+        set: function set(value) {
+          once = value;
+        }
+      });
+      WINDOW.addEventListener('test', listener, options);
+      WINDOW.removeEventListener('test', listener, options);
+    }
+
+    return supported;
+  }();
+  /**
+   * Remove event listener from the target element.
+   * @param {Element} element - The event target.
+   * @param {string} type - The event type(s).
+   * @param {Function} listener - The event listener.
+   * @param {Object} options - The event options.
+   */
+
+
+  function removeListener(element, type, listener) {
+    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    var handler = listener;
+    type.trim().split(REGEXP_SPACES).forEach(function (event) {
+      if (!onceSupported) {
+        var listeners = element.listeners;
+
+        if (listeners && listeners[event] && listeners[event][listener]) {
+          handler = listeners[event][listener];
+          delete listeners[event][listener];
+
+          if (Object.keys(listeners[event]).length === 0) {
+            delete listeners[event];
+          }
+
+          if (Object.keys(listeners).length === 0) {
+            delete element.listeners;
+          }
+        }
+      }
+
+      element.removeEventListener(event, handler, options);
+    });
+  }
+  /**
+   * Add event listener to the target element.
+   * @param {Element} element - The event target.
+   * @param {string} type - The event type(s).
+   * @param {Function} listener - The event listener.
+   * @param {Object} options - The event options.
+   */
+
+  function addListener(element, type, listener) {
+    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    var _handler = listener;
+    type.trim().split(REGEXP_SPACES).forEach(function (event) {
+      if (options.once && !onceSupported) {
+        var _element$listeners = element.listeners,
+            listeners = _element$listeners === void 0 ? {} : _element$listeners;
+
+        _handler = function handler() {
+          delete listeners[event][listener];
+          element.removeEventListener(event, _handler, options);
+
+          for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            args[_key2] = arguments[_key2];
+          }
+
+          listener.apply(element, args);
+        };
+
+        if (!listeners[event]) {
+          listeners[event] = {};
+        }
+
+        if (listeners[event][listener]) {
+          element.removeEventListener(event, listeners[event][listener], options);
+        }
+
+        listeners[event][listener] = _handler;
+        element.listeners = listeners;
+      }
+
+      element.addEventListener(event, _handler, options);
+    });
+  }
+  /**
+   * Dispatch event on the target element.
+   * @param {Element} element - The event target.
+   * @param {string} type - The event type(s).
+   * @param {Object} data - The additional event data.
+   * @returns {boolean} Indicate if the event is default prevented or not.
+   */
+
+  function dispatchEvent(element, type, data) {
+    var event; // Event and CustomEvent on IE9-11 are global objects, not constructors
+
+    if (isFunction(Event) && isFunction(CustomEvent)) {
+      event = new CustomEvent(type, {
+        detail: data,
+        bubbles: true,
+        cancelable: true
+      });
+    } else {
+      event = document.createEvent('CustomEvent');
+      event.initCustomEvent(type, true, true, data);
+    }
+
+    return element.dispatchEvent(event);
+  }
+  /**
+   * Get the offset base on the document.
+   * @param {Element} element - The target element.
+   * @returns {Object} The offset data.
+   */
+
+  function getOffset(element) {
+    var box = element.getBoundingClientRect();
+    return {
+      left: box.left + (window.pageXOffset - document.documentElement.clientLeft),
+      top: box.top + (window.pageYOffset - document.documentElement.clientTop)
+    };
+  }
+  var location = WINDOW.location;
+  var REGEXP_ORIGINS = /^(https?:)\/\/([^:/?#]+):?(\d*)/i;
+  /**
+   * Check if the given URL is a cross origin URL.
+   * @param {string} url - The target URL.
+   * @returns {boolean} Returns `true` if the given URL is a cross origin URL, else `false`.
+   */
+
+  function isCrossOriginURL(url) {
+    var parts = url.match(REGEXP_ORIGINS);
+    return parts && (parts[1] !== location.protocol || parts[2] !== location.hostname || parts[3] !== location.port);
+  }
+  /**
+   * Add timestamp to the given URL.
+   * @param {string} url - The target URL.
+   * @returns {string} The result URL.
+   */
+
+  function addTimestamp(url) {
+    var timestamp = "timestamp=".concat(new Date().getTime());
+    return url + (url.indexOf('?') === -1 ? '?' : '&') + timestamp;
+  }
+  /**
+   * Get transforms base on the given object.
+   * @param {Object} obj - The target object.
+   * @returns {string} A string contains transform values.
+   */
+
+  function getTransforms(_ref) {
+    var rotate = _ref.rotate,
+        scaleX = _ref.scaleX,
+        scaleY = _ref.scaleY,
+        translateX = _ref.translateX,
+        translateY = _ref.translateY;
+    var values = [];
+
+    if (isNumber(translateX) && translateX !== 0) {
+      values.push("translateX(".concat(translateX, "px)"));
+    }
+
+    if (isNumber(translateY) && translateY !== 0) {
+      values.push("translateY(".concat(translateY, "px)"));
+    } // Rotate should come first before scale to match orientation transform
+
+
+    if (isNumber(rotate) && rotate !== 0) {
+      values.push("rotate(".concat(rotate, "deg)"));
+    }
+
+    if (isNumber(scaleX) && scaleX !== 1) {
+      values.push("scaleX(".concat(scaleX, ")"));
+    }
+
+    if (isNumber(scaleY) && scaleY !== 1) {
+      values.push("scaleY(".concat(scaleY, ")"));
+    }
+
+    var transform = values.length ? values.join(' ') : 'none';
+    return {
+      WebkitTransform: transform,
+      msTransform: transform,
+      transform: transform
+    };
+  }
+  /**
+   * Get the max ratio of a group of pointers.
+   * @param {string} pointers - The target pointers.
+   * @returns {number} The result ratio.
+   */
+
+  function getMaxZoomRatio(pointers) {
+    var pointers2 = assign({}, pointers);
+    var ratios = [];
+    forEach(pointers, function (pointer, pointerId) {
+      delete pointers2[pointerId];
+      forEach(pointers2, function (pointer2) {
+        var x1 = Math.abs(pointer.startX - pointer2.startX);
+        var y1 = Math.abs(pointer.startY - pointer2.startY);
+        var x2 = Math.abs(pointer.endX - pointer2.endX);
+        var y2 = Math.abs(pointer.endY - pointer2.endY);
+        var z1 = Math.sqrt(x1 * x1 + y1 * y1);
+        var z2 = Math.sqrt(x2 * x2 + y2 * y2);
+        var ratio = (z2 - z1) / z1;
+        ratios.push(ratio);
+      });
+    });
+    ratios.sort(function (a, b) {
+      return Math.abs(a) < Math.abs(b);
+    });
+    return ratios[0];
+  }
+  /**
+   * Get a pointer from an event object.
+   * @param {Object} event - The target event object.
+   * @param {boolean} endOnly - Indicates if only returns the end point coordinate or not.
+   * @returns {Object} The result pointer contains start and/or end point coordinates.
+   */
+
+  function getPointer(_ref2, endOnly) {
+    var pageX = _ref2.pageX,
+        pageY = _ref2.pageY;
+    var end = {
+      endX: pageX,
+      endY: pageY
+    };
+    return endOnly ? end : assign({
+      startX: pageX,
+      startY: pageY
+    }, end);
+  }
+  /**
+   * Get the center point coordinate of a group of pointers.
+   * @param {Object} pointers - The target pointers.
+   * @returns {Object} The center point coordinate.
+   */
+
+  function getPointersCenter(pointers) {
+    var pageX = 0;
+    var pageY = 0;
+    var count = 0;
+    forEach(pointers, function (_ref3) {
+      var startX = _ref3.startX,
+          startY = _ref3.startY;
+      pageX += startX;
+      pageY += startY;
+      count += 1;
+    });
+    pageX /= count;
+    pageY /= count;
+    return {
+      pageX: pageX,
+      pageY: pageY
+    };
+  }
+  /**
+   * Check if the given value is a finite number.
+   */
+
+  var isFinite = Number.isFinite || WINDOW.isFinite;
+  /**
+   * Get the max sizes in a rectangle under the given aspect ratio.
+   * @param {Object} data - The original sizes.
+   * @param {string} [type='contain'] - The adjust type.
+   * @returns {Object} The result sizes.
+   */
+
+  function getAdjustedSizes(_ref4) // or 'cover'
+  {
+    var aspectRatio = _ref4.aspectRatio,
+        height = _ref4.height,
+        width = _ref4.width;
+    var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'contain';
+
+    var isValidNumber = function isValidNumber(value) {
+      return isFinite(value) && value > 0;
+    };
+
+    if (isValidNumber(width) && isValidNumber(height)) {
+      var adjustedWidth = height * aspectRatio;
+
+      if (type === 'contain' && adjustedWidth > width || type === 'cover' && adjustedWidth < width) {
+        height = width / aspectRatio;
+      } else {
+        width = height * aspectRatio;
+      }
+    } else if (isValidNumber(width)) {
+      height = width / aspectRatio;
+    } else if (isValidNumber(height)) {
+      width = height * aspectRatio;
+    }
+
+    return {
+      width: width,
+      height: height
+    };
+  }
+  /**
+   * Get the new sizes of a rectangle after rotated.
+   * @param {Object} data - The original sizes.
+   * @returns {Object} The result sizes.
+   */
+
+  function getRotatedSizes(_ref5) {
+    var width = _ref5.width,
+        height = _ref5.height,
+        degree = _ref5.degree;
+    degree = Math.abs(degree) % 180;
+
+    if (degree === 90) {
+      return {
+        width: height,
+        height: width
+      };
+    }
+
+    var arc = degree % 90 * Math.PI / 180;
+    var sinArc = Math.sin(arc);
+    var cosArc = Math.cos(arc);
+    var newWidth = width * cosArc + height * sinArc;
+    var newHeight = width * sinArc + height * cosArc;
+    return degree > 90 ? {
+      width: newHeight,
+      height: newWidth
+    } : {
+      width: newWidth,
+      height: newHeight
+    };
+  }
+  /**
+   * Get a canvas which drew the given image.
+   * @param {HTMLImageElement} image - The image for drawing.
+   * @param {Object} imageData - The image data.
+   * @param {Object} canvasData - The canvas data.
+   * @param {Object} options - The options.
+   * @returns {HTMLCanvasElement} The result canvas.
+   */
+
+  function getSourceCanvas(image, _ref6, _ref7, _ref8) {
+    var imageAspectRatio = _ref6.aspectRatio,
+        imageNaturalWidth = _ref6.naturalWidth,
+        imageNaturalHeight = _ref6.naturalHeight,
+        _ref6$rotate = _ref6.rotate,
+        rotate = _ref6$rotate === void 0 ? 0 : _ref6$rotate,
+        _ref6$scaleX = _ref6.scaleX,
+        scaleX = _ref6$scaleX === void 0 ? 1 : _ref6$scaleX,
+        _ref6$scaleY = _ref6.scaleY,
+        scaleY = _ref6$scaleY === void 0 ? 1 : _ref6$scaleY;
+    var aspectRatio = _ref7.aspectRatio,
+        naturalWidth = _ref7.naturalWidth,
+        naturalHeight = _ref7.naturalHeight;
+    var _ref8$fillColor = _ref8.fillColor,
+        fillColor = _ref8$fillColor === void 0 ? 'transparent' : _ref8$fillColor,
+        _ref8$imageSmoothingE = _ref8.imageSmoothingEnabled,
+        imageSmoothingEnabled = _ref8$imageSmoothingE === void 0 ? true : _ref8$imageSmoothingE,
+        _ref8$imageSmoothingQ = _ref8.imageSmoothingQuality,
+        imageSmoothingQuality = _ref8$imageSmoothingQ === void 0 ? 'low' : _ref8$imageSmoothingQ,
+        _ref8$maxWidth = _ref8.maxWidth,
+        maxWidth = _ref8$maxWidth === void 0 ? Infinity : _ref8$maxWidth,
+        _ref8$maxHeight = _ref8.maxHeight,
+        maxHeight = _ref8$maxHeight === void 0 ? Infinity : _ref8$maxHeight,
+        _ref8$minWidth = _ref8.minWidth,
+        minWidth = _ref8$minWidth === void 0 ? 0 : _ref8$minWidth,
+        _ref8$minHeight = _ref8.minHeight,
+        minHeight = _ref8$minHeight === void 0 ? 0 : _ref8$minHeight;
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    var maxSizes = getAdjustedSizes({
+      aspectRatio: aspectRatio,
+      width: maxWidth,
+      height: maxHeight
+    });
+    var minSizes = getAdjustedSizes({
+      aspectRatio: aspectRatio,
+      width: minWidth,
+      height: minHeight
+    }, 'cover');
+    var width = Math.min(maxSizes.width, Math.max(minSizes.width, naturalWidth));
+    var height = Math.min(maxSizes.height, Math.max(minSizes.height, naturalHeight)); // Note: should always use image's natural sizes for drawing as
+    // imageData.naturalWidth === canvasData.naturalHeight when rotate % 180 === 90
+
+    var destMaxSizes = getAdjustedSizes({
+      aspectRatio: imageAspectRatio,
+      width: maxWidth,
+      height: maxHeight
+    });
+    var destMinSizes = getAdjustedSizes({
+      aspectRatio: imageAspectRatio,
+      width: minWidth,
+      height: minHeight
+    }, 'cover');
+    var destWidth = Math.min(destMaxSizes.width, Math.max(destMinSizes.width, imageNaturalWidth));
+    var destHeight = Math.min(destMaxSizes.height, Math.max(destMinSizes.height, imageNaturalHeight));
+    var params = [-destWidth / 2, -destHeight / 2, destWidth, destHeight];
+    canvas.width = normalizeDecimalNumber(width);
+    canvas.height = normalizeDecimalNumber(height);
+    context.fillStyle = fillColor;
+    context.fillRect(0, 0, width, height);
+    context.save();
+    context.translate(width / 2, height / 2);
+    context.rotate(rotate * Math.PI / 180);
+    context.scale(scaleX, scaleY);
+    context.imageSmoothingEnabled = imageSmoothingEnabled;
+    context.imageSmoothingQuality = imageSmoothingQuality;
+    context.drawImage.apply(context, [image].concat(_toConsumableArray(params.map(function (param) {
+      return Math.floor(normalizeDecimalNumber(param));
+    }))));
+    context.restore();
+    return canvas;
+  }
+  var fromCharCode = String.fromCharCode;
+  /**
+   * Get string from char code in data view.
+   * @param {DataView} dataView - The data view for read.
+   * @param {number} start - The start index.
+   * @param {number} length - The read length.
+   * @returns {string} The read result.
+   */
+
+  function getStringFromCharCode(dataView, start, length) {
+    var str = '';
+    var i;
+    length += start;
+
+    for (i = start; i < length; i += 1) {
+      str += fromCharCode(dataView.getUint8(i));
+    }
+
+    return str;
+  }
+  var REGEXP_DATA_URL_HEAD = /^data:.*,/;
+  /**
+   * Transform Data URL to array buffer.
+   * @param {string} dataURL - The Data URL to transform.
+   * @returns {ArrayBuffer} The result array buffer.
+   */
+
+  function dataURLToArrayBuffer(dataURL) {
+    var base64 = dataURL.replace(REGEXP_DATA_URL_HEAD, '');
+    var binary = atob(base64);
+    var arrayBuffer = new ArrayBuffer(binary.length);
+    var uint8 = new Uint8Array(arrayBuffer);
+    forEach(uint8, function (value, i) {
+      uint8[i] = binary.charCodeAt(i);
+    });
+    return arrayBuffer;
+  }
+  /**
+   * Transform array buffer to Data URL.
+   * @param {ArrayBuffer} arrayBuffer - The array buffer to transform.
+   * @param {string} mimeType - The mime type of the Data URL.
+   * @returns {string} The result Data URL.
+   */
+
+  function arrayBufferToDataURL(arrayBuffer, mimeType) {
+    var chunks = [];
+    var chunkSize = 8192;
+    var uint8 = new Uint8Array(arrayBuffer);
+
+    while (uint8.length > 0) {
+      chunks.push(fromCharCode.apply(void 0, _toConsumableArray(uint8.subarray(0, chunkSize))));
+      uint8 = uint8.subarray(chunkSize);
+    }
+
+    return "data:".concat(mimeType, ";base64,").concat(btoa(chunks.join('')));
+  }
+  /**
+   * Get orientation value from given array buffer.
+   * @param {ArrayBuffer} arrayBuffer - The array buffer to read.
+   * @returns {number} The read orientation value.
+   */
+
+  function resetAndGetOrientation(arrayBuffer) {
+    var dataView = new DataView(arrayBuffer);
+    var orientation;
+    var littleEndian;
+    var app1Start;
+    var ifdStart; // Only handle JPEG image (start by 0xFFD8)
+
+    if (dataView.getUint8(0) === 0xFF && dataView.getUint8(1) === 0xD8) {
+      var length = dataView.byteLength;
+      var offset = 2;
+
+      while (offset < length) {
+        if (dataView.getUint8(offset) === 0xFF && dataView.getUint8(offset + 1) === 0xE1) {
+          app1Start = offset;
+          break;
+        }
+
+        offset += 1;
+      }
+    }
+
+    if (app1Start) {
+      var exifIDCode = app1Start + 4;
+      var tiffOffset = app1Start + 10;
+
+      if (getStringFromCharCode(dataView, exifIDCode, 4) === 'Exif') {
+        var endianness = dataView.getUint16(tiffOffset);
+        littleEndian = endianness === 0x4949;
+
+        if (littleEndian || endianness === 0x4D4D
+        /* bigEndian */
+        ) {
+            if (dataView.getUint16(tiffOffset + 2, littleEndian) === 0x002A) {
+              var firstIFDOffset = dataView.getUint32(tiffOffset + 4, littleEndian);
+
+              if (firstIFDOffset >= 0x00000008) {
+                ifdStart = tiffOffset + firstIFDOffset;
+              }
+            }
+          }
+      }
+    }
+
+    if (ifdStart) {
+      var _length = dataView.getUint16(ifdStart, littleEndian);
+
+      var _offset;
+
+      var i;
+
+      for (i = 0; i < _length; i += 1) {
+        _offset = ifdStart + i * 12 + 2;
+
+        if (dataView.getUint16(_offset, littleEndian) === 0x0112
+        /* Orientation */
+        ) {
+            // 8 is the offset of the current tag's value
+            _offset += 8; // Get the original orientation value
+
+            orientation = dataView.getUint16(_offset, littleEndian); // Override the orientation with its default value
+
+            dataView.setUint16(_offset, 1, littleEndian);
+            break;
+          }
+      }
+    }
+
+    return orientation;
+  }
+  /**
+   * Parse Exif Orientation value.
+   * @param {number} orientation - The orientation to parse.
+   * @returns {Object} The parsed result.
+   */
+
+  function parseOrientation(orientation) {
+    var rotate = 0;
+    var scaleX = 1;
+    var scaleY = 1;
+
+    switch (orientation) {
+      // Flip horizontal
+      case 2:
+        scaleX = -1;
+        break;
+      // Rotate left 180°
+
+      case 3:
+        rotate = -180;
+        break;
+      // Flip vertical
+
+      case 4:
+        scaleY = -1;
+        break;
+      // Flip vertical and rotate right 90°
+
+      case 5:
+        rotate = 90;
+        scaleY = -1;
+        break;
+      // Rotate right 90°
+
+      case 6:
+        rotate = 90;
+        break;
+      // Flip horizontal and rotate right 90°
+
+      case 7:
+        rotate = 90;
+        scaleX = -1;
+        break;
+      // Rotate left 90°
+
+      case 8:
+        rotate = -90;
+        break;
+
+      default:
+    }
+
+    return {
+      rotate: rotate,
+      scaleX: scaleX,
+      scaleY: scaleY
+    };
+  }
+
+  var render = {
+    render: function render() {
+      this.initContainer();
+      this.initCanvas();
+      this.initCropBox();
+      this.renderCanvas();
+
+      if (this.cropped) {
+        this.renderCropBox();
+      }
+    },
+    initContainer: function initContainer() {
+      var element = this.element,
+          options = this.options,
+          container = this.container,
+          cropper = this.cropper;
+      addClass(cropper, CLASS_HIDDEN);
+      removeClass(element, CLASS_HIDDEN);
+      var containerData = {
+        width: Math.max(container.offsetWidth, Number(options.minContainerWidth) || 200),
+        height: Math.max(container.offsetHeight, Number(options.minContainerHeight) || 100)
+      };
+      this.containerData = containerData;
+      setStyle(cropper, {
+        width: containerData.width,
+        height: containerData.height
+      });
+      addClass(element, CLASS_HIDDEN);
+      removeClass(cropper, CLASS_HIDDEN);
+    },
+    // Canvas (image wrapper)
+    initCanvas: function initCanvas() {
+      var containerData = this.containerData,
+          imageData = this.imageData;
+      var viewMode = this.options.viewMode;
+      var rotated = Math.abs(imageData.rotate) % 180 === 90;
+      var naturalWidth = rotated ? imageData.naturalHeight : imageData.naturalWidth;
+      var naturalHeight = rotated ? imageData.naturalWidth : imageData.naturalHeight;
+      var aspectRatio = naturalWidth / naturalHeight;
+      var canvasWidth = containerData.width;
+      var canvasHeight = containerData.height;
+
+      if (containerData.height * aspectRatio > containerData.width) {
+        if (viewMode === 3) {
+          canvasWidth = containerData.height * aspectRatio;
+        } else {
+          canvasHeight = containerData.width / aspectRatio;
+        }
+      } else if (viewMode === 3) {
+        canvasHeight = containerData.width / aspectRatio;
+      } else {
+        canvasWidth = containerData.height * aspectRatio;
+      }
+
+      var canvasData = {
+        aspectRatio: aspectRatio,
+        naturalWidth: naturalWidth,
+        naturalHeight: naturalHeight,
+        width: canvasWidth,
+        height: canvasHeight
+      };
+      canvasData.left = (containerData.width - canvasWidth) / 2;
+      canvasData.top = (containerData.height - canvasHeight) / 2;
+      canvasData.oldLeft = canvasData.left;
+      canvasData.oldTop = canvasData.top;
+      this.canvasData = canvasData;
+      this.limited = viewMode === 1 || viewMode === 2;
+      this.limitCanvas(true, true);
+      this.initialImageData = assign({}, imageData);
+      this.initialCanvasData = assign({}, canvasData);
+    },
+    limitCanvas: function limitCanvas(sizeLimited, positionLimited) {
+      var options = this.options,
+          containerData = this.containerData,
+          canvasData = this.canvasData,
+          cropBoxData = this.cropBoxData;
+      var viewMode = options.viewMode;
+      var aspectRatio = canvasData.aspectRatio;
+      var cropped = this.cropped && cropBoxData;
+
+      if (sizeLimited) {
+        var minCanvasWidth = Number(options.minCanvasWidth) || 0;
+        var minCanvasHeight = Number(options.minCanvasHeight) || 0;
+
+        if (viewMode > 1) {
+          minCanvasWidth = Math.max(minCanvasWidth, containerData.width);
+          minCanvasHeight = Math.max(minCanvasHeight, containerData.height);
+
+          if (viewMode === 3) {
+            if (minCanvasHeight * aspectRatio > minCanvasWidth) {
+              minCanvasWidth = minCanvasHeight * aspectRatio;
+            } else {
+              minCanvasHeight = minCanvasWidth / aspectRatio;
+            }
+          }
+        } else if (viewMode > 0) {
+          if (minCanvasWidth) {
+            minCanvasWidth = Math.max(minCanvasWidth, cropped ? cropBoxData.width : 0);
+          } else if (minCanvasHeight) {
+            minCanvasHeight = Math.max(minCanvasHeight, cropped ? cropBoxData.height : 0);
+          } else if (cropped) {
+            minCanvasWidth = cropBoxData.width;
+            minCanvasHeight = cropBoxData.height;
+
+            if (minCanvasHeight * aspectRatio > minCanvasWidth) {
+              minCanvasWidth = minCanvasHeight * aspectRatio;
+            } else {
+              minCanvasHeight = minCanvasWidth / aspectRatio;
+            }
+          }
+        }
+
+        var _getAdjustedSizes = getAdjustedSizes({
+          aspectRatio: aspectRatio,
+          width: minCanvasWidth,
+          height: minCanvasHeight
+        });
+
+        minCanvasWidth = _getAdjustedSizes.width;
+        minCanvasHeight = _getAdjustedSizes.height;
+        canvasData.minWidth = minCanvasWidth;
+        canvasData.minHeight = minCanvasHeight;
+        canvasData.maxWidth = Infinity;
+        canvasData.maxHeight = Infinity;
+      }
+
+      if (positionLimited) {
+        if (viewMode > (cropped ? 0 : 1)) {
+          var newCanvasLeft = containerData.width - canvasData.width;
+          var newCanvasTop = containerData.height - canvasData.height;
+          canvasData.minLeft = Math.min(0, newCanvasLeft);
+          canvasData.minTop = Math.min(0, newCanvasTop);
+          canvasData.maxLeft = Math.max(0, newCanvasLeft);
+          canvasData.maxTop = Math.max(0, newCanvasTop);
+
+          if (cropped && this.limited) {
+            canvasData.minLeft = Math.min(cropBoxData.left, cropBoxData.left + (cropBoxData.width - canvasData.width));
+            canvasData.minTop = Math.min(cropBoxData.top, cropBoxData.top + (cropBoxData.height - canvasData.height));
+            canvasData.maxLeft = cropBoxData.left;
+            canvasData.maxTop = cropBoxData.top;
+
+            if (viewMode === 2) {
+              if (canvasData.width >= containerData.width) {
+                canvasData.minLeft = Math.min(0, newCanvasLeft);
+                canvasData.maxLeft = Math.max(0, newCanvasLeft);
+              }
+
+              if (canvasData.height >= containerData.height) {
+                canvasData.minTop = Math.min(0, newCanvasTop);
+                canvasData.maxTop = Math.max(0, newCanvasTop);
+              }
+            }
+          }
+        } else {
+          canvasData.minLeft = -canvasData.width;
+          canvasData.minTop = -canvasData.height;
+          canvasData.maxLeft = containerData.width;
+          canvasData.maxTop = containerData.height;
+        }
+      }
+    },
+    renderCanvas: function renderCanvas(changed, transformed) {
+      var canvasData = this.canvasData,
+          imageData = this.imageData;
+
+      if (transformed) {
+        var _getRotatedSizes = getRotatedSizes({
+          width: imageData.naturalWidth * Math.abs(imageData.scaleX || 1),
+          height: imageData.naturalHeight * Math.abs(imageData.scaleY || 1),
+          degree: imageData.rotate || 0
+        }),
+            naturalWidth = _getRotatedSizes.width,
+            naturalHeight = _getRotatedSizes.height;
+
+        var width = canvasData.width * (naturalWidth / canvasData.naturalWidth);
+        var height = canvasData.height * (naturalHeight / canvasData.naturalHeight);
+        canvasData.left -= (width - canvasData.width) / 2;
+        canvasData.top -= (height - canvasData.height) / 2;
+        canvasData.width = width;
+        canvasData.height = height;
+        canvasData.aspectRatio = naturalWidth / naturalHeight;
+        canvasData.naturalWidth = naturalWidth;
+        canvasData.naturalHeight = naturalHeight;
+        this.limitCanvas(true, false);
+      }
+
+      if (canvasData.width > canvasData.maxWidth || canvasData.width < canvasData.minWidth) {
+        canvasData.left = canvasData.oldLeft;
+      }
+
+      if (canvasData.height > canvasData.maxHeight || canvasData.height < canvasData.minHeight) {
+        canvasData.top = canvasData.oldTop;
+      }
+
+      canvasData.width = Math.min(Math.max(canvasData.width, canvasData.minWidth), canvasData.maxWidth);
+      canvasData.height = Math.min(Math.max(canvasData.height, canvasData.minHeight), canvasData.maxHeight);
+      this.limitCanvas(false, true);
+      canvasData.left = Math.min(Math.max(canvasData.left, canvasData.minLeft), canvasData.maxLeft);
+      canvasData.top = Math.min(Math.max(canvasData.top, canvasData.minTop), canvasData.maxTop);
+      canvasData.oldLeft = canvasData.left;
+      canvasData.oldTop = canvasData.top;
+      setStyle(this.canvas, assign({
+        width: canvasData.width,
+        height: canvasData.height
+      }, getTransforms({
+        translateX: canvasData.left,
+        translateY: canvasData.top
+      })));
+      this.renderImage(changed);
+
+      if (this.cropped && this.limited) {
+        this.limitCropBox(true, true);
+      }
+    },
+    renderImage: function renderImage(changed) {
+      var canvasData = this.canvasData,
+          imageData = this.imageData;
+      var width = imageData.naturalWidth * (canvasData.width / canvasData.naturalWidth);
+      var height = imageData.naturalHeight * (canvasData.height / canvasData.naturalHeight);
+      assign(imageData, {
+        width: width,
+        height: height,
+        left: (canvasData.width - width) / 2,
+        top: (canvasData.height - height) / 2
+      });
+      setStyle(this.image, assign({
+        width: imageData.width,
+        height: imageData.height
+      }, getTransforms(assign({
+        translateX: imageData.left,
+        translateY: imageData.top
+      }, imageData))));
+
+      if (changed) {
+        this.output();
+      }
+    },
+    initCropBox: function initCropBox() {
+      var options = this.options,
+          canvasData = this.canvasData;
+      var aspectRatio = options.aspectRatio || options.initialAspectRatio;
+      var autoCropArea = Number(options.autoCropArea) || 0.8;
+      var cropBoxData = {
+        width: canvasData.width,
+        height: canvasData.height
+      };
+
+      if (aspectRatio) {
+        if (canvasData.height * aspectRatio > canvasData.width) {
+          cropBoxData.height = cropBoxData.width / aspectRatio;
+        } else {
+          cropBoxData.width = cropBoxData.height * aspectRatio;
+        }
+      }
+
+      this.cropBoxData = cropBoxData;
+      this.limitCropBox(true, true); // Initialize auto crop area
+
+      cropBoxData.width = Math.min(Math.max(cropBoxData.width, cropBoxData.minWidth), cropBoxData.maxWidth);
+      cropBoxData.height = Math.min(Math.max(cropBoxData.height, cropBoxData.minHeight), cropBoxData.maxHeight); // The width/height of auto crop area must large than "minWidth/Height"
+
+      cropBoxData.width = Math.max(cropBoxData.minWidth, cropBoxData.width * autoCropArea);
+      cropBoxData.height = Math.max(cropBoxData.minHeight, cropBoxData.height * autoCropArea);
+      cropBoxData.left = canvasData.left + (canvasData.width - cropBoxData.width) / 2;
+      cropBoxData.top = canvasData.top + (canvasData.height - cropBoxData.height) / 2;
+      cropBoxData.oldLeft = cropBoxData.left;
+      cropBoxData.oldTop = cropBoxData.top;
+      this.initialCropBoxData = assign({}, cropBoxData);
+    },
+    limitCropBox: function limitCropBox(sizeLimited, positionLimited) {
+      var options = this.options,
+          containerData = this.containerData,
+          canvasData = this.canvasData,
+          cropBoxData = this.cropBoxData,
+          limited = this.limited;
+      var aspectRatio = options.aspectRatio;
+
+      if (sizeLimited) {
+        var minCropBoxWidth = Number(options.minCropBoxWidth) || 0;
+        var minCropBoxHeight = Number(options.minCropBoxHeight) || 0;
+        var maxCropBoxWidth = limited ? Math.min(containerData.width, canvasData.width, canvasData.width + canvasData.left, containerData.width - canvasData.left) : containerData.width;
+        var maxCropBoxHeight = limited ? Math.min(containerData.height, canvasData.height, canvasData.height + canvasData.top, containerData.height - canvasData.top) : containerData.height; // The min/maxCropBoxWidth/Height must be less than container's width/height
+
+        minCropBoxWidth = Math.min(minCropBoxWidth, containerData.width);
+        minCropBoxHeight = Math.min(minCropBoxHeight, containerData.height);
+
+        if (aspectRatio) {
+          if (minCropBoxWidth && minCropBoxHeight) {
+            if (minCropBoxHeight * aspectRatio > minCropBoxWidth) {
+              minCropBoxHeight = minCropBoxWidth / aspectRatio;
+            } else {
+              minCropBoxWidth = minCropBoxHeight * aspectRatio;
+            }
+          } else if (minCropBoxWidth) {
+            minCropBoxHeight = minCropBoxWidth / aspectRatio;
+          } else if (minCropBoxHeight) {
+            minCropBoxWidth = minCropBoxHeight * aspectRatio;
+          }
+
+          if (maxCropBoxHeight * aspectRatio > maxCropBoxWidth) {
+            maxCropBoxHeight = maxCropBoxWidth / aspectRatio;
+          } else {
+            maxCropBoxWidth = maxCropBoxHeight * aspectRatio;
+          }
+        } // The minWidth/Height must be less than maxWidth/Height
+
+
+        cropBoxData.minWidth = Math.min(minCropBoxWidth, maxCropBoxWidth);
+        cropBoxData.minHeight = Math.min(minCropBoxHeight, maxCropBoxHeight);
+        cropBoxData.maxWidth = maxCropBoxWidth;
+        cropBoxData.maxHeight = maxCropBoxHeight;
+      }
+
+      if (positionLimited) {
+        if (limited) {
+          cropBoxData.minLeft = Math.max(0, canvasData.left);
+          cropBoxData.minTop = Math.max(0, canvasData.top);
+          cropBoxData.maxLeft = Math.min(containerData.width, canvasData.left + canvasData.width) - cropBoxData.width;
+          cropBoxData.maxTop = Math.min(containerData.height, canvasData.top + canvasData.height) - cropBoxData.height;
+        } else {
+          cropBoxData.minLeft = 0;
+          cropBoxData.minTop = 0;
+          cropBoxData.maxLeft = containerData.width - cropBoxData.width;
+          cropBoxData.maxTop = containerData.height - cropBoxData.height;
+        }
+      }
+    },
+    renderCropBox: function renderCropBox() {
+      var options = this.options,
+          containerData = this.containerData,
+          cropBoxData = this.cropBoxData;
+
+      if (cropBoxData.width > cropBoxData.maxWidth || cropBoxData.width < cropBoxData.minWidth) {
+        cropBoxData.left = cropBoxData.oldLeft;
+      }
+
+      if (cropBoxData.height > cropBoxData.maxHeight || cropBoxData.height < cropBoxData.minHeight) {
+        cropBoxData.top = cropBoxData.oldTop;
+      }
+
+      cropBoxData.width = Math.min(Math.max(cropBoxData.width, cropBoxData.minWidth), cropBoxData.maxWidth);
+      cropBoxData.height = Math.min(Math.max(cropBoxData.height, cropBoxData.minHeight), cropBoxData.maxHeight);
+      this.limitCropBox(false, true);
+      cropBoxData.left = Math.min(Math.max(cropBoxData.left, cropBoxData.minLeft), cropBoxData.maxLeft);
+      cropBoxData.top = Math.min(Math.max(cropBoxData.top, cropBoxData.minTop), cropBoxData.maxTop);
+      cropBoxData.oldLeft = cropBoxData.left;
+      cropBoxData.oldTop = cropBoxData.top;
+
+      if (options.movable && options.cropBoxMovable) {
+        // Turn to move the canvas when the crop box is equal to the container
+        setData(this.face, DATA_ACTION, cropBoxData.width >= containerData.width && cropBoxData.height >= containerData.height ? ACTION_MOVE : ACTION_ALL);
+      }
+
+      setStyle(this.cropBox, assign({
+        width: cropBoxData.width,
+        height: cropBoxData.height
+      }, getTransforms({
+        translateX: cropBoxData.left,
+        translateY: cropBoxData.top
+      })));
+
+      if (this.cropped && this.limited) {
+        this.limitCanvas(true, true);
+      }
+
+      if (!this.disabled) {
+        this.output();
+      }
+    },
+    output: function output() {
+      this.preview();
+      dispatchEvent(this.element, EVENT_CROP, this.getData());
+    }
+  };
+
+  var preview = {
+    initPreview: function initPreview() {
+      var crossOrigin = this.crossOrigin;
+      var preview = this.options.preview;
+      var url = crossOrigin ? this.crossOriginUrl : this.url;
+      var image = document.createElement('img');
+
+      if (crossOrigin) {
+        image.crossOrigin = crossOrigin;
+      }
+
+      image.src = url;
+      this.viewBox.appendChild(image);
+      this.viewBoxImage = image;
+
+      if (!preview) {
+        return;
+      }
+
+      var previews = preview;
+
+      if (typeof preview === 'string') {
+        previews = this.element.ownerDocument.querySelectorAll(preview);
+      } else if (preview.querySelector) {
+        previews = [preview];
+      }
+
+      this.previews = previews;
+      forEach(previews, function (el) {
+        var img = document.createElement('img'); // Save the original size for recover
+
+        setData(el, DATA_PREVIEW, {
+          width: el.offsetWidth,
+          height: el.offsetHeight,
+          html: el.innerHTML
+        });
+
+        if (crossOrigin) {
+          img.crossOrigin = crossOrigin;
+        }
+
+        img.src = url;
+        /**
+         * Override img element styles
+         * Add `display:block` to avoid margin top issue
+         * Add `height:auto` to override `height` attribute on IE8
+         * (Occur only when margin-top <= -height)
+         */
+
+        img.style.cssText = 'display:block;' + 'width:100%;' + 'height:auto;' + 'min-width:0!important;' + 'min-height:0!important;' + 'max-width:none!important;' + 'max-height:none!important;' + 'image-orientation:0deg!important;"';
+        el.innerHTML = '';
+        el.appendChild(img);
+      });
+    },
+    resetPreview: function resetPreview() {
+      forEach(this.previews, function (element) {
+        var data = getData(element, DATA_PREVIEW);
+        setStyle(element, {
+          width: data.width,
+          height: data.height
+        });
+        element.innerHTML = data.html;
+        removeData(element, DATA_PREVIEW);
+      });
+    },
+    preview: function preview() {
+      var imageData = this.imageData,
+          canvasData = this.canvasData,
+          cropBoxData = this.cropBoxData;
+      var cropBoxWidth = cropBoxData.width,
+          cropBoxHeight = cropBoxData.height;
+      var width = imageData.width,
+          height = imageData.height;
+      var left = cropBoxData.left - canvasData.left - imageData.left;
+      var top = cropBoxData.top - canvasData.top - imageData.top;
+
+      if (!this.cropped || this.disabled) {
+        return;
+      }
+
+      setStyle(this.viewBoxImage, assign({
+        width: width,
+        height: height
+      }, getTransforms(assign({
+        translateX: -left,
+        translateY: -top
+      }, imageData))));
+      forEach(this.previews, function (element) {
+        var data = getData(element, DATA_PREVIEW);
+        var originalWidth = data.width;
+        var originalHeight = data.height;
+        var newWidth = originalWidth;
+        var newHeight = originalHeight;
+        var ratio = 1;
+
+        if (cropBoxWidth) {
+          ratio = originalWidth / cropBoxWidth;
+          newHeight = cropBoxHeight * ratio;
+        }
+
+        if (cropBoxHeight && newHeight > originalHeight) {
+          ratio = originalHeight / cropBoxHeight;
+          newWidth = cropBoxWidth * ratio;
+          newHeight = originalHeight;
+        }
+
+        setStyle(element, {
+          width: newWidth,
+          height: newHeight
+        });
+        setStyle(element.getElementsByTagName('img')[0], assign({
+          width: width * ratio,
+          height: height * ratio
+        }, getTransforms(assign({
+          translateX: -left * ratio,
+          translateY: -top * ratio
+        }, imageData))));
+      });
+    }
+  };
+
+  var events = {
+    bind: function bind() {
+      var element = this.element,
+          options = this.options,
+          cropper = this.cropper;
+
+      if (isFunction(options.cropstart)) {
+        addListener(element, EVENT_CROP_START, options.cropstart);
+      }
+
+      if (isFunction(options.cropmove)) {
+        addListener(element, EVENT_CROP_MOVE, options.cropmove);
+      }
+
+      if (isFunction(options.cropend)) {
+        addListener(element, EVENT_CROP_END, options.cropend);
+      }
+
+      if (isFunction(options.crop)) {
+        addListener(element, EVENT_CROP, options.crop);
+      }
+
+      if (isFunction(options.zoom)) {
+        addListener(element, EVENT_ZOOM, options.zoom);
+      }
+
+      addListener(cropper, EVENT_POINTER_DOWN, this.onCropStart = this.cropStart.bind(this));
+
+      if (options.zoomable && options.zoomOnWheel) {
+        addListener(cropper, EVENT_WHEEL, this.onWheel = this.wheel.bind(this));
+      }
+
+      if (options.toggleDragModeOnDblclick) {
+        addListener(cropper, EVENT_DBLCLICK, this.onDblclick = this.dblclick.bind(this));
+      }
+
+      addListener(element.ownerDocument, EVENT_POINTER_MOVE, this.onCropMove = this.cropMove.bind(this));
+      addListener(element.ownerDocument, EVENT_POINTER_UP, this.onCropEnd = this.cropEnd.bind(this));
+
+      if (options.responsive) {
+        addListener(window, EVENT_RESIZE, this.onResize = this.resize.bind(this));
+      }
+    },
+    unbind: function unbind() {
+      var element = this.element,
+          options = this.options,
+          cropper = this.cropper;
+
+      if (isFunction(options.cropstart)) {
+        removeListener(element, EVENT_CROP_START, options.cropstart);
+      }
+
+      if (isFunction(options.cropmove)) {
+        removeListener(element, EVENT_CROP_MOVE, options.cropmove);
+      }
+
+      if (isFunction(options.cropend)) {
+        removeListener(element, EVENT_CROP_END, options.cropend);
+      }
+
+      if (isFunction(options.crop)) {
+        removeListener(element, EVENT_CROP, options.crop);
+      }
+
+      if (isFunction(options.zoom)) {
+        removeListener(element, EVENT_ZOOM, options.zoom);
+      }
+
+      removeListener(cropper, EVENT_POINTER_DOWN, this.onCropStart);
+
+      if (options.zoomable && options.zoomOnWheel) {
+        removeListener(cropper, EVENT_WHEEL, this.onWheel);
+      }
+
+      if (options.toggleDragModeOnDblclick) {
+        removeListener(cropper, EVENT_DBLCLICK, this.onDblclick);
+      }
+
+      removeListener(element.ownerDocument, EVENT_POINTER_MOVE, this.onCropMove);
+      removeListener(element.ownerDocument, EVENT_POINTER_UP, this.onCropEnd);
+
+      if (options.responsive) {
+        removeListener(window, EVENT_RESIZE, this.onResize);
+      }
+    }
+  };
+
+  var handlers = {
+    resize: function resize() {
+      var options = this.options,
+          container = this.container,
+          containerData = this.containerData;
+      var minContainerWidth = Number(options.minContainerWidth) || 200;
+      var minContainerHeight = Number(options.minContainerHeight) || 100;
+
+      if (this.disabled || containerData.width <= minContainerWidth || containerData.height <= minContainerHeight) {
+        return;
+      }
+
+      var ratio = container.offsetWidth / containerData.width; // Resize when width changed or height changed
+
+      if (ratio !== 1 || container.offsetHeight !== containerData.height) {
+        var canvasData;
+        var cropBoxData;
+
+        if (options.restore) {
+          canvasData = this.getCanvasData();
+          cropBoxData = this.getCropBoxData();
+        }
+
+        this.render();
+
+        if (options.restore) {
+          this.setCanvasData(forEach(canvasData, function (n, i) {
+            canvasData[i] = n * ratio;
+          }));
+          this.setCropBoxData(forEach(cropBoxData, function (n, i) {
+            cropBoxData[i] = n * ratio;
+          }));
+        }
+      }
+    },
+    dblclick: function dblclick() {
+      if (this.disabled || this.options.dragMode === DRAG_MODE_NONE) {
+        return;
+      }
+
+      this.setDragMode(hasClass(this.dragBox, CLASS_CROP) ? DRAG_MODE_MOVE : DRAG_MODE_CROP);
+    },
+    wheel: function wheel(e) {
+      var _this = this;
+
+      var ratio = Number(this.options.wheelZoomRatio) || 0.1;
+      var delta = 1;
+
+      if (this.disabled) {
+        return;
+      }
+
+      e.preventDefault(); // Limit wheel speed to prevent zoom too fast (#21)
+
+      if (this.wheeling) {
+        return;
+      }
+
+      this.wheeling = true;
+      setTimeout(function () {
+        _this.wheeling = false;
+      }, 50);
+
+      if (e.deltaY) {
+        delta = e.deltaY > 0 ? 1 : -1;
+      } else if (e.wheelDelta) {
+        delta = -e.wheelDelta / 120;
+      } else if (e.detail) {
+        delta = e.detail > 0 ? 1 : -1;
+      }
+
+      this.zoom(-delta * ratio, e);
+    },
+    cropStart: function cropStart(e) {
+      if (this.disabled) {
+        return;
+      }
+
+      var options = this.options,
+          pointers = this.pointers;
+      var action;
+
+      if (e.changedTouches) {
+        // Handle touch event
+        forEach(e.changedTouches, function (touch) {
+          pointers[touch.identifier] = getPointer(touch);
+        });
+      } else {
+        // Handle mouse event and pointer event
+        pointers[e.pointerId || 0] = getPointer(e);
+      }
+
+      if (Object.keys(pointers).length > 1 && options.zoomable && options.zoomOnTouch) {
+        action = ACTION_ZOOM;
+      } else {
+        action = getData(e.target, DATA_ACTION);
+      }
+
+      if (!REGEXP_ACTIONS.test(action)) {
+        return;
+      }
+
+      if (dispatchEvent(this.element, EVENT_CROP_START, {
+        originalEvent: e,
+        action: action
+      }) === false) {
+        return;
+      } // This line is required for preventing page zooming in iOS browsers
+
+
+      e.preventDefault();
+      this.action = action;
+      this.cropping = false;
+
+      if (action === ACTION_CROP) {
+        this.cropping = true;
+        addClass(this.dragBox, CLASS_MODAL);
+      }
+    },
+    cropMove: function cropMove(e) {
+      var action = this.action;
+
+      if (this.disabled || !action) {
+        return;
+      }
+
+      var pointers = this.pointers;
+      e.preventDefault();
+
+      if (dispatchEvent(this.element, EVENT_CROP_MOVE, {
+        originalEvent: e,
+        action: action
+      }) === false) {
+        return;
+      }
+
+      if (e.changedTouches) {
+        forEach(e.changedTouches, function (touch) {
+          // The first parameter should not be undefined (#432)
+          assign(pointers[touch.identifier] || {}, getPointer(touch, true));
+        });
+      } else {
+        assign(pointers[e.pointerId || 0] || {}, getPointer(e, true));
+      }
+
+      this.change(e);
+    },
+    cropEnd: function cropEnd(e) {
+      if (this.disabled) {
+        return;
+      }
+
+      var action = this.action,
+          pointers = this.pointers;
+
+      if (e.changedTouches) {
+        forEach(e.changedTouches, function (touch) {
+          delete pointers[touch.identifier];
+        });
+      } else {
+        delete pointers[e.pointerId || 0];
+      }
+
+      if (!action) {
+        return;
+      }
+
+      e.preventDefault();
+
+      if (!Object.keys(pointers).length) {
+        this.action = '';
+      }
+
+      if (this.cropping) {
+        this.cropping = false;
+        toggleClass(this.dragBox, CLASS_MODAL, this.cropped && this.options.modal);
+      }
+
+      dispatchEvent(this.element, EVENT_CROP_END, {
+        originalEvent: e,
+        action: action
+      });
+    }
+  };
+
+  var change = {
+    change: function change(e) {
+      var options = this.options,
+          canvasData = this.canvasData,
+          containerData = this.containerData,
+          cropBoxData = this.cropBoxData,
+          pointers = this.pointers;
+      var action = this.action;
+      var aspectRatio = options.aspectRatio;
+      var left = cropBoxData.left,
+          top = cropBoxData.top,
+          width = cropBoxData.width,
+          height = cropBoxData.height;
+      var right = left + width;
+      var bottom = top + height;
+      var minLeft = 0;
+      var minTop = 0;
+      var maxWidth = containerData.width;
+      var maxHeight = containerData.height;
+      var renderable = true;
+      var offset; // Locking aspect ratio in "free mode" by holding shift key
+
+      if (!aspectRatio && e.shiftKey) {
+        aspectRatio = width && height ? width / height : 1;
+      }
+
+      if (this.limited) {
+        minLeft = cropBoxData.minLeft;
+        minTop = cropBoxData.minTop;
+        maxWidth = minLeft + Math.min(containerData.width, canvasData.width, canvasData.left + canvasData.width);
+        maxHeight = minTop + Math.min(containerData.height, canvasData.height, canvasData.top + canvasData.height);
+      }
+
+      var pointer = pointers[Object.keys(pointers)[0]];
+      var range = {
+        x: pointer.endX - pointer.startX,
+        y: pointer.endY - pointer.startY
+      };
+
+      var check = function check(side) {
+        switch (side) {
+          case ACTION_EAST:
+            if (right + range.x > maxWidth) {
+              range.x = maxWidth - right;
+            }
+
+            break;
+
+          case ACTION_WEST:
+            if (left + range.x < minLeft) {
+              range.x = minLeft - left;
+            }
+
+            break;
+
+          case ACTION_NORTH:
+            if (top + range.y < minTop) {
+              range.y = minTop - top;
+            }
+
+            break;
+
+          case ACTION_SOUTH:
+            if (bottom + range.y > maxHeight) {
+              range.y = maxHeight - bottom;
+            }
+
+            break;
+
+          default:
+        }
+      };
+
+      switch (action) {
+        // Move crop box
+        case ACTION_ALL:
+          left += range.x;
+          top += range.y;
+          break;
+        // Resize crop box
+
+        case ACTION_EAST:
+          if (range.x >= 0 && (right >= maxWidth || aspectRatio && (top <= minTop || bottom >= maxHeight))) {
+            renderable = false;
+            break;
+          }
+
+          check(ACTION_EAST);
+          width += range.x;
+
+          if (width < 0) {
+            action = ACTION_WEST;
+            width = -width;
+            left -= width;
+          }
+
+          if (aspectRatio) {
+            height = width / aspectRatio;
+            top += (cropBoxData.height - height) / 2;
+          }
+
+          break;
+
+        case ACTION_NORTH:
+          if (range.y <= 0 && (top <= minTop || aspectRatio && (left <= minLeft || right >= maxWidth))) {
+            renderable = false;
+            break;
+          }
+
+          check(ACTION_NORTH);
+          height -= range.y;
+          top += range.y;
+
+          if (height < 0) {
+            action = ACTION_SOUTH;
+            height = -height;
+            top -= height;
+          }
+
+          if (aspectRatio) {
+            width = height * aspectRatio;
+            left += (cropBoxData.width - width) / 2;
+          }
+
+          break;
+
+        case ACTION_WEST:
+          if (range.x <= 0 && (left <= minLeft || aspectRatio && (top <= minTop || bottom >= maxHeight))) {
+            renderable = false;
+            break;
+          }
+
+          check(ACTION_WEST);
+          width -= range.x;
+          left += range.x;
+
+          if (width < 0) {
+            action = ACTION_EAST;
+            width = -width;
+            left -= width;
+          }
+
+          if (aspectRatio) {
+            height = width / aspectRatio;
+            top += (cropBoxData.height - height) / 2;
+          }
+
+          break;
+
+        case ACTION_SOUTH:
+          if (range.y >= 0 && (bottom >= maxHeight || aspectRatio && (left <= minLeft || right >= maxWidth))) {
+            renderable = false;
+            break;
+          }
+
+          check(ACTION_SOUTH);
+          height += range.y;
+
+          if (height < 0) {
+            action = ACTION_NORTH;
+            height = -height;
+            top -= height;
+          }
+
+          if (aspectRatio) {
+            width = height * aspectRatio;
+            left += (cropBoxData.width - width) / 2;
+          }
+
+          break;
+
+        case ACTION_NORTH_EAST:
+          if (aspectRatio) {
+            if (range.y <= 0 && (top <= minTop || right >= maxWidth)) {
+              renderable = false;
+              break;
+            }
+
+            check(ACTION_NORTH);
+            height -= range.y;
+            top += range.y;
+            width = height * aspectRatio;
+          } else {
+            check(ACTION_NORTH);
+            check(ACTION_EAST);
+
+            if (range.x >= 0) {
+              if (right < maxWidth) {
+                width += range.x;
+              } else if (range.y <= 0 && top <= minTop) {
+                renderable = false;
+              }
+            } else {
+              width += range.x;
+            }
+
+            if (range.y <= 0) {
+              if (top > minTop) {
+                height -= range.y;
+                top += range.y;
+              }
+            } else {
+              height -= range.y;
+              top += range.y;
+            }
+          }
+
+          if (width < 0 && height < 0) {
+            action = ACTION_SOUTH_WEST;
+            height = -height;
+            width = -width;
+            top -= height;
+            left -= width;
+          } else if (width < 0) {
+            action = ACTION_NORTH_WEST;
+            width = -width;
+            left -= width;
+          } else if (height < 0) {
+            action = ACTION_SOUTH_EAST;
+            height = -height;
+            top -= height;
+          }
+
+          break;
+
+        case ACTION_NORTH_WEST:
+          if (aspectRatio) {
+            if (range.y <= 0 && (top <= minTop || left <= minLeft)) {
+              renderable = false;
+              break;
+            }
+
+            check(ACTION_NORTH);
+            height -= range.y;
+            top += range.y;
+            width = height * aspectRatio;
+            left += cropBoxData.width - width;
+          } else {
+            check(ACTION_NORTH);
+            check(ACTION_WEST);
+
+            if (range.x <= 0) {
+              if (left > minLeft) {
+                width -= range.x;
+                left += range.x;
+              } else if (range.y <= 0 && top <= minTop) {
+                renderable = false;
+              }
+            } else {
+              width -= range.x;
+              left += range.x;
+            }
+
+            if (range.y <= 0) {
+              if (top > minTop) {
+                height -= range.y;
+                top += range.y;
+              }
+            } else {
+              height -= range.y;
+              top += range.y;
+            }
+          }
+
+          if (width < 0 && height < 0) {
+            action = ACTION_SOUTH_EAST;
+            height = -height;
+            width = -width;
+            top -= height;
+            left -= width;
+          } else if (width < 0) {
+            action = ACTION_NORTH_EAST;
+            width = -width;
+            left -= width;
+          } else if (height < 0) {
+            action = ACTION_SOUTH_WEST;
+            height = -height;
+            top -= height;
+          }
+
+          break;
+
+        case ACTION_SOUTH_WEST:
+          if (aspectRatio) {
+            if (range.x <= 0 && (left <= minLeft || bottom >= maxHeight)) {
+              renderable = false;
+              break;
+            }
+
+            check(ACTION_WEST);
+            width -= range.x;
+            left += range.x;
+            height = width / aspectRatio;
+          } else {
+            check(ACTION_SOUTH);
+            check(ACTION_WEST);
+
+            if (range.x <= 0) {
+              if (left > minLeft) {
+                width -= range.x;
+                left += range.x;
+              } else if (range.y >= 0 && bottom >= maxHeight) {
+                renderable = false;
+              }
+            } else {
+              width -= range.x;
+              left += range.x;
+            }
+
+            if (range.y >= 0) {
+              if (bottom < maxHeight) {
+                height += range.y;
+              }
+            } else {
+              height += range.y;
+            }
+          }
+
+          if (width < 0 && height < 0) {
+            action = ACTION_NORTH_EAST;
+            height = -height;
+            width = -width;
+            top -= height;
+            left -= width;
+          } else if (width < 0) {
+            action = ACTION_SOUTH_EAST;
+            width = -width;
+            left -= width;
+          } else if (height < 0) {
+            action = ACTION_NORTH_WEST;
+            height = -height;
+            top -= height;
+          }
+
+          break;
+
+        case ACTION_SOUTH_EAST:
+          if (aspectRatio) {
+            if (range.x >= 0 && (right >= maxWidth || bottom >= maxHeight)) {
+              renderable = false;
+              break;
+            }
+
+            check(ACTION_EAST);
+            width += range.x;
+            height = width / aspectRatio;
+          } else {
+            check(ACTION_SOUTH);
+            check(ACTION_EAST);
+
+            if (range.x >= 0) {
+              if (right < maxWidth) {
+                width += range.x;
+              } else if (range.y >= 0 && bottom >= maxHeight) {
+                renderable = false;
+              }
+            } else {
+              width += range.x;
+            }
+
+            if (range.y >= 0) {
+              if (bottom < maxHeight) {
+                height += range.y;
+              }
+            } else {
+              height += range.y;
+            }
+          }
+
+          if (width < 0 && height < 0) {
+            action = ACTION_NORTH_WEST;
+            height = -height;
+            width = -width;
+            top -= height;
+            left -= width;
+          } else if (width < 0) {
+            action = ACTION_SOUTH_WEST;
+            width = -width;
+            left -= width;
+          } else if (height < 0) {
+            action = ACTION_NORTH_EAST;
+            height = -height;
+            top -= height;
+          }
+
+          break;
+        // Move canvas
+
+        case ACTION_MOVE:
+          this.move(range.x, range.y);
+          renderable = false;
+          break;
+        // Zoom canvas
+
+        case ACTION_ZOOM:
+          this.zoom(getMaxZoomRatio(pointers), e);
+          renderable = false;
+          break;
+        // Create crop box
+
+        case ACTION_CROP:
+          if (!range.x || !range.y) {
+            renderable = false;
+            break;
+          }
+
+          offset = getOffset(this.cropper);
+          left = pointer.startX - offset.left;
+          top = pointer.startY - offset.top;
+          width = cropBoxData.minWidth;
+          height = cropBoxData.minHeight;
+
+          if (range.x > 0) {
+            action = range.y > 0 ? ACTION_SOUTH_EAST : ACTION_NORTH_EAST;
+          } else if (range.x < 0) {
+            left -= width;
+            action = range.y > 0 ? ACTION_SOUTH_WEST : ACTION_NORTH_WEST;
+          }
+
+          if (range.y < 0) {
+            top -= height;
+          } // Show the crop box if is hidden
+
+
+          if (!this.cropped) {
+            removeClass(this.cropBox, CLASS_HIDDEN);
+            this.cropped = true;
+
+            if (this.limited) {
+              this.limitCropBox(true, true);
+            }
+          }
+
+          break;
+
+        default:
+      }
+
+      if (renderable) {
+        cropBoxData.width = width;
+        cropBoxData.height = height;
+        cropBoxData.left = left;
+        cropBoxData.top = top;
+        this.action = action;
+        this.renderCropBox();
+      } // Override
+
+
+      forEach(pointers, function (p) {
+        p.startX = p.endX;
+        p.startY = p.endY;
+      });
+    }
+  };
+
+  var methods = {
+    // Show the crop box manually
+    crop: function crop() {
+      if (this.ready && !this.cropped && !this.disabled) {
+        this.cropped = true;
+        this.limitCropBox(true, true);
+
+        if (this.options.modal) {
+          addClass(this.dragBox, CLASS_MODAL);
+        }
+
+        removeClass(this.cropBox, CLASS_HIDDEN);
+        this.setCropBoxData(this.initialCropBoxData);
+      }
+
+      return this;
+    },
+    // Reset the image and crop box to their initial states
+    reset: function reset() {
+      if (this.ready && !this.disabled) {
+        this.imageData = assign({}, this.initialImageData);
+        this.canvasData = assign({}, this.initialCanvasData);
+        this.cropBoxData = assign({}, this.initialCropBoxData);
+        this.renderCanvas();
+
+        if (this.cropped) {
+          this.renderCropBox();
+        }
+      }
+
+      return this;
+    },
+    // Clear the crop box
+    clear: function clear() {
+      if (this.cropped && !this.disabled) {
+        assign(this.cropBoxData, {
+          left: 0,
+          top: 0,
+          width: 0,
+          height: 0
+        });
+        this.cropped = false;
+        this.renderCropBox();
+        this.limitCanvas(true, true); // Render canvas after crop box rendered
+
+        this.renderCanvas();
+        removeClass(this.dragBox, CLASS_MODAL);
+        addClass(this.cropBox, CLASS_HIDDEN);
+      }
+
+      return this;
+    },
+
+    /**
+     * Replace the image's src and rebuild the cropper
+     * @param {string} url - The new URL.
+     * @param {boolean} [hasSameSize] - Indicate if the new image has the same size as the old one.
+     * @returns {Cropper} this
+     */
+    replace: function replace(url) {
+      var hasSameSize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (!this.disabled && url) {
+        if (this.isImg) {
+          this.element.src = url;
+        }
+
+        if (hasSameSize) {
+          this.url = url;
+          this.image.src = url;
+
+          if (this.ready) {
+            this.viewBoxImage.src = url;
+            forEach(this.previews, function (element) {
+              element.getElementsByTagName('img')[0].src = url;
+            });
+          }
+        } else {
+          if (this.isImg) {
+            this.replaced = true;
+          }
+
+          this.options.data = null;
+          this.uncreate();
+          this.load(url);
+        }
+      }
+
+      return this;
+    },
+    // Enable (unfreeze) the cropper
+    enable: function enable() {
+      if (this.ready && this.disabled) {
+        this.disabled = false;
+        removeClass(this.cropper, CLASS_DISABLED);
+      }
+
+      return this;
+    },
+    // Disable (freeze) the cropper
+    disable: function disable() {
+      if (this.ready && !this.disabled) {
+        this.disabled = true;
+        addClass(this.cropper, CLASS_DISABLED);
+      }
+
+      return this;
+    },
+
+    /**
+     * Destroy the cropper and remove the instance from the image
+     * @returns {Cropper} this
+     */
+    destroy: function destroy() {
+      var element = this.element;
+
+      if (!element[NAMESPACE]) {
+        return this;
+      }
+
+      element[NAMESPACE] = undefined;
+
+      if (this.isImg && this.replaced) {
+        element.src = this.originalUrl;
+      }
+
+      this.uncreate();
+      return this;
+    },
+
+    /**
+     * Move the canvas with relative offsets
+     * @param {number} offsetX - The relative offset distance on the x-axis.
+     * @param {number} [offsetY=offsetX] - The relative offset distance on the y-axis.
+     * @returns {Cropper} this
+     */
+    move: function move(offsetX) {
+      var offsetY = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : offsetX;
+      var _this$canvasData = this.canvasData,
+          left = _this$canvasData.left,
+          top = _this$canvasData.top;
+      return this.moveTo(isUndefined(offsetX) ? offsetX : left + Number(offsetX), isUndefined(offsetY) ? offsetY : top + Number(offsetY));
+    },
+
+    /**
+     * Move the canvas to an absolute point
+     * @param {number} x - The x-axis coordinate.
+     * @param {number} [y=x] - The y-axis coordinate.
+     * @returns {Cropper} this
+     */
+    moveTo: function moveTo(x) {
+      var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : x;
+      var canvasData = this.canvasData;
+      var changed = false;
+      x = Number(x);
+      y = Number(y);
+
+      if (this.ready && !this.disabled && this.options.movable) {
+        if (isNumber(x)) {
+          canvasData.left = x;
+          changed = true;
+        }
+
+        if (isNumber(y)) {
+          canvasData.top = y;
+          changed = true;
+        }
+
+        if (changed) {
+          this.renderCanvas(true);
+        }
+      }
+
+      return this;
+    },
+
+    /**
+     * Zoom the canvas with a relative ratio
+     * @param {number} ratio - The target ratio.
+     * @param {Event} _originalEvent - The original event if any.
+     * @returns {Cropper} this
+     */
+    zoom: function zoom(ratio, _originalEvent) {
+      var canvasData = this.canvasData;
+      ratio = Number(ratio);
+
+      if (ratio < 0) {
+        ratio = 1 / (1 - ratio);
+      } else {
+        ratio = 1 + ratio;
+      }
+
+      return this.zoomTo(canvasData.width * ratio / canvasData.naturalWidth, null, _originalEvent);
+    },
+
+    /**
+     * Zoom the canvas to an absolute ratio
+     * @param {number} ratio - The target ratio.
+     * @param {Object} pivot - The zoom pivot point coordinate.
+     * @param {Event} _originalEvent - The original event if any.
+     * @returns {Cropper} this
+     */
+    zoomTo: function zoomTo(ratio, pivot, _originalEvent) {
+      var options = this.options,
+          canvasData = this.canvasData;
+      var width = canvasData.width,
+          height = canvasData.height,
+          naturalWidth = canvasData.naturalWidth,
+          naturalHeight = canvasData.naturalHeight;
+      ratio = Number(ratio);
+
+      if (ratio >= 0 && this.ready && !this.disabled && options.zoomable) {
+        var newWidth = naturalWidth * ratio;
+        var newHeight = naturalHeight * ratio;
+
+        if (dispatchEvent(this.element, EVENT_ZOOM, {
+          ratio: ratio,
+          oldRatio: width / naturalWidth,
+          originalEvent: _originalEvent
+        }) === false) {
+          return this;
+        }
+
+        if (_originalEvent) {
+          var pointers = this.pointers;
+          var offset = getOffset(this.cropper);
+          var center = pointers && Object.keys(pointers).length ? getPointersCenter(pointers) : {
+            pageX: _originalEvent.pageX,
+            pageY: _originalEvent.pageY
+          }; // Zoom from the triggering point of the event
+
+          canvasData.left -= (newWidth - width) * ((center.pageX - offset.left - canvasData.left) / width);
+          canvasData.top -= (newHeight - height) * ((center.pageY - offset.top - canvasData.top) / height);
+        } else if (isPlainObject(pivot) && isNumber(pivot.x) && isNumber(pivot.y)) {
+          canvasData.left -= (newWidth - width) * ((pivot.x - canvasData.left) / width);
+          canvasData.top -= (newHeight - height) * ((pivot.y - canvasData.top) / height);
+        } else {
+          // Zoom from the center of the canvas
+          canvasData.left -= (newWidth - width) / 2;
+          canvasData.top -= (newHeight - height) / 2;
+        }
+
+        canvasData.width = newWidth;
+        canvasData.height = newHeight;
+        this.renderCanvas(true);
+      }
+
+      return this;
+    },
+
+    /**
+     * Rotate the canvas with a relative degree
+     * @param {number} degree - The rotate degree.
+     * @returns {Cropper} this
+     */
+    rotate: function rotate(degree) {
+      return this.rotateTo((this.imageData.rotate || 0) + Number(degree));
+    },
+
+    /**
+     * Rotate the canvas to an absolute degree
+     * @param {number} degree - The rotate degree.
+     * @returns {Cropper} this
+     */
+    rotateTo: function rotateTo(degree) {
+      degree = Number(degree);
+
+      if (isNumber(degree) && this.ready && !this.disabled && this.options.rotatable) {
+        this.imageData.rotate = degree % 360;
+        this.renderCanvas(true, true);
+      }
+
+      return this;
+    },
+
+    /**
+     * Scale the image on the x-axis.
+     * @param {number} scaleX - The scale ratio on the x-axis.
+     * @returns {Cropper} this
+     */
+    scaleX: function scaleX(_scaleX) {
+      var scaleY = this.imageData.scaleY;
+      return this.scale(_scaleX, isNumber(scaleY) ? scaleY : 1);
+    },
+
+    /**
+     * Scale the image on the y-axis.
+     * @param {number} scaleY - The scale ratio on the y-axis.
+     * @returns {Cropper} this
+     */
+    scaleY: function scaleY(_scaleY) {
+      var scaleX = this.imageData.scaleX;
+      return this.scale(isNumber(scaleX) ? scaleX : 1, _scaleY);
+    },
+
+    /**
+     * Scale the image
+     * @param {number} scaleX - The scale ratio on the x-axis.
+     * @param {number} [scaleY=scaleX] - The scale ratio on the y-axis.
+     * @returns {Cropper} this
+     */
+    scale: function scale(scaleX) {
+      var scaleY = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : scaleX;
+      var imageData = this.imageData;
+      var transformed = false;
+      scaleX = Number(scaleX);
+      scaleY = Number(scaleY);
+
+      if (this.ready && !this.disabled && this.options.scalable) {
+        if (isNumber(scaleX)) {
+          imageData.scaleX = scaleX;
+          transformed = true;
+        }
+
+        if (isNumber(scaleY)) {
+          imageData.scaleY = scaleY;
+          transformed = true;
+        }
+
+        if (transformed) {
+          this.renderCanvas(true, true);
+        }
+      }
+
+      return this;
+    },
+
+    /**
+     * Get the cropped area position and size data (base on the original image)
+     * @param {boolean} [rounded=false] - Indicate if round the data values or not.
+     * @returns {Object} The result cropped data.
+     */
+    getData: function getData$$1() {
+      var rounded = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      var options = this.options,
+          imageData = this.imageData,
+          canvasData = this.canvasData,
+          cropBoxData = this.cropBoxData;
+      var data;
+
+      if (this.ready && this.cropped) {
+        data = {
+          x: cropBoxData.left - canvasData.left,
+          y: cropBoxData.top - canvasData.top,
+          width: cropBoxData.width,
+          height: cropBoxData.height
+        };
+        var ratio = imageData.width / imageData.naturalWidth;
+        forEach(data, function (n, i) {
+          data[i] = n / ratio;
+        });
+
+        if (rounded) {
+          // In case rounding off leads to extra 1px in right or bottom border
+          // we should round the top-left corner and the dimension (#343).
+          var bottom = Math.round(data.y + data.height);
+          var right = Math.round(data.x + data.width);
+          data.x = Math.round(data.x);
+          data.y = Math.round(data.y);
+          data.width = right - data.x;
+          data.height = bottom - data.y;
+        }
+      } else {
+        data = {
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0
+        };
+      }
+
+      if (options.rotatable) {
+        data.rotate = imageData.rotate || 0;
+      }
+
+      if (options.scalable) {
+        data.scaleX = imageData.scaleX || 1;
+        data.scaleY = imageData.scaleY || 1;
+      }
+
+      return data;
+    },
+
+    /**
+     * Set the cropped area position and size with new data
+     * @param {Object} data - The new data.
+     * @returns {Cropper} this
+     */
+    setData: function setData$$1(data) {
+      var options = this.options,
+          imageData = this.imageData,
+          canvasData = this.canvasData;
+      var cropBoxData = {};
+
+      if (this.ready && !this.disabled && isPlainObject(data)) {
+        var transformed = false;
+
+        if (options.rotatable) {
+          if (isNumber(data.rotate) && data.rotate !== imageData.rotate) {
+            imageData.rotate = data.rotate;
+            transformed = true;
+          }
+        }
+
+        if (options.scalable) {
+          if (isNumber(data.scaleX) && data.scaleX !== imageData.scaleX) {
+            imageData.scaleX = data.scaleX;
+            transformed = true;
+          }
+
+          if (isNumber(data.scaleY) && data.scaleY !== imageData.scaleY) {
+            imageData.scaleY = data.scaleY;
+            transformed = true;
+          }
+        }
+
+        if (transformed) {
+          this.renderCanvas(true, true);
+        }
+
+        var ratio = imageData.width / imageData.naturalWidth;
+
+        if (isNumber(data.x)) {
+          cropBoxData.left = data.x * ratio + canvasData.left;
+        }
+
+        if (isNumber(data.y)) {
+          cropBoxData.top = data.y * ratio + canvasData.top;
+        }
+
+        if (isNumber(data.width)) {
+          cropBoxData.width = data.width * ratio;
+        }
+
+        if (isNumber(data.height)) {
+          cropBoxData.height = data.height * ratio;
+        }
+
+        this.setCropBoxData(cropBoxData);
+      }
+
+      return this;
+    },
+
+    /**
+     * Get the container size data.
+     * @returns {Object} The result container data.
+     */
+    getContainerData: function getContainerData() {
+      return this.ready ? assign({}, this.containerData) : {};
+    },
+
+    /**
+     * Get the image position and size data.
+     * @returns {Object} The result image data.
+     */
+    getImageData: function getImageData() {
+      return this.sized ? assign({}, this.imageData) : {};
+    },
+
+    /**
+     * Get the canvas position and size data.
+     * @returns {Object} The result canvas data.
+     */
+    getCanvasData: function getCanvasData() {
+      var canvasData = this.canvasData;
+      var data = {};
+
+      if (this.ready) {
+        forEach(['left', 'top', 'width', 'height', 'naturalWidth', 'naturalHeight'], function (n) {
+          data[n] = canvasData[n];
+        });
+      }
+
+      return data;
+    },
+
+    /**
+     * Set the canvas position and size with new data.
+     * @param {Object} data - The new canvas data.
+     * @returns {Cropper} this
+     */
+    setCanvasData: function setCanvasData(data) {
+      var canvasData = this.canvasData;
+      var aspectRatio = canvasData.aspectRatio;
+
+      if (this.ready && !this.disabled && isPlainObject(data)) {
+        if (isNumber(data.left)) {
+          canvasData.left = data.left;
+        }
+
+        if (isNumber(data.top)) {
+          canvasData.top = data.top;
+        }
+
+        if (isNumber(data.width)) {
+          canvasData.width = data.width;
+          canvasData.height = data.width / aspectRatio;
+        } else if (isNumber(data.height)) {
+          canvasData.height = data.height;
+          canvasData.width = data.height * aspectRatio;
+        }
+
+        this.renderCanvas(true);
+      }
+
+      return this;
+    },
+
+    /**
+     * Get the crop box position and size data.
+     * @returns {Object} The result crop box data.
+     */
+    getCropBoxData: function getCropBoxData() {
+      var cropBoxData = this.cropBoxData;
+      var data;
+
+      if (this.ready && this.cropped) {
+        data = {
+          left: cropBoxData.left,
+          top: cropBoxData.top,
+          width: cropBoxData.width,
+          height: cropBoxData.height
+        };
+      }
+
+      return data || {};
+    },
+
+    /**
+     * Set the crop box position and size with new data.
+     * @param {Object} data - The new crop box data.
+     * @returns {Cropper} this
+     */
+    setCropBoxData: function setCropBoxData(data) {
+      var cropBoxData = this.cropBoxData;
+      var aspectRatio = this.options.aspectRatio;
+      var widthChanged;
+      var heightChanged;
+
+      if (this.ready && this.cropped && !this.disabled && isPlainObject(data)) {
+        if (isNumber(data.left)) {
+          cropBoxData.left = data.left;
+        }
+
+        if (isNumber(data.top)) {
+          cropBoxData.top = data.top;
+        }
+
+        if (isNumber(data.width) && data.width !== cropBoxData.width) {
+          widthChanged = true;
+          cropBoxData.width = data.width;
+        }
+
+        if (isNumber(data.height) && data.height !== cropBoxData.height) {
+          heightChanged = true;
+          cropBoxData.height = data.height;
+        }
+
+        if (aspectRatio) {
+          if (widthChanged) {
+            cropBoxData.height = cropBoxData.width / aspectRatio;
+          } else if (heightChanged) {
+            cropBoxData.width = cropBoxData.height * aspectRatio;
+          }
+        }
+
+        this.renderCropBox();
+      }
+
+      return this;
+    },
+
+    /**
+     * Get a canvas drawn the cropped image.
+     * @param {Object} [options={}] - The config options.
+     * @returns {HTMLCanvasElement} - The result canvas.
+     */
+    getCroppedCanvas: function getCroppedCanvas() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      if (!this.ready || !window.HTMLCanvasElement) {
+        return null;
+      }
+
+      var canvasData = this.canvasData;
+      var source = getSourceCanvas(this.image, this.imageData, canvasData, options); // Returns the source canvas if it is not cropped.
+
+      if (!this.cropped) {
+        return source;
+      }
+
+      var _this$getData = this.getData(),
+          initialX = _this$getData.x,
+          initialY = _this$getData.y,
+          initialWidth = _this$getData.width,
+          initialHeight = _this$getData.height;
+
+      var ratio = source.width / Math.floor(canvasData.naturalWidth);
+
+      if (ratio !== 1) {
+        initialX *= ratio;
+        initialY *= ratio;
+        initialWidth *= ratio;
+        initialHeight *= ratio;
+      }
+
+      var aspectRatio = initialWidth / initialHeight;
+      var maxSizes = getAdjustedSizes({
+        aspectRatio: aspectRatio,
+        width: options.maxWidth || Infinity,
+        height: options.maxHeight || Infinity
+      });
+      var minSizes = getAdjustedSizes({
+        aspectRatio: aspectRatio,
+        width: options.minWidth || 0,
+        height: options.minHeight || 0
+      }, 'cover');
+
+      var _getAdjustedSizes = getAdjustedSizes({
+        aspectRatio: aspectRatio,
+        width: options.width || (ratio !== 1 ? source.width : initialWidth),
+        height: options.height || (ratio !== 1 ? source.height : initialHeight)
+      }),
+          width = _getAdjustedSizes.width,
+          height = _getAdjustedSizes.height;
+
+      width = Math.min(maxSizes.width, Math.max(minSizes.width, width));
+      height = Math.min(maxSizes.height, Math.max(minSizes.height, height));
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      canvas.width = normalizeDecimalNumber(width);
+      canvas.height = normalizeDecimalNumber(height);
+      context.fillStyle = options.fillColor || 'transparent';
+      context.fillRect(0, 0, width, height);
+      var _options$imageSmoothi = options.imageSmoothingEnabled,
+          imageSmoothingEnabled = _options$imageSmoothi === void 0 ? true : _options$imageSmoothi,
+          imageSmoothingQuality = options.imageSmoothingQuality;
+      context.imageSmoothingEnabled = imageSmoothingEnabled;
+
+      if (imageSmoothingQuality) {
+        context.imageSmoothingQuality = imageSmoothingQuality;
+      } // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D.drawImage
+
+
+      var sourceWidth = source.width;
+      var sourceHeight = source.height; // Source canvas parameters
+
+      var srcX = initialX;
+      var srcY = initialY;
+      var srcWidth;
+      var srcHeight; // Destination canvas parameters
+
+      var dstX;
+      var dstY;
+      var dstWidth;
+      var dstHeight;
+
+      if (srcX <= -initialWidth || srcX > sourceWidth) {
+        srcX = 0;
+        srcWidth = 0;
+        dstX = 0;
+        dstWidth = 0;
+      } else if (srcX <= 0) {
+        dstX = -srcX;
+        srcX = 0;
+        srcWidth = Math.min(sourceWidth, initialWidth + srcX);
+        dstWidth = srcWidth;
+      } else if (srcX <= sourceWidth) {
+        dstX = 0;
+        srcWidth = Math.min(initialWidth, sourceWidth - srcX);
+        dstWidth = srcWidth;
+      }
+
+      if (srcWidth <= 0 || srcY <= -initialHeight || srcY > sourceHeight) {
+        srcY = 0;
+        srcHeight = 0;
+        dstY = 0;
+        dstHeight = 0;
+      } else if (srcY <= 0) {
+        dstY = -srcY;
+        srcY = 0;
+        srcHeight = Math.min(sourceHeight, initialHeight + srcY);
+        dstHeight = srcHeight;
+      } else if (srcY <= sourceHeight) {
+        dstY = 0;
+        srcHeight = Math.min(initialHeight, sourceHeight - srcY);
+        dstHeight = srcHeight;
+      }
+
+      var params = [srcX, srcY, srcWidth, srcHeight]; // Avoid "IndexSizeError"
+
+      if (dstWidth > 0 && dstHeight > 0) {
+        var scale = width / initialWidth;
+        params.push(dstX * scale, dstY * scale, dstWidth * scale, dstHeight * scale);
+      } // All the numerical parameters should be integer for `drawImage`
+      // https://github.com/fengyuanchen/cropper/issues/476
+
+
+      context.drawImage.apply(context, [source].concat(_toConsumableArray(params.map(function (param) {
+        return Math.floor(normalizeDecimalNumber(param));
+      }))));
+      return canvas;
+    },
+
+    /**
+     * Change the aspect ratio of the crop box.
+     * @param {number} aspectRatio - The new aspect ratio.
+     * @returns {Cropper} this
+     */
+    setAspectRatio: function setAspectRatio(aspectRatio) {
+      var options = this.options;
+
+      if (!this.disabled && !isUndefined(aspectRatio)) {
+        // 0 -> NaN
+        options.aspectRatio = Math.max(0, aspectRatio) || NaN;
+
+        if (this.ready) {
+          this.initCropBox();
+
+          if (this.cropped) {
+            this.renderCropBox();
+          }
+        }
+      }
+
+      return this;
+    },
+
+    /**
+     * Change the drag mode.
+     * @param {string} mode - The new drag mode.
+     * @returns {Cropper} this
+     */
+    setDragMode: function setDragMode(mode) {
+      var options = this.options,
+          dragBox = this.dragBox,
+          face = this.face;
+
+      if (this.ready && !this.disabled) {
+        var croppable = mode === DRAG_MODE_CROP;
+        var movable = options.movable && mode === DRAG_MODE_MOVE;
+        mode = croppable || movable ? mode : DRAG_MODE_NONE;
+        options.dragMode = mode;
+        setData(dragBox, DATA_ACTION, mode);
+        toggleClass(dragBox, CLASS_CROP, croppable);
+        toggleClass(dragBox, CLASS_MOVE, movable);
+
+        if (!options.cropBoxMovable) {
+          // Sync drag mode to crop box when it is not movable
+          setData(face, DATA_ACTION, mode);
+          toggleClass(face, CLASS_CROP, croppable);
+          toggleClass(face, CLASS_MOVE, movable);
+        }
+      }
+
+      return this;
+    }
+  };
+
+  var AnotherCropper = WINDOW.Cropper;
+
+  var Cropper =
+  /*#__PURE__*/
+  function () {
+    /**
+     * Create a new Cropper.
+     * @param {Element} element - The target element for cropping.
+     * @param {Object} [options={}] - The configuration options.
+     */
+    function Cropper(element) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      _classCallCheck(this, Cropper);
+
+      if (!element || !REGEXP_TAG_NAME.test(element.tagName)) {
+        throw new Error('The first argument is required and must be an <img> or <canvas> element.');
+      }
+
+      this.element = element;
+      this.options = assign({}, DEFAULTS, isPlainObject(options) && options);
+      this.cropped = false;
+      this.disabled = false;
+      this.pointers = {};
+      this.ready = false;
+      this.reloading = false;
+      this.replaced = false;
+      this.sized = false;
+      this.sizing = false;
+      this.init();
+    }
+
+    _createClass(Cropper, [{
+      key: "init",
+      value: function init() {
+        var element = this.element;
+        var tagName = element.tagName.toLowerCase();
+        var url;
+
+        if (element[NAMESPACE]) {
+          return;
+        }
+
+        element[NAMESPACE] = this;
+
+        if (tagName === 'img') {
+          this.isImg = true; // e.g.: "img/picture.jpg"
+
+          url = element.getAttribute('src') || '';
+          this.originalUrl = url; // Stop when it's a blank image
+
+          if (!url) {
+            return;
+          } // e.g.: "http://example.com/img/picture.jpg"
+
+
+          url = element.src;
+        } else if (tagName === 'canvas' && window.HTMLCanvasElement) {
+          url = element.toDataURL();
+        }
+
+        this.load(url);
+      }
+    }, {
+      key: "load",
+      value: function load(url) {
+        var _this = this;
+
+        if (!url) {
+          return;
+        }
+
+        this.url = url;
+        this.imageData = {};
+        var element = this.element,
+            options = this.options;
+
+        if (!options.rotatable && !options.scalable) {
+          options.checkOrientation = false;
+        } // Only IE10+ supports Typed Arrays
+
+
+        if (!options.checkOrientation || !window.ArrayBuffer) {
+          this.clone();
+          return;
+        } // XMLHttpRequest disallows to open a Data URL in some browsers like IE11 and Safari
+
+
+        if (REGEXP_DATA_URL.test(url)) {
+          if (REGEXP_DATA_URL_JPEG.test(url)) {
+            this.read(dataURLToArrayBuffer(url));
+          } else {
+            this.clone();
+          }
+
+          return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        var clone = this.clone.bind(this);
+        this.reloading = true;
+        this.xhr = xhr;
+        xhr.ontimeout = clone;
+        xhr.onabort = clone;
+        xhr.onerror = clone;
+
+        xhr.onprogress = function () {
+          if (xhr.getResponseHeader('content-type') !== MIME_TYPE_JPEG) {
+            xhr.abort();
+          }
+        };
+
+        xhr.onload = function () {
+          _this.read(xhr.response);
+        };
+
+        xhr.onloadend = function () {
+          _this.reloading = false;
+          _this.xhr = null;
+        }; // Bust cache when there is a "crossOrigin" property to avoid browser cache error
+
+
+        if (options.checkCrossOrigin && isCrossOriginURL(url) && element.crossOrigin) {
+          url = addTimestamp(url);
+        }
+
+        xhr.open('GET', url);
+        xhr.responseType = 'arraybuffer';
+        xhr.withCredentials = element.crossOrigin === 'use-credentials';
+        xhr.send();
+      }
+    }, {
+      key: "read",
+      value: function read(arrayBuffer) {
+        var options = this.options,
+            imageData = this.imageData;
+        var orientation = resetAndGetOrientation(arrayBuffer);
+        var rotate = 0;
+        var scaleX = 1;
+        var scaleY = 1;
+
+        if (orientation > 1) {
+          // Generate a new Data URL with the orientation value set to 1
+          // as some iOS browsers will render image with its orientation
+          this.url = arrayBufferToDataURL(arrayBuffer, MIME_TYPE_JPEG);
+
+          var _parseOrientation = parseOrientation(orientation);
+
+          rotate = _parseOrientation.rotate;
+          scaleX = _parseOrientation.scaleX;
+          scaleY = _parseOrientation.scaleY;
+        }
+
+        if (options.rotatable) {
+          imageData.rotate = rotate;
+        }
+
+        if (options.scalable) {
+          imageData.scaleX = scaleX;
+          imageData.scaleY = scaleY;
+        }
+
+        this.clone();
+      }
+    }, {
+      key: "clone",
+      value: function clone() {
+        var element = this.element,
+            url = this.url;
+        var crossOrigin;
+        var crossOriginUrl;
+
+        if (this.options.checkCrossOrigin && isCrossOriginURL(url)) {
+          crossOrigin = element.crossOrigin;
+
+          if (crossOrigin) {
+            crossOriginUrl = url;
+          } else {
+            crossOrigin = 'anonymous'; // Bust cache when there is not a "crossOrigin" property
+
+            crossOriginUrl = addTimestamp(url);
+          }
+        }
+
+        this.crossOrigin = crossOrigin;
+        this.crossOriginUrl = crossOriginUrl;
+        var image = document.createElement('img');
+
+        if (crossOrigin) {
+          image.crossOrigin = crossOrigin;
+        }
+
+        image.src = crossOriginUrl || url;
+        this.image = image;
+        image.onload = this.start.bind(this);
+        image.onerror = this.stop.bind(this);
+        addClass(image, CLASS_HIDE);
+        element.parentNode.insertBefore(image, element.nextSibling);
+      }
+    }, {
+      key: "start",
+      value: function start() {
+        var _this2 = this;
+
+        var image = this.isImg ? this.element : this.image;
+        image.onload = null;
+        image.onerror = null;
+        this.sizing = true;
+        var IS_SAFARI = WINDOW.navigator && /(Macintosh|iPhone|iPod|iPad).*AppleWebKit/i.test(WINDOW.navigator.userAgent);
+
+        var done = function done(naturalWidth, naturalHeight) {
+          assign(_this2.imageData, {
+            naturalWidth: naturalWidth,
+            naturalHeight: naturalHeight,
+            aspectRatio: naturalWidth / naturalHeight
+          });
+          _this2.sizing = false;
+          _this2.sized = true;
+
+          _this2.build();
+        }; // Modern browsers (except Safari)
+
+
+        if (image.naturalWidth && !IS_SAFARI) {
+          done(image.naturalWidth, image.naturalHeight);
+          return;
+        }
+
+        var sizingImage = document.createElement('img');
+        var body = document.body || document.documentElement;
+        this.sizingImage = sizingImage;
+
+        sizingImage.onload = function () {
+          done(sizingImage.width, sizingImage.height);
+
+          if (!IS_SAFARI) {
+            body.removeChild(sizingImage);
+          }
+        };
+
+        sizingImage.src = image.src; // iOS Safari will convert the image automatically
+        // with its orientation once append it into DOM (#279)
+
+        if (!IS_SAFARI) {
+          sizingImage.style.cssText = 'left:0;' + 'max-height:none!important;' + 'max-width:none!important;' + 'min-height:0!important;' + 'min-width:0!important;' + 'opacity:0;' + 'position:absolute;' + 'top:0;' + 'z-index:-1;';
+          body.appendChild(sizingImage);
+        }
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        var image = this.image;
+        image.onload = null;
+        image.onerror = null;
+        image.parentNode.removeChild(image);
+        this.image = null;
+      }
+    }, {
+      key: "build",
+      value: function build() {
+        if (!this.sized || this.ready) {
+          return;
+        }
+
+        var element = this.element,
+            options = this.options,
+            image = this.image; // Create cropper elements
+
+        var container = element.parentNode;
+        var template = document.createElement('div');
+        template.innerHTML = TEMPLATE;
+        var cropper = template.querySelector(".".concat(NAMESPACE, "-container"));
+        var canvas = cropper.querySelector(".".concat(NAMESPACE, "-canvas"));
+        var dragBox = cropper.querySelector(".".concat(NAMESPACE, "-drag-box"));
+        var cropBox = cropper.querySelector(".".concat(NAMESPACE, "-crop-box"));
+        var face = cropBox.querySelector(".".concat(NAMESPACE, "-face"));
+        this.container = container;
+        this.cropper = cropper;
+        this.canvas = canvas;
+        this.dragBox = dragBox;
+        this.cropBox = cropBox;
+        this.viewBox = cropper.querySelector(".".concat(NAMESPACE, "-view-box"));
+        this.face = face;
+        canvas.appendChild(image); // Hide the original image
+
+        addClass(element, CLASS_HIDDEN); // Inserts the cropper after to the current image
+
+        container.insertBefore(cropper, element.nextSibling); // Show the image if is hidden
+
+        if (!this.isImg) {
+          removeClass(image, CLASS_HIDE);
+        }
+
+        this.initPreview();
+        this.bind();
+        options.initialAspectRatio = Math.max(0, options.initialAspectRatio) || NaN;
+        options.aspectRatio = Math.max(0, options.aspectRatio) || NaN;
+        options.viewMode = Math.max(0, Math.min(3, Math.round(options.viewMode))) || 0;
+        addClass(cropBox, CLASS_HIDDEN);
+
+        if (!options.guides) {
+          addClass(cropBox.getElementsByClassName("".concat(NAMESPACE, "-dashed")), CLASS_HIDDEN);
+        }
+
+        if (!options.center) {
+          addClass(cropBox.getElementsByClassName("".concat(NAMESPACE, "-center")), CLASS_HIDDEN);
+        }
+
+        if (options.background) {
+          addClass(cropper, "".concat(NAMESPACE, "-bg"));
+        }
+
+        if (!options.highlight) {
+          addClass(face, CLASS_INVISIBLE);
+        }
+
+        if (options.cropBoxMovable) {
+          addClass(face, CLASS_MOVE);
+          setData(face, DATA_ACTION, ACTION_ALL);
+        }
+
+        if (!options.cropBoxResizable) {
+          addClass(cropBox.getElementsByClassName("".concat(NAMESPACE, "-line")), CLASS_HIDDEN);
+          addClass(cropBox.getElementsByClassName("".concat(NAMESPACE, "-point")), CLASS_HIDDEN);
+        }
+
+        this.render();
+        this.ready = true;
+        this.setDragMode(options.dragMode);
+
+        if (options.autoCrop) {
+          this.crop();
+        }
+
+        this.setData(options.data);
+
+        if (isFunction(options.ready)) {
+          addListener(element, EVENT_READY, options.ready, {
+            once: true
+          });
+        }
+
+        dispatchEvent(element, EVENT_READY);
+      }
+    }, {
+      key: "unbuild",
+      value: function unbuild() {
+        if (!this.ready) {
+          return;
+        }
+
+        this.ready = false;
+        this.unbind();
+        this.resetPreview();
+        this.cropper.parentNode.removeChild(this.cropper);
+        removeClass(this.element, CLASS_HIDDEN);
+      }
+    }, {
+      key: "uncreate",
+      value: function uncreate() {
+        if (this.ready) {
+          this.unbuild();
+          this.ready = false;
+          this.cropped = false;
+        } else if (this.sizing) {
+          this.sizingImage.onload = null;
+          this.sizing = false;
+          this.sized = false;
+        } else if (this.reloading) {
+          this.xhr.onabort = null;
+          this.xhr.abort();
+        } else if (this.image) {
+          this.stop();
+        }
+      }
+      /**
+       * Get the no conflict cropper class.
+       * @returns {Cropper} The cropper class.
+       */
+
+    }], [{
+      key: "noConflict",
+      value: function noConflict() {
+        window.Cropper = AnotherCropper;
+        return Cropper;
+      }
+      /**
+       * Change the default options.
+       * @param {Object} options - The new default options.
+       */
+
+    }, {
+      key: "setDefaults",
+      value: function setDefaults(options) {
+        assign(DEFAULTS, isPlainObject(options) && options);
+      }
+    }]);
+
+    return Cropper;
+  }();
+
+  assign(Cropper.prototype, render, preview, events, handlers, change, methods);
+
+  return Cropper;
+
+})));
+
 /**
 *
 * User to generate dynamic multi instances of single component classes
@@ -18888,2861 +22405,3 @@ $(document).ready(function () {
 
     new devdayUIRegistry();
 });
-
-/*
- *
- * More info at [www.dropzonejs.com](http://www.dropzonejs.com)
- *
- * Copyright (c) 2012, Matias Meno
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- */
-
-
-// The Emitter class provides the ability to call `.on()` on Dropzone to listen
-// to events.
-// It is strongly based on component's emitter class, and I removed the
-// functionality because of the dependency hell with different frameworks.
-class Emitter {
-  // Add an event listener for given event
-  on(event, fn) {
-    this._callbacks = this._callbacks || {};
-    // Create namespace for this event
-    if (!this._callbacks[event]) {
-      this._callbacks[event] = [];
-    }
-    this._callbacks[event].push(fn);
-    return this;
-  }
-
-
-  emit(event, ...args) {
-    this._callbacks = this._callbacks || {};
-    let callbacks = this._callbacks[event];
-
-    if (callbacks) {
-      for (let callback of callbacks) {
-        callback.apply(this, args);
-      }
-    }
-
-    return this;
-  }
-
-  // Remove event listener for given event. If fn is not provided, all event
-  // listeners for that event will be removed. If neither is provided, all
-  // event listeners will be removed.
-  off(event, fn) {
-    if (!this._callbacks || (arguments.length === 0)) {
-      this._callbacks = {};
-      return this;
-    }
-
-    // specific event
-    let callbacks = this._callbacks[event];
-    if (!callbacks) {
-      return this;
-    }
-
-    // remove all handlers
-    if (arguments.length === 1) {
-      delete this._callbacks[event];
-      return this;
-    }
-
-    // remove specific handler
-    for (let i = 0; i < callbacks.length; i++) {
-      let callback = callbacks[i];
-      if (callback === fn) {
-        callbacks.splice(i, 1);
-        break;
-      }
-    }
-
-    return this;
-  }
-}
-
-class Dropzone extends Emitter {
-  static initClass() {
-
-    // Exposing the emitter class, mainly for tests
-    this.prototype.Emitter = Emitter;
-
-    /*
-     This is a list of all available events you can register on a dropzone object.
-
-     You can register an event handler like this:
-
-     dropzone.on("dragEnter", function() { });
-
-     */
-    this.prototype.events = [
-      "drop",
-      "dragstart",
-      "dragend",
-      "dragenter",
-      "dragover",
-      "dragleave",
-      "addedfile",
-      "addedfiles",
-      "removedfile",
-      "thumbnail",
-      "error",
-      "errormultiple",
-      "processing",
-      "processingmultiple",
-      "uploadprogress",
-      "totaluploadprogress",
-      "sending",
-      "sendingmultiple",
-      "success",
-      "successmultiple",
-      "canceled",
-      "canceledmultiple",
-      "complete",
-      "completemultiple",
-      "reset",
-      "maxfilesexceeded",
-      "maxfilesreached",
-      "queuecomplete"
-    ];
-
-
-    this.prototype.defaultOptions = {
-      /**
-       * Has to be specified on elements other than form (or when the form
-       * doesn't have an `action` attribute). You can also
-       * provide a function that will be called with `files` and
-       * must return the url (since `v3.12.0`)
-       */
-      url: null,
-
-      /**
-       * Can be changed to `"put"` if necessary. You can also provide a function
-       * that will be called with `files` and must return the method (since `v3.12.0`).
-       */
-      method: "post",
-
-      /**
-       * Will be set on the XHRequest.
-       */
-      withCredentials: false,
-
-      /**
-       * The timeout for the XHR requests in milliseconds (since `v4.4.0`).
-       */
-      timeout: 30000,
-
-      /**
-       * How many file uploads to process in parallel (See the
-       * Enqueuing file uploads* documentation section for more info)
-       */
-      parallelUploads: 2,
-
-      /**
-       * Whether to send multiple files in one request. If
-       * this it set to true, then the fallback file input element will
-       * have the `multiple` attribute as well. This option will
-       * also trigger additional events (like `processingmultiple`). See the events
-       * documentation section for more information.
-       */
-      uploadMultiple: false,
-
-      /**
-       * Whether you want files to be uploaded in chunks to your server. This can't be
-       * used in combination with `uploadMultiple`.
-       *
-       * See [chunksUploaded](#config-chunksUploaded) for the callback to finalise an upload.
-       */
-      chunking: false,
-
-      /**
-       * If `chunking` is enabled, this defines whether **every** file should be chunked,
-       * even if the file size is below chunkSize. This means, that the additional chunk
-       * form data will be submitted and the `chunksUploaded` callback will be invoked.
-       */
-      forceChunking: false,
-
-      /**
-       * If `chunking` is `true`, then this defines the chunk size in bytes.
-       */
-      chunkSize: 2000000,
-
-      /**
-       * If `true`, the individual chunks of a file are being uploaded simultaneously.
-       */
-      parallelChunkUploads: false,
-
-      /**
-       * Whether a chunk should be retried if it fails.
-       */
-      retryChunks: false,
-
-      /**
-       * If `retryChunks` is true, how many times should it be retried.
-       */
-      retryChunksLimit: 3,
-
-      /**
-       * If not `null` defines how many files this Dropzone handles. If it exceeds,
-       * the event `maxfilesexceeded` will be called. The dropzone element gets the
-       * class `dz-max-files-reached` accordingly so you can provide visual feedback.
-       */
-      maxFilesize: 256,
-
-      /**
-       * The name of the file param that gets transferred.
-       * **NOTE**: If you have the option  `uploadMultiple` set to `true`, then
-       * Dropzone will append `[]` to the name.
-       */
-      paramName: "file",
-
-      /**
-       * Whether thumbnails for images should be generated
-       */
-      createImageThumbnails: true,
-
-      /**
-       * In MB. When the filename exceeds this limit, the thumbnail will not be generated.
-       */
-      maxThumbnailFilesize: 10,
-
-      /**
-       * If `null`, the ratio of the image will be used to calculate it.
-       */
-      thumbnailWidth: 120,
-
-      /**
-       * The same as `thumbnailWidth`. If both are null, images will not be resized.
-       */
-      thumbnailHeight: 120,
-
-      /**
-       * How the images should be scaled down in case both, `thumbnailWidth` and `thumbnailHeight` are provided.
-       * Can be either `contain` or `crop`.
-       */
-      thumbnailMethod: 'crop',
-
-      /**
-       * If set, images will be resized to these dimensions before being **uploaded**.
-       * If only one, `resizeWidth` **or** `resizeHeight` is provided, the original aspect
-       * ratio of the file will be preserved.
-       *
-       * The `options.transformFile` function uses these options, so if the `transformFile` function
-       * is overridden, these options don't do anything.
-       */
-      resizeWidth: null,
-
-      /**
-       * See `resizeWidth`.
-       */
-      resizeHeight: null,
-
-      /**
-       * The mime type of the resized image (before it gets uploaded to the server).
-       * If `null` the original mime type will be used. To force jpeg, for example, use `image/jpeg`.
-       * See `resizeWidth` for more information.
-       */
-      resizeMimeType: null,
-
-      /**
-       * The quality of the resized images. See `resizeWidth`.
-       */
-      resizeQuality: 0.8,
-
-      /**
-       * How the images should be scaled down in case both, `resizeWidth` and `resizeHeight` are provided.
-       * Can be either `contain` or `crop`.
-       */
-      resizeMethod: 'contain',
-
-      /**
-       * The base that is used to calculate the filesize. You can change this to
-       * 1024 if you would rather display kibibytes, mebibytes, etc...
-       * 1024 is technically incorrect, because `1024 bytes` are `1 kibibyte` not `1 kilobyte`.
-       * You can change this to `1024` if you don't care about validity.
-       */
-      filesizeBase: 1000,
-
-      /**
-       * Can be used to limit the maximum number of files that will be handled by this Dropzone
-       */
-      maxFiles: null,
-
-      /**
-       * An optional object to send additional headers to the server. Eg:
-       * `{ "My-Awesome-Header": "header value" }`
-       */
-      headers: null,
-
-      /**
-       * If `true`, the dropzone element itself will be clickable, if `false`
-       * nothing will be clickable.
-       *
-       * You can also pass an HTML element, a CSS selector (for multiple elements)
-       * or an array of those. In that case, all of those elements will trigger an
-       * upload when clicked.
-       */
-      clickable: true,
-
-      /**
-       * Whether hidden files in directories should be ignored.
-       */
-      ignoreHiddenFiles: true,
-
-
-      /**
-       * The default implementation of `accept` checks the file's mime type or
-       * extension against this list. This is a comma separated list of mime
-       * types or file extensions.
-       *
-       * Eg.: `image/*,application/pdf,.psd`
-       *
-       * If the Dropzone is `clickable` this option will also be used as
-       * [`accept`](https://developer.mozilla.org/en-US/docs/HTML/Element/input#attr-accept)
-       * parameter on the hidden file input as well.
-       */
-      acceptedFiles: null,
-
-      /**
-       * **Deprecated!**
-       * Use acceptedFiles instead.
-       */
-      acceptedMimeTypes: null,
-
-      /**
-       * If false, files will be added to the queue but the queue will not be
-       * processed automatically.
-       * This can be useful if you need some additional user input before sending
-       * files (or if you want want all files sent at once).
-       * If you're ready to send the file simply call `myDropzone.processQueue()`.
-       *
-       * See the [enqueuing file uploads](#enqueuing-file-uploads) documentation
-       * section for more information.
-       */
-      autoProcessQueue: true,
-
-      /**
-       * If false, files added to the dropzone will not be queued by default.
-       * You'll have to call `enqueueFile(file)` manually.
-       */
-      autoQueue: true,
-
-      /**
-       * If `true`, this will add a link to every file preview to remove or cancel (if
-       * already uploading) the file. The `dictCancelUpload`, `dictCancelUploadConfirmation`
-       * and `dictRemoveFile` options are used for the wording.
-       */
-      addRemoveLinks: false,
-
-      /**
-       * Defines where to display the file previews – if `null` the
-       * Dropzone element itself is used. Can be a plain `HTMLElement` or a CSS
-       * selector. The element should have the `dropzone-previews` class so
-       * the previews are displayed properly.
-       */
-      previewsContainer: null,
-
-      /**
-       * This is the element the hidden input field (which is used when clicking on the
-       * dropzone to trigger file selection) will be appended to. This might
-       * be important in case you use frameworks to switch the content of your page.
-       *
-       * Can be a selector string, or an element directly.
-       */
-      hiddenInputContainer: "body",
-
-      /**
-       * If null, no capture type will be specified
-       * If camera, mobile devices will skip the file selection and choose camera
-       * If microphone, mobile devices will skip the file selection and choose the microphone
-       * If camcorder, mobile devices will skip the file selection and choose the camera in video mode
-       * On apple devices multiple must be set to false.  AcceptedFiles may need to
-       * be set to an appropriate mime type (e.g. "image/*", "audio/*", or "video/*").
-       */
-      capture: null,
-
-      /**
-       * **Deprecated**. Use `renameFile` instead.
-       */
-      renameFilename: null,
-
-      /**
-       * A function that is invoked before the file is uploaded to the server and renames the file.
-       * This function gets the `File` as argument and can use the `file.name`. The actual name of the
-       * file that gets used during the upload can be accessed through `file.upload.filename`.
-       */
-      renameFile: null,
-
-      /**
-       * If `true` the fallback will be forced. This is very useful to test your server
-       * implementations first and make sure that everything works as
-       * expected without dropzone if you experience problems, and to test
-       * how your fallbacks will look.
-       */
-      forceFallback: false,
-
-      /**
-       * The text used before any files are dropped.
-       */
-      dictDefaultMessage: "Drop files here to upload",
-
-      /**
-       * The text that replaces the default message text it the browser is not supported.
-       */
-      dictFallbackMessage: "Your browser does not support drag'n'drop file uploads.",
-
-      /**
-       * The text that will be added before the fallback form.
-       * If you provide a  fallback element yourself, or if this option is `null` this will
-       * be ignored.
-       */
-      dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
-
-      /**
-       * If the filesize is too big.
-       * `{{filesize}}` and `{{maxFilesize}}` will be replaced with the respective configuration values.
-       */
-      dictFileTooBig: "File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.",
-
-      /**
-       * If the file doesn't match the file type.
-       */
-      dictInvalidFileType: "You can't upload files of this type.",
-
-      /**
-       * If the server response was invalid.
-       * `{{statusCode}}` will be replaced with the servers status code.
-       */
-      dictResponseError: "Server responded with {{statusCode}} code.",
-
-      /**
-       * If `addRemoveLinks` is true, the text to be used for the cancel upload link.
-       */
-      dictCancelUpload: "Cancel upload",
-
-      /**
-       * The text that is displayed if an upload was manually canceled
-       */
-      dictUploadCanceled: "Upload canceled.",
-
-      /**
-       * If `addRemoveLinks` is true, the text to be used for confirmation when cancelling upload.
-       */
-      dictCancelUploadConfirmation: "Are you sure you want to cancel this upload?",
-
-      /**
-       * If `addRemoveLinks` is true, the text to be used to remove a file.
-       */
-      dictRemoveFile: "Remove file",
-
-      /**
-       * If this is not null, then the user will be prompted before removing a file.
-       */
-      dictRemoveFileConfirmation: null,
-
-      /**
-       * Displayed if `maxFiles` is st and exceeded.
-       * The string `{{maxFiles}}` will be replaced by the configuration value.
-       */
-      dictMaxFilesExceeded: "You can not upload any more files.",
-
-      /**
-       * Allows you to translate the different units. Starting with `tb` for terabytes and going down to
-       * `b` for bytes.
-       */
-      dictFileSizeUnits: {tb: "TB", gb: "GB", mb: "MB", kb: "KB", b: "b"},
-      /**
-       * Called when dropzone initialized
-       * You can add event listeners here
-       */
-      init() {},
-
-      /**
-       * Can be an **object** of additional parameters to transfer to the server, **or** a `Function`
-       * that gets invoked with the `files`, `xhr` and, if it's a chunked upload, `chunk` arguments. In case
-       * of a function, this needs to return a map.
-       *
-       * The default implementation does nothing for normal uploads, but adds relevant information for
-       * chunked uploads.
-       *
-       * This is the same as adding hidden input fields in the form element.
-       */
-      params(files, xhr, chunk) {
-        if (chunk) {
-          return {
-            dzuuid: chunk.file.upload.uuid,
-            dzchunkindex: chunk.index,
-            dztotalfilesize: chunk.file.size,
-            dzchunksize: this.options.chunkSize,
-            dztotalchunkcount: chunk.file.upload.totalChunkCount,
-            dzchunkbyteoffset: chunk.index * this.options.chunkSize
-          };
-        }
-      },
-
-      /**
-       * A function that gets a [file](https://developer.mozilla.org/en-US/docs/DOM/File)
-       * and a `done` function as parameters.
-       *
-       * If the done function is invoked without arguments, the file is "accepted" and will
-       * be processed. If you pass an error message, the file is rejected, and the error
-       * message will be displayed.
-       * This function will not be called if the file is too big or doesn't match the mime types.
-       */
-      accept(file, done) {
-        return done();
-      },
-
-      /**
-       * The callback that will be invoked when all chunks have been uploaded for a file.
-       * It gets the file for which the chunks have been uploaded as the first parameter,
-       * and the `done` function as second. `done()` needs to be invoked when everything
-       * needed to finish the upload process is done.
-       */
-      chunksUploaded: function(file, done) { done(); },
-
-      /**
-       * Gets called when the browser is not supported.
-       * The default implementation shows the fallback input field and adds
-       * a text.
-       */
-      fallback() {
-        // This code should pass in IE7... :(
-        let messageElement;
-        this.element.className = `${this.element.className} dz-browser-not-supported`;
-
-        for (let child of this.element.getElementsByTagName("div")) {
-          if (/(^| )dz-message($| )/.test(child.className)) {
-            messageElement = child;
-            child.className = "dz-message"; // Removes the 'dz-default' class
-            break;
-          }
-        }
-        if (!messageElement) {
-          messageElement = Dropzone.createElement("<div class=\"dz-message\"><span></span></div>");
-          this.element.appendChild(messageElement);
-        }
-
-        let span = messageElement.getElementsByTagName("span")[0];
-        if (span) {
-          if (span.textContent != null) {
-            span.textContent = this.options.dictFallbackMessage;
-          } else if (span.innerText != null) {
-            span.innerText = this.options.dictFallbackMessage;
-          }
-        }
-
-        return this.element.appendChild(this.getFallbackForm());
-      },
-
-
-      /**
-       * Gets called to calculate the thumbnail dimensions.
-       *
-       * It gets `file`, `width` and `height` (both may be `null`) as parameters and must return an object containing:
-       *
-       *  - `srcWidth` & `srcHeight` (required)
-       *  - `trgWidth` & `trgHeight` (required)
-       *  - `srcX` & `srcY` (optional, default `0`)
-       *  - `trgX` & `trgY` (optional, default `0`)
-       *
-       * Those values are going to be used by `ctx.drawImage()`.
-       */
-      resize(file, width, height, resizeMethod) {
-        let info = {
-          srcX: 0,
-          srcY: 0,
-          srcWidth: file.width,
-          srcHeight: file.height
-        };
-
-        let srcRatio = file.width / file.height;
-
-        // Automatically calculate dimensions if not specified
-        if ((width == null) && (height == null)) {
-          width = info.srcWidth;
-          height = info.srcHeight;
-        } else if ((width == null)) {
-          width = height * srcRatio;
-        } else if ((height == null)) {
-          height = width / srcRatio;
-        }
-
-        // Make sure images aren't upscaled
-        width = Math.min(width, info.srcWidth);
-        height = Math.min(height, info.srcHeight);
-
-        let trgRatio = width / height;
-
-        if ((info.srcWidth > width) || (info.srcHeight > height)) {
-          // Image is bigger and needs rescaling
-          if (resizeMethod === 'crop') {
-            if (srcRatio > trgRatio) {
-              info.srcHeight = file.height;
-              info.srcWidth = info.srcHeight * trgRatio;
-            } else {
-              info.srcWidth = file.width;
-              info.srcHeight = info.srcWidth / trgRatio;
-            }
-          } else if (resizeMethod === 'contain') {
-            // Method 'contain'
-            if (srcRatio > trgRatio) {
-              height = width / srcRatio;
-            } else {
-              width = height * srcRatio;
-            }
-          } else {
-            throw new Error(`Unknown resizeMethod '${resizeMethod}'`);
-          }
-        }
-
-        info.srcX = (file.width - info.srcWidth) / 2;
-        info.srcY = (file.height - info.srcHeight) / 2;
-
-        info.trgWidth = width;
-        info.trgHeight = height;
-
-        return info;
-      },
-
-      /**
-       * Can be used to transform the file (for example, resize an image if necessary).
-       *
-       * The default implementation uses `resizeWidth` and `resizeHeight` (if provided) and resizes
-       * images according to those dimensions.
-       *
-       * Gets the `file` as the first parameter, and a `done()` function as the second, that needs
-       * to be invoked with the file when the transformation is done.
-       */
-      transformFile(file, done) {
-        if ((this.options.resizeWidth || this.options.resizeHeight) && file.type.match(/image.*/)) {
-          return this.resizeImage(file, this.options.resizeWidth, this.options.resizeHeight, this.options.resizeMethod, done);
-        } else {
-          return done(file);
-        }
-      },
-
-
-      /**
-       * A string that contains the template used for each dropped
-       * file. Change it to fulfill your needs but make sure to properly
-       * provide all elements.
-       *
-       * If you want to use an actual HTML element instead of providing a String
-       * as a config option, you could create a div with the id `tpl`,
-       * put the template inside it and provide the element like this:
-       *
-       *     document
-       *       .querySelector('#tpl')
-       *       .innerHTML
-       *
-       */
-      previewTemplate: `\
-<div class="dz-preview dz-file-preview">
-  <div class="dz-image"><img data-dz-thumbnail /></div>
-  <div class="dz-details">
-    <div class="dz-size"><span data-dz-size></span></div>
-    <div class="dz-filename"><span data-dz-name></span></div>
-  </div>
-  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-  <div class="dz-error-message"><span data-dz-errormessage></span></div>
-  <div class="dz-success-mark">
-    <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-      <title>Check</title>
-      <defs></defs>
-      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-        <path d="M23.5,31.8431458 L17.5852419,25.9283877 C16.0248253,24.3679711 13.4910294,24.366835 11.9289322,25.9289322 C10.3700136,27.4878508 10.3665912,30.0234455 11.9283877,31.5852419 L20.4147581,40.0716123 C20.5133999,40.1702541 20.6159315,40.2626649 20.7218615,40.3488435 C22.2835669,41.8725651 24.794234,41.8626202 26.3461564,40.3106978 L43.3106978,23.3461564 C44.8771021,21.7797521 44.8758057,19.2483887 43.3137085,17.6862915 C41.7547899,16.1273729 39.2176035,16.1255422 37.6538436,17.6893022 L23.5,31.8431458 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z" id="Oval-2" stroke-opacity="0.198794158" stroke="#747474" fill-opacity="0.816519475" fill="#FFFFFF" sketch:type="MSShapeGroup"></path>
-      </g>
-    </svg>
-  </div>
-  <div class="dz-error-mark">
-    <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-      <title>Error</title>
-      <defs></defs>
-      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-        <g id="Check-+-Oval-2" sketch:type="MSLayerGroup" stroke="#747474" stroke-opacity="0.198794158" fill="#FFFFFF" fill-opacity="0.816519475">
-          <path d="M32.6568542,29 L38.3106978,23.3461564 C39.8771021,21.7797521 39.8758057,19.2483887 38.3137085,17.6862915 C36.7547899,16.1273729 34.2176035,16.1255422 32.6538436,17.6893022 L27,23.3431458 L21.3461564,17.6893022 C19.7823965,16.1255422 17.2452101,16.1273729 15.6862915,17.6862915 C14.1241943,19.2483887 14.1228979,21.7797521 15.6893022,23.3461564 L21.3431458,29 L15.6893022,34.6538436 C14.1228979,36.2202479 14.1241943,38.7516113 15.6862915,40.3137085 C17.2452101,41.8726271 19.7823965,41.8744578 21.3461564,40.3106978 L27,34.6568542 L32.6538436,40.3106978 C34.2176035,41.8744578 36.7547899,41.8726271 38.3137085,40.3137085 C39.8758057,38.7516113 39.8771021,36.2202479 38.3106978,34.6538436 L32.6568542,29 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z" id="Oval-2" sketch:type="MSShapeGroup"></path>
-        </g>
-      </g>
-    </svg>
-  </div>
-</div>\
-`,
-
-      // END OPTIONS
-      // (Required by the dropzone documentation parser)
-
-
-      /*
-       Those functions register themselves to the events on init and handle all
-       the user interface specific stuff. Overwriting them won't break the upload
-       but can break the way it's displayed.
-       You can overwrite them if you don't like the default behavior. If you just
-       want to add an additional event handler, register it on the dropzone object
-       and don't overwrite those options.
-       */
-
-
-
-
-      // Those are self explanatory and simply concern the DragnDrop.
-      drop(e) {
-        return this.element.classList.remove("dz-drag-hover");
-      },
-      dragstart(e) {
-      },
-      dragend(e) {
-        return this.element.classList.remove("dz-drag-hover");
-      },
-      dragenter(e) {
-        return this.element.classList.add("dz-drag-hover");
-      },
-      dragover(e) {
-        return this.element.classList.add("dz-drag-hover");
-      },
-      dragleave(e) {
-        return this.element.classList.remove("dz-drag-hover");
-      },
-
-      paste(e) {
-      },
-
-      // Called whenever there are no files left in the dropzone anymore, and the
-      // dropzone should be displayed as if in the initial state.
-      reset() {
-        return this.element.classList.remove("dz-started");
-      },
-
-      // Called when a file is added to the queue
-      // Receives `file`
-      addedfile(file) {
-        if (this.element === this.previewsContainer) {
-          this.element.classList.add("dz-started");
-        }
-
-        if (this.previewsContainer) {
-          file.previewElement = Dropzone.createElement(this.options.previewTemplate.trim());
-          file.previewTemplate = file.previewElement; // Backwards compatibility
-
-          this.previewsContainer.appendChild(file.previewElement);
-          for (var node of file.previewElement.querySelectorAll("[data-dz-name]")) {
-            node.textContent = file.name;
-          }
-          for (node of file.previewElement.querySelectorAll("[data-dz-size]")) {
-            node.innerHTML = this.filesize(file.size);
-          }
-
-          if (this.options.addRemoveLinks) {
-            file._removeLink = Dropzone.createElement(`<a class="dz-remove" href="javascript:undefined;" data-dz-remove>${this.options.dictRemoveFile}</a>`);
-            file.previewElement.appendChild(file._removeLink);
-          }
-
-          let removeFileEvent = e => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (file.status === Dropzone.UPLOADING) {
-              return Dropzone.confirm(this.options.dictCancelUploadConfirmation, () => this.removeFile(file));
-            } else {
-              if (this.options.dictRemoveFileConfirmation) {
-                return Dropzone.confirm(this.options.dictRemoveFileConfirmation, () => this.removeFile(file));
-              } else {
-                return this.removeFile(file);
-              }
-            }
-          };
-
-          for (let removeLink of file.previewElement.querySelectorAll("[data-dz-remove]")) {
-             removeLink.addEventListener("click", removeFileEvent);
-          }
-        }
-      },
-
-
-      // Called whenever a file is removed.
-      removedfile(file) {
-        if (file.previewElement != null && file.previewElement.parentNode != null) {
-          file.previewElement.parentNode.removeChild(file.previewElement);
-        }
-        return this._updateMaxFilesReachedClass();
-      },
-
-      // Called when a thumbnail has been generated
-      // Receives `file` and `dataUrl`
-      thumbnail(file, dataUrl) {
-        if (file.previewElement) {
-          file.previewElement.classList.remove("dz-file-preview");
-          for (let thumbnailElement of file.previewElement.querySelectorAll("[data-dz-thumbnail]")) {
-            thumbnailElement.alt = file.name;
-            thumbnailElement.src = dataUrl;
-          }
-
-          return setTimeout((() => file.previewElement.classList.add("dz-image-preview")), 1);
-        }
-      },
-
-      // Called whenever an error occurs
-      // Receives `file` and `message`
-      error(file, message) {
-        if (file.previewElement) {
-          file.previewElement.classList.add("dz-error");
-          if ((typeof message !== "String") && message.error) {
-            message = message.error;
-          }
-          for (let node of file.previewElement.querySelectorAll("[data-dz-errormessage]")) {
-            node.textContent = message;
-          }
-        }
-      },
-
-      errormultiple() {
-      },
-
-      // Called when a file gets processed. Since there is a cue, not all added
-      // files are processed immediately.
-      // Receives `file`
-      processing(file) {
-        if (file.previewElement) {
-          file.previewElement.classList.add("dz-processing");
-          if (file._removeLink) {
-            return file._removeLink.innerHTML = this.options.dictCancelUpload;
-          }
-        }
-      },
-
-      processingmultiple() {
-      },
-
-      // Called whenever the upload progress gets updated.
-      // Receives `file`, `progress` (percentage 0-100) and `bytesSent`.
-      // To get the total number of bytes of the file, use `file.size`
-      uploadprogress(file, progress, bytesSent) {
-        if (file.previewElement) {
-          for (let node of file.previewElement.querySelectorAll("[data-dz-uploadprogress]")) {
-              node.nodeName === 'PROGRESS' ?
-                  (node.value = progress)
-                  :
-                  (node.style.width = `${progress}%`)
-          }
-        }
-      },
-
-      // Called whenever the total upload progress gets updated.
-      // Called with totalUploadProgress (0-100), totalBytes and totalBytesSent
-      totaluploadprogress() {
-      },
-
-      // Called just before the file is sent. Gets the `xhr` object as second
-      // parameter, so you can modify it (for example to add a CSRF token) and a
-      // `formData` object to add additional information.
-      sending() {
-      },
-
-      sendingmultiple() {},
-
-      // When the complete upload is finished and successful
-      // Receives `file`
-      success(file) {
-        if (file.previewElement) {
-          return file.previewElement.classList.add("dz-success");
-        }
-      },
-
-      successmultiple() {},
-
-      // When the upload is canceled.
-      canceled(file) {
-        return this.emit("error", file, this.options.dictUploadCanceled);
-      },
-
-      canceledmultiple() {},
-
-      // When the upload is finished, either with success or an error.
-      // Receives `file`
-      complete(file) {
-        if (file._removeLink) {
-          file._removeLink.innerHTML = this.options.dictRemoveFile;
-        }
-        if (file.previewElement) {
-          return file.previewElement.classList.add("dz-complete");
-        }
-      },
-
-      completemultiple() {},
-
-      maxfilesexceeded() {},
-
-      maxfilesreached() {},
-
-      queuecomplete() {},
-
-      addedfiles() {}
-    };
-
-
-    this.prototype._thumbnailQueue = [];
-    this.prototype._processingThumbnail = false;
-  }
-
-  // global utility
-  static extend(target, ...objects) {
-    for (let object of objects) {
-      for (let key in object) {
-        let val = object[key];
-        target[key] = val;
-      }
-    }
-    return target;
-  }
-
-  constructor(el, options) {
-    super();
-    let fallback, left;
-    this.element = el;
-    // For backwards compatibility since the version was in the prototype previously
-    this.version = Dropzone.version;
-
-    this.defaultOptions.previewTemplate = this.defaultOptions.previewTemplate.replace(/\n*/g, "");
-
-    this.clickableElements = [];
-    this.listeners = [];
-    this.files = []; // All files
-
-    if (typeof this.element === "string") {
-      this.element = document.querySelector(this.element);
-    }
-
-    // Not checking if instance of HTMLElement or Element since IE9 is extremely weird.
-    if (!this.element || (this.element.nodeType == null)) {
-      throw new Error("Invalid dropzone element.");
-    }
-
-    if (this.element.dropzone) {
-      throw new Error("Dropzone already attached.");
-    }
-
-    // Now add this dropzone to the instances.
-    Dropzone.instances.push(this);
-
-    // Put the dropzone inside the element itself.
-    this.element.dropzone = this;
-
-    let elementOptions = (left = Dropzone.optionsForElement(this.element)) != null ? left : {};
-
-    this.options = Dropzone.extend({}, this.defaultOptions, elementOptions, options != null ? options : {});
-
-    // If the browser failed, just call the fallback and leave
-    if (this.options.forceFallback || !Dropzone.isBrowserSupported()) {
-      return this.options.fallback.call(this);
-    }
-
-    // @options.url = @element.getAttribute "action" unless @options.url?
-    if (this.options.url == null) {
-      this.options.url = this.element.getAttribute("action");
-    }
-
-    if (!this.options.url) {
-      throw new Error("No URL provided.");
-    }
-
-    if (this.options.acceptedFiles && this.options.acceptedMimeTypes) {
-      throw new Error("You can't provide both 'acceptedFiles' and 'acceptedMimeTypes'. 'acceptedMimeTypes' is deprecated.");
-    }
-
-    if (this.options.uploadMultiple && this.options.chunking) {
-      throw new Error('You cannot set both: uploadMultiple and chunking.');
-    }
-
-    // Backwards compatibility
-    if (this.options.acceptedMimeTypes) {
-      this.options.acceptedFiles = this.options.acceptedMimeTypes;
-      delete this.options.acceptedMimeTypes;
-    }
-
-    // Backwards compatibility
-    if (this.options.renameFilename != null) {
-      this.options.renameFile = file => this.options.renameFilename.call(this, file.name, file);
-    }
-
-    this.options.method = this.options.method.toUpperCase();
-
-    if ((fallback = this.getExistingFallback()) && fallback.parentNode) {
-      // Remove the fallback
-      fallback.parentNode.removeChild(fallback);
-    }
-
-    // Display previews in the previewsContainer element or the Dropzone element unless explicitly set to false
-    if (this.options.previewsContainer !== false) {
-      if (this.options.previewsContainer) {
-        this.previewsContainer = Dropzone.getElement(this.options.previewsContainer, "previewsContainer");
-      } else {
-        this.previewsContainer = this.element;
-      }
-    }
-
-    if (this.options.clickable) {
-      if (this.options.clickable === true) {
-        this.clickableElements = [this.element];
-      } else {
-        this.clickableElements = Dropzone.getElements(this.options.clickable, "clickable");
-      }
-    }
-
-
-    this.init();
-  }
-
-
-  // Returns all files that have been accepted
-  getAcceptedFiles() {
-    return this.files.filter((file) => file.accepted).map((file) => file);
-  }
-
-  // Returns all files that have been rejected
-  // Not sure when that's going to be useful, but added for completeness.
-  getRejectedFiles() {
-    return this.files.filter((file) => !file.accepted).map((file) => file);
-  }
-
-  getFilesWithStatus(status) {
-    return this.files.filter((file) => file.status === status).map((file) => file);
-  }
-
-  // Returns all files that are in the queue
-  getQueuedFiles() {
-    return this.getFilesWithStatus(Dropzone.QUEUED);
-  }
-
-  getUploadingFiles() {
-    return this.getFilesWithStatus(Dropzone.UPLOADING);
-  }
-
-  getAddedFiles() {
-    return this.getFilesWithStatus(Dropzone.ADDED);
-  }
-
-  // Files that are either queued or uploading
-  getActiveFiles() {
-    return this.files.filter((file) => (file.status === Dropzone.UPLOADING) || (file.status === Dropzone.QUEUED)).map((file) => file);
-  }
-
-  // The function that gets called when Dropzone is initialized. You
-  // can (and should) setup event listeners inside this function.
-  init() {
-    // In case it isn't set already
-    if (this.element.tagName === "form") {
-      this.element.setAttribute("enctype", "multipart/form-data");
-    }
-
-    if (this.element.classList.contains("dropzone") && !this.element.querySelector(".dz-message")) {
-      this.element.appendChild(Dropzone.createElement(`<div class="dz-default dz-message"><span>${this.options.dictDefaultMessage}</span></div>`));
-    }
-
-    if (this.clickableElements.length) {
-      let setupHiddenFileInput = () => {
-        if (this.hiddenFileInput) {
-          this.hiddenFileInput.parentNode.removeChild(this.hiddenFileInput);
-        }
-        this.hiddenFileInput = document.createElement("input");
-        this.hiddenFileInput.setAttribute("type", "file");
-        if ((this.options.maxFiles === null) || (this.options.maxFiles > 1)) {
-          this.hiddenFileInput.setAttribute("multiple", "multiple");
-        }
-        this.hiddenFileInput.className = "dz-hidden-input";
-
-        if (this.options.acceptedFiles !== null) {
-          this.hiddenFileInput.setAttribute("accept", this.options.acceptedFiles);
-        }
-        if (this.options.capture !== null) {
-          this.hiddenFileInput.setAttribute("capture", this.options.capture);
-        }
-
-        // Not setting `display="none"` because some browsers don't accept clicks
-        // on elements that aren't displayed.
-        this.hiddenFileInput.style.visibility = "hidden";
-        this.hiddenFileInput.style.position = "absolute";
-        this.hiddenFileInput.style.top = "0";
-        this.hiddenFileInput.style.left = "0";
-        this.hiddenFileInput.style.height = "0";
-        this.hiddenFileInput.style.width = "0";
-        Dropzone.getElement(this.options.hiddenInputContainer, 'hiddenInputContainer').appendChild(this.hiddenFileInput);
-        return this.hiddenFileInput.addEventListener("change", () => {
-          let {files} = this.hiddenFileInput;
-          if (files.length) {
-            for (let file of files) {
-              this.addFile(file);
-            }
-          }
-          this.emit("addedfiles", files);
-          return setupHiddenFileInput();
-        });
-      };
-      setupHiddenFileInput();
-    }
-
-    this.URL = window.URL !== null ? window.URL : window.webkitURL;
-
-
-    // Setup all event listeners on the Dropzone object itself.
-    // They're not in @setupEventListeners() because they shouldn't be removed
-    // again when the dropzone gets disabled.
-    for (let eventName of this.events) {
-      this.on(eventName, this.options[eventName]);
-    }
-
-    this.on("uploadprogress", () => this.updateTotalUploadProgress());
-
-    this.on("removedfile", () => this.updateTotalUploadProgress());
-
-    this.on("canceled", file => this.emit("complete", file));
-
-    // Emit a `queuecomplete` event if all files finished uploading.
-    this.on("complete", file => {
-      if ((this.getAddedFiles().length === 0) && (this.getUploadingFiles().length === 0) && (this.getQueuedFiles().length === 0)) {
-        // This needs to be deferred so that `queuecomplete` really triggers after `complete`
-        return setTimeout((() => this.emit("queuecomplete")), 0);
-      }
-    });
-
-
-    let noPropagation = function (e) {
-      e.stopPropagation();
-      if (e.preventDefault) {
-        return e.preventDefault();
-      } else {
-        return e.returnValue = false;
-      }
-    };
-
-    // Create the listeners
-    this.listeners = [
-      {
-        element: this.element,
-        events: {
-          "dragstart": e => {
-            return this.emit("dragstart", e);
-          },
-          "dragenter": e => {
-            noPropagation(e);
-            return this.emit("dragenter", e);
-          },
-          "dragover": e => {
-            // Makes it possible to drag files from chrome's download bar
-            // http://stackoverflow.com/questions/19526430/drag-and-drop-file-uploads-from-chrome-downloads-bar
-            // Try is required to prevent bug in Internet Explorer 11 (SCRIPT65535 exception)
-            let efct;
-            try {
-              efct = e.dataTransfer.effectAllowed;
-            } catch (error) {
-            }
-            e.dataTransfer.dropEffect = ('move' === efct) || ('linkMove' === efct) ? 'move' : 'copy';
-
-            noPropagation(e);
-            return this.emit("dragover", e);
-          },
-          "dragleave": e => {
-            return this.emit("dragleave", e);
-          },
-          "drop": e => {
-            noPropagation(e);
-            return this.drop(e);
-          },
-          "dragend": e => {
-            return this.emit("dragend", e);
-          }
-        }
-
-        // This is disabled right now, because the browsers don't implement it properly.
-        // "paste": (e) =>
-        //   noPropagation e
-        //   @paste e
-      }
-    ];
-
-    this.clickableElements.forEach(clickableElement => {
-      return this.listeners.push({
-        element: clickableElement,
-        events: {
-          "click": evt => {
-            // Only the actual dropzone or the message element should trigger file selection
-            if ((clickableElement !== this.element) || ((evt.target === this.element) || Dropzone.elementInside(evt.target, this.element.querySelector(".dz-message")))) {
-              this.hiddenFileInput.click(); // Forward the click
-            }
-            return true;
-          }
-        }
-      });
-    });
-
-    this.enable();
-
-    return this.options.init.call(this);
-  }
-
-  // Not fully tested yet
-  destroy() {
-    this.disable();
-    this.removeAllFiles(true);
-    if (this.hiddenFileInput != null ? this.hiddenFileInput.parentNode : undefined) {
-      this.hiddenFileInput.parentNode.removeChild(this.hiddenFileInput);
-      this.hiddenFileInput = null;
-    }
-    delete this.element.dropzone;
-    return Dropzone.instances.splice(Dropzone.instances.indexOf(this), 1);
-  }
-
-
-  updateTotalUploadProgress() {
-    let totalUploadProgress;
-    let totalBytesSent = 0;
-    let totalBytes = 0;
-
-    let activeFiles = this.getActiveFiles();
-
-    if (activeFiles.length) {
-      for (let file of this.getActiveFiles()) {
-        totalBytesSent += file.upload.bytesSent;
-        totalBytes += file.upload.total;
-      }
-      totalUploadProgress = (100 * totalBytesSent) / totalBytes;
-    } else {
-      totalUploadProgress = 100;
-    }
-
-    return this.emit("totaluploadprogress", totalUploadProgress, totalBytes, totalBytesSent);
-  }
-
-  // @options.paramName can be a function taking one parameter rather than a string.
-  // A parameter name for a file is obtained simply by calling this with an index number.
-  _getParamName(n) {
-    if (typeof this.options.paramName === "function") {
-      return this.options.paramName(n);
-    } else {
-      return `${this.options.paramName}${this.options.uploadMultiple ? `[${n}]` : ""}`;
-    }
-  }
-
-  // If @options.renameFile is a function,
-  // the function will be used to rename the file.name before appending it to the formData
-  _renameFile(file) {
-    if (typeof this.options.renameFile !== "function") {
-      return file.name;
-    }
-    return this.options.renameFile(file);
-  }
-
-  // Returns a form that can be used as fallback if the browser does not support DragnDrop
-  //
-  // If the dropzone is already a form, only the input field and button are returned. Otherwise a complete form element is provided.
-  // This code has to pass in IE7 :(
-  getFallbackForm() {
-    let existingFallback, form;
-    if (existingFallback = this.getExistingFallback()) {
-      return existingFallback;
-    }
-
-    let fieldsString = "<div class=\"dz-fallback\">";
-    if (this.options.dictFallbackText) {
-      fieldsString += `<p>${this.options.dictFallbackText}</p>`;
-    }
-    fieldsString += `<input type="file" name="${this._getParamName(0)}" ${this.options.uploadMultiple ? 'multiple="multiple"' : undefined } /><input type="submit" value="Upload!"></div>`;
-
-    let fields = Dropzone.createElement(fieldsString);
-    if (this.element.tagName !== "FORM") {
-      form = Dropzone.createElement(`<form action="${this.options.url}" enctype="multipart/form-data" method="${this.options.method}"></form>`);
-      form.appendChild(fields);
-    } else {
-      // Make sure that the enctype and method attributes are set properly
-      this.element.setAttribute("enctype", "multipart/form-data");
-      this.element.setAttribute("method", this.options.method);
-    }
-    return form != null ? form : fields;
-  }
-
-
-  // Returns the fallback elements if they exist already
-  //
-  // This code has to pass in IE7 :(
-  getExistingFallback() {
-    let getFallback = function (elements) {
-      for (let el of elements) {
-        if (/(^| )fallback($| )/.test(el.className)) {
-          return el;
-        }
-      }
-    };
-
-    for (let tagName of ["div", "form"]) {
-      var fallback;
-      if (fallback = getFallback(this.element.getElementsByTagName(tagName))) {
-        return fallback;
-      }
-    }
-  }
-
-
-  // Activates all listeners stored in @listeners
-  setupEventListeners() {
-    return this.listeners.map((elementListeners) =>
-        (() => {
-          let result = [];
-          for (let event in elementListeners.events) {
-            let listener = elementListeners.events[event];
-            result.push(elementListeners.element.addEventListener(event, listener, false));
-          }
-          return result;
-        })());
-  }
-
-
-  // Deactivates all listeners stored in @listeners
-  removeEventListeners() {
-    return this.listeners.map((elementListeners) =>
-        (() => {
-          let result = [];
-          for (let event in elementListeners.events) {
-            let listener = elementListeners.events[event];
-            result.push(elementListeners.element.removeEventListener(event, listener, false));
-          }
-          return result;
-        })());
-  }
-
-  // Removes all event listeners and cancels all files in the queue or being processed.
-  disable() {
-    this.clickableElements.forEach(element => element.classList.remove("dz-clickable"));
-    this.removeEventListeners();
-    this.disabled = true;
-
-    return this.files.map((file) => this.cancelUpload(file));
-  }
-
-  enable() {
-    delete this.disabled;
-    this.clickableElements.forEach(element => element.classList.add("dz-clickable"));
-    return this.setupEventListeners();
-  }
-
-  // Returns a nicely formatted filesize
-  filesize(size) {
-    let selectedSize = 0;
-    let selectedUnit = "b";
-
-    if (size > 0) {
-      let units = ['tb', 'gb', 'mb', 'kb', 'b'];
-
-      for (let i = 0; i < units.length; i++) {
-        let unit = units[i];
-        let cutoff = Math.pow(this.options.filesizeBase, 4 - i) / 10;
-
-        if (size >= cutoff) {
-          selectedSize = size / Math.pow(this.options.filesizeBase, 4 - i);
-          selectedUnit = unit;
-          break;
-        }
-      }
-
-      selectedSize = Math.round(10 * selectedSize) / 10; // Cutting of digits
-    }
-
-    return `<strong>${selectedSize}</strong> ${this.options.dictFileSizeUnits[selectedUnit]}`;
-  }
-
-
-  // Adds or removes the `dz-max-files-reached` class from the form.
-  _updateMaxFilesReachedClass() {
-    if ((this.options.maxFiles != null) && (this.getAcceptedFiles().length >= this.options.maxFiles)) {
-      if (this.getAcceptedFiles().length === this.options.maxFiles) {
-        this.emit('maxfilesreached', this.files);
-      }
-      return this.element.classList.add("dz-max-files-reached");
-    } else {
-      return this.element.classList.remove("dz-max-files-reached");
-    }
-  }
-
-
-  drop(e) {
-    if (!e.dataTransfer) {
-      return;
-    }
-    this.emit("drop", e);
-
-    // Convert the FileList to an Array
-    // This is necessary for IE11
-    let files = [];
-    for (let i = 0; i < e.dataTransfer.files.length; i++) {
-      files[i] = e.dataTransfer.files[i];
-    }
-
-    this.emit("addedfiles", files);
-
-    // Even if it's a folder, files.length will contain the folders.
-    if (files.length) {
-      let {items} = e.dataTransfer;
-      if (items && items.length && (items[0].webkitGetAsEntry != null)) {
-        // The browser supports dropping of folders, so handle items instead of files
-        this._addFilesFromItems(items);
-      } else {
-        this.handleFiles(files);
-      }
-    }
-  }
-
-  paste(e) {
-    if (__guard__(e != null ? e.clipboardData : undefined, x => x.items) == null) {
-      return;
-    }
-
-    this.emit("paste", e);
-    let {items} = e.clipboardData;
-
-    if (items.length) {
-      return this._addFilesFromItems(items);
-    }
-  }
-
-
-  handleFiles(files) {
-    for(let file of files) {
-      this.addFile(file);
-    }
-  }
-
-  // When a folder is dropped (or files are pasted), items must be handled
-  // instead of files.
-  _addFilesFromItems(items) {
-    return (() => {
-      let result = [];
-      for (let item of items) {
-        var entry;
-        if ((item.webkitGetAsEntry != null) && (entry = item.webkitGetAsEntry())) {
-          if (entry.isFile) {
-            result.push(this.addFile(item.getAsFile()));
-          } else if (entry.isDirectory) {
-            // Append all files from that directory to files
-            result.push(this._addFilesFromDirectory(entry, entry.name));
-          } else {
-            result.push(undefined);
-          }
-        } else if (item.getAsFile != null) {
-          if ((item.kind == null) || (item.kind === "file")) {
-            result.push(this.addFile(item.getAsFile()));
-          } else {
-            result.push(undefined);
-          }
-        } else {
-          result.push(undefined);
-        }
-      }
-      return result;
-    })();
-  }
-
-
-  // Goes through the directory, and adds each file it finds recursively
-  _addFilesFromDirectory(directory, path) {
-    let dirReader = directory.createReader();
-
-    let errorHandler = error => __guardMethod__(console, 'log', o => o.log(error));
-
-    var readEntries = () => {
-      return dirReader.readEntries(entries => {
-            if (entries.length > 0) {
-              for (let entry of entries) {
-                if (entry.isFile) {
-                  entry.file(file => {
-                    if (this.options.ignoreHiddenFiles && (file.name.substring(0, 1) === '.')) {
-                      return;
-                    }
-                    file.fullPath = `${path}/${file.name}`;
-                    return this.addFile(file);
-                  });
-                } else if (entry.isDirectory) {
-                  this._addFilesFromDirectory(entry, `${path}/${entry.name}`);
-                }
-              }
-
-              // Recursively call readEntries() again, since browser only handle
-              // the first 100 entries.
-              // See: https://developer.mozilla.org/en-US/docs/Web/API/DirectoryReader#readEntries
-              readEntries();
-            }
-            return null;
-          }
-          , errorHandler);
-    };
-
-    return readEntries();
-  }
-
-
-  // If `done()` is called without argument the file is accepted
-  // If you call it with an error message, the file is rejected
-  // (This allows for asynchronous validation)
-  //
-  // This function checks the filesize, and if the file.type passes the
-  // `acceptedFiles` check.
-  accept(file, done) {
-    if (this.options.maxFilesize && file.size > (this.options.maxFilesize * 1024 * 1024)) {
-      return done(this.options.dictFileTooBig.replace("{{filesize}}", Math.round(file.size / 1024 / 10.24) / 100).replace("{{maxFilesize}}", this.options.maxFilesize));
-    } else if (!Dropzone.isValidFile(file, this.options.acceptedFiles)) {
-      return done(this.options.dictInvalidFileType);
-    } else if ((this.options.maxFiles != null) && (this.getAcceptedFiles().length >= this.options.maxFiles)) {
-      done(this.options.dictMaxFilesExceeded.replace("{{maxFiles}}", this.options.maxFiles));
-      return this.emit("maxfilesexceeded", file);
-    } else {
-      return this.options.accept.call(this, file, done);
-    }
-  }
-
-  addFile(file) {
-    file.upload = {
-      uuid: Dropzone.uuidv4(),
-      progress: 0,
-      // Setting the total upload size to file.size for the beginning
-      // It's actual different than the size to be transmitted.
-      total: file.size,
-      bytesSent: 0,
-      filename: this._renameFile(file),
-      chunked: this.options.chunking && (this.options.forceChunking || file.size > this.options.chunkSize),
-      totalChunkCount: Math.ceil(file.size / this.options.chunkSize)
-    };
-    this.files.push(file);
-
-    file.status = Dropzone.ADDED;
-
-    this.emit("addedfile", file);
-
-    this._enqueueThumbnail(file);
-
-    return this.accept(file, error => {
-      if (error) {
-        file.accepted = false;
-        this._errorProcessing([file], error); // Will set the file.status
-      } else {
-        file.accepted = true;
-        if (this.options.autoQueue) {
-          this.enqueueFile(file);
-        } // Will set .accepted = true
-      }
-      return this._updateMaxFilesReachedClass();
-    });
-  }
-
-
-  // Wrapper for enqueueFile
-  enqueueFiles(files) {
-    for (let file of files) {
-      this.enqueueFile(file);
-    }
-    return null;
-  }
-
-  enqueueFile(file) {
-    if ((file.status === Dropzone.ADDED) && (file.accepted === true)) {
-      file.status = Dropzone.QUEUED;
-      if (this.options.autoProcessQueue) {
-        return setTimeout((() => this.processQueue()), 0); // Deferring the call
-      }
-    } else {
-      throw new Error("This file can't be queued because it has already been processed or was rejected.");
-    }
-  }
-
-  _enqueueThumbnail(file) {
-    if (this.options.createImageThumbnails && file.type.match(/image.*/) && (file.size <= (this.options.maxThumbnailFilesize * 1024 * 1024))) {
-      this._thumbnailQueue.push(file);
-      return setTimeout((() => this._processThumbnailQueue()), 0); // Deferring the call
-    }
-  }
-
-  _processThumbnailQueue() {
-    if (this._processingThumbnail || (this._thumbnailQueue.length === 0)) {
-      return;
-    }
-
-    this._processingThumbnail = true;
-    let file = this._thumbnailQueue.shift();
-    return this.createThumbnail(file, this.options.thumbnailWidth, this.options.thumbnailHeight, this.options.thumbnailMethod, true, dataUrl => {
-      this.emit("thumbnail", file, dataUrl);
-      this._processingThumbnail = false;
-      return this._processThumbnailQueue();
-    });
-  }
-
-
-  // Can be called by the user to remove a file
-  removeFile(file) {
-    if (file.status === Dropzone.UPLOADING) {
-      this.cancelUpload(file);
-    }
-    this.files = without(this.files, file);
-
-    this.emit("removedfile", file);
-    if (this.files.length === 0) {
-      return this.emit("reset");
-    }
-  }
-
-  // Removes all files that aren't currently processed from the list
-  removeAllFiles(cancelIfNecessary) {
-    // Create a copy of files since removeFile() changes the @files array.
-    if (cancelIfNecessary == null) {
-      cancelIfNecessary = false;
-    }
-    for (let file of this.files.slice()) {
-      if ((file.status !== Dropzone.UPLOADING) || cancelIfNecessary) {
-        this.removeFile(file);
-      }
-    }
-    return null;
-  }
-
-  // Resizes an image before it gets sent to the server. This function is the default behavior of
-  // `options.transformFile` if `resizeWidth` or `resizeHeight` are set. The callback is invoked with
-  // the resized blob.
-  resizeImage(file, width, height, resizeMethod, callback) {
-    return this.createThumbnail(file, width, height, resizeMethod, true, (dataUrl, canvas) => {
-      if (canvas == null) {
-        // The image has not been resized
-        return callback(file);
-      } else {
-        let {resizeMimeType} = this.options;
-        if (resizeMimeType == null) {
-          resizeMimeType = file.type;
-        }
-        let resizedDataURL = canvas.toDataURL(resizeMimeType, this.options.resizeQuality);
-        if ((resizeMimeType === 'image/jpeg') || (resizeMimeType === 'image/jpg')) {
-          // Now add the original EXIF information
-          resizedDataURL = ExifRestore.restore(file.dataURL, resizedDataURL);
-        }
-        return callback(Dropzone.dataURItoBlob(resizedDataURL));
-      }
-    });
-  }
-
-  createThumbnail(file, width, height, resizeMethod, fixOrientation, callback) {
-    let fileReader = new FileReader;
-
-    fileReader.onload = () => {
-
-      file.dataURL = fileReader.result;
-
-      // Don't bother creating a thumbnail for SVG images since they're vector
-      if (file.type === "image/svg+xml") {
-        if (callback != null) {
-          callback(fileReader.result);
-        }
-        return;
-      }
-
-      return this.createThumbnailFromUrl(file, width, height, resizeMethod, fixOrientation, callback);
-    };
-
-    return fileReader.readAsDataURL(file);
-  }
-
-  createThumbnailFromUrl(file, width, height, resizeMethod, fixOrientation, callback, crossOrigin) {
-    // Not using `new Image` here because of a bug in latest Chrome versions.
-    // See https://github.com/enyo/dropzone/pull/226
-    let img = document.createElement("img");
-
-    if (crossOrigin) {
-      img.crossOrigin = crossOrigin;
-    }
-
-    img.onload = () => {
-      let loadExif = callback => callback(1);
-      if ((typeof EXIF !== 'undefined' && EXIF !== null) && fixOrientation) {
-        loadExif = callback =>
-            EXIF.getData(img, function () {
-              return callback(EXIF.getTag(this, 'Orientation'));
-            })
-        ;
-      }
-
-      return loadExif(orientation => {
-        file.width = img.width;
-        file.height = img.height;
-
-        let resizeInfo = this.options.resize.call(this, file, width, height, resizeMethod);
-
-        let canvas = document.createElement("canvas");
-        let ctx = canvas.getContext("2d");
-
-        canvas.width = resizeInfo.trgWidth;
-        canvas.height = resizeInfo.trgHeight;
-
-        if (orientation > 4) {
-          canvas.width = resizeInfo.trgHeight;
-          canvas.height = resizeInfo.trgWidth;
-        }
-
-        switch (orientation) {
-          case 2:
-            // horizontal flip
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-            break;
-          case 3:
-            // 180° rotate left
-            ctx.translate(canvas.width, canvas.height);
-            ctx.rotate(Math.PI);
-            break;
-          case 4:
-            // vertical flip
-            ctx.translate(0, canvas.height);
-            ctx.scale(1, -1);
-            break;
-          case 5:
-            // vertical flip + 90 rotate right
-            ctx.rotate(0.5 * Math.PI);
-            ctx.scale(1, -1);
-            break;
-          case 6:
-            // 90° rotate right
-            ctx.rotate(0.5 * Math.PI);
-            ctx.translate(0, -canvas.width);
-            break;
-          case 7:
-            // horizontal flip + 90 rotate right
-            ctx.rotate(0.5 * Math.PI);
-            ctx.translate(canvas.height, -canvas.width);
-            ctx.scale(-1, 1);
-            break;
-          case 8:
-            // 90° rotate left
-            ctx.rotate(-0.5 * Math.PI);
-            ctx.translate(-canvas.height, 0);
-            break;
-        }
-
-        // This is a bugfix for iOS' scaling bug.
-        drawImageIOSFix(ctx, img, resizeInfo.srcX != null ? resizeInfo.srcX : 0, resizeInfo.srcY != null ? resizeInfo.srcY : 0, resizeInfo.srcWidth, resizeInfo.srcHeight, resizeInfo.trgX != null ? resizeInfo.trgX : 0, resizeInfo.trgY != null ? resizeInfo.trgY : 0, resizeInfo.trgWidth, resizeInfo.trgHeight);
-
-        let thumbnail = canvas.toDataURL("image/png");
-
-        if (callback != null) {
-          return callback(thumbnail, canvas);
-        }
-      });
-    };
-
-    if (callback != null) {
-      img.onerror = callback;
-    }
-
-    return img.src = file.dataURL;
-  }
-
-
-  // Goes through the queue and processes files if there aren't too many already.
-  processQueue() {
-    let {parallelUploads} = this.options;
-    let processingLength = this.getUploadingFiles().length;
-    let i = processingLength;
-
-    // There are already at least as many files uploading than should be
-    if (processingLength >= parallelUploads) {
-      return;
-    }
-
-    let queuedFiles = this.getQueuedFiles();
-
-    if (!(queuedFiles.length > 0)) {
-      return;
-    }
-
-    if (this.options.uploadMultiple) {
-      // The files should be uploaded in one request
-      return this.processFiles(queuedFiles.slice(0, (parallelUploads - processingLength)));
-    } else {
-      while (i < parallelUploads) {
-        if (!queuedFiles.length) {
-          return;
-        } // Nothing left to process
-        this.processFile(queuedFiles.shift());
-        i++;
-      }
-    }
-  }
-
-
-  // Wrapper for `processFiles`
-  processFile(file) {
-    return this.processFiles([file]);
-  }
-
-
-  // Loads the file, then calls finishedLoading()
-  processFiles(files) {
-    for (let file of files) {
-      file.processing = true; // Backwards compatibility
-      file.status = Dropzone.UPLOADING;
-
-      this.emit("processing", file);
-    }
-
-    if (this.options.uploadMultiple) {
-      this.emit("processingmultiple", files);
-    }
-
-    return this.uploadFiles(files);
-  }
-
-
-  _getFilesWithXhr(xhr) {
-    let files;
-    return files = (this.files.filter((file) => file.xhr === xhr).map((file) => file));
-  }
-
-
-  // Cancels the file upload and sets the status to CANCELED
-  // **if** the file is actually being uploaded.
-  // If it's still in the queue, the file is being removed from it and the status
-  // set to CANCELED.
-  cancelUpload(file) {
-    if (file.status === Dropzone.UPLOADING) {
-      let groupedFiles = this._getFilesWithXhr(file.xhr);
-      for (let groupedFile of groupedFiles) {
-        groupedFile.status = Dropzone.CANCELED;
-      }
-      if (typeof file.xhr !== 'undefined') {
-        file.xhr.abort();
-      }
-      for (let groupedFile of groupedFiles) {
-        this.emit("canceled", groupedFile);
-      }
-      if (this.options.uploadMultiple) {
-        this.emit("canceledmultiple", groupedFiles);
-      }
-
-    } else if (file.status === Dropzone.ADDED || file.status === Dropzone.QUEUED) {
-      file.status = Dropzone.CANCELED;
-      this.emit("canceled", file);
-      if (this.options.uploadMultiple) {
-        this.emit("canceledmultiple", [file]);
-      }
-    }
-
-    if (this.options.autoProcessQueue) {
-      return this.processQueue();
-    }
-  }
-
-  resolveOption(option, ...args) {
-    if (typeof option === 'function') {
-      return option.apply(this, args);
-    }
-    return option;
-  }
-
-  uploadFile(file) { return this.uploadFiles([file]); }
-
-  uploadFiles(files) {
-    this._transformFiles(files, (transformedFiles) => {
-      if (files[0].upload.chunked) {
-        // This file should be sent in chunks!
-
-        // If the chunking option is set, we **know** that there can only be **one** file, since
-        // uploadMultiple is not allowed with this option.
-        let file = files[0];
-        let transformedFile = transformedFiles[0];
-        let startedChunkCount = 0;
-
-        file.upload.chunks = [];
-
-        let handleNextChunk = () => {
-          let chunkIndex = 0;
-
-          // Find the next item in file.upload.chunks that is not defined yet.
-          while (file.upload.chunks[chunkIndex] !== undefined) {
-            chunkIndex++;
-          }
-
-          // This means, that all chunks have already been started.
-          if (chunkIndex >= file.upload.totalChunkCount) return;
-
-          startedChunkCount++;
-
-          let start = chunkIndex * this.options.chunkSize;
-          let end = Math.min(start + this.options.chunkSize, file.size);
-
-          let dataBlock = {
-            name: this._getParamName(0),
-            data: transformedFile.webkitSlice ? transformedFile.webkitSlice(start, end) : transformedFile.slice(start, end),
-            filename: file.upload.filename,
-            chunkIndex: chunkIndex
-          };
-
-          file.upload.chunks[chunkIndex] = {
-            file: file,
-            index: chunkIndex,
-            dataBlock: dataBlock, // In case we want to retry.
-            status: Dropzone.UPLOADING,
-            progress: 0,
-            retries: 0 // The number of times this block has been retried.
-          };
-
-
-          this._uploadData(files, [dataBlock]);
-        };
-
-        file.upload.finishedChunkUpload = (chunk) => {
-          let allFinished = true;
-          chunk.status = Dropzone.SUCCESS;
-
-          // Clear the data from the chunk
-          chunk.dataBlock = null;
-          // Leaving this reference to xhr intact here will cause memory leaks in some browsers
-          chunk.xhr = null;
-
-          for (let i = 0; i < file.upload.totalChunkCount; i ++) {
-            if (file.upload.chunks[i] === undefined) {
-              return handleNextChunk();
-            }
-            if (file.upload.chunks[i].status !== Dropzone.SUCCESS) {
-              allFinished = false;
-            }
-          }
-
-          if (allFinished) {
-            this.options.chunksUploaded(file, () => {
-              this._finished(files, '', null);
-            });
-          }
-        };
-
-        if (this.options.parallelChunkUploads) {
-          for (let i = 0; i < file.upload.totalChunkCount; i++) {
-            handleNextChunk();
-          }
-        }
-        else {
-          handleNextChunk();
-        }
-      } else {
-        let dataBlocks = [];
-        for (let i = 0; i < files.length; i++) {
-          dataBlocks[i] = {
-            name: this._getParamName(i),
-            data: transformedFiles[i],
-            filename: files[i].upload.filename
-          };
-        }
-        this._uploadData(files, dataBlocks);
-      }
-    });
-  }
-
-  /// Returns the right chunk for given file and xhr
-  _getChunk(file, xhr) {
-    for (let i = 0; i < file.upload.totalChunkCount; i++) {
-      if (file.upload.chunks[i] !== undefined && file.upload.chunks[i].xhr === xhr) {
-        return file.upload.chunks[i];
-      }
-    }
-  }
-
-  // This function actually uploads the file(s) to the server.
-  // If dataBlocks contains the actual data to upload (meaning, that this could either be transformed
-  // files, or individual chunks for chunked upload).
-  _uploadData(files, dataBlocks) {
-    let xhr = new XMLHttpRequest();
-
-    // Put the xhr object in the file objects to be able to reference it later.
-    for (let file of files) {
-      file.xhr = xhr;
-    }
-    if (files[0].upload.chunked) {
-      // Put the xhr object in the right chunk object, so it can be associated later, and found with _getChunk
-      files[0].upload.chunks[dataBlocks[0].chunkIndex].xhr = xhr;
-    }
-
-    let method = this.resolveOption(this.options.method, files);
-    let url = this.resolveOption(this.options.url, files);
-    xhr.open(method, url, true);
-
-    // Setting the timeout after open because of IE11 issue: https://gitlab.com/meno/dropzone/issues/8
-    xhr.timeout = this.resolveOption(this.options.timeout, files);
-
-    // Has to be after `.open()`. See https://github.com/enyo/dropzone/issues/179
-    xhr.withCredentials = !!this.options.withCredentials;
-
-
-    xhr.onload = e => {
-      this._finishedUploading(files, xhr, e);
-    };
-
-    xhr.onerror = () => {
-      this._handleUploadError(files, xhr);
-    };
-
-    // Some browsers do not have the .upload property
-    let progressObj = xhr.upload != null ? xhr.upload : xhr;
-    progressObj.onprogress = (e) => this._updateFilesUploadProgress(files, xhr, e);
-
-    let headers = {
-      "Accept": "application/json",
-      "Cache-Control": "no-cache",
-      "X-Requested-With": "XMLHttpRequest",
-    };
-
-    if (this.options.headers) {
-      Dropzone.extend(headers, this.options.headers);
-    }
-
-    for (let headerName in headers) {
-      let headerValue = headers[headerName];
-      if (headerValue) {
-        xhr.setRequestHeader(headerName, headerValue);
-      }
-    }
-
-    let formData = new FormData();
-
-    // Adding all @options parameters
-    if (this.options.params) {
-      let additionalParams = this.options.params;
-      if (typeof additionalParams === 'function') {
-        additionalParams = additionalParams.call(this, files, xhr, files[0].upload.chunked ? this._getChunk(files[0], xhr) : null);
-      }
-
-      for (let key in additionalParams) {
-        let value = additionalParams[key];
-        formData.append(key, value);
-      }
-    }
-
-    // Let the user add additional data if necessary
-    for (let file of files) {
-      this.emit("sending", file, xhr, formData);
-    }
-    if (this.options.uploadMultiple) {
-      this.emit("sendingmultiple", files, xhr, formData);
-    }
-
-
-    this._addFormElementData(formData);
-
-
-    // Finally add the files
-    // Has to be last because some servers (eg: S3) expect the file to be the last parameter
-    for (let i = 0; i < dataBlocks.length; i++) {
-      let dataBlock = dataBlocks[i];
-      formData.append(dataBlock.name, dataBlock.data, dataBlock.filename);
-    }
-
-    this.submitRequest(xhr, formData, files);
-  }
-
-
-  // Transforms all files with this.options.transformFile and invokes done with the transformed files when done.
-  _transformFiles(files, done) {
-    let transformedFiles = [];
-    // Clumsy way of handling asynchronous calls, until I get to add a proper Future library.
-    let doneCounter = 0;
-    for (let i = 0; i < files.length; i++) {
-      this.options.transformFile.call(this, files[i], (transformedFile) => {
-        transformedFiles[i] = transformedFile;
-        if (++doneCounter === files.length) {
-          done(transformedFiles);
-        }
-      });
-    }
-  }
-
-  // Takes care of adding other input elements of the form to the AJAX request
-  _addFormElementData(formData) {
-    // Take care of other input elements
-    if (this.element.tagName === "FORM") {
-      for (let input of this.element.querySelectorAll("input, textarea, select, button")) {
-        let inputName = input.getAttribute("name");
-        let inputType = input.getAttribute("type");
-        if (inputType) inputType = inputType.toLowerCase();
-
-        // If the input doesn't have a name, we can't use it.
-        if (typeof inputName === 'undefined' || inputName === null) continue;
-
-        if ((input.tagName === "SELECT") && input.hasAttribute("multiple")) {
-          // Possibly multiple values
-          for (let option of input.options) {
-            if (option.selected) {
-              formData.append(inputName, option.value);
-            }
-          }
-        } else if (!inputType || (inputType !== "checkbox" && inputType !== "radio") || input.checked) {
-          formData.append(inputName, input.value);
-        }
-      }
-    }
-  }
-
-  // Invoked when there is new progress information about given files.
-  // If e is not provided, it is assumed that the upload is finished.
-  _updateFilesUploadProgress(files, xhr, e) {
-    let progress;
-    if (typeof e !== 'undefined') {
-      progress = (100 * e.loaded) / e.total;
-
-      if (files[0].upload.chunked) {
-        let file = files[0];
-        // Since this is a chunked upload, we need to update the appropriate chunk progress.
-        let chunk = this._getChunk(file, xhr);
-        chunk.progress = progress;
-        chunk.total = e.total;
-        chunk.bytesSent = e.loaded;
-        let fileProgress = 0, fileTotal, fileBytesSent;
-        file.upload.progress = 0;
-        file.upload.total = 0;
-        file.upload.bytesSent = 0;
-        for (let i = 0; i < file.upload.totalChunkCount; i++) {
-          if (file.upload.chunks[i] !== undefined && file.upload.chunks[i].progress !== undefined) {
-            file.upload.progress += file.upload.chunks[i].progress;
-            file.upload.total += file.upload.chunks[i].total;
-            file.upload.bytesSent += file.upload.chunks[i].bytesSent;
-          }
-        }
-        file.upload.progress = file.upload.progress / file.upload.totalChunkCount;
-      } else {
-        for (let file of files) {
-          file.upload.progress = progress;
-          file.upload.total = e.total;
-          file.upload.bytesSent = e.loaded;
-        }
-      }
-      for (let file of files) {
-        this.emit("uploadprogress", file, file.upload.progress, file.upload.bytesSent);
-      }
-    } else {
-      // Called when the file finished uploading
-
-      let allFilesFinished = true;
-
-      progress = 100;
-
-      for (let file of files) {
-        if ((file.upload.progress !== 100) || (file.upload.bytesSent !== file.upload.total)) {
-          allFilesFinished = false;
-        }
-        file.upload.progress = progress;
-        file.upload.bytesSent = file.upload.total;
-      }
-
-      // Nothing to do, all files already at 100%
-      if (allFilesFinished) {
-        return;
-      }
-
-      for (let file of files) {
-        this.emit("uploadprogress", file, progress, file.upload.bytesSent);
-      }
-    }
-
-  }
-
-
-  _finishedUploading(files, xhr, e) {
-    let response;
-
-    if (files[0].status === Dropzone.CANCELED) {
-      return;
-    }
-
-    if (xhr.readyState !== 4) {
-      return;
-    }
-
-    if ((xhr.responseType !== 'arraybuffer') && (xhr.responseType !== 'blob')) {
-      response = xhr.responseText;
-
-      if (xhr.getResponseHeader("content-type") && ~xhr.getResponseHeader("content-type").indexOf("application/json")) {
-        try {
-          response = JSON.parse(response);
-        } catch (error) {
-          e = error;
-          response = "Invalid JSON response from server.";
-        }
-      }
-    }
-
-    this._updateFilesUploadProgress(files);
-
-    if (!(200 <= xhr.status && xhr.status < 300)) {
-      this._handleUploadError(files, xhr, response);
-    } else {
-      if (files[0].upload.chunked) {
-        files[0].upload.finishedChunkUpload(this._getChunk(files[0], xhr));
-      } else {
-        this._finished(files, response, e);
-      }
-    }
-  }
-
-  _handleUploadError(files, xhr, response) {
-    if (files[0].status === Dropzone.CANCELED) {
-      return;
-    }
-
-    if (files[0].upload.chunked && this.options.retryChunks) {
-      let chunk = this._getChunk(files[0], xhr);
-      if (chunk.retries++ < this.options.retryChunksLimit) {
-        this._uploadData(files, [chunk.dataBlock]);
-        return;
-      } else {
-        console.warn('Retried this chunk too often. Giving up.')
-      }
-    }
-
-    for (let file of files) {
-      this._errorProcessing(files, response || this.options.dictResponseError.replace("{{statusCode}}", xhr.status), xhr);
-    }
-  }
-
-  submitRequest(xhr, formData, files) {
-    xhr.send(formData);
-  }
-
-  // Called internally when processing is finished.
-  // Individual callbacks have to be called in the appropriate sections.
-  _finished(files, responseText, e) {
-    for (let file of files) {
-      file.status = Dropzone.SUCCESS;
-      this.emit("success", file, responseText, e);
-      this.emit("complete", file);
-    }
-    if (this.options.uploadMultiple) {
-      this.emit("successmultiple", files, responseText, e);
-      this.emit("completemultiple", files);
-    }
-
-    if (this.options.autoProcessQueue) {
-      return this.processQueue();
-    }
-  }
-
-  // Called internally when processing is finished.
-  // Individual callbacks have to be called in the appropriate sections.
-  _errorProcessing(files, message, xhr) {
-    for (let file of files) {
-      file.status = Dropzone.ERROR;
-      this.emit("error", file, message, xhr);
-      this.emit("complete", file);
-    }
-    if (this.options.uploadMultiple) {
-      this.emit("errormultiple", files, message, xhr);
-      this.emit("completemultiple", files);
-    }
-
-    if (this.options.autoProcessQueue) {
-      return this.processQueue();
-    }
-  }
-
-  static uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  };
-}
-Dropzone.initClass();
-
-
-Dropzone.version = "5.5.0";
-
-
-// This is a map of options for your different dropzones. Add configurations
-// to this object for your different dropzone elemens.
-//
-// Example:
-//
-//     Dropzone.options.myDropzoneElementId = { maxFilesize: 1 };
-//
-// To disable autoDiscover for a specific element, you can set `false` as an option:
-//
-//     Dropzone.options.myDisabledElementId = false;
-//
-// And in html:
-//
-//     <form action="/upload" id="my-dropzone-element-id" class="dropzone"></form>
-Dropzone.options = {};
-
-
-// Returns the options for an element or undefined if none available.
-Dropzone.optionsForElement = function (element) {
-  // Get the `Dropzone.options.elementId` for this element if it exists
-  if (element.getAttribute("id")) {
-    return Dropzone.options[camelize(element.getAttribute("id"))];
-  } else {
-    return undefined;
-  }
-};
-
-
-// Holds a list of all dropzone instances
-Dropzone.instances = [];
-
-// Returns the dropzone for given element if any
-Dropzone.forElement = function (element) {
-  if (typeof element === "string") {
-    element = document.querySelector(element);
-  }
-  if ((element != null ? element.dropzone : undefined) == null) {
-    throw new Error("No Dropzone found for given element. This is probably because you're trying to access it before Dropzone had the time to initialize. Use the `init` option to setup any additional observers on your Dropzone.");
-  }
-  return element.dropzone;
-};
-
-
-// Set to false if you don't want Dropzone to automatically find and attach to .dropzone elements.
-Dropzone.autoDiscover = true;
-
-// Looks for all .dropzone elements and creates a dropzone for them
-Dropzone.discover = function () {
-  let dropzones;
-  if (document.querySelectorAll) {
-    dropzones = document.querySelectorAll(".dropzone");
-  } else {
-    dropzones = [];
-    // IE :(
-    let checkElements = elements =>
-        (() => {
-          let result = [];
-          for (let el of elements) {
-            if (/(^| )dropzone($| )/.test(el.className)) {
-              result.push(dropzones.push(el));
-            } else {
-              result.push(undefined);
-            }
-          }
-          return result;
-        })()
-    ;
-    checkElements(document.getElementsByTagName("div"));
-    checkElements(document.getElementsByTagName("form"));
-  }
-
-  return (() => {
-    let result = [];
-    for (let dropzone of dropzones) {
-      // Create a dropzone unless auto discover has been disabled for specific element
-      if (Dropzone.optionsForElement(dropzone) !== false) {
-        result.push(new Dropzone(dropzone));
-      } else {
-        result.push(undefined);
-      }
-    }
-    return result;
-  })();
-};
-
-
-// Since the whole Drag'n'Drop API is pretty new, some browsers implement it,
-// but not correctly.
-// So I created a blacklist of userAgents. Yes, yes. Browser sniffing, I know.
-// But what to do when browsers *theoretically* support an API, but crash
-// when using it.
-//
-// This is a list of regular expressions tested against navigator.userAgent
-//
-// ** It should only be used on browser that *do* support the API, but
-// incorrectly **
-//
-Dropzone.blacklistedBrowsers = [
-  // The mac os and windows phone version of opera 12 seems to have a problem with the File drag'n'drop API.
-  /opera.*(Macintosh|Windows Phone).*version\/12/i
-];
-
-
-// Checks if the browser is supported
-Dropzone.isBrowserSupported = function () {
-  let capableBrowser = true;
-
-  if (window.File && window.FileReader && window.FileList && window.Blob && window.FormData && document.querySelector) {
-    if (!("classList" in document.createElement("a"))) {
-      capableBrowser = false;
-    } else {
-      // The browser supports the API, but may be blacklisted.
-      for (let regex of Dropzone.blacklistedBrowsers) {
-        if (regex.test(navigator.userAgent)) {
-          capableBrowser = false;
-          continue;
-        }
-      }
-    }
-  } else {
-    capableBrowser = false;
-  }
-
-  return capableBrowser;
-};
-
-Dropzone.dataURItoBlob = function (dataURI) {
-  // convert base64 to raw binary data held in a string
-  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-  let byteString = atob(dataURI.split(',')[1]);
-
-  // separate out the mime component
-  let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-  // write the bytes of the string to an ArrayBuffer
-  let ab = new ArrayBuffer(byteString.length);
-  let ia = new Uint8Array(ab);
-  for (let i = 0, end = byteString.length, asc = 0 <= end; asc ? i <= end : i >= end; asc ? i++ : i--) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-
-  // write the ArrayBuffer to a blob
-  return new Blob([ab], {type: mimeString});
-};
-
-// Returns an array without the rejected item
-const without = (list, rejectedItem) => list.filter((item) => item !== rejectedItem).map((item) => item);
-
-// abc-def_ghi -> abcDefGhi
-const camelize = str => str.replace(/[\-_](\w)/g, match => match.charAt(1).toUpperCase());
-
-// Creates an element from string
-Dropzone.createElement = function (string) {
-  let div = document.createElement("div");
-  div.innerHTML = string;
-  return div.childNodes[0];
-};
-
-// Tests if given element is inside (or simply is) the container
-Dropzone.elementInside = function (element, container) {
-  if (element === container) {
-    return true;
-  } // Coffeescript doesn't support do/while loops
-  while ((element = element.parentNode)) {
-    if (element === container) {
-      return true;
-    }
-  }
-  return false;
-};
-
-
-Dropzone.getElement = function (el, name) {
-  let element;
-  if (typeof el === "string") {
-    element = document.querySelector(el);
-  } else if (el.nodeType != null) {
-    element = el;
-  }
-  if (element == null) {
-    throw new Error(`Invalid \`${name}\` option provided. Please provide a CSS selector or a plain HTML element.`);
-  }
-  return element;
-};
-
-
-Dropzone.getElements = function (els, name) {
-  let el, elements;
-  if (els instanceof Array) {
-    elements = [];
-    try {
-      for (el of els) {
-        elements.push(this.getElement(el, name));
-      }
-    } catch (e) {
-      elements = null;
-    }
-  } else if (typeof els === "string") {
-    elements = [];
-    for (el of document.querySelectorAll(els)) {
-      elements.push(el);
-    }
-  } else if (els.nodeType != null) {
-    elements = [els];
-  }
-
-  if ((elements == null) || !elements.length) {
-    throw new Error(`Invalid \`${name}\` option provided. Please provide a CSS selector, a plain HTML element or a list of those.`);
-  }
-
-  return elements;
-};
-
-// Asks the user the question and calls accepted or rejected accordingly
-//
-// The default implementation just uses `window.confirm` and then calls the
-// appropriate callback.
-Dropzone.confirm = function (question, accepted, rejected) {
-  if (window.confirm(question)) {
-    return accepted();
-  } else if (rejected != null) {
-    return rejected();
-  }
-};
-
-// Validates the mime type like this:
-//
-// https://developer.mozilla.org/en-US/docs/HTML/Element/input#attr-accept
-Dropzone.isValidFile = function (file, acceptedFiles) {
-  if (!acceptedFiles) {
-    return true;
-  } // If there are no accepted mime types, it's OK
-  acceptedFiles = acceptedFiles.split(",");
-
-  let mimeType = file.type;
-  let baseMimeType = mimeType.replace(/\/.*$/, "");
-
-  for (let validType of acceptedFiles) {
-    validType = validType.trim();
-    if (validType.charAt(0) === ".") {
-      if (file.name.toLowerCase().indexOf(validType.toLowerCase(), file.name.length - validType.length) !== -1) {
-        return true;
-      }
-    } else if (/\/\*$/.test(validType)) {
-      // This is something like a image/* mime type
-      if (baseMimeType === validType.replace(/\/.*$/, "")) {
-        return true;
-      }
-    } else {
-      if (mimeType === validType) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-};
-
-// Augment jQuery
-if (typeof jQuery !== 'undefined' && jQuery !== null) {
-  jQuery.fn.dropzone = function (options) {
-    return this.each(function () {
-      return new Dropzone(this, options);
-    });
-  };
-}
-
-
-if (typeof module !== 'undefined' && module !== null) {
-  module.exports = Dropzone;
-} else {
-  window.Dropzone = Dropzone;
-}
-
-
-// Dropzone file status codes
-Dropzone.ADDED = "added";
-
-Dropzone.QUEUED = "queued";
-// For backwards compatibility. Now, if a file is accepted, it's either queued
-// or uploading.
-Dropzone.ACCEPTED = Dropzone.QUEUED;
-
-Dropzone.UPLOADING = "uploading";
-Dropzone.PROCESSING = Dropzone.UPLOADING; // alias
-
-Dropzone.CANCELED = "canceled";
-Dropzone.ERROR = "error";
-Dropzone.SUCCESS = "success";
-
-
-/*
-
- Bugfix for iOS 6 and 7
- Source: http://stackoverflow.com/questions/11929099/html5-canvas-drawimage-ratio-bug-ios
- based on the work of https://github.com/stomita/ios-imagefile-megapixel
-
- */
-
-// Detecting vertical squash in loaded image.
-// Fixes a bug which squash image vertically while drawing into canvas for some images.
-// This is a bug in iOS6 devices. This function from https://github.com/stomita/ios-imagefile-megapixel
-let detectVerticalSquash = function (img) {
-  let iw = img.naturalWidth;
-  let ih = img.naturalHeight;
-  let canvas = document.createElement("canvas");
-  canvas.width = 1;
-  canvas.height = ih;
-  let ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0);
-  let {data} = ctx.getImageData(1, 0, 1, ih);
-
-
-  // search image edge pixel position in case it is squashed vertically.
-  let sy = 0;
-  let ey = ih;
-  let py = ih;
-  while (py > sy) {
-    let alpha = data[((py - 1) * 4) + 3];
-
-    if (alpha === 0) {
-      ey = py;
-    } else {
-      sy = py;
-    }
-
-    py = (ey + sy) >> 1;
-  }
-  let ratio = (py / ih);
-
-  if (ratio === 0) {
-    return 1;
-  } else {
-    return ratio;
-  }
-};
-
-// A replacement for context.drawImage
-// (args are for source and destination).
-var drawImageIOSFix = function (ctx, img, sx, sy, sw, sh, dx, dy, dw, dh) {
-  let vertSquashRatio = detectVerticalSquash(img);
-  return ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh / vertSquashRatio);
-};
-
-
-// Based on MinifyJpeg
-// Source: http://www.perry.cz/files/ExifRestorer.js
-// http://elicon.blog57.fc2.com/blog-entry-206.html
-class ExifRestore {
-  static initClass() {
-    this.KEY_STR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-  }
-
-  static encode64(input) {
-    let output = '';
-    let chr1 = undefined;
-    let chr2 = undefined;
-    let chr3 = '';
-    let enc1 = undefined;
-    let enc2 = undefined;
-    let enc3 = undefined;
-    let enc4 = '';
-    let i = 0;
-    while (true) {
-      chr1 = input[i++];
-      chr2 = input[i++];
-      chr3 = input[i++];
-      enc1 = chr1 >> 2;
-      enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-      enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-      enc4 = chr3 & 63;
-      if (isNaN(chr2)) {
-        enc3 = (enc4 = 64);
-      } else if (isNaN(chr3)) {
-        enc4 = 64;
-      }
-      output = output + this.KEY_STR.charAt(enc1) + this.KEY_STR.charAt(enc2) + this.KEY_STR.charAt(enc3) + this.KEY_STR.charAt(enc4);
-      chr1 = (chr2 = (chr3 = ''));
-      enc1 = (enc2 = (enc3 = (enc4 = '')));
-      if (!(i < input.length)) {
-        break;
-      }
-    }
-    return output;
-  }
-
-  static restore(origFileBase64, resizedFileBase64) {
-    if (!origFileBase64.match('data:image/jpeg;base64,')) {
-      return resizedFileBase64;
-    }
-    let rawImage = this.decode64(origFileBase64.replace('data:image/jpeg;base64,', ''));
-    let segments = this.slice2Segments(rawImage);
-    let image = this.exifManipulation(resizedFileBase64, segments);
-    return `data:image/jpeg;base64,${this.encode64(image)}`;
-  }
-
-  static exifManipulation(resizedFileBase64, segments) {
-    let exifArray = this.getExifArray(segments);
-    let newImageArray = this.insertExif(resizedFileBase64, exifArray);
-    let aBuffer = new Uint8Array(newImageArray);
-    return aBuffer;
-  }
-
-  static getExifArray(segments) {
-    let seg = undefined;
-    let x = 0;
-    while (x < segments.length) {
-      seg = segments[x];
-      if ((seg[0] === 255) & (seg[1] === 225)) {
-        return seg;
-      }
-      x++;
-    }
-    return [];
-  }
-
-  static insertExif(resizedFileBase64, exifArray) {
-    let imageData = resizedFileBase64.replace('data:image/jpeg;base64,', '');
-    let buf = this.decode64(imageData);
-    let separatePoint = buf.indexOf(255, 3);
-    let mae = buf.slice(0, separatePoint);
-    let ato = buf.slice(separatePoint);
-    let array = mae;
-    array = array.concat(exifArray);
-    array = array.concat(ato);
-    return array;
-  }
-
-  static slice2Segments(rawImageArray) {
-    let head = 0;
-    let segments = [];
-    while (true) {
-      var length;
-      if ((rawImageArray[head] === 255) & (rawImageArray[head + 1] === 218)) {
-        break;
-      }
-      if ((rawImageArray[head] === 255) & (rawImageArray[head + 1] === 216)) {
-        head += 2;
-      } else {
-        length = (rawImageArray[head + 2] * 256) + rawImageArray[head + 3];
-        let endPoint = head + length + 2;
-        let seg = rawImageArray.slice(head, endPoint);
-        segments.push(seg);
-        head = endPoint;
-      }
-      if (head > rawImageArray.length) {
-        break;
-      }
-    }
-    return segments;
-  }
-
-  static decode64(input) {
-    let output = '';
-    let chr1 = undefined;
-    let chr2 = undefined;
-    let chr3 = '';
-    let enc1 = undefined;
-    let enc2 = undefined;
-    let enc3 = undefined;
-    let enc4 = '';
-    let i = 0;
-    let buf = [];
-    // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
-    let base64test = /[^A-Za-z0-9\+\/\=]/g;
-    if (base64test.exec(input)) {
-      console.warn('There were invalid base64 characters in the input text.\nValid base64 characters are A-Z, a-z, 0-9, \'+\', \'/\',and \'=\'\nExpect errors in decoding.');
-    }
-    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
-    while (true) {
-      enc1 = this.KEY_STR.indexOf(input.charAt(i++));
-      enc2 = this.KEY_STR.indexOf(input.charAt(i++));
-      enc3 = this.KEY_STR.indexOf(input.charAt(i++));
-      enc4 = this.KEY_STR.indexOf(input.charAt(i++));
-      chr1 = (enc1 << 2) | (enc2 >> 4);
-      chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-      chr3 = ((enc3 & 3) << 6) | enc4;
-      buf.push(chr1);
-      if (enc3 !== 64) {
-        buf.push(chr2);
-      }
-      if (enc4 !== 64) {
-        buf.push(chr3);
-      }
-      chr1 = (chr2 = (chr3 = ''));
-      enc1 = (enc2 = (enc3 = (enc4 = '')));
-      if (!(i < input.length)) {
-        break;
-      }
-    }
-    return buf;
-  }
-}
-ExifRestore.initClass();
-
-
-/*
- * contentloaded.js
- *
- * Author: Diego Perini (diego.perini at gmail.com)
- * Summary: cross-browser wrapper for DOMContentLoaded
- * Updated: 20101020
- * License: MIT
- * Version: 1.2
- *
- * URL:
- * http://javascript.nwbox.com/ContentLoaded/
- * http://javascript.nwbox.com/ContentLoaded/MIT-LICENSE
- */
-
-// @win window reference
-// @fn function reference
-let contentLoaded = function (win, fn) {
-  let done = false;
-  let top = true;
-  let doc = win.document;
-  let root = doc.documentElement;
-  let add = (doc.addEventListener ? "addEventListener" : "attachEvent");
-  let rem = (doc.addEventListener ? "removeEventListener" : "detachEvent");
-  let pre = (doc.addEventListener ? "" : "on");
-  var init = function (e) {
-    if ((e.type === "readystatechange") && (doc.readyState !== "complete")) {
-      return;
-    }
-    ((e.type === "load" ? win : doc))[rem](pre + e.type, init, false);
-    if (!done && (done = true)) {
-      return fn.call(win, e.type || e);
-    }
-  };
-
-  var poll = function () {
-    try {
-      root.doScroll("left");
-    } catch (e) {
-      setTimeout(poll, 50);
-      return;
-    }
-    return init("poll");
-  };
-
-  if (doc.readyState !== "complete") {
-    if (doc.createEventObject && root.doScroll) {
-      try {
-        top = !win.frameElement;
-      } catch (error) {
-      }
-      if (top) {
-        poll();
-      }
-    }
-    doc[add](pre + "DOMContentLoaded", init, false);
-    doc[add](pre + "readystatechange", init, false);
-    return win[add](pre + "load", init, false);
-  }
-};
-
-
-// As a single function to be able to write tests.
-Dropzone._autoDiscoverFunction = function () {
-  if (Dropzone.autoDiscover) {
-    return Dropzone.discover();
-  }
-};
-contentLoaded(window, Dropzone._autoDiscoverFunction);
-
-function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
-}
-function __guardMethod__(obj, methodName, transform) {
-  if (typeof obj !== 'undefined' && obj !== null && typeof obj[methodName] === 'function') {
-    return transform(obj, methodName);
-  } else {
-    return undefined;
-  }
-}

@@ -7,18 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-29 16:02+0000\n"
-"PO-Revision-Date: 2018-09-29 17:51+0200\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2018-10-16 17:26+0000\n"
+"PO-Revision-Date: 2018-10-16 19:26+0200\n"
+"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 1.8.11\n"
 
-#: twitterfeed/admin.py:12 twitterfeed/models.py:46
+#: twitterfeed/admin.py:12 twitterfeed/models.py:50
 msgid "show on site"
 msgstr "Auf der Webseite anzeigen"
 
@@ -26,7 +26,7 @@ msgstr "Auf der Webseite anzeigen"
 msgid "hide on site"
 msgstr "Nicht auf der Webseite anzeigen"
 
-#: twitterfeed/models.py:10
+#: twitterfeed/models.py:9
 msgid "setting name"
 msgstr "Name der Einstellung"
 
@@ -42,18 +42,18 @@ msgstr "Twitter-Einstellung"
 msgid "Twitter settings"
 msgstr "Twitter-Einstellungen"
 
-#: twitterfeed/models.py:29
+#: twitterfeed/models.py:31
 msgid "Twitter profile image"
 msgstr "Twitter-Profilbild"
 
-#: twitterfeed/models.py:30
+#: twitterfeed/models.py:32
 msgid "Twitter profile images"
 msgstr "Twitter-Profilbilder"
 
-#: twitterfeed/models.py:49
+#: twitterfeed/models.py:53
 msgid "Tweet"
 msgstr "Tweet"
 
-#: twitterfeed/models.py:50
+#: twitterfeed/models.py:54
 msgid "Tweets"
 msgstr "Tweets"

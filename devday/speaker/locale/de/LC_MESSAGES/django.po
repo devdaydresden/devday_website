@@ -1,0 +1,228 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-16 17:26+0000\n"
+"PO-Revision-Date: 2018-10-16 19:33+0200\n"
+"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: speaker/apps.py:9 speaker/tests/test_appconfig.py:10
+msgid "Speaker management"
+msgstr "Sprecherverwaltung"
+
+#: speaker/forms.py:58 speaker/forms.py:93
+msgid "How should we present your name to the audience?"
+msgstr "Wie sollen wir dem Publikum deinen Namen anzeigen?"
+
+#: speaker/forms.py:60 speaker/forms.py:95
+msgid ""
+"Tell your audience who you are and what you want people to know about you."
+msgstr ""
+"Erzähl dem Publikum etwas über dich und das was die Leute von dir wissen "
+"sollen."
+
+#: speaker/forms.py:70
+msgid "Register as speaker"
+msgstr "Als Sprecher anmelden"
+
+#: speaker/forms.py:72
+msgid ""
+"<p class=\"text-info\">By registering as a speaker, I agree to be contacted "
+"by the Dev Day organizers about conference details and my talk submissions.</"
+"p>"
+msgstr ""
+"<p class=\"text-info\">Mit der Registrierung als Sprecher stimme ich zu, "
+"dass die Dev Day Organisatoren zu Details zur Konferenz und meinen "
+"Sessioneinreichungen Kontakt mit mir aufnehmen dürfen.</p>"
+
+#: speaker/forms.py:105
+msgid "Update your speaker details"
+msgstr "Aktualisiere deine Sprecherdetails"
+
+#: speaker/forms.py:126
+msgid "Submit your portrait"
+msgstr "Lade dein Foto hoch"
+
+#: speaker/forms.py:129
+msgid "Skip upload"
+msgstr "Hochladen überspringen"
+
+#: speaker/models.py:17
+msgid "XS"
+msgstr "XS"
+
+#: speaker/models.py:18
+msgid "S"
+msgstr "S"
+
+#: speaker/models.py:19
+msgid "M"
+msgstr "M"
+
+#: speaker/models.py:20
+msgid "L"
+msgstr "L"
+
+#: speaker/models.py:21
+msgid "XL"
+msgstr "XL"
+
+#: speaker/models.py:22
+msgid "XXL"
+msgstr "XXL"
+
+#: speaker/models.py:23
+msgid "XXXL"
+msgstr "XXXL"
+
+#: speaker/models.py:28
+msgid "speaker name"
+msgstr "Sprechername"
+
+#: speaker/models.py:29
+msgid "slug"
+msgstr "Slug"
+
+#: speaker/models.py:31
+msgid "twitter handle"
+msgstr "Twitter-Handle"
+
+#: speaker/models.py:32
+msgid "Phone"
+msgstr "Telefon"
+
+#: speaker/models.py:34
+msgid "job or study subject"
+msgstr "Beruf oder Studiengang"
+
+#: speaker/models.py:36
+msgid "company or institution"
+msgstr "Firma oder Institution"
+
+#: speaker/models.py:39
+msgid "Video permitted"
+msgstr "Videoerlaubnis erteilt"
+
+#: speaker/models.py:40
+msgid ""
+"I hereby agree that audio and visual recordings of me and my session can be "
+"published on the social media channels of the event organizer and the "
+"website devday.de."
+msgstr ""
+"Ich stimme hiermit zu, dass Ton- und Videoaufzeichnungen von mir und meiner "
+"Session auf den Social-Media-Kanälen des Veranstalters und auf der Webseite "
+"devday.de verwendet werden dürfen."
+
+#: speaker/models.py:45
+msgid "Short biography"
+msgstr "Kurzvita"
+
+#: speaker/models.py:61
+msgid "registered as speaker"
+msgstr "Als Sprecher angemeldet"
+
+#: speaker/models.py:63 speaker/models.py:200
+#: speaker/templates/speaker/speaker_user_profile.html:30
+msgid "Speaker image"
+msgstr "Speakerbild"
+
+#: speaker/models.py:65 speaker/models.py:203
+msgid "Speaker image thumbnail"
+msgstr "Vorschau Speakerbild"
+
+#: speaker/models.py:69 speaker/models.py:207
+msgid "Public speaker image"
+msgstr "Öffentliches Speakerbild"
+
+#: speaker/models.py:73
+msgid "T-shirt size"
+msgstr "T-Shirtgröße"
+
+#: speaker/models.py:76
+msgid "speaker"
+msgstr "Sprecher"
+
+#: speaker/models.py:77
+msgid "speakers"
+msgstr "Sprecher"
+
+#: speaker/models.py:197
+msgid "published as speaker"
+msgstr "Als Sprecher veröffentlicht"
+
+#: speaker/models.py:210
+msgid "email address"
+msgstr "E-Mailadresse"
+
+#: speaker/models.py:215
+msgid "published speaker"
+msgstr "veröffentlichter Sprecher"
+
+#: speaker/models.py:216
+msgid "published speakers"
+msgstr "veröffentlichte Sprecher"
+
+#: speaker/templates/speaker/publishedspeaker_detail.html:17
+#, python-format
+msgid ""
+"Talks:\n"
+"                        %(event)s"
+msgstr ""
+"Sessions:\n"
+"                        %(event)s"
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:5
+msgid "Delete speaker image"
+msgstr "Öffentliches Sprecherfoto löschen"
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:7
+msgid "Do you want to delete your speaker image?"
+msgstr "Willst du dein Sprecherfoto löschen?"
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:9
+msgid "Your current speaker image."
+msgstr "Dein aktuelles Sprecherfoto"
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:15
+msgid "Yes please."
+msgstr "Ja bitte."
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:18
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:14
+msgid "Submit session"
+msgstr "Eine Session einreichen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:18
+#, python-format
+msgid ""
+"Submit a session for <a href=\"%(submit_talk_url)s\">%(event_title)s</a>."
+msgstr ""
+"Reiche eine Session für <a href=\"%(submit_talk_url)s\">%(event_title)s</a> "
+"ein."
+
+#: speaker/templates/speaker/speaker_user_profile.html:21
+msgid "Submit a session for one of these events:"
+msgstr "Eine Session für eine dieser Veranstaltungen einreichen:"
+
+#: speaker/templates/speaker/speaker_user_profile.html:33
+msgid "Upload new image"
+msgstr "Neues Sprechefoto hochladen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:35
+msgid "Delete image"
+msgstr "Sprecherfoto löschen"

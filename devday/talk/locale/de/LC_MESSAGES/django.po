@@ -7,245 +7,182 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-05 20:56+0000\n"
-"PO-Revision-Date: 2018-10-05 22:44+0200\n"
-"Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
+"POT-Creation-Date: 2018-10-16 17:26+0000\n"
+"PO-Revision-Date: 2018-10-16 19:27+0200\n"
+"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:41 talk/admin.py:83 talk/admin.py:105 talk/models.py:139
-#: talk/models.py:217 talk/models.py:234
+#: talk/admin.py:55 talk/models.py:32 talk/models.py:60 talk/models.py:137
+#: talk/models.py:155
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: talk/admin.py:46
-msgid "Fullname"
-msgstr "Voller Name"
-
-#: talk/forms.py:35
-msgid "Speaker portrait"
-msgstr "Speakerbild"
-
-#: talk/forms.py:66
-msgid "Phone"
-msgstr "Telefon"
-
-#: talk/forms.py:84
-msgid "You need to agree to be contacted by us."
-msgstr "Es ist notwendig, dass du der Kontaktaufnahme zustimmst."
-
-#: talk/forms.py:114
+#: talk/forms.py:49
 msgid "Submit"
 msgstr "Session einreichen"
 
-#: talk/forms.py:142
+#: talk/forms.py:79
 msgid "Update session"
 msgstr "Session aktualisieren"
 
-#: talk/forms.py:165
-msgid "Login"
-msgstr "Anmelden"
-
-#: talk/forms.py:210 talk/forms.py:287
-msgid ""
-"<label><p class=\"help-block\">By registering as a speaker, I agree to be "
-"contacted by the Dev Day organizers about conference details and my talk "
-"submissions.</p></label>"
-msgstr ""
-"<label><p class=\"help-block\">Durch meine Registrierung als Sprecher stimme "
-"ich zu, dass mich die Dev Day-Organisatoren über Details zur Konferenz und "
-"zu meinen Vortragsvorschlägen kontaktieren dürfen.</p></label>"
-
-#: talk/forms.py:216 talk/forms.py:294
-#: talk/templates/talk/submit_session.html:30
-msgid "Register as speaker"
-msgstr "Als Sprecher registrieren"
-
-#: talk/forms.py:241
-msgid "Update your speaker information"
-msgstr "Sprecherinformationen aktualisieren"
-
-#: talk/forms.py:262
-msgid "E-Mail"
-msgstr "E-Mail"
-
-#: talk/forms.py:313 talk/forms.py:329
+#: talk/forms.py:102 talk/forms.py:119
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
-#: talk/models.py:26
+#: talk/models.py:17
 msgid "XS"
 msgstr "XS"
 
-#: talk/models.py:27
+#: talk/models.py:18
 msgid "S"
 msgstr "S"
 
-#: talk/models.py:28
+#: talk/models.py:19
 msgid "M"
 msgstr "M"
 
-#: talk/models.py:29
+#: talk/models.py:20
 msgid "L"
 msgstr "L"
 
-#: talk/models.py:30
+#: talk/models.py:21
 msgid "XL"
 msgstr "XL"
 
-#: talk/models.py:31
+#: talk/models.py:22
 msgid "XXL"
 msgstr "XXL"
 
-#: talk/models.py:32
+#: talk/models.py:23
 msgid "XXXL"
 msgstr "XXXL"
 
-#: talk/models.py:42
-msgid "T-shirt size"
-msgstr "T-Shirtgröße"
-
-#: talk/models.py:45
-msgid "Video permitted"
-msgstr "Videofreigabe erteilt"
-
-#: talk/models.py:46
-msgid ""
-"I hereby agree that audio and visual recordings of me and my session can be "
-"published on the social media channels of the event organizer and the "
-"website devday.de."
-msgstr ""
-"Ich stimme hiermit zu, dass Ton- und Videoaufzeichnungen von mir und meiner "
-"Session auf den Social-Media-Kanälen des Veranstalters und auf der Webseite "
-"devday.de verwendet werden dürfen."
-
-#: talk/models.py:51 talk/templates/talk/speaker_details.html:22
-msgid "Short biography"
-msgstr "Kurzvita"
-
-#: talk/models.py:52 talk/templates/talk/speaker_details.html:25
-#: talk/templates/talk/speaker_profile.html:19
-msgid "Speaker image"
-msgstr "Speakerbild"
-
-#: talk/models.py:55
-msgid "Speaker image thumbnail"
-msgstr "Vorschau Speakerbild"
-
-#: talk/models.py:59
-msgid "Public speaker image"
-msgstr "Öffentliches Speakerbild"
-
-#: talk/models.py:64 talk/templates/talk/talk_committee_overview.html:20
-msgid "Speaker"
-msgstr "Sprecher"
-
-#: talk/models.py:65
-msgid "Speakers"
-msgstr "Sprecher"
-
-#: talk/models.py:142 talk/templates/talk/talk_list_entry.html:3
+#: talk/models.py:35 talk/templates/talk/talk_list_entry.html:3
 msgid "Track"
 msgstr "Track"
 
-#: talk/models.py:143
+#: talk/models.py:36
 msgid "Tracks"
 msgstr "Tracks"
 
-#: talk/models.py:154 talk/templates/talk/talk_committee_overview.html:21
+#: talk/models.py:47
+msgid "Speaker (draft)"
+msgstr "Speaker (Entwurf)"
+
+#: talk/models.py:50
+msgid "Speaker (public)"
+msgstr "Sprecher (öffentlich)"
+
+#: talk/models.py:53 talk/templates/talk/talk_committee_overview.html:21
 msgid "Session title"
 msgstr "Sessionname"
 
-#: talk/models.py:155
+#: talk/models.py:54
 msgid "Slug"
 msgstr "Slug"
 
-#: talk/models.py:156 talk/templates/talk/talk_committee_details.html:33
+#: talk/models.py:55 talk/templates/talk/talk_committee_details.html:33
 msgid "Abstract"
 msgstr "Kurzbeschreibung"
 
-#: talk/models.py:157 talk/templates/talk/talk_committee_details.html:35
+#: talk/models.py:56 talk/templates/talk/talk_committee_details.html:35
 msgid "Remarks"
 msgstr "Anmerkungen"
 
-#: talk/models.py:160
+#: talk/models.py:59
 msgid "Talk Formats"
 msgstr "Session-Formate"
 
-#: talk/models.py:163
+#: talk/models.py:63
 msgid "Session"
 msgstr "Session"
 
-#: talk/models.py:164
+#: talk/models.py:64
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:179
+#: talk/models.py:94
 msgid "Youtube video id"
 msgstr "Youtube-Video-ID"
 
-#: talk/models.py:180
+#: talk/models.py:96
 msgid "Slideshare id"
 msgstr "Slideshare-ID"
 
-#: talk/models.py:181
+#: talk/models.py:98
 msgid "Source code"
 msgstr "Quellcode"
 
-#: talk/models.py:202
+#: talk/models.py:119
 msgid "Comment"
 msgstr "Kommentar"
 
-#: talk/models.py:204
+#: talk/models.py:121
 msgid "Visible for Speaker"
 msgstr "Sichtbar für den Sprecher"
 
-#: talk/models.py:206
+#: talk/models.py:123
 msgid "Indicates whether the comment is visible to the speaker."
 msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
 
-#: talk/models.py:215
+#: talk/models.py:134
 msgid "Name"
 msgstr "Name"
 
-#: talk/models.py:216
+#: talk/models.py:136
 msgid "Priority"
 msgstr "Priorität"
 
-#: talk/models.py:220
+#: talk/models.py:140
 msgid "Room"
 msgstr "Raum"
 
-#: talk/models.py:221
+#: talk/models.py:141
 msgid "Rooms"
 msgstr "Räume"
 
-#: talk/models.py:237
+#: talk/models.py:158
 msgid "Time slot"
 msgstr "Zeitslot"
 
-#: talk/models.py:238
+#: talk/models.py:159
 msgid "Time slots"
 msgstr "Zeitslots"
 
-#: talk/models.py:262
+#: talk/models.py:183
 msgid "Duration"
 msgstr "Länge"
 
-#: talk/models.py:267 talk/models.py:268
+#: talk/models.py:188 talk/models.py:189
 msgid "Talk Format"
 msgstr "Session-Format"
 
-#: talk/templates/talk/create_talk.html:3
-#: talk/templates/talk/speaker_profile.html:51
-msgid "Submit a session"
-msgstr "Session einreichen"
+#: talk/templates/talk/prepare_submit_session.html:11
+msgid "You already have an account"
+msgstr "Du hast bereits ein Benutzerkonto"
+
+#: talk/templates/talk/prepare_submit_session.html:13
+msgid "Forgot password"
+msgstr "Forgot password"
+
+#: talk/templates/talk/prepare_submit_session.html:14
+msgid "Reset it"
+msgstr "Passwort zurücksetzen"
+
+#: talk/templates/talk/prepare_submit_session.html:18
+msgid "You have no account yet?"
+msgstr "Du hast noch kein Benutzerkonto?"
+
+#: talk/templates/talk/prepare_submit_session.html:21
+msgid "Register as speaker"
+msgstr "Als Sprecher registrieren"
 
 #: talk/templates/talk/speaker_activation_email.txt:1
 #, python-format
@@ -335,6 +272,15 @@ msgstr "Nachname"
 msgid "Email address"
 msgstr "E-Mailadresse"
 
+#: talk/templates/talk/speaker_details.html:22
+msgid "Short biography"
+msgstr "Kurzvita"
+
+#: talk/templates/talk/speaker_details.html:25
+#: talk/templates/talk/speaker_profile.html:19
+msgid "Speaker image"
+msgstr "Speakerbild"
+
 #: talk/templates/talk/speaker_list.html:3
 msgid "Speaker Linup"
 msgstr "Sprecher"
@@ -368,14 +314,13 @@ msgstr "Keine Sessions eingereicht."
 msgid "Submit another session"
 msgstr "Weitere Session einreichen"
 
+#: talk/templates/talk/speaker_profile.html:51
+msgid "Submit a session"
+msgstr "Session einreichen"
+
 #: talk/templates/talk/speaker_profile.html:53
 msgid "Change password"
 msgstr "Passwort ändern"
-
-#: talk/templates/talk/speaker_public.html:17
-#, python-format
-msgid "Talks: %(event)s"
-msgstr "Sessions: %(event)s"
 
 #: talk/templates/talk/speaker_registered.html:3
 msgid "Successfully registered as a speaker"
@@ -389,26 +334,6 @@ msgstr "Sessioneinreichung geschlossen"
 #: talk/templates/talk/submission_closed.html:8
 msgid "You cannot submit new sessions currently."
 msgstr "Zur Zeit können keine weiteren Sessions eingereicht werden."
-
-#: talk/templates/talk/submit_session.html:22
-msgid "You already have an account"
-msgstr "Du hast bereits ein Benutzerkonto"
-
-#: talk/templates/talk/submit_session.html:24
-msgid "Forgot password"
-msgstr "Forgot password"
-
-#: talk/templates/talk/submit_session.html:25
-msgid "Reset it"
-msgstr "Passwort zurücksetzen"
-
-#: talk/templates/talk/submit_session.html:28
-msgid "You have no account yet?"
-msgstr "Du hast noch kein Benutzerkonto?"
-
-#: talk/templates/talk/submit_session.html:42
-msgid "Become a speaker"
-msgstr "Sprecher werden"
 
 #: talk/templates/talk/submitted.html:3
 msgid "Session submitted"
@@ -540,6 +465,10 @@ msgstr "Zurück zur Session-Liste"
 msgid "List of sessions"
 msgstr "Session-Liste"
 
+#: talk/templates/talk/talk_committee_overview.html:20
+msgid "Speaker"
+msgstr "Sprecher"
+
 #: talk/templates/talk/talk_committee_overview.html:22
 msgid "Vote average"
 msgstr "Durchschnittliche Bewertung"
@@ -573,10 +502,13 @@ msgid "Example code"
 msgstr "Beispielcode"
 
 #: talk/templates/talk/talk_form.html:3
-#: talk/templates/talk/talk_speaker_details.html:3
-#: talk/templates/talk/talk_speaker_details.html:23
-msgid "Edit session"
-msgstr "Session bearbeiten"
+msgid "Submit session"
+msgstr "Session einreichen"
+
+#: talk/templates/talk/talk_form.html:8
+#, python-format
+msgid "Submit a session for %(event_title)s"
+msgstr "Eine Session für %(event_title)s einreichen"
 
 #: talk/templates/talk/talk_list.html:3 talk/templates/talk/talk_list.html:13
 #: talk/templates/talk/talk_list_preview.html:3
@@ -620,6 +552,11 @@ msgstr "Sessionvorschau"
 msgid "Planned talks"
 msgstr "Geplante Sessions"
 
+#: talk/templates/talk/talk_speaker_details.html:3
+#: talk/templates/talk/talk_speaker_details.html:23
+msgid "Edit session"
+msgstr "Session bearbeiten"
+
 #: talk/templates/talk/talk_videos.html:3
 #, python-format
 msgid "%(event)s - Videos, Slides and Example Code"
@@ -639,7 +576,65 @@ msgstr "Keine Videos, Folien oder Beispielcode gefunden."
 msgid "Videos and Slides for %(event)s have not been published yet."
 msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."
 
-#: talk/tests/test_views.py:694 talk/tests/test_views.py:788
-#: talk/tests/test_views.py:1110
+#: talk/tests/test_views.py:322 talk/tests/test_views.py:404
+#: talk/tests/test_views.py:659
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
+
+#~ msgid "Fullname"
+#~ msgstr "Voller Name"
+
+#~ msgid "Phone"
+#~ msgstr "Telefon"
+
+#~ msgid "You need to agree to be contacted by us."
+#~ msgstr "Es ist notwendig, dass du der Kontaktaufnahme zustimmst."
+
+#~ msgid "Login"
+#~ msgstr "Anmelden"
+
+#~ msgid ""
+#~ "<label><p class=\"help-block\">By registering as a speaker, I agree to be "
+#~ "contacted by the Dev Day organizers about conference details and my talk "
+#~ "submissions.</p></label>"
+#~ msgstr ""
+#~ "<label><p class=\"help-block\">Durch meine Registrierung als Sprecher "
+#~ "stimme ich zu, dass mich die Dev Day-Organisatoren über Details zur "
+#~ "Konferenz und zu meinen Vortragsvorschlägen kontaktieren dürfen.</p></"
+#~ "label>"
+
+#~ msgid "Update your speaker information"
+#~ msgstr "Sprecherinformationen aktualisieren"
+
+#~ msgid "E-Mail"
+#~ msgstr "E-Mail"
+
+#~ msgid "T-shirt size"
+#~ msgstr "T-Shirtgröße"
+
+#~ msgid "Video permitted"
+#~ msgstr "Videofreigabe erteilt"
+
+#~ msgid ""
+#~ "I hereby agree that audio and visual recordings of me and my session can "
+#~ "be published on the social media channels of the event organizer and the "
+#~ "website devday.de."
+#~ msgstr ""
+#~ "Ich stimme hiermit zu, dass Ton- und Videoaufzeichnungen von mir und "
+#~ "meiner Session auf den Social-Media-Kanälen des Veranstalters und auf der "
+#~ "Webseite devday.de verwendet werden dürfen."
+
+#~ msgid "Speaker image thumbnail"
+#~ msgstr "Vorschau Speakerbild"
+
+#~ msgid "Public speaker image"
+#~ msgstr "Öffentliches Speakerbild"
+
+#~ msgid "Speakers"
+#~ msgstr "Sprecher"
+
+#~ msgid "Talks: %(event)s"
+#~ msgstr "Sessions: %(event)s"
+
+#~ msgid "Become a speaker"
+#~ msgstr "Sprecher werden"

@@ -1,5 +1,9 @@
 {% extends "devday_site.html" %}
 {% load cms_tags i18n %}
 {% block content_body %}
-  {% include "attendee/checkin_qrcode_include.html" %}
+    <div class="row">
+        <div class="offset-lg-2 col-lg-8 col-12 content-area">
+            {% include "attendee/checkin_qrcode_include.html" %}
+        </div>
+    </div>
 {% endblock %}

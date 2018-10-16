@@ -95,16 +95,15 @@ class AttendeeProfileForm(ModelForm):
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         buttons = Div(css_class='col-12 col-sm-6 order-2 order-sm-1')
-        buttons.append(
-            HTML('<a href={} class="btn btn-outline-danger">{}</a>'.format(
+        buttons.append(HTML(
+            '<a href={} class="btn btn-outline-danger ml-0">{}</a>'.format(
                 reverse('attendee_delete'),
                 _('Delete your account')
             )))
-        buttons.append(
-            HTML(
-                '<a href="{}" class="btn btn-outline-secondary">{}</a>'.format(
-                    reverse('auth_password_change'),
-                    _('Change password'))), )
+        buttons.append(HTML(
+            '<a href="{}" class="btn btn-outline-secondary mr-0">{}</a>'.format(
+                reverse('auth_password_change'),
+                _('Change password'))), )
         self.helper.layout = Layout(
             HTML('<hr/>'),
             Div(
@@ -121,7 +120,8 @@ class AttendeeProfileForm(ModelForm):
                 Div(
                     Submit(
                         'submit', _('Update your profile'),
-                        css_class='btn btn-primary float-left float-sm-right'),
+                        css_class='btn btn-primary float-left float-sm-right'
+                                  ' mr-0'),
                     css_class='col-12 col-sm-6 order-1 order-sm-2'
                 ),
                 css_class='form-row',

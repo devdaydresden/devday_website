@@ -8,7 +8,6 @@
             {% static_placeholder "gdpr_teaser" %}
             {% crispy form %}
         </div>
-
         <div class="offset-lg-2 col-lg-8 col-12">
             {% if events %}
                 <h1>{% blocktrans %}You are registered for these events{% endblocktrans %}</h1>
@@ -18,9 +17,12 @@
                             <tr>
                                 <td>{{ event.title }}</td>
                                 <td>{{ event.description }}</td>
-                                <td>{% if event.id == event_id and not user.get_speaker %}
-                                    <p><a class="btn btn-primary" href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a></p>
-                                {% endif %}</td>
+                                <td>
+                                    {% if event.id == event_id and not user.get_speaker %}
+                                        <p><a class="btn btn-primary"
+                                              href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a>
+                                        </p>
+                                    {% endif %}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -30,5 +32,9 @@
             {% endif %}
         </div>
     </div>
-    {% include "attendee/checkin_qrcode_include.html" %}
+    <div class="row">
+        <div class="offset-lg-2 col-lg-8 col-12 content-area">
+            {% include "attendee/checkin_qrcode_include.html" %}
+        </div>
+    </div>
 {% endblock %}

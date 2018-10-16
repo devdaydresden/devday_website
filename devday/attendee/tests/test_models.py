@@ -3,9 +3,11 @@ import luhn
 from django.core import mail
 from django.db import IntegrityError
 from django.test import TestCase
+from django.utils.translation import ugettext as _
 
 from attendee.models import DevDayUser, Attendee
 from event.models import Event
+from event.tests import event_testutils
 
 ADMIN_EMAIL = 'admin@example.org'
 ADMIN_PASSWORD = 'sUp3rS3cr3t'
@@ -105,6 +107,14 @@ class AttendeeTest(TestCase):
     """
 
     def test___str__(self):
+        event = event_testutils.create_test_event()
+        user = DevDayUser.objects.create_user(
+            USER_EMAIL, USER_PASSWORD)
+        attendee = Attendee.objects.create(user=user, event=event)
+        self.assertEqual(str(attendee), _('{} at {}').format(
+            user.email, event.title))
+
+    def test_checkin_code(self):
         event = Event.objects.current_event()
         user = DevDayUser.objects.create_user(
             USER_EMAIL, USER_PASSWORD, first_name='Test', last_name='User')

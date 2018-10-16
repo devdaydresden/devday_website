@@ -4,8 +4,10 @@ from django.test import TestCase
 
 from attendee.forms import (
     AttendeeRegistrationForm, CheckInAttendeeForm, DevDayRegistrationForm,
-    DevDayUserCreationForm, RegistrationAuthenticationForm)
+    DevDayUserCreationForm, RegistrationAuthenticationForm,
+    DevDayUserRegistrationForm, EventRegistrationForm)
 from attendee.models import Attendee, DevDayUser
+from attendee.tests import attendee_testutils
 from event.models import Event
 from event.tests import event_testutils
 
@@ -42,12 +44,32 @@ class DevDayUserCreationFormTest(TestCase):
         form = DevDayUserCreationForm()
         self.assertIsNotNone(form)
 
+    def test_form_save_commit(self):
+        form = DevDayUserCreationForm(data={
+            'email': 'test@example.org', 'password1': 's3cr3t',
+            'password2': 's3cr3t'})
+        user = form.save(commit=True)
+        self.assertIsNotNone(user.id)
+        self.assertTrue(user.check_password('s3cr3t'))
+
 
 class RegistrationAuthenticationFormTest(TestCase):
     def test_get_user_form(self):
         event = event_testutils.create_test_event()
         form = RegistrationAuthenticationForm(event=event)
         self.assertIsNotNone(form)
+
+
+class DevDayUserRegistrationFormTest(TestCase):
+    def test_form_save_commit(self):
+        form = DevDayUserRegistrationForm(data={
+            'email': 'test@example.org', 'password1': 's3cr3t',
+            'password2': 's3cr3t'})
+        user = form.save(commit=True)
+        self.assertIsNotNone(user.id)
+        self.assertFalse(user.is_active)
+        self.assertIsNone(user.contact_permission_date)
+        self.assertTrue(user.check_password('s3cr3t'))
 
 
 class AttendeeRegistrationFormTest(TestCase):
@@ -72,6 +94,31 @@ class AttendeeRegistrationFormTest(TestCase):
             layout_fields,
             ['email', 'password1', 'password2', 'accept_general_contact']
         )
+
+    def test_form_save_commit(self):
+        form = AttendeeRegistrationForm(event=self.event, data={
+            'email': 'test@example.org', 'password1': 's3cr3t',
+            'password2': 's3cr3t'})
+        attendee = form.save(commit=True)
+        self.assertIsNotNone(attendee.id)
+        self.assertEqual(attendee.event, self.event)
+        user = attendee.user
+        self.assertIsNotNone(user.id)
+        self.assertFalse(user.is_active)
+        self.assertIsNone(user.contact_permission_date)
+        self.assertTrue(user.check_password('s3cr3t'))
+
+
+class EventRegistrationFormTest(TestCase):
+    def test_form_save_no_commit(self):
+        event = event_testutils.create_test_event()
+        user, _ = attendee_testutils.create_test_user()
+
+        form = EventRegistrationForm(event=event, user=user, data={})
+        attendee = form.save(commit=False)
+        self.assertIsNone(attendee.id)
+        self.assertEqual(attendee.event, event)
+        self.assertEqual(attendee.user, user)
 
 
 class CheckInAttendeeFormTest(TestCase):

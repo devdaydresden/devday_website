@@ -5,7 +5,7 @@ thank you for registering an account for the Dev Day website!
 To complete your registration please confirm your email address by clicking the
 following link.
 {% endblocktrans %}
-{{ scheme }}://{{ site.domain }}{% url 'django_registration_activate' activation_key %}{% if next %}?next={{ next }}{% endif %}
+{{ scheme }}://{{ site.domain }}{% url 'devdayuser_activate' activation_key %}{% if next %}?next={{ next }}{% endif %}
 {% blocktrans count days=expiration_days %}
 The link is valid for one day.
 {% plural %}

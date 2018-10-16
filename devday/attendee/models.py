@@ -122,19 +122,6 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         """
         return Event.objects.filter(attendee__user=self)
 
-    def get_speaker(self, event):
-        """
-        Return the speaker object for this user and the given event. If no
-        attendee or speaker object exists, return None.
-        """
-        attendee = self.get_attendee(event)
-        if attendee:
-            try:
-                return attendee.speaker
-            except Attendee.speaker.RelatedObjectDoesNotExist:
-                return None
-        return None
-
     def __str__(self):
         full_name = self.get_full_name()
         if full_name:
@@ -219,5 +206,5 @@ class Attendee(models.Model):
         self.checked_in = timezone.now()
 
     def __str__(self):
-        return '{} at {}'.format(self.user.get_full_name() or self.user.email,
-                                 self.event)
+        return _('{email} at {event}').format(
+            email=self.user.email, event=self.event.title)

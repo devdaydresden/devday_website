@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 from .forms import (AttendeeInlineForm, DevDayUserCreationForm,
                     DevDayUserChangeForm)
 from .models import DevDayUser, Attendee

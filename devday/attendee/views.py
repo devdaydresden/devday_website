@@ -1,7 +1,7 @@
 import csv
 from io import StringIO
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -17,7 +17,9 @@ from django.views.generic import DeleteView, TemplateView, UpdateView, View
 from django.views.generic.edit import FormView
 from django.views.generic.list import BaseListView
 from django_registration import signals
-from django_registration.backends.activation.views import RegistrationView
+from django_registration.backends.activation.views import (
+    RegistrationView,
+    ActivationView)
 
 from attendee.forms import (
     AttendeeProfileForm, AttendeeRegistrationForm, CheckInAttendeeForm,
@@ -81,13 +83,10 @@ class AttendeeRegistrationView(RegistrationView):
         'anonymous': AttendeeRegistrationForm,
         'user': EventRegistrationForm,
     }
+    auth_level = None
     event = None
-    email_body_template = 'attendee/activation_email_body.txt'
-    email_subject_template = 'attendee/activation_email_subject.txt'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.auth_level = None
+    email_body_template = 'attendee/attendee_activation_email_body.txt'
+    email_subject_template = 'attendee/attendee_activation_email_subject.txt'
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
@@ -104,7 +103,7 @@ class AttendeeRegistrationView(RegistrationView):
         if self.auth_level == 'anonymous':
             return reverse_lazy('django_registration_complete')
         return reverse_lazy(
-            'register_success', kwargs={'event': self.event.slug})
+            'attendee_register_success', kwargs={'event': self.event.slug})
 
     def get_form_class(self, request=None):
         return self.form_classes.get(self.auth_level, None)
@@ -146,6 +145,8 @@ class DevDayUserRegistrationView(RegistrationView):
     registering for a specific event.
     """
     form_class = DevDayUserRegistrationForm
+    email_body_template = 'attendee/devdayuser_activation_email_body.txt'
+    email_subject_template = 'attendee/devdayuser_activation_email_subject.txt'
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
@@ -169,6 +170,30 @@ class DevDayUserRegistrationView(RegistrationView):
         return context
 
 
+class DevDayUserActivationView(ActivationView):
+    def get_success_url(self, user=None):
+        logout(self.request)
+        return '{}?next={}'.format(
+            reverse_lazy('auth_login'),
+            self.request.GET.get('next', reverse_lazy('user_profile')))
+
+
+class AttendeeActivationView(ActivationView):
+    event = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self, user=None):
+        logout(self.request)
+        return '{}?next={}'.format(
+            reverse_lazy('auth_login'),
+            reverse_lazy(
+                'attendee_register_success',
+                kwargs={'event': self.event.slug}))
+
+
 class AttendeeCancelView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         # remove attendee for user, event tuple
@@ -177,15 +202,24 @@ class AttendeeCancelView(LoginRequiredMixin, View):
         return HttpResponseRedirect(reverse('user_profile'))
 
 
-class RegisterSuccessView(TemplateView):
-    template_name = 'attendee/register_success.html'
+class AttendeeRegisterSuccessView(LoginRequiredMixin, TemplateView):
+    template_name = 'attendee/attendee_register_success.html'
+    event = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['event'] = self.event
+        return context
 
 
 class LoginOrRegisterAttendeeView(LoginView):
     """
     This view presents a choice of links for anonymous users.
     """
-    pass
     template_name = 'attendee/login_or_register.html'
     form_class = RegistrationAuthenticationForm
     event = None

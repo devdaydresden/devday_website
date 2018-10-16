@@ -20,8 +20,9 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
     accept_general_contact = forms.BooleanField(
         label=_('Contact for other events'),
         help_text=_(
-            'I would like to receive updates about T-Systems Multimedia '
-            'Solutions GmbH Software Engineering Community by email.'
+            'I would like to receive updates about events organized by the'
+            ' T-Systems Multimedia Solutions GmbH Software Engineering'
+            ' Community via email.'
         ),
         required=False
     )
@@ -48,9 +49,7 @@ class DevDayUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(DevDayUserCreationForm, self).__init__(*args, **kwargs)
-        if self._meta.model.USERNAME_FIELD in self.fields:
-            self.fields[self._meta.model.USERNAME_FIELD].widget.attrs.update(
-                {'autofocus': True})
+        self.fields['email'].widget.attrs.update({'autofocus': True})
 
     def save(self, commit=True):
         user = super(DevDayUserCreationForm, self).save(commit=False)
@@ -106,7 +105,6 @@ class AttendeeProfileForm(ModelForm):
                 '<a href="{}" class="btn btn-outline-secondary">{}</a>'.format(
                     reverse('auth_password_change'),
                     _('Change password'))), )
-        # TODO: add feature to toggle general contact permission
         self.helper.layout = Layout(
             HTML('<hr/>'),
             Div(
@@ -268,6 +266,7 @@ class AttendeeRegistrationForm(DevDayRegistrationForm):
         self.helper.layout = Layout(
             Div(
                 Field('email', autofocus='autofocus', wrapper_class='col-12'),
+                css_class='form-row'
             ),
             Div(
                 Field('password1', wrapper_class='col-12 col-md-6'),
@@ -300,6 +299,7 @@ class AttendeeRegistrationForm(DevDayRegistrationForm):
         attendee = Attendee(user=user, event=self.event)
         if commit:
             user.save()
+            attendee.user_id = user.id
             attendee.save()
         return attendee
 

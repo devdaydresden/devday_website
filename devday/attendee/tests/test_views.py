@@ -261,6 +261,54 @@ class DevDayRegistrationViewTest(TestCase):
         self.assertRedirects(response, '/', fetch_redirect_response=False)
 
 
+class DevDayUserActivationViewTest(TestCase):
+    def setUp(self):
+        user, _ = attendee_testutils.create_test_user()
+        user.is_active = False
+        user.save()
+        self.activation_key = DevDayUserRegistrationView().get_activation_key(
+            user)
+
+    def test_get_success_url_with_next(self):
+        url = '/activate/{}/?next=/foo'.format(self.activation_key)
+        response = self.client.get(url)
+        self.assertRedirects(
+            response, '/accounts/login/?next=/foo',
+            fetch_redirect_response=False)
+
+    def test_get_success_url_without_next(self):
+        url = '/activate/{}/'.format(self.activation_key)
+        response = self.client.get(url)
+        self.assertRedirects(
+            response, '/accounts/login/?next=/accounts/profile/',
+            fetch_redirect_response=False)
+
+
+class AttendeeActivationViewTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
+        user, _ = attendee_testutils.create_test_user()
+        user.is_active = False
+        user.save()
+        Attendee.objects.create(user=user, event=self.event)
+        self.activation_key = DevDayUserRegistrationView().get_activation_key(
+            user)
+        self.url = '/{}/attendee/activate/{}/'.format(
+            self.event.slug, self.activation_key)
+
+    def test_dispatch_with_invalid_event(self):
+        response = self.client.get('/{}/attendee/activate/{}/'.format(
+            'wrong-event', self.activation_key))
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_success_url(self):
+        response = self.client.get(self.url)
+        self.assertRedirects(
+            response,
+            '/accounts/login/?next=/{}/attendee/register/success/'.format(
+                self.event.slug), fetch_redirect_response=False)
+
+
 class AttendeeCancelViewTest(TestCase):
     def setUp(self):
         self.event = Event.objects.current_event()

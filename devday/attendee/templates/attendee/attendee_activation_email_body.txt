@@ -7,7 +7,7 @@ To complete your registration please confirm your email address by clicking the 
 {% comment %}
 TODO: use a specific activation URL for the event
 {% endcomment %}
-{{ scheme }}://{{ site.domain }}{% url 'django_registration_activate' activation_key %}
+{{ scheme }}://{{ site.domain }}{% url 'attendee_activate' event=event.slug activation_key=activation_key %}
 {% blocktrans count days=expiration_days %}
 The link is valid for one day.
 {% plural %}

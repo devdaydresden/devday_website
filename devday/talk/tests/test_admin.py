@@ -4,7 +4,6 @@ from django.urls import reverse
 
 from devday.utils.devdata import DevData
 from event.models import Event
-from speaker.models import Speaker
 from talk.models import Talk
 
 User = get_user_model()

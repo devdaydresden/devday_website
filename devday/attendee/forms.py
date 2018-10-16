@@ -198,6 +198,7 @@ class DevDayUserRegistrationForm(DevDayRegistrationForm):
     This form is used to register a DevDayUser without assigning it to
     a specific event.
     """
+    next = forms.CharField(widget=forms.HiddenInput, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -214,6 +215,7 @@ class DevDayUserRegistrationForm(DevDayRegistrationForm):
         self.fields['accept_general_contact'].initial = False
 
         self.helper.layout = Layout(
+            Field('next'),
             Div(
                 Field('email', autofocus='autofocus', wrapper_class='col-12'),
                 css_class='form-row'
@@ -232,6 +234,15 @@ class DevDayUserRegistrationForm(DevDayRegistrationForm):
                 css_class='col-12 text-center'
             )
         )
+
+    def save(self, commit=True):
+        user = super().save(False)
+        user.is_active = False
+        if self.cleaned_data.get('accept_general_contact'):
+            user.contact_permission_date = timezone.now()
+        if commit:
+            user.save()
+        return user
 
 
 class AttendeeRegistrationForm(DevDayRegistrationForm):
@@ -282,7 +293,7 @@ class AttendeeRegistrationForm(DevDayRegistrationForm):
         )
 
     def save(self, commit=True):
-        user = super(AttendeeRegistrationForm, self).save(commit)
+        user = super(AttendeeRegistrationForm, self).save(False)
         user.is_active = False
         if self.cleaned_data.get('accept_general_contact'):
             user.contact_permission_date = timezone.now()

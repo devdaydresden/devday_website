@@ -153,6 +153,21 @@ class DevDayUserRegistrationView(RegistrationView):
             return redirect(self.get_success_url())
         return super().dispatch(*args, **kwargs)
 
+    def get_success_url(self, user=None):
+        if self.request.user.is_authenticated:
+            return self.request.GET.get('next', '/')
+        return super().get_success_url(user)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['next'] = self.request.GET.get('next', '')
+        return initial
+
+    def get_email_context(self, activation_key):
+        context = super().get_email_context(activation_key)
+        context.update({'next': self.request.POST.get('next', '')})
+        return context
+
 
 class AttendeeCancelView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):

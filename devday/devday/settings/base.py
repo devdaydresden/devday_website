@@ -228,6 +228,8 @@ SECRET_KEY = get_vault_variable('secret_key')
 
 SPONSORING_OPEN = get_variable_cascade('sponsoring_open', bool, False)
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 SITE_ID = 1
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'

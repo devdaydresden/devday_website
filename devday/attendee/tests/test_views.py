@@ -9,10 +9,11 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from attendee.forms import AttendeeRegistrationForm, EventRegistrationForm
+from attendee.forms import AttendeeRegistrationForm, EventRegistrationForm, \
+    DevDayUserRegistrationForm
 from attendee.models import DevDayUser, Attendee
 from attendee.tests import attendee_testutils
-from attendee.views import AttendeeRegistrationView
+from attendee.views import AttendeeRegistrationView, DevDayUserRegistrationView
 from event.models import Event
 from event.tests import event_testutils
 from speaker.models import PublishedSpeaker
@@ -148,6 +149,116 @@ class AttendeeRegistrationViewTest(TestCase):
         response = self.client.post(self.url)
 
         self.assertRedirects(response, self.register_existing_url)
+
+
+class DevDayRegistrationViewTest(TestCase):
+    def setUp(self):
+        self.url = '/register/'
+        self.register_new_url = '/accounts/register/complete/'
+
+    def test_next_traverses_state_transitions(self):
+        next_url = '/foo'
+        # load form
+        response = self.client.get('{}?next={}'.format(self.url, next_url))
+        self.assertEqual(response.status_code, 200)
+        data = response.context['form'].initial
+        self.assertEqual(data['next'], next_url)
+        # post form with wrong data
+        data.update({
+            'email': 'test@example.org',
+            'password1': 'bar',
+            'password2': 'foo',
+        })
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 200)
+        data = response.context['form'].cleaned_data
+        self.assertEqual(data['next'], next_url)
+        # post form with correct data
+        data.update({
+            'email': 'test@example.org',
+            'password1': 's3cr3t',
+            'password2': 's3cr3t',
+        })
+        response = self.client.post(self.url, data=data, follow=False)
+        self.assertRedirects(response, '/accounts/register/complete/')
+        # check for next URL in activation mail
+        self.assertEqual(len(mail.outbox), 1)
+        activation_mail = mail.outbox[0]
+        self.assertIn('?next={}'.format(next_url), activation_mail.body)
+
+    def test_get_email_context(self):
+        request = HttpRequest()
+        request.META['HTTP_X_FORWARDED_PROTO'] = 'https'
+        request.POST.update(
+            next='/foo', email='test@example.org', password1='s3cr3t',
+            password2='s3cr3t')
+        context = DevDayUserRegistrationView(
+            request=request).get_email_context('testkey')
+        self.assertIn('next', context)
+        self.assertEqual(context['next'], '/foo')
+        self.assertIn('scheme', context)
+        self.assertEqual(context['scheme'], 'https')
+
+    def test_get_initial(self):
+        next_url = '/foo'
+        # load form
+        response = self.client.get('{}?next={}'.format(self.url, next_url))
+        self.assertEqual(response.status_code, 200)
+        data = response.context['form'].initial
+        self.assertEqual(data['next'], next_url)
+
+    def test_register_minimum_fields(self):
+        response = self.client.post(
+            self.url, data={
+                'email': 'test@example.org', 'password1': 's3cr3t',
+                'password2': 's3cr3t'},
+            follow=False)
+        self.assertRedirects(response, self.register_new_url)
+        user = DevDayUser.objects.get(email='test@example.org')
+        self.assertIsInstance(user, DevDayUser)
+        self.assertIsNone(user.contact_permission_date)
+        self.assertFalse(user.is_active)
+        attendees = user.attendees
+        self.assertEqual(attendees.count(), 0)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_register_permit_contact(self):
+        response = self.client.post(
+            self.url, data={
+                'email': 'test@example.org', 'password1': 's3cr3t',
+                'password2': 's3cr3t', 'accept_general_contact': 'checked'},
+            follow=False)
+        self.assertRedirects(response, self.register_new_url)
+        now = timezone.now()
+        user = DevDayUser.objects.get(email='test@example.org')
+        self.assertIsInstance(user, DevDayUser)
+        self.assertIsNotNone(user.contact_permission_date)
+        self.assertLessEqual(user.contact_permission_date, now)
+        self.assertFalse(user.is_active)
+        attendees = user.attendees
+        self.assertEqual(attendees.count(), 0)
+
+    def test_get_anonymous(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response, 'django_registration/registration_form.html')
+        self.assertIn('form', response.context)
+        self.assertIsInstance(
+            response.context['form'], DevDayUserRegistrationForm)
+
+    def test_get_with_existing_user_with_next(self):
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.email, password=password)
+        response = self.client.get(
+            '{}?next=/foo'.format(self.url), follow=False)
+        self.assertRedirects(response, '/foo', fetch_redirect_response=False)
+
+    def test_get_with_existing_user_without_next(self):
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.email, password=password)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, '/', fetch_redirect_response=False)
 
 
 class AttendeeCancelViewTest(TestCase):

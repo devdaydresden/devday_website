@@ -2,14 +2,18 @@
 {% load i18n cms_tags crispy_forms_tags %}
 {% block title %}{% trans "Delete profile" %}{% endblock %}
 {% block content_body %}
-  <div class="offset-lg-2 col-lg-8 col-md-12">
-    <h1>{% blocktrans with username=user.get_username %}Delete your profile {{ username }}{% endblocktrans %}</h1>
-    <form method="post">
-      {% csrf_token %}
-      <p>{% blocktrans %}Do you really want to delete your profile? You will not get information related to current and
-        future events and you will have to register again if you choose to attend one of our future
-        events.{% endblocktrans %}</p>
-      <input class="btn btn-primary" type="submit" value="{% trans "Confirm" %}"/>
-    </form>
-  </div>
+    <div class="content-area">
+        <div class="offset-lg-3 col-lg-6 col-md-12">
+            <h1>{% blocktrans with username=user.get_username %}Delete your profile {{ username }}{% endblocktrans %}</h1>
+            <form method="post">
+                {% csrf_token %}
+                <p>{% blocktrans %}Do you really want to delete your profile? You will not get information related to current and future events and you will have to register again if you choose to attend one of our future  events.{% endblocktrans %}</p>
+                <div class="form-row">
+                    <input class="btn btn-danger" type="submit"
+                           value="{% trans "Confirm" %}"/>
+                    <a href="{% url 'user_profile' %}" class="btn btn-outline-secondary">{% trans "Back to your profile" %}</a>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

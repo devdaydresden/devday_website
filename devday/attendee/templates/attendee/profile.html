@@ -5,7 +5,7 @@
     <div class="row">
         <div class="offset-lg-2 col-lg-8 col-12 content-area">
             <h1>{% blocktrans with username=user.get_username %}User profile for {{ username }}{% endblocktrans %}</h1>
-            {% static_placeholder "gdpr_teaser" %}
+            <div class="text-justify">{% static_placeholder "gdpr_teaser" %}</div>
             {% crispy form %}
         </div>
         <div class="offset-lg-2 col-lg-8 col-12">
@@ -19,7 +19,7 @@
                                 <td>{{ event.description }}</td>
                                 <td>
                                     {% if event.id == event_id and not user.get_speaker %}
-                                        <p><a class="btn btn-primary"
+                                        <p><a class="btn btn-primary float-left float-sm-right"
                                               href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a>
                                         </p>
                                     {% endif %}</td>
@@ -32,9 +32,11 @@
             {% endif %}
         </div>
     </div>
+    {% if events %}
     <div class="row">
         <div class="offset-lg-2 col-lg-8 col-12 content-area">
             {% include "attendee/checkin_qrcode_include.html" %}
         </div>
     </div>
+    {% endif %}
 {% endblock %}

@@ -69,6 +69,12 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn,
     def get_object(self, queryset=None):
         return self.request.user
 
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['accept_general_contact'] = (
+                self.request.user.contact_permission_date is not None)
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super(DevDayUserProfileView, self).get_context_data(**kwargs)
         context['events'] = self.request.user.get_events().order_by('id')

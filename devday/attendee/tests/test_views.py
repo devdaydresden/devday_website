@@ -9,9 +9,9 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from attendee.forms import AttendeeRegistrationForm, EventRegistrationForm, \
-    DevDayUserRegistrationForm
-from attendee.models import DevDayUser, Attendee
+from attendee.forms import AttendeeRegistrationForm, DevDayUserRegistrationForm, \
+    EventRegistrationForm
+from attendee.models import Attendee, DevDayUser
 from attendee.tests import attendee_testutils
 from attendee.views import AttendeeRegistrationView, DevDayUserRegistrationView
 from event.models import Event
@@ -31,18 +31,66 @@ class AttendeeProfileViewTest(TestCase):
 
     """
 
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
+        self.url = '/accounts/profile/'
+
     def test_needs_login(self):
-        response = self.client.get('/accounts/profile/')
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url,
-                         '/accounts/login/?next=/accounts/profile/')
+        self.assertEqual(
+            response.url, '/accounts/login/?next={}'.format(self.url))
 
     def test_used_template(self):
-        DevDayUser.objects.create_user('test@example.org', 's3cr3t')
-        self.client.login(username='test@example.org', password='s3cr3t')
-        response = self.client.get('/accounts/profile/')
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.email, password=password)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'attendee/profile.html')
+
+    def test_attendance(self):
+        user, password = attendee_testutils.create_test_user()
+        Attendee.objects.create(user=user, event=self.event)
+        self.client.login(username=user.email, password=password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('events', response.context)
+        self.assertIn(self.event, response.context['events'])
+
+    def test_allow_contact(self):
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.email, password=password)
+        self.assertIsNone(user.contact_permission_date)
+        response = self.client.post(
+            self.url, data={'accept_general_contact': 'checked'})
+        self.assertRedirects(response, self.url)
+        user.refresh_from_db()
+        self.assertIsNotNone(user.contact_permission_date)
+
+    def test_allow_contact_does_not_change_contact_permission_date(self):
+        user, password = attendee_testutils.create_test_user()
+        user.contact_permission_date = timezone.now()
+        user.save()
+        original_date = user.contact_permission_date
+        self.client.login(username=user.email, password=password)
+        response = self.client.post(
+            self.url, data={'accept_general_contact': 'checked'})
+        self.assertRedirects(response, self.url)
+        user.refresh_from_db()
+        self.assertIsNotNone(user.contact_permission_date)
+        self.assertEqual(
+            user.contact_permission_date,
+            original_date)
+
+    def test_reset_allow_contact_deletes_contact_permission_date(self):
+        user, password = attendee_testutils.create_test_user()
+        user.contact_permission_date = timezone.now()
+        user.save()
+        self.client.login(username=user.email, password=password)
+        response = self.client.post(self.url, data={})
+        self.assertRedirects(response, self.url)
+        user.refresh_from_db()
+        self.assertIsNone(user.contact_permission_date)
 
 
 class AttendeeRegistrationViewTest(TestCase):

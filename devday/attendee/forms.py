@@ -20,8 +20,8 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
     accept_general_contact = forms.BooleanField(
         label=_('Contact for other events'),
         help_text=_(
-            'I would like to receive updates about events organized by the'
-            ' T-Systems Multimedia Solutions GmbH Software Engineering'
+            'I would like to receive updates related to events organized by'
+            ' the T-Systems Multimedia Solutions GmbH Software Engineering'
             ' Community via email.'
         ),
         required=False
@@ -80,6 +80,15 @@ class AttendeeProfileForm(ModelForm):
     This form is used to register an anonymous user as DevDayUser and for an
     event.
     """
+    accept_general_contact = forms.BooleanField(
+        label=_('Contact for other events'),
+        help_text=_(
+            'I would like to receive updates related to events organized by'
+            ' the T-Systems Multimedia Solutions GmbH Software Engineering'
+            ' Community via email.'
+        ),
+        required=False
+    )
 
     class Meta:
         model = DevDayUser
@@ -87,6 +96,9 @@ class AttendeeProfileForm(ModelForm):
             'contact_permission_date',
             'date_joined'
         ]
+        labels = {
+            'contact_permission_date': _('Contact permission granted at'),
+        }
 
     def __init__(self, *args, **kwargs):
         super(AttendeeProfileForm, self).__init__(*args, **kwargs)
@@ -94,6 +106,9 @@ class AttendeeProfileForm(ModelForm):
         self.helper.form_action = 'user_profile'
         self.helper.form_method = 'post'
         self.helper.html5_required = True
+        self.fields['date_joined'].required = False
+        self.fields['date_joined'].disabled = True
+        self.fields['contact_permission_date'].disabled = True
         buttons = Div(css_class='col-12 col-sm-6 order-2 order-sm-1')
         buttons.append(HTML(
             '<a href={} class="btn btn-outline-danger ml-0">{}</a>'.format(
@@ -107,12 +122,14 @@ class AttendeeProfileForm(ModelForm):
         self.helper.layout = Layout(
             HTML('<hr/>'),
             Div(
+                Field('accept_general_contact', wrapper_class='col-12'),
+                css_class='form-row'
+            ),
+            Div(
                 Field(
-                    'contact_permission_date', readonly="readonly",
+                    'contact_permission_date',
                     wrapper_class='col-12 col-sm-6'),
-                Field(
-                    'date_joined', readonly="readonly",
-                    wrapper_class='col-12 col-sm-6'),
+                Field('date_joined', wrapper_class='col-12 col-sm-6'),
                 css_class='form-row',
             ),
             Div(
@@ -127,6 +144,17 @@ class AttendeeProfileForm(ModelForm):
                 css_class='form-row',
             ),
         )
+
+    def save(self, commit=True):
+        user = super().save(False)
+        if self.cleaned_data.get('accept_general_contact'):
+            if user.contact_permission_date is None:
+                user.contact_permission_date = timezone.now()
+        else:
+            user.contact_permission_date = None
+        if commit:
+            user.save()
+        return user
 
 
 class EventRegistrationForm(ModelForm):

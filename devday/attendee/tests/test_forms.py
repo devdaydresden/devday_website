@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from django.test import TestCase
@@ -5,7 +7,7 @@ from django.test import TestCase
 from attendee.forms import (
     AttendeeRegistrationForm, CheckInAttendeeForm, DevDayRegistrationForm,
     DevDayUserCreationForm, RegistrationAuthenticationForm,
-    DevDayUserRegistrationForm, EventRegistrationForm)
+    DevDayUserRegistrationForm, EventRegistrationForm, AttendeeProfileForm)
 from attendee.models import Attendee, DevDayUser
 from attendee.tests import attendee_testutils
 from event.models import Event
@@ -114,6 +116,16 @@ class AttendeeRegistrationFormTest(TestCase):
         self.assertFalse(user.is_active)
         self.assertIsNone(user.contact_permission_date)
         self.assertTrue(user.check_password('s3cr3t'))
+
+
+class AttendeeProfileFormTest(TestCase):
+    def test_form_save_no_commit(self):
+        user, _ = attendee_testutils.create_test_user()
+        user.save = MagicMock(return_value=None)
+
+        form = AttendeeProfileForm(instance=user, data={})
+        form.save(commit=False)
+        user.save.assert_not_called()
 
 
 class EventRegistrationFormTest(TestCase):

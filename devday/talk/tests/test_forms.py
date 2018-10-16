@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils.timezone import now
 
-from devday.utils.forms import DevDayFormHelper
 from event.models import Event
 from speaker.tests import speaker_testutils
 from talk.forms import (
@@ -26,8 +25,8 @@ class TalkFormTest(TestCase):
     def test_fields(self):
         form = TalkForm()
         self.assertListEqual(
-            list(form.fields.keys()), ['title', 'abstract', 'remarks',
-                                       'talkformat'])
+            list(form.fields.keys()),
+            ['title', 'abstract', 'remarks', 'talkformat'])
 
     def test_model(self):
         form = TalkForm()
@@ -93,13 +92,11 @@ class EditTalkFormTest(TestCase):
     def test_init_creates_layout(self):
         form = EditTalkForm()
         self.assertIsInstance(form.helper.layout, Layout)
-        layout_fields = [name for [_, name]
-                         in form.helper.layout.get_field_names()]
+        layout_fields = [
+            name for [_, name] in form.helper.layout.get_field_names()]
         self.assertEqual(len(layout_fields), 4)
-        self.assertIn('title', layout_fields)
-        self.assertIn('abstract', layout_fields)
-        self.assertIn('remarks', layout_fields)
-        self.assertIn('talkformat', layout_fields)
+        self.assertEqual(
+            layout_fields, ['title', 'abstract', 'remarks', 'talkformat'])
 
 
 class TalkCommentFormTest(TestCase):
@@ -109,7 +106,7 @@ class TalkCommentFormTest(TestCase):
 
     def test_init_creates_form_helper(self):
         form = TalkCommentForm(instance=mock.MagicMock(pk=1))
-        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertIsInstance(form.helper, FormHelper)
         self.assertEqual(form.fields['comment'].widget.attrs['rows'], 2)
         self.assertEqual(form.helper.form_action, '/committee/talks/1/comment/')
 
@@ -129,7 +126,7 @@ class TalkSpeakerCommentFormTest(TestCase):
 
     def test_init_creates_form_helper(self):
         form = TalkSpeakerCommentForm(instance=mock.MagicMock(pk=1))
-        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertIsInstance(form.helper, FormHelper)
         self.assertEqual(form.fields['comment'].widget.attrs['rows'], 2)
         self.assertEqual(form.helper.form_action,
                          '/session/speaker/talks/1/comment/')

@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from devday.utils.forms import DevDayFormHelper
 from talk.models import Talk, TalkFormat, TalkComment, Vote
 
 User = get_user_model()
@@ -94,7 +93,7 @@ class TalkCommentForm(forms.models.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TalkCommentForm, self).__init__(*args, **kwargs)
         self.fields['comment'].widget.attrs['rows'] = 2
-        self.helper = DevDayFormHelper()
+        self.helper = FormHelper()
         self.helper.form_action = reverse(
             'talk_comment', kwargs={'pk': self.instance.pk})
         self.helper.layout = Layout(
@@ -112,7 +111,7 @@ class TalkSpeakerCommentForm(forms.models.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TalkSpeakerCommentForm, self).__init__(*args, **kwargs)
         self.fields['comment'].widget.attrs['rows'] = 2
-        self.helper = DevDayFormHelper()
+        self.helper = FormHelper()
         self.helper.form_action = reverse(
             'talk_speaker_comment', kwargs={'pk': self.instance.pk})
         self.helper.layout = Layout(

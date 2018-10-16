@@ -8,13 +8,10 @@ from django.forms import ModelForm
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic.edit import FormView
 from django_registration.forms import RegistrationFormUniqueEmail
 
 from attendee.models import DevDayUser, Attendee
 from devday.forms import AuthenticationForm
-from devday.utils.forms import (
-    DevDayFormHelper, DevDayField, DevDayContactField)
 
 User = get_user_model()
 
@@ -52,8 +49,8 @@ class DevDayUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(DevDayUserCreationForm, self).__init__(*args, **kwargs)
         if self._meta.model.USERNAME_FIELD in self.fields:
-            self.fields[self._meta.model.USERNAME_FIELD] \
-                .widget.attrs.update({'autofocus': True})
+            self.fields[self._meta.model.USERNAME_FIELD].widget.attrs.update(
+                {'autofocus': True})
 
     def save(self, commit=True):
         user = super(DevDayUserCreationForm, self).save(commit=False)
@@ -89,7 +86,7 @@ class AttendeeProfileForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AttendeeProfileForm, self).__init__(*args, **kwargs)
-        self.helper = DevDayFormHelper()
+        self.helper = FormHelper()
         self.helper.form_action = 'user_profile'
         self.helper.form_method = 'post'
         self.helper.html5_required = True
@@ -191,7 +188,7 @@ class AttendeeRegistrationForm(DevDayRegistrationForm):
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
         super(AttendeeRegistrationForm, self).__init__(*args, **kwargs)
-        self.helper = DevDayFormHelper()
+        self.helper = FormHelper()
         self.helper.form_action = reverse_lazy(
             'registration_register', kwargs={'event': self.event.slug})
         self.helper.form_method = 'post'
@@ -204,8 +201,7 @@ class AttendeeRegistrationForm(DevDayRegistrationForm):
 
         self.helper.layout = Layout(
             Div(
-                DevDayField('email', autofocus='autofocus',
-                            wrapper_class='col-12'),
+                Field('email', autofocus='autofocus', wrapper_class='col-12'),
             ),
             Div(
                 Field('password1', wrapper_class='col-12 col-md-6'),
@@ -248,7 +244,7 @@ class CheckInAttendeeForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
         super().__init__(*args, **kwargs)
-        self.helper = DevDayFormHelper()
+        self.helper = FormHelper()
         self.helper.form_action = reverse_lazy(
             'attendee_checkin', kwargs={'event': self.event.slug})
         self.helper.form_method = 'post'

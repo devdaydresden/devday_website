@@ -1,10 +1,12 @@
-{% load i18n %}{% blocktrans %}Hello,
+{% load i18n %}{% blocktrans with event_title=event.title %}Hello,
 
-thank you for registering an account for the Dev Day website!
+thank you for registering for {{ event_title }}!
 
-To complete your registration please confirm your email address by clicking the
-following link.
+To complete your registration please confirm your email address by clicking the following link.
 {% endblocktrans %}
+{% comment %}
+TODO: use a specific activation URL for the event
+{% endcomment %}
 {{ scheme }}://{{ site.domain }}{% url 'django_registration_activate' activation_key %}
 {% blocktrans count days=expiration_days %}
 The link is valid for one day.

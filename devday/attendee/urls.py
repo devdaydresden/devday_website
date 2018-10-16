@@ -3,14 +3,18 @@ from django.conf.urls import url
 from attendee.views import (
     AttendeeCancelView, AttendeeRegistrationView, CheckInAttendeeQRView,
     CheckInAttendeeUrlView, CheckInAttendeeView, DevDayUserDeleteView,
-    DevDayUserProfileView, LoginOrRegisterAttendeeView, RegisterSuccessView)
+    DevDayUserProfileView, LoginOrRegisterAttendeeView, RegisterSuccessView,
+    DevDayUserRegistrationView)
 
 urlpatterns = [
     url(r'^register/$',
+        DevDayUserRegistrationView.as_view(),
+        name='registration_register'),
+    url(r'^(?P<event>[^/]+)/attendee/join/$',
         LoginOrRegisterAttendeeView.as_view(),
         name='login_or_register_attendee'),
     url(r'^(?P<event>[^/]+)/attendee/register/$',
-        AttendeeRegistrationView.as_view(), name='registration_register'),
+        AttendeeRegistrationView.as_view(), name='attendee_registration'),
     url(r'^(?P<event>[^/]+)/attendee/qrcode/$',
         CheckInAttendeeQRView.as_view(), name='attendee_checkin_qrcode'),
     url(r'^(?P<event>[^/]+)/attendee/cancel/$',

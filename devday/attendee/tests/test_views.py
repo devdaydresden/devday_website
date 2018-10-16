@@ -54,10 +54,10 @@ class AttendeeRegistrationViewTest(TestCase):
 
     def test_get_email_context(self):
         request = HttpRequest()
-        context = AttendeeRegistrationView(request=request).get_email_context(
-            'testkey')
-        self.assertIn('request', context)
-        self.assertEqual(context.get('request'), request)
+        context = AttendeeRegistrationView(
+            request=request, event=self.event).get_email_context('testkey')
+        self.assertIn('event', context)
+        self.assertEqual(context.get('event'), self.event)
 
     def test_register_minimum_fields(self):
         response = self.client.post(
@@ -236,8 +236,9 @@ class AttendeeDeleteViewTest(TestCase):
 
 class LoginOrRegisterViewTest(TestCase):
     def setUp(self):
+        self.event = Event.objects.current_event()
         self.user = DevDayUser.objects.create_user('test@example.org', 'test')
-        self.url = '/register/'
+        self.url = '/{}/attendee/join/'.format(self.event.slug)
 
     def test_anonymous(self):
         response = self.client.get(self.url)
@@ -250,8 +251,8 @@ class LoginOrRegisterViewTest(TestCase):
         response = self.client.get(self.url)
         self.assertRedirects(
             response, reverse(
-                'registration_register',
-                kwargs={'event': Event.objects.current_event().slug}),
+                'attendee_registration',
+                kwargs={'event': self.event.slug}),
             msg_prefix='should redirect to registration page')
 
 

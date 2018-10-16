@@ -19,9 +19,10 @@ from django.views.generic.list import BaseListView
 from django_registration import signals
 from django_registration.backends.activation.views import RegistrationView
 
-from attendee.forms import (AttendeeProfileForm, AttendeeRegistrationForm,
-                            CheckInAttendeeForm, EventRegistrationForm,
-                            RegistrationAuthenticationForm)
+from attendee.forms import (
+    AttendeeProfileForm, AttendeeRegistrationForm, CheckInAttendeeForm,
+    EventRegistrationForm, RegistrationAuthenticationForm,
+    DevDayUserRegistrationForm)
 from event.models import Event
 from talk.models import Attendee
 from .models import DevDayUser
@@ -81,6 +82,8 @@ class AttendeeRegistrationView(RegistrationView):
         'user': EventRegistrationForm,
     }
     event = None
+    email_body_template = 'attendee/activation_email_body.txt'
+    email_subject_template = 'attendee/activation_email_subject.txt'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -118,7 +121,6 @@ class AttendeeRegistrationView(RegistrationView):
             activation_key)
         context.update({
             'event': self.event,
-            'request': self.request
         })
         return context
 
@@ -136,6 +138,20 @@ class AttendeeRegistrationView(RegistrationView):
             attendee = form.save(commit=True)
             # TODO: send event registration confirmation mail with more info
         return attendee.user
+
+
+class DevDayUserRegistrationView(RegistrationView):
+    """
+    A regular registration view that can be used to register an account without
+    registering for a specific event.
+    """
+    form_class = DevDayUserRegistrationForm
+
+    def dispatch(self, *args, **kwargs):
+        user = self.request.user
+        if user.is_authenticated:
+            return redirect(self.get_success_url())
+        return super().dispatch(*args, **kwargs)
 
 
 class AttendeeCancelView(LoginRequiredMixin, View):
@@ -174,7 +190,7 @@ class LoginOrRegisterAttendeeView(LoginView):
         self.event = Event.objects.current_event()
         if not request.user.is_anonymous and 'edit' not in request.GET:
             return redirect(reverse(
-                'registration_register', kwargs={'event': self.event.slug}))
+                'attendee_registration', kwargs={'event': self.event.slug}))
         return super(LoginOrRegisterAttendeeView, self).dispatch(
             request, *args, **kwargs)
 

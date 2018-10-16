@@ -77,6 +77,11 @@ class AttendeeInlineForm(ModelForm):
 
 
 class AttendeeProfileForm(ModelForm):
+    """
+    This form is used to register an anonymous user as DevDayUser and for an
+    event.
+    """
+
     class Meta:
         model = DevDayUser
         fields = [
@@ -127,6 +132,10 @@ class AttendeeProfileForm(ModelForm):
 
 
 class EventRegistrationForm(ModelForm):
+    """
+    This form is used to register an existing DevDayUser for an event.
+    """
+
     class Meta:
         model = Attendee
         fields = []
@@ -137,7 +146,7 @@ class EventRegistrationForm(ModelForm):
         super(EventRegistrationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = reverse_lazy(
-            'registration_register', kwargs={'event': self.event.slug})
+            'attendee_registration', kwargs={'event': self.event.slug})
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.helper.layout = Layout(
@@ -172,7 +181,7 @@ class RegistrationAuthenticationForm(AuthenticationForm):
         self.helper.layout = Layout(
             Div(
                 Hidden('next', value=reverse(
-                    'registration_register', kwargs={'event': event.slug})),
+                    'attendee_registration', kwargs={'event': event.slug})),
                 Field('username', template='devday/form/field.html',
                       autofocus='autofocus'),
                 Field('password', template='devday/form/field.html'),
@@ -184,13 +193,59 @@ class RegistrationAuthenticationForm(AuthenticationForm):
         )
 
 
+class DevDayUserRegistrationForm(DevDayRegistrationForm):
+    """
+    This form is used to register a DevDayUser without assigning it to
+    a specific event.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_action = reverse_lazy(
+            'registration_register')
+        self.helper.form_method = 'post'
+        self.helper.html5_required = True
+        self.fields['email'].help_text = None
+        self.fields['email'].label = _('E-Mail')
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
+        self.fields['accept_general_contact'].label = _('Permit contact')
+        self.fields['accept_general_contact'].initial = False
+
+        self.helper.layout = Layout(
+            Div(
+                Field('email', autofocus='autofocus', wrapper_class='col-12'),
+                css_class='form-row'
+            ),
+            Div(
+                Field('password1', wrapper_class='col-12 col-md-6'),
+                Field('password2', wrapper_class='col-12 col-md-6'),
+                css_class='form-row'
+            ),
+            Div(
+                Field('accept_general_contact', wrapper_class='col-12'),
+                css_class='form-row'
+            ),
+            Div(
+                Submit('submit', _('Register for an account')),
+                css_class='col-12 text-center'
+            )
+        )
+
+
 class AttendeeRegistrationForm(DevDayRegistrationForm):
+    """
+    This form is used to register a DevDayUser and create an registration for
+    a specific event.
+    """
+
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
         super(AttendeeRegistrationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = reverse_lazy(
-            'registration_register', kwargs={'event': self.event.slug})
+            'attendee_registration', kwargs={'event': self.event.slug})
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.fields['email'].help_text = None
@@ -218,6 +273,7 @@ class AttendeeRegistrationForm(DevDayRegistrationForm):
                 ),
                 Field(
                     'accept_general_contact', wrapper_class='col-12 col-md-6'),
+                css_class='form-row'
             ),
             Div(
                 Submit('submit', _('Register as attendee')),

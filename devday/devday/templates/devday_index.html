@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% comment %}
   This is the page template for the home page. All other pages use devday.html.
+  Application views use devday_site.html.
 {% endcomment %}
 {% load cms_tags static sekizai_tags i18n %}
 {% block body_classes %}{{ block.super }} dd-2018 homepage{% endblock %}
@@ -19,7 +20,7 @@
   <div class="{% if not attendee_registration_open %}visible-to-editor-only{% endif %}">
     {% placeholder "sign_up"  or %}Edit sign_up{% endplaceholder %}
     <p><a class="btn btn-outline btn-call-action m-t-1"
-          href="{% url 'login_or_register_attendee' %}"
+          href="{% url 'login_or_register_attendee' event=current_event.slug %}"
           role="button">{% trans "Sign up now - Be part of it!" %}</a></p>
   </div>
 {% endif %}
@@ -42,8 +43,6 @@
 <div class="tweet-icon mb-2">
     <svg width="99px" height="99px" viewBox="0 0 99 99" version="1.1" xmlns="http://www.w3.org/2000/svg"
          xmlns:xlink="http://www.w3.org/1999/xlink">
-        <!-- Generator: Sketch 51 (57462) - http://www.bohemiancoding.com/sketch -->
-        <desc>Created with Sketch.</desc>
         <defs></defs>
         <g id="Startseite-v2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
             <g id="Extra-Large" transform="translate(-970.000000, -737.000000)">

@@ -19,7 +19,7 @@
                 <p>{% static_placeholder "register-intro-anonymous" %}</p>
                 <p class="text-center">
                     <a class="btn btn-primary"
-                       href="{% url "registration_register" event=event.slug %}">{% trans "Register" %}</a>
+                       href="{% url 'attendee_registration' event=event.slug %}">{% trans "Register" %}</a>
                 </p>
             </div>
             <div class="col-12 col-md-5">
@@ -39,7 +39,7 @@
         <div class="row">
             <div class="col-12 col-md-10 offset-md-1 text-center">
                 <a class="btn btn-primary"
-                   href="{% url "registration_register" event=event.sloug %}">{% trans "Register" %}</a>
+                   href="{% url 'attendee_registration' event=event.slug %}">{% trans "Register" %}</a>
             </div>
         </div>
     {% endif %}

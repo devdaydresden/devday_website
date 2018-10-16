@@ -172,7 +172,8 @@ class RegistrationAuthenticationForm(AuthenticationForm):
         event = kwargs.pop('event')
         super(RegistrationAuthenticationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_action = 'login_or_register_attendee'
+        self.helper.form_action = reverse_lazy(
+            'login_or_register_attendee', kwargs={'event': event.slug})
         self.helper.form_method = 'post'
         self.helper.field_template = 'devday/form/field.html'
         self.helper.html5_required = True

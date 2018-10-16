@@ -59,6 +59,13 @@ class RegistrationAuthenticationFormTest(TestCase):
         form = RegistrationAuthenticationForm(event=event)
         self.assertIsNotNone(form)
 
+    def test_form_helper_action_url(self):
+        event = event_testutils.create_test_event()
+        form = RegistrationAuthenticationForm(event=event)
+        self.assertEqual(
+            form.helper.form_action,
+            '/{}/attendee/join/'.format(event.slug))
+
 
 class DevDayUserRegistrationFormTest(TestCase):
     def test_form_save_commit(self):

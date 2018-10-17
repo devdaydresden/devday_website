@@ -163,6 +163,7 @@ class PublishedSpeakerManager(models.Manager):
             speaker=speaker,
             date_published=timezone.now(),
             event=event,
+            name=speaker.name,
             twitter_handle=speaker.twitter_handle,
             phone=speaker.phone,
             position=speaker.position,

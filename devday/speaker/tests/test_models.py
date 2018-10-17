@@ -13,7 +13,6 @@ from django.utils.text import slugify
 from event.models import Event
 from speaker.models import PublishedSpeaker, Speaker
 
-
 User = get_user_model()
 
 
@@ -85,6 +84,11 @@ class TestPublishedSpeakerManager(TestCase):
         user = User.objects.create_user(
             email='test@example.org', password='s3cr3t')
         speaker = Speaker(
+            name='Mr. Speaker',
+            twitter_handle='speakbaer',
+            organization='Acme Inc.',
+            position='Lead PoC engineer',
+            phone='+1-234-1234567',
             video_permission=True,
             shirt_size=3,
             short_biography='My short and lucky biography.',
@@ -104,6 +108,12 @@ class TestPublishedSpeakerManager(TestCase):
         published = PublishedSpeaker.objects.copy_from_speaker(speaker, event)
         self.assertIs(published.speaker, speaker)
         self.assertIs(published.event, event)
+        self.assertEqual(published.name, speaker.name)
+        self.assertEqual(published.slug, speaker.slug)
+        self.assertEqual(published.twitter_handle, speaker.twitter_handle)
+        self.assertEqual(published.phone, speaker.phone)
+        self.assertEqual(published.position, speaker.position)
+        self.assertEqual(published.organization, speaker.organization)
         self.assertEqual(published.video_permission, speaker.video_permission)
         self.assertEqual(published.short_biography, speaker.short_biography)
         self.assertTrue(os.path.dirname(published.portrait.path).endswith(

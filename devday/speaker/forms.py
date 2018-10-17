@@ -2,7 +2,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, HTML, Layout, Submit
 from django import forms
 from django.conf import settings
-from django.templatetags import static
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 

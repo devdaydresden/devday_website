@@ -36,13 +36,21 @@
             </label>
             <input type="file" class="sr-only" id="id_portrait"
                    name="portrait" accept="image/*">
-            <div class="progress">
+            <div class="progress hide">
                 <div class="progress-bar progress-bar-striped progress-bar-animated"
                      role="progressbar" aria-valuenow="0" aria-valuemin="0"
                      aria-valuemax="100">0%
                 </div>
             </div>
             <div class="alert" role="alert"></div>
+            <div class="form-row">
+                <div class="col-lg-6 col-12">
+                    <button id="delete-button" class="btn btn-outline-danger{% if not speaker.portrait %} disabled{% endif %} float-lg-left">{% trans "Delete" %}</button>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <a id="continue-link" class="btn btn-outline-primary float-lg-right" href="{{ next }}">{% if speaker.portrait %}{% trans "Continue" %}{% else %}{% trans "Skip" %}{% endif %}</a>
+                </div>
+            </div>
             <div class="modal fade" id="portrait-modal" tabindex="-1"
                  role="dialog"
                  aria-labelledby="modalLabel" aria-hidden="true">
@@ -73,9 +81,6 @@
                 </div>
             </div>
         </div>
-        <div class="offset-lg-3 log-lg-6 col-12 text-center">
-            <a id="continue-link" class="btn btn-outline-primary" href="{{ next }}">{% if speaker.portrait %}{% trans "Continue" %}{% else %}{% trans "Skip" %}{% endif %}</a>
-        </div>
     </div>
     {% addtoblock 'js' %}
         <script>
@@ -83,6 +88,7 @@
                 var portrait = document.getElementById('portrait-image');
                 var image = document.getElementById('image');
                 var input = document.getElementById('id_portrait');
+                var $continueLink = $('#continue-link');
                 var $progress = $('.progress');
                 var $progressBar = $('.progress-bar');
                 var $alert = $('.alert');
@@ -123,6 +129,32 @@
                 }).on('hidden.bs.modal', function () {
                     cropper.destroy();
                     cropper = null;
+                });
+
+                document.getElementById('delete-button').addEventListener('click', function () {
+                    $modal.modal('hide');
+
+                    $alert.removeClass('alert-success alert-warning').text('');
+                    console.log("delete button click");
+
+                    $.ajax('{% url "delete_user_speaker_portrait" %}', {
+                        method: 'POST',
+                        data: {},
+                        headers: {
+                           'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        success: function () {
+                            portrait.src = '{% static "img/speaker-dummy.png" %}';
+                            $continueLink.text('{% trans "Skip" %}');
+                            $alert.show().addClass('alert-success').text('{% trans "Successfully deleted" %}');
+                        },
+                        error: function () {
+                            $alert.show().addClass('alert-warning').text('{% trans "Deletion failed" %}');
+                        },
+                        complete: function () {
+                            $progress.hide();
+                        },
+                    });
                 });
 
                 document.getElementById('crop').addEventListener('click', function () {
@@ -171,12 +203,12 @@
                                 },
 
                                 success: function () {
+                                    $continueLink.text('{% trans "Continue" %}');
                                     $alert.show().addClass('alert-success').text('{% trans "Upload success" %}');
                                 },
 
-                                error: function (jqXHR, textStatus, errorThrown) {
+                                error: function () {
                                     portrait.src = initialPortraitURL;
-                                    console.log(textStatus);
                                     $alert.show().addClass('alert-warning').text('{% trans "Upload error" %}');
                                 },
 

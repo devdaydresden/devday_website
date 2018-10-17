@@ -80,6 +80,16 @@ class Speaker(SpeakerBase):
     def __str__(self):
         return self.name
 
+    def publish(self, event):
+        published_speaker = PublishedSpeaker.objects.filter(
+            event=event, speaker=self).first()
+        if not published_speaker:
+            published_speaker = (
+                PublishedSpeaker.objects.copy_from_speaker(
+                    speaker=self, event=event))
+        return published_speaker
+
+
 
 def get_pil_type_and_extension(filename):
     mime = MimeTypes()

@@ -1,16 +1,17 @@
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, HttpResponse, Http404
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, TemplateView, \
-    DetailView, ListView
+from django.views.generic import (
+    CreateView, DetailView, ListView, TemplateView, UpdateView)
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
 from event.models import Event
 from speaker.forms import (
     CreateSpeakerForm, EditSpeakerForm, UserSpeakerPortraitForm)
-from speaker.models import Speaker, PublishedSpeaker
+from speaker.models import PublishedSpeaker, Speaker
+from talk.models import Talk
 
 
 class NoSpeakerYetMixin(object):
@@ -60,6 +61,10 @@ class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
         context['events_open_for_talk_submission'] = Event.objects.filter(
             submission_open=True
         ).order_by('start_time')
+        context['sessions'] = Talk.objects.filter(
+            draft_speaker=context['speaker']).select_related(
+            'event', 'draft_speaker', 'published_speaker').order_by(
+            '-event__title', 'title')
         return context
 
 

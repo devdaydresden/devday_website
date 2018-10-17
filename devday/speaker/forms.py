@@ -37,7 +37,7 @@ def get_edit_speaker_layout(submit_text):
         Div(
             Div(
                 Submit('submit', submit_text,
-                       css_class='btn btn-primary'),
+                       css_class='ml-0 btn btn-primary'),
                 css_class='col-12'
             ),
             css_class='form-row'

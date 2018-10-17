@@ -90,7 +90,6 @@ class Speaker(SpeakerBase):
         return published_speaker
 
 
-
 def get_pil_type_and_extension(filename):
     mime = MimeTypes()
     django_type = mime.guess_type(filename)[0]

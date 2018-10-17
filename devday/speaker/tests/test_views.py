@@ -302,7 +302,7 @@ class PublishedSpeakerPublicView(TestCase):
     def test_speaker_with_two_talks(self):
         Talk.objects.create(
             published_speaker=self.published_speaker, title='Some other talk',
-            abstract='Been there, done that',
+            abstract='Been there, done that', event=self.event,
             track=self.track)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)

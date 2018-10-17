@@ -113,7 +113,8 @@ module.exports = {
 
     images: {
         src:  [
-            srcDir + '/assets/img/*.*'
+            srcDir + '/assets/img/*.*',
+            nodemodules + '/cropperjs/src/images/bg.png',
         ],
         dest: assets + '/img'
     },

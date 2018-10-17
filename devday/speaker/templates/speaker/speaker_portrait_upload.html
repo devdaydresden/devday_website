@@ -1,7 +1,186 @@
 {% extends "devday_site.html" %}
-{% load crispy_forms_tags %}
+{% load crispy_forms_tags sekizai_tags staticfiles i18n %}
 {% block content_body %}
+    {% addtoblock 'js' %}
+    {% endaddtoblock %}
+    {% addtoblock 'css' %}
+        <style type="text/css">
+            .label {
+                cursor: pointer;
+            }
+
+            .progress {
+                display: none;
+                margin-bottom: 1rem;
+            }
+
+            .alert {
+                display: none;
+            }
+
+            .img-container img {
+                max-width: 100%;
+            }
+        </style>
+    {% endaddtoblock %}
     <div class="content-area">
-        {% crispy form %}
+        <div class="offset-lg-3 col-lg-6 col-12 text-center">
+            <label class="label" for="id_portrait" data-toggle="tooltip"
+                   title="{% trans 'Change your portrait' %}">
+                <img id="portrait-image" src="{% static "img/speaker-dummy.png" %}"
+                     alt="{% trans 'Speaker portrait' %}">
+            </label>
+            <input type="file" class="sr-only" id="id_portrait"
+                   name="portrait" accept="image/*">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                     aria-valuemax="100">0%
+                </div>
+            </div>
+            <div class="alert" role="alert"></div>
+            <div class="modal fade" id="portrait-modal" tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"
+                                id="modalLabel">{% trans "Crop the image" %}</h4>
+                            <button type="button" class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <img id="image"
+                                     src="{% static 'img/speaker-dummy.png' %}">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">{% trans "Cancel" %}</button>
+                            <button type="button" class="btn btn-primary"
+                                    id="crop">{% trans "Crop" %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    {% addtoblock 'js' %}
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+                var portrait = document.getElementById('portrait-image');
+                var image = document.getElementById('image');
+                var input = document.getElementById('id_portrait');
+                var $progress = $('.progress');
+                var $progressBar = $('.progress-bar');
+                var $alert = $('.alert');
+                var $modal = $('#portrait-modal');
+                var cropper;
+
+                input.addEventListener('change', function (e) {
+                    var files = e.target.files;
+                    var done = function (url) {
+                        input.value = '';
+                        image.src = url;
+                        $alert.hide();
+                        $modal.modal("show");
+                    };
+                    var reader;
+                    var file;
+
+                    if (files && files.length > 0) {
+                        file = files[0];
+
+                        if (URL) {
+                            done(URL.createObjectURL(file))
+                        } else if (FileReader) {
+                            reader = new FileReader();
+                            reader.onload = function (e) {
+                                done(reader.result);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                });
+
+                $modal.on('shown.bs.modal', function () {
+                    cropper = new Cropper(image, {
+                        aspectRatio: 2 / 3,
+                        viewMode: 3,
+                    });
+                }).on('hidden.bs.modal', function () {
+                    cropper.destroy();
+                    cropper = null;
+                });
+
+                document.getElementById('crop').addEventListener('click', function () {
+                    var initialPortraitURL;
+                    var canvas;
+
+                    $modal.modal('hide');
+
+                    if (cropper) {
+                        canvas = cropper.getCroppedCanvas({
+                            width: 636,
+                            height: 960,
+                        });
+                        initialPortraitURL = portrait.src;
+                        portrait.src = canvas.toDataURL();
+                        $progress.show();
+                        $alert.removeClass('alert-success alert-warning');
+                        canvas.toBlob(function (blob) {
+                            var formData = new FormData();
+
+                            formData.append('portrait', blob, 'portrait.jpg');
+                            $.ajax('{% url "upload_user_speaker_portrait" %}', {
+                                method: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                headers: {
+                                  'X-CSRFToken': '{{ csrf_token }}',
+                                },
+
+                                xhr: function () {
+                                    var xhr = new XMLHttpRequest();
+
+                                    xhr.upload.onprogress = function (e) {
+                                        var percent = 0;
+                                        var percentage = '0%';
+
+                                        if (e.lengthComputable) {
+                                            percent = Math.round((e.loaded / e.total) * 100);
+                                            percentage = percent + '%';
+                                            $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
+                                        }
+                                    };
+
+                                    return xhr;
+                                },
+
+                                success: function () {
+                                    $alert.show().addClass('alert-success').text('{% trans "Upload success" %}');
+                                },
+
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    portrait.src = initialPortraitURL;
+                                    console.log(textStatus);
+                                    $alert.show().addClass('alert-warning').text('{% trans "Upload error" %}');
+                                },
+
+                                complete: function () {
+                                    $progress.hide();
+                                },
+                            });
+                        })
+                    }
+                });
+            });
+        </script>
+    {% endaddtoblock %}
 {% endblock %}

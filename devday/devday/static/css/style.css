@@ -1,5 +1,5 @@
 /**
- * Build on 2018-10-16
+ * Build on 2018-10-17
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8980,7 +8980,7 @@ table.table.session {
   opacity: 0; }
 
 .cropper-bg {
-  background-image: url("../images/bg.png"); }
+  background-image: url("../img/bg.png"); }
 
 .cropper-hide {
   display: block;

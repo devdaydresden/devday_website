@@ -1,5 +1,6 @@
 {% extends "devday.html" %}
 {% load crispy_forms_tags sekizai_tags staticfiles i18n %}
+{% block title %}{{ block.super }}{% trans "Speaker profile" %}{% endblock %}
 {% block content_body %}
     <div class="row">
         <div class="col-12">
@@ -15,121 +16,43 @@
             {% if events_open_for_talk_submission.count == 1 %}
                 {% with events_open_for_talk_submission.first as event %}
                     {% url 'submit_session' event=event.slug as submit_talk_url %}
-                    <p>{% blocktrans with event_title=event.title %}Submit a session for <a href="{{ submit_talk_url }}">{{ event_title }}</a>.{% endblocktrans %}</p>
+                    <p>{% blocktrans with event_title=event.title %}Submit a
+                        session for
+                        <a href="{{ submit_talk_url }}">{{ event_title }}</a>
+                        .{% endblocktrans %}</p>
                 {% endwith %}
             {% else %}
-                {% blocktrans %}Submit a session for one of these events:{% endblocktrans %}
+                {% blocktrans %}Submit a session for one of these events:
+                {% endblocktrans %}
                 <ul class="list-group">
                     {% for event in events_open_for_talk_submission %}
-                        <li class="list-group-item"><a href="{% url 'submit_session' event=event.slug %}">{{ event.title }}</a></li>
+                        <li class="list-group-item"><a
+                                href="{% url 'submit_session' event=event.slug %}">{{ event.title }}</a>
+                        </li>
                     {% endfor %}
                 </ul>
             {% endif %}
         </div>
     {% endif %}
     <h4>{% trans "Speaker image" %}</h4>
-    <div class="dropzone-buttons p-2">
-        <button id="portrait-upload-btn"
-                class="btn btn-success fileinput-button dz-clickable">{% trans "Upload new image" %}</button>
-        <button id="portrait-delete-btn"
-                class="btn btn-danger cancel{% if not speaker.portrait %} d-none{% endif %}">{% trans "Delete image" %}</button>
-    </div>
-    <div id="previews">
-        <div id="template" class="file-row">
-            <span class="preview"><img class="img-fluid" data-dz-thumbnail src=""></span>
-            <div class="error text-danger d-none">
-                <strong data-dz-errormessage></strong>
+    <div class="text-center">
+        <div class="form-row">
+            <label for="id_portrait" class="label">
+                <img id="portrait-image" class="img-fluid"
+                     title="{% trans "Upload new image" %}"
+                     src="
+
+                             {% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
+                     alt="{{ speaker.name }}">
+            </label>
+            <input type="file" class="sr-only" id="id_portrait"
+                   name="portrait" accept="image/*">
+        </div>
+        <div class="form-row">
+            <div class="col-12 text-center">
+                <button id="portrait-delete-btn"
+                        class="btn btn-danger {% if not speaker.portrait %} d-none{% endif %}">{% trans "Delete image" %}</button>
             </div>
         </div>
     </div>
-    {% addtoblock "css" %}
-        <style type="text/css">
-            .dropzone-buttons {
-                position: relative;
-                z-index: 10;
-                margin-top: -52px;
-                top: 52px;
-            }
-        </style>
-    {% endaddtoblock %}
-    {% addtoblock "js" %}
-        <script>
-            $(document).ready(function () {
-                const previewNode = document.querySelector("#template");
-                previewNode.id = "";
-                const previewTemplate = previewNode.parentElement.innerHTML;
-                previewNode.parentNode.removeChild(previewNode);
-
-                let portraitDropZone = new Dropzone(document.body, {
-                    url: "{% url 'upload_user_speaker_portrait' %}",
-                    thumbnailWidth: 500,
-                    thumbnailHeight: 700,
-                    maxFiles: 1,
-                    acceptedFiles: "image/*",
-                    previewTemplate: previewTemplate,
-                    autoQueue: true,
-                    previewsContainer: "#previews",
-                    clickable: ".fileinput-button",
-                    headers: {"X-CSRFToken": "{{ csrf_token }}"},
-                    paramName: "portrait",
-                    thumbnailMethod: "contain",
-                    deleteUrl: "{% url 'delete_user_speaker_portrait' %}",
-                    init: function () {
-                        this.on('maxfilesexceeded', function (file) {
-                            this.removeAllFiles();
-                            this.addFile(file);
-                        });
-
-                        this.on('added', function (file) {
-                            console.info("file " + file + " " + file.dataURL);
-                        });
-
-                        this.on('sending', function (file) {
-                            document.getElementById("portrait-upload-btn").setAttribute("disabled", "disabled");
-                        });
-
-                        this.on('success', function (file) {
-                            document.getElementById("portrait-delete-btn").classList.remove("d-none");
-                            document.getElementById("portrait-upload-btn").removeAttribute("disabled");
-                        });
-                    }
-                });
-
-                function preLoad(imgUrl) {
-                    var mockFile = {
-                        dataURL: imgUrl,
-                        name: "",
-                        accepted: true,
-                        status: Dropzone.ADDED
-                    };
-
-                    portraitDropZone.files.push(mockFile);
-                    portraitDropZone.emit('addedfile', mockFile);
-                    portraitDropZone.createThumbnailFromUrl(
-                        mockFile, null, null, null, null,
-                        function (thumbnail, canvas) {
-                            portraitDropZone.emit('thumbnail', mockFile, thumbnail);
-                        });
-                    portraitDropZone._updateMaxFilesReachedClass();
-                    portraitDropZone.emit('complete', mockFile);
-                }
-
-                let imgUrl = "{% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static 'img/speaker-dummy.png' %}{% endif %}";
-                const fallbackImage = "{% static 'img/speaker-dummy.png' %}";
-
-                preLoad(imgUrl);
-
-                document.getElementById("portrait-delete-btn").onclick = function () {
-                    jQuery.ajax(portraitDropZone.options.deleteUrl, {
-                        headers: {"X-CSRFToken": "{{ csrf_token }}"},
-                        method: "POST"
-                    }).done(function (data) {
-                        portraitDropZone.removeAllFiles(true);
-                        document.getElementById("portrait-delete-btn").classList.add("d-none");
-                        preLoad(fallbackImage);
-                    });
-                };
-            });
-        </script>
-    {% endaddtoblock %}
 {% endblock %}

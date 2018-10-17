@@ -1,6 +1,8 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Field, Layout, Submit, HTML
+from crispy_forms.layout import Div, Field, HTML, Layout, Submit
 from django import forms
+from django.conf import settings
+from django.templatetags import static
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
@@ -73,7 +75,6 @@ class CreateSpeakerForm(forms.ModelForm):
                    ' to be contacted by the Dev Day organizers about'
                    ' conference details and my talk submissions.</p>'))))
 
-
     def save(self, commit=True):
         self.instance.user = self.user
         return super(CreateSpeakerForm, self).save(commit)
@@ -116,14 +117,23 @@ class UserSpeakerPortraitForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.form_action = reverse_lazy('upload_user_speaker_portrait')
         self.helper.form_id = 'profile-img-upload'
+        self.fields['portrait'].label = ''
         self.helper.layout = Layout(
             Div(
-                Field('portrait', wrapper_class='col-12'),
-                css_class='form-row',
+                HTML(
+                    '<img id="portrait-image" src="{0}img/speaker-dummy.png"'
+                    ' alt="{1}">'.format(
+                        settings.STATIC_URL, _('Speaker image'))),
+                Field(
+                    'portrait', css_class='sr-only', wrapper_class='col-12',
+                    accept="image/*"
+                ),
+                css_class='label', title=_('Change your speaker profile'),
             ),
             Div(
                 Div(
-                    Submit('submit', _('Submit your portrait'), css_class='btn btn-primary'),
+                    Submit('submit', _('Submit your portrait'),
+                           css_class='btn btn-primary'),
                     HTML('<a href="{}" class="btn btn-secondary">{}</a>'.format(
                         reverse_lazy('user_speaker_profile'),
                         _('Skip upload'))),

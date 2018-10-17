@@ -47,6 +47,8 @@ def get_edit_speaker_layout(submit_text):
 
 
 class CreateSpeakerForm(forms.ModelForm):
+    next = forms.CharField(widget=forms.HiddenInput, required=False)
+
     class Meta:
         model = Speaker
         fields = (
@@ -70,10 +72,12 @@ class CreateSpeakerForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.helper.layout = get_edit_speaker_layout(_('Register as speaker'))
+        self.helper.layout.insert(0, Field('next'))
         self.helper.layout.append(Div(
-            HTML(_('<p class="text-info">By registering as a speaker, I agree'
-                   ' to be contacted by the Dev Day organizers about'
-                   ' conference details and my talk submissions.</p>'))))
+            HTML('<p class="text-info">{}</p>'.format(
+                _('By registering as a speaker, I agree to be contacted by the'
+                  ' Dev Day organizers about conference details and my talk'
+                  ' submissions.')))))
 
     def save(self, commit=True):
         self.instance.user = self.user
@@ -103,7 +107,7 @@ class EditSpeakerForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.helper.layout = get_edit_speaker_layout(
-            _('Update your speaker details'))
+            _('Change your speaker details'))
 
 
 class UserSpeakerPortraitForm(forms.ModelForm):

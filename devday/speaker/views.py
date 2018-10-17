@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -31,6 +32,19 @@ class CreateSpeakerView(LoginRequiredMixin, NoSpeakerYetMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['next'] = self.request.GET.get('next', None)
+        return initial
+
+    def form_valid(self, form):
+        self.object = form.save(commit=True)
+        next_url = form.cleaned_data.get('next', '')
+        if next_url:
+            return redirect('{}?next={}'.format(
+                self.get_success_url(), next_url))
+        return redirect(self.get_success_url())
+
 
 class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
     model = Speaker
@@ -57,6 +71,23 @@ class UserSpeakerPortraitUploadView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(Speaker, user=self.request.user)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['next'] = self.request.GET.get('next', None)
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        next_url = context['form'].initial.get('next', '')
+        if not next_url:
+            next_url = self.success_url
+        context.update({
+            'next': next_url,
+            'speaker_image_height': settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT,
+            'speaker_image_width': settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH,
+        })
+        return context
 
     def form_valid(self, form):
         self.object = form.save()

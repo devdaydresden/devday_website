@@ -1,57 +1,74 @@
 {% extends "devday.html" %}
 {% load crispy_forms_tags sekizai_tags staticfiles i18n %}
-{% block title %}{{ block.super }}{% trans "Speaker profile" %}{% endblock %}
+{% block title %}{{ block.super }}{% trans "Speaker details" %}{% endblock %}
 {% block content_body %}
     <div class="row">
         <div class="col-12">
+            <h1>{% trans "Your speaker details" %}</h1>
             {% crispy form %}
         </div>
     </div>
-{% endblock %}
-{% block content_box_2_wrapper_classes %}{% endblock %}
-{% block content_box_2_wrapper %}
-    {% if events_open_for_talk_submission %}
-        <div class="row p-2">
-            <h4>{% trans "Submit session" %}</h4>
-            {% if events_open_for_talk_submission.count == 1 %}
-                {% with events_open_for_talk_submission.first as event %}
-                    {% url 'submit_session' event=event.slug as submit_talk_url %}
-                    <p>{% blocktrans with event_title=event.title %}Submit a
-                        session for
-                        <a href="{{ submit_talk_url }}">{{ event_title }}</a>
-                        .{% endblocktrans %}</p>
-                {% endwith %}
+    <div class="row">
+        <div class="col-12">
+            <h2>{% trans "Your sessions" %}</h2>
+            {% if sessions %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            {% for session in sessions %}
+                                <tr>
+                                    <td>{{ session.event.title }}</td>
+                                    <td>{{ session.title }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             {% else %}
-                {% blocktrans %}Submit a session for one of these events:
-                {% endblocktrans %}
-                <ul class="list-group">
-                    {% for event in events_open_for_talk_submission %}
-                        <li class="list-group-item"><a
-                                href="{% url 'submit_session' event=event.slug %}">{{ event.title }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <p>{% trans "You have not submitted any sessions yet." %}</p>
+            {% endif %}
+            {% if events_open_for_talk_submission %}
+                <h3>{% trans "Submit a session" %}</h3>
+                {% if events_open_for_talk_submission.count == 1 %}
+                    {% with events_open_for_talk_submission.first as event %}
+                        {% url 'submit_session' event=event.slug as submit_talk_url %}
+                        <p>{% blocktrans with event_title=event.title %}Submit a session for <a href="{{ submit_talk_url }}">{{ event_title }}</a>.{% endblocktrans %}</p>
+                    {% endwith %}
+                {% else %}
+                    {% blocktrans %}Submit a session for one of these events:{% endblocktrans %}
+                    <ul class="list-group">
+                        {% for event in events_open_for_talk_submission %}
+                            <li class="list-group-item"><a href="{% url 'submit_session' event=event.slug %}">{{ event.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             {% endif %}
         </div>
-    {% endif %}
-    <h4>{% trans "Speaker image" %}</h4>
+    </div>
+{% endblock %}
+{% block content_box_2_wrapper_classes %} content-sidebar{% endblock %}
+{% block content_box_2_wrapper %}
+    <div class="row">
+        <div class="col-12">
+            <h2>{% trans "Portrait picture" %}</h2>
+        </div>
+    </div>
     <div class="text-center">
         <div class="form-row">
-            <label for="id_portrait" class="label">
-                <img id="portrait-image" class="img-fluid"
-                     title="{% trans "Upload new image" %}"
-                     src="
-
-                             {% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
-                     alt="{{ speaker.name }}">
-            </label>
-            <input type="file" class="sr-only" id="id_portrait"
-                   name="portrait" accept="image/*">
+            <div class="col-12">
+                <label for="id_portrait" class="label">
+                    <img id="portrait-image" class="img-fluid"
+                         title="{% trans "Upload new portrait picture" %}"
+                         src="{% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
+                         alt="{{ speaker.name }}">
+                </label>
+                <input type="file" class="sr-only" id="id_portrait" name="portrait" accept="image/*">
+            </div>
         </div>
         <div class="form-row">
             <div class="col-12 text-center">
                 <button id="portrait-delete-btn"
-                        class="btn btn-danger {% if not speaker.portrait %} d-none{% endif %}">{% trans "Delete image" %}</button>
+                        class="btn btn-danger {% if not speaker.portrait %} d-none{% endif %}">{% trans "Delete portrait picture" %}</button>
             </div>
         </div>
     </div>

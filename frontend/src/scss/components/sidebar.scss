@@ -1,0 +1,25 @@
+.content-sidebar {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+
+  &.col-highlight {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    text-align: left;
+  }
+
+  h2 {
+    color: $white;
+    padding-bottom: 4px;
+    margin-bottom: 1rem;
+  }
+
+  img {
+    max-width: 100%;
+
+    &.align-center {
+      margin: 0 auto;
+      display: block;
+    }
+  }
+}

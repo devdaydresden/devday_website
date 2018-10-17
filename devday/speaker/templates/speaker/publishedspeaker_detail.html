@@ -6,21 +6,15 @@
         <div class="col-12 col-lg-9 order-2 order-lg-1 content-area">
             <div class="content-center">
                 <h1>{{ publishedspeaker }}
-                    {% if publishedspeaker.user.organization %} //
-                        {{ publishedspeaker.user.organization }}{% endif %}
-                    {% if publishedspeaker.user.user.twitter_handle %} //
-                        <a href="https://www.twitter.com/{{ publishedspeaker.user.user.twitter_handle }}">@{{ publishedspeaker.user.user.twitter_handle }}</a>{% endif %}
+                    {% if publishedspeaker.organization %} // {{ publishedspeaker.organization }}{% endif %}
+                    {% if publishedspeaker.twitter_handle %} // <a href="https://www.twitter.com/{{ publishedspeaker.twitter_handle }}">@{{ publishedspeaker.twitter_handle }}</a>{% endif %}
                 </h1>
-
                 <p>{{ publishedspeaker.shortbio|linebreaksbr }}</p>
                 {% if talks %}
-                    <h3>{% blocktrans %}Talks:
-                        {{ event }}{% endblocktrans %}</h3>
+                    <h3>{% blocktrans %}Talks: {{ event }}{% endblocktrans %}</h3>
                     <ul>
                         {% for talk in talks %}
-                            <li>
-                                <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
-                            </li>
+                            <li><a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a></li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -30,7 +24,7 @@
             <div class="content-center">
                 <img src="{{ publishedspeaker.public_image.url }}"
                      class="publishedspeaker-image"
-                     alt="{{ publishedspeaker }}">
+                     alt="{% blocktrans with speaker_name=publishedspeaker.name %}Portrait picture of {{ speaker_name }}{% endblocktrans %}">
             </div>
         </div>
     </div>

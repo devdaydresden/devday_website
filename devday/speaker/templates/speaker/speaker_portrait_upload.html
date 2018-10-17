@@ -21,13 +21,17 @@
             .img-container img {
                 max-width: 100%;
             }
+
+            #portrait-image {
+                max-width: 386px;
+            }
         </style>
     {% endaddtoblock %}
     <div class="content-area">
         <div class="offset-lg-3 col-lg-6 col-12 text-center">
             <label class="label" for="id_portrait" data-toggle="tooltip"
-                   title="{% trans 'Change your portrait' %}">
-                <img id="portrait-image" src="{% static "img/speaker-dummy.png" %}"
+                   title="{% trans 'Change your portrait picture' %}">
+                <img id="portrait-image" src="{% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
                      alt="{% trans 'Speaker portrait' %}">
             </label>
             <input type="file" class="sr-only" id="id_portrait"
@@ -46,7 +50,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title"
-                                id="modalLabel">{% trans "Crop the image" %}</h4>
+                                id="modalLabel">{% trans "Crop the portrait picture" %}</h4>
                             <button type="button" class="close"
                                     data-dismiss="modal"
                                     aria-label="Close">
@@ -68,6 +72,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="offset-lg-3 log-lg-6 col-12 text-center">
+            <a id="continue-link" class="btn btn-outline-primary" href="{{ next }}">{% if speaker.portrait %}{% trans "Continue" %}{% else %}{% trans "Skip" %}{% endif %}</a>
         </div>
     </div>
     {% addtoblock 'js' %}
@@ -126,8 +133,8 @@
 
                     if (cropper) {
                         canvas = cropper.getCroppedCanvas({
-                            width: 636,
-                            height: 960,
+                            width: {{ speaker_image_width }},
+                            height: {{ speaker_image_height }},
                         });
                         initialPortraitURL = portrait.src;
                         portrait.src = canvas.toDataURL();

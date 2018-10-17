@@ -26,23 +26,36 @@ class TalkForm(forms.models.ModelForm):
 
 
 class CreateTalkForm(TalkForm):
+    class Meta(TalkForm.Meta):
+        fields = (
+            'title', 'abstract', 'remarks', 'talkformat', 'draft_speaker',
+            'event')
+        widgets = {
+            'abstract': forms.Textarea(attrs={'rows': 3}),
+            'remarks': forms.Textarea(attrs={'rows': 3}),
+            'talkformat': forms.CheckboxSelectMultiple(),
+            'draft_speaker': forms.HiddenInput,
+            'event': forms.HiddenInput
+        }
+
     def __init__(self, *args, **kwargs):
-        self.speaker = kwargs.pop('speaker')
-        self.event = kwargs.pop('event')
         super(CreateTalkForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = reverse_lazy(
-            'submit_session', kwargs={'event': self.event.slug})
+            'submit_session', kwargs={'event': self.initial.get('event').slug})
         self.helper.form_id = 'create-talk-form'
         self.helper.field_template = 'devday/form/field.html'
         self.helper.html5_required = True
 
         self.helper.layout = Layout(
+            Field('draft_speaker'),
+            Field('event'),
             Div(
                 Field("title", autofocus='autofocus'),
                 Field("abstract", rows=2),
                 Field("remarks", rows=2),
                 Field('talkformat'),
+                css_class="form-group"
             ),
             Div(
                 Div(
@@ -52,10 +65,6 @@ class CreateTalkForm(TalkForm):
                 css_class="form-group"
             )
         )
-
-    def save(self, commit=True):
-        self.instance.speaker = self.speaker
-        return super(CreateTalkForm, self).save(commit=commit)
 
 
 class EditTalkForm(TalkForm):

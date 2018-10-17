@@ -2,8 +2,12 @@
 {% load i18n cms_tags %}
 {% block title %}{% trans "Session submitted" %}{% endblock %}
 {% block content_body %}
-    <div class="offset-lg-2 col-lg-8 col-md-12">
-        {% static_placeholder "talk_submitted" %}
-        {% url "user_speaker_profile" as speaker_profile %}<p>{% blocktrans %}Visit your <a href="{{ speaker_profile }}">speaker profile</a> to see all your sessions.{% endblocktrans %}</p>
+    <div class="content-area">
+        <div class="offset-lg-2 col-lg-8 col-md-12 text-justify">
+            <h1>{% trans "Session submitted" %}</h1>
+            {% static_placeholder "talk_submitted" %}
+            {% url "user_speaker_profile" as speaker_profile %}<p>
+            {% blocktrans %}Visit your <a href="{{ speaker_profile }}">speaker profile</a> to see all your sessions.{% endblocktrans %}</p>
+        </div>
     </div>
 {% endblock %}

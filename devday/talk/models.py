@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
@@ -45,10 +46,10 @@ class Track(TimeStampedModel):
 class Talk(models.Model):
     draft_speaker = models.ForeignKey(
         speaker_models.Speaker, verbose_name=_('Speaker (draft)'), null=True,
-        on_delete=models.SET_NULL)
+        on_delete=models.SET_NULL, blank=True)
     published_speaker = models.ForeignKey(
         speaker_models.PublishedSpeaker, verbose_name=_('Speaker (public)'),
-        null=True, on_delete=models.CASCADE)
+        null=True, blank=True, on_delete=models.CASCADE)
     submission_timestamp = models.DateTimeField(auto_now_add=True)
     title = models.CharField(verbose_name=_('Session title'), max_length=255)
     slug = models.SlugField(verbose_name=_('Slug'), max_length=255)
@@ -57,22 +58,23 @@ class Talk(models.Model):
     track = models.ForeignKey(Track, null=True, blank=True)
     talkformat = models.ManyToManyField(
         'TalkFormat', verbose_name=_('Talk Formats'))
-    event = models.ForeignKey(Event, verbose_name=_('Event'), null=True)
+    event = models.ForeignKey(
+        Event, verbose_name=_('Event'), null=False, blank=False)
 
     class Meta:
         verbose_name = _("Session")
         verbose_name_plural = _("Sessions")
         ordering = ['title']
 
+    def clean(self):
+        super().clean()
+        if not self.draft_speaker and not self.published_speaker:
+            raise ValidationError(
+                _('A draft speaker or a published speaker is required.'))
+
     def publish(self, track):
         self.track = track
-        published_speaker = speaker_models.PublishedSpeaker.objects.filter(
-            event=self.event, speaker=self.draft_speaker).first()
-        if not published_speaker:
-            published_speaker = (
-                speaker_models.PublishedSpeaker.objects.copy_from_speaker(
-                    speaker=self.draft_speaker, event=self.event))
-        self.published_speaker = published_speaker
+        self.published_speaker = self.draft_speaker.publish(self.event)
         self.save()
 
     def save(self, force_insert=False, force_update=False, using=None,

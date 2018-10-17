@@ -43,8 +43,8 @@ class CreateTalkFormTest(TestCase):
     def test_init_creates_form_helper(self):
         speaker = mock.Mock()
         event = mock.Mock(slug='bla')
-        form = CreateTalkForm(speaker=speaker, event=event)
-        self.assertEqual(form.speaker, speaker)
+        form = CreateTalkForm(
+            initial={'draft_speaker': speaker, 'event': event})
         self.assertIsInstance(form.helper, FormHelper)
         self.assertEqual(form.helper.form_action, reverse(
             'submit_session', kwargs={'event': event.slug}))
@@ -55,15 +55,16 @@ class CreateTalkFormTest(TestCase):
     def test_init_creates_layout(self):
         speaker = mock.Mock()
         event = mock.Mock()
-        form = CreateTalkForm(speaker=speaker, event=event)
+        form = CreateTalkForm(
+            initial={'draft_speaker': speaker, 'event': event})
         self.assertIsInstance(form.helper.layout, Layout)
         layout_fields = [name for [_, name] in
                          form.helper.layout.get_field_names()]
-        self.assertEqual(len(layout_fields), 4)
-        self.assertIn('title', layout_fields)
-        self.assertIn('abstract', layout_fields)
-        self.assertIn('remarks', layout_fields)
-        self.assertIn('talkformat', layout_fields)
+        self.assertEqual(len(layout_fields), 6)
+        self.assertEqual(
+            set(layout_fields),
+            {'event', 'draft_speaker', 'title', 'abstract', 'remarks',
+             'talkformat'})
 
     def test_save(self):
         talk_format = TalkFormat.objects.create(name='A Talk', duration=60)
@@ -71,15 +72,18 @@ class CreateTalkFormTest(TestCase):
                                      start_time=now(), end_time=now())
         event.talkform = talk_format
         speaker, _, password = speaker_testutils.create_test_speaker()
-        form = CreateTalkForm(speaker=speaker, data={
-            'title': 'Test',
-            'abstract': 'Test abstract',
-            'remarks': 'Test remarks',
-            'talkformat': [talk_format.id],
-        }, event=event)
+        form = CreateTalkForm(
+            initial={'draft_speaker': speaker, 'event': event}, data={
+                'draft_speaker': speaker.id,
+                'event': event.id,
+                'title': 'Test',
+                'abstract': 'Test abstract',
+                'remarks': 'Test remarks',
+                'talkformat': [talk_format.id],
+            })
         talk = form.save(commit=False)
         self.assertIsInstance(talk, Talk)
-        self.assertEqual(talk.speaker, speaker)
+        self.assertEqual(talk.draft_speaker, speaker)
 
 
 class EditTalkFormTest(TestCase):

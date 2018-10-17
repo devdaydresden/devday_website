@@ -131,13 +131,16 @@ class TestCreateTalkView(LoginTestMixin, TestCase):
         talk_format = TalkFormat.objects.create(name='A Talk', duration=60)
         self.event.talkformat.add(talk_format)
 
-        self.login_speaker(
+        speaker, _ = self.login_speaker(
             short_biography='A short biography text')
         response = self.client.post(
-            self.url,
-            data={'title': 'A fantastic session',
-                  'abstract': 'News for nerds, stuff that matters',
-                  'talkformat': [talk_format.id]})
+            self.url, data={
+                'title': 'A fantastic session',
+                'abstract': 'News for nerds, stuff that matters',
+                'talkformat': [talk_format.id],
+                'event': self.event.id,
+                'draft_speaker': speaker.id,
+            })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url, '/session/{}/submitted/'.format(self.event.slug))
@@ -730,8 +733,8 @@ class TestTalkListView(TestCase):
         #  we don't need all of its functionality and could generate a sample
         #  session grid for a synthetic event instead
         cls.event = Event.objects.current_event()
-        cls.event.registration_open=False
-        cls.event.submission_open=False
+        cls.event.registration_open = False
+        cls.event.submission_open = False
         devdata = DevData()
         devdata.create_talk_formats()
         standard_format = TalkFormat.objects.get(name='Vortrag', duration=60)

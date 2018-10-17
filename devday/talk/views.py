@@ -117,15 +117,17 @@ class CreateTalkView(TalkSubmissionOpenMixin, SpeakerRequiredMixin, CreateView):
         self.event = get_object_or_404(Event, slug=self.kwargs.get('event'))
         return super(CreateTalkView, self).dispatch(request, *args, **kwargs)
 
-    def get_form_kwargs(self):
-        form_kwargs = super(CreateTalkView, self).get_form_kwargs()
-        form_kwargs['speaker'] = self.request.user.speaker
-        form_kwargs['event'] = Event.objects.get(slug=self.event.slug)
-        return form_kwargs
+    def get_initial(self):
+        initial = super().get_initial()
+        initial.update({
+            'draft_speaker': self.speaker,
+            'event': self.event,
+        })
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super(CreateTalkView, self).get_context_data(**kwargs)
-        context['event'] = Event.objects.get(slug=self.event.slug)
+        context['event'] = self.event
         return context
 
 

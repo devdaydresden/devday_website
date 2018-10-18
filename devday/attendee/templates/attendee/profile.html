@@ -8,9 +8,17 @@
             <div class="text-justify">{% static_placeholder "gdpr_teaser" %}</div>
             {% crispy form %}
         </div>
+        {% if user.speaker %}
+        <div class="offset-lg-2 col-lg-8 col-12 text-justify">
+            {% url 'user_speaker_profile' as speaker_profile %}
+            <h3>{% trans "Speaker" %}</h3>
+            <p>{% blocktrans with speaker_name=user.speaker.name %}You are registered as speaker &quot;{{ speaker_name }}&quot;. Visit your <a href="{{ speaker_profile }}">speaker details page</a> to update your speaker data.{% endblocktrans %}</p>
+        </div>
+        {% endif %}
         <div class="offset-lg-2 col-lg-8 col-12">
+            <h3>{%  trans "Events" %}</h3>
             {% if events %}
-                <h1>{% blocktrans %}You are registered for these events{% endblocktrans %}</h1>
+                <p>{% blocktrans %}You are registered for these events{% endblocktrans %}</p>
                 <div class="table-responsive">
                     <table class="table">
                         {% for event in events %}

@@ -7,11 +7,23 @@
             <h1>{% blocktrans with username=user.get_username %}Delete your profile {{ username }}{% endblocktrans %}</h1>
             <form method="post">
                 {% csrf_token %}
-                <p>{% blocktrans %}Do you really want to delete your profile? You will not get information related to current and future events and you will have to register again if you choose to attend one of our future  events.{% endblocktrans %}</p>
+                <p>{% blocktrans %}Do you really want to delete your profile? You will not get information related to current and future events and you will have to register again if you choose to attend one of our future events.{% endblocktrans %}</p>
+                {% if unpublished_talks %}
+                    <p>
+                        {% url 'speaker_talk_details' pk=first_talk.id as first_talk_url %}
+                        {% blocktrans with talk_name=first_talk.title count unpublished=unpublished_talks|length %}You are registered as speaker and your following talk is not published yet and will be deleted:{% plural %}You are registered as speaker and your following talks are not published yet and will be deleted:{% endblocktrans %}
+                    </p>
+                    <ul>
+                        {% for talk in unpublished_talks %}
+                            <li>&quot;<a href="{% url 'speaker_talk_details' pk=talk.id %}">{{ talk.title }}</a>&quot;</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
                 <div class="form-row">
                     <input class="btn btn-danger" type="submit"
                            value="{% trans "Confirm" %}"/>
-                    <a href="{% url 'user_profile' %}" class="btn btn-outline-secondary">{% trans "Back to your profile" %}</a>
+                    <a href="{% url 'user_profile' %}"
+                       class="btn btn-outline-secondary">{% trans "Back to your profile" %}</a>
                 </div>
             </form>
         </div>

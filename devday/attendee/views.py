@@ -26,7 +26,7 @@ from attendee.forms import (
     EventRegistrationForm, RegistrationAuthenticationForm,
     DevDayUserRegistrationForm)
 from event.models import Event
-from talk.models import Attendee
+from talk.models import Attendee, Talk
 from .models import DevDayUser
 
 User = get_user_model()
@@ -360,6 +360,22 @@ class DevDayUserDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def _get_unpublished_talks(self):
+        return Talk.objects.filter(
+            published_speaker__isnull=True,
+            draft_speaker__user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'unpublished_talks': self._get_unpublished_talks()
+        })
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        self._get_unpublished_talks().delete()
+        return super().delete(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('pages-root')

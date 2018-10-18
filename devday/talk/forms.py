@@ -76,12 +76,11 @@ class EditTalkForm(TalkForm):
         self.helper.layout = Layout(
             Div(
                 Field(
-                    "title", template='devday/form/field.html',
-                    autofocus='autofocus'),
-                Field("abstract", template='devday/form/field.html', rows=2),
-                Field("remarks", template='devday/form/field.html', rows=2),
+                    "title", autofocus='autofocus'),
+                Field("abstract", rows=2),
+                Field("remarks", rows=2),
                 Field('talkformat'),
-                css_class="col-xs-12 col-sm-12 col-md-12 col-lg-8 offset-lg-2"
+                css_class="form-group"
             ),
             Div(
                 Div(
@@ -89,7 +88,7 @@ class EditTalkForm(TalkForm):
                            css_class="btn-default"),
                     css_class="text-center",
                 ),
-                css_class="col-xs-12 col-sm-12 col-lg-8 offset-lg-2"
+                css_class="form-group"
             )
         )
 
@@ -106,9 +105,19 @@ class TalkCommentForm(forms.models.ModelForm):
         self.helper.form_action = reverse(
             'talk_comment', kwargs={'pk': self.instance.pk})
         self.helper.layout = Layout(
-            'comment',
-            Field('is_visible', template='talk/form/is_visible-field.html'),
-            Submit('submit', _('Add comment'))
+            Div(
+                Field('comment', rows=2),
+                Field('is_visible', template='talk/form/is_visible-field.html'),
+                css_class="form-group",
+            ),
+            Div(
+                Div(
+                    Submit(
+                        'submit', _('Add comment'), css_class="btn-default"),
+                    css_class="text-center",
+                ),
+                css_class="form_group",
+            ),
         )
 
 
@@ -119,13 +128,22 @@ class TalkSpeakerCommentForm(forms.models.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TalkSpeakerCommentForm, self).__init__(*args, **kwargs)
-        self.fields['comment'].widget.attrs['rows'] = 2
         self.helper = FormHelper()
         self.helper.form_action = reverse(
             'talk_speaker_comment', kwargs={'pk': self.instance.pk})
         self.helper.layout = Layout(
-            'comment',
-            Submit('submit', _('Add comment'))
+            Div(
+                Field('comment', rows=2),
+                css_class="form-group",
+            ),
+            Div(
+                Div(
+                    Submit(
+                        'submit', _('Add comment'), css_class="btn-default"),
+                    css_class="text-center"
+                ),
+                css_class="form_group",
+            )
         )
 
 

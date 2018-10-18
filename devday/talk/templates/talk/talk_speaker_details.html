@@ -4,63 +4,62 @@
 {% block content_body %}
     {% addtoblock "js" %}
         <script type="text/javascript">
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie != '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = jQuery.trim(cookies[i]);
-                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
+            $(document).ready(function () {
+                $('#comments').on('click', '.delete-comment-link', function (e) {
+                    var comment_paragraph_id = $(this).data('comment-id');
+                    $.ajax($(this).data('url'), {
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        },
+                        method: 'POST',
+                        success: function () {
+                            $('#' + comment_paragraph_id).remove();
                         }
-                    }
-                }
-                return cookieValue;
-            }
+                    });
+                    return false;
+                });
+            });
         </script>
     {% endaddtoblock %}
-    <h1 class="offset-lg-1 col-lg-10 col-md-12">{% trans "Edit session" %}</h1>
-    {% crispy form %}
-    <div class="offset-lg-1 col-lg-10 col-md-12">
-        <h2>{% trans "Comments" %}</h2>
-        {% if comments %}
-            {% for comment in comments %}
-                <div id="comment-{{ comment.pk }}" class="panel panel-default">
-                    <p class="panel-body">{{ comment.comment }}</p>
-                    <p class="panel-footer text-right">{{ comment.created }} {{ comment.commenter.get_full_name }}
-                        {% if comment.commenter == request.user %}
-                            <a class="delete-comment-link" href="#"
-                               data-url="{% url "delete_talk_speaker_comment" pk=comment.pk %}"
-                               data-comment-id="comment-{{ comment.pk }}">{% trans "delete" %}</a>
-                        {% endif %}
-                    </p>
+    <div class="content-area">
+        <div class="row">
+            <div class="offset-lg-2 col-lg-8 col-12">
+                <h1>{% trans "Edit session" %}</h1>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="offset-lg-2 col-lg-8 col-12">
+                {% crispy form %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-lg-2 col-lg-8 col-12">
+                <h2>{% trans "Comments" %}</h2>
+                <div id="comments">
+                    {% if comments %}
+                        {% for comment in comments %}
+                            <div id="comment-{{ comment.pk }}"
+                                 class="panel panel-default">
+                                <p class="panel-body">{{ comment.comment }}</p>
+                                <p class="panel-footer text-right">{{ comment.created }} {{ comment.commenter.get_full_name }}
+                                    {% if comment.commenter == request.user %}
+                                        <a class="delete-comment-link" href="#"
+                                           data-url="{% url "delete_talk_speaker_comment" pk=comment.pk %}"
+                                           data-comment-id="comment-{{ comment.pk }}">{% trans "delete" %}</a>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p id="no-comments">{% trans "No comments yet" %}</p>
+                    {% endif %}
                 </div>
-            {% endfor %}
-            {% addtoblock "js" %}
-                <script type="text/javascript">
-                    $(document).on('ready', function () {
-                        $('.delete-comment-link').on('click', function () {
-                            var comment_paragraph_id = $(this).data('comment-id');
-                            $.ajax(
-                                $(this).data('url'),
-                                {
-                                    headers: {
-                                        "X-CSRFToken": getCookie('csrftoken')
-                                    },
-                                    method: 'POST',
-                                    success: function (data, textStatus, jqXHR) {
-                                        $('#' + comment_paragraph_id).remove();
-                                    }
-                                }
-                            );
-                        });
-                    });
-                </script>
-            {% endaddtoblock %}
-        {% else %}
-            <p>{% trans "No comments yet" %}</p>
-        {% endif %}
-        {% crispy comment_form %}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="offset-lg-2 col-lg-8 col-12">
+                {% crispy comment_form %}
+            </div>
+        </div>
     </div>
 {% endblock %}

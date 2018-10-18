@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-17 17:59+0000\n"
-"PO-Revision-Date: 2018-10-17 19:59+0200\n"
+"POT-Creation-Date: 2018-10-18 21:18+0000\n"
+"PO-Revision-Date: 2018-10-18 23:20+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,28 +16,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: speaker/apps.py:9 speaker/tests/test_appconfig.py:10
 msgid "Speaker management"
 msgstr "Sprecherverwaltung"
 
-#: speaker/forms.py:62 speaker/forms.py:98
+#: speaker/forms.py:61 speaker/forms.py:97
 msgid "How should we present your name to the audience?"
 msgstr "Wie sollen wir dem Publikum deinen Namen anzeigen?"
 
-#: speaker/forms.py:64 speaker/forms.py:100
+#: speaker/forms.py:63 speaker/forms.py:99
 msgid ""
 "Tell your audience who you are and what you want people to know about you."
 msgstr ""
 "Erzähl dem Publikum etwas über dich und das was die Leute von dir wissen "
 "sollen."
 
-#: speaker/forms.py:74
+#: speaker/forms.py:73
 msgid "Register as speaker"
 msgstr "Als Sprecher anmelden"
 
-#: speaker/forms.py:78
+#: speaker/forms.py:77
 msgid ""
 "By registering as a speaker, I agree to be contacted by the Dev Day "
 "organizers about conference details and my talk submissions."
@@ -46,23 +46,23 @@ msgstr ""
 "Organisatoren zu Details zur Konferenz und meinen Sessioneinreichungen "
 "Kontakt mit mir aufnehmen dürfen."
 
-#: speaker/forms.py:110
+#: speaker/forms.py:109
 msgid "Change your speaker details"
 msgstr "Ändere deine Sprecherdaten"
 
-#: speaker/forms.py:130 speaker/models.py:63 speaker/models.py:200
+#: speaker/forms.py:129 speaker/models.py:63 speaker/models.py:210
 msgid "Speaker image"
 msgstr "Sprecherfoto"
 
-#: speaker/forms.py:135
+#: speaker/forms.py:134
 msgid "Change your speaker profile"
 msgstr "Ändere deine Sprecherdaten"
 
-#: speaker/forms.py:139
+#: speaker/forms.py:138
 msgid "Submit your portrait"
 msgstr "Lade dein Foto hoch"
 
-#: speaker/forms.py:143
+#: speaker/forms.py:142
 msgid "Skip upload"
 msgstr "Hochladen überspringen"
 
@@ -140,11 +140,11 @@ msgstr "Kurzvita"
 msgid "registered as speaker"
 msgstr "Als Sprecher angemeldet"
 
-#: speaker/models.py:65 speaker/models.py:203
+#: speaker/models.py:65 speaker/models.py:213
 msgid "Speaker image thumbnail"
 msgstr "Vorschau Speakerbild"
 
-#: speaker/models.py:69 speaker/models.py:207
+#: speaker/models.py:69 speaker/models.py:217
 msgid "Public speaker image"
 msgstr "Öffentliches Speakerbild"
 
@@ -160,19 +160,19 @@ msgstr "Sprecher"
 msgid "speakers"
 msgstr "Sprecher"
 
-#: speaker/models.py:197
+#: speaker/models.py:207
 msgid "published as speaker"
 msgstr "Als Sprecher veröffentlicht"
 
-#: speaker/models.py:210
+#: speaker/models.py:220
 msgid "email address"
 msgstr "E-Mailadresse"
 
-#: speaker/models.py:215
+#: speaker/models.py:225
 msgid "published speaker"
 msgstr "veröffentlichter Sprecher"
 
-#: speaker/models.py:216
+#: speaker/models.py:226
 msgid "published speakers"
 msgstr "veröffentlichte Sprecher"
 
@@ -204,7 +204,7 @@ msgid "Yes please"
 msgstr "Ja bitte"
 
 #: speaker/templates/speaker/speaker_portrait_confirm_delete.html:17
-#: speaker/templates/speaker/speaker_portrait_upload.html:68
+#: speaker/templates/speaker/speaker_portrait_upload.html:76
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -216,27 +216,41 @@ msgstr "Tausche dein Portraitfoto aus"
 msgid "Speaker portrait"
 msgstr "Speakerfoto"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:53
-msgid "Crop the portrait picture"
-msgstr "Portraitfoto zuschneiden"
+#: speaker/templates/speaker/speaker_portrait_upload.html:48
+msgid "Delete"
+msgstr "Löschen"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:70
-msgid "Crop"
-msgstr "Zuschneiden"
-
-#: speaker/templates/speaker/speaker_portrait_upload.html:77
+#: speaker/templates/speaker/speaker_portrait_upload.html:51
+#: speaker/templates/speaker/speaker_portrait_upload.html:206
 msgid "Continue"
 msgstr "Weiter"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:77
+#: speaker/templates/speaker/speaker_portrait_upload.html:51
+#: speaker/templates/speaker/speaker_portrait_upload.html:148
 msgid "Skip"
 msgstr "Überspringen"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:174
+#: speaker/templates/speaker/speaker_portrait_upload.html:61
+msgid "Crop the portrait picture"
+msgstr "Portraitfoto zuschneiden"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:78
+msgid "Crop"
+msgstr "Zuschneiden"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:149
+msgid "Successfully deleted"
+msgstr "Erfolgreich gelöscht"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:152
+msgid "Deletion failed"
+msgstr "Löschen fehlgeschlagen"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:207
 msgid "Upload success"
 msgstr "Erfolgreich hochgeladen"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:180
+#: speaker/templates/speaker/speaker_portrait_upload.html:212
 msgid "Upload error"
 msgstr "Fehler beim Hochladen"
 
@@ -251,6 +265,10 @@ msgstr "Deine Sprecherdaten"
 #: speaker/templates/speaker/speaker_user_profile.html:13
 msgid "Your sessions"
 msgstr "Deine Sessions"
+
+#: speaker/templates/speaker/speaker_user_profile.html:21
+msgid "Edit session details"
+msgstr "Session-Details bearbeiten"
 
 #: speaker/templates/speaker/speaker_user_profile.html:28
 msgid "You have not submitted any sessions yet."
@@ -303,6 +321,3 @@ msgstr "Neues Portraitfoto hochladen"
 
 #~ msgid "Crop the image"
 #~ msgstr "Sprecherfoto zuschneiden"
-
-#~ msgid "Delete image"
-#~ msgstr "Foto löschen"

@@ -18,7 +18,7 @@
                             {% for session in sessions %}
                                 <tr>
                                     <td>{{ session.event.title }}</td>
-                                    <td>{{ session.title }}</td>
+                                    <td><a href="{% url 'speaker_talk_details' pk=session.id %}" title="{% trans 'Edit session details' %}">{{ session.title }}</a></td>
                                 </tr>
                             {% endfor %}
                         </tbody>

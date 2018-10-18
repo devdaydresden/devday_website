@@ -1,11 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import TestCase
-from django.utils.timezone import now
 
 from attendee.models import Attendee
 from attendee.tests import attendee_testutils
-from event.models import Event
 from event.tests import event_testutils
 from speaker.tests import speaker_testutils
 

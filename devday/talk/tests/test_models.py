@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.utils.translation import ugettext as _
 from django.test import TestCase
 
 from event.tests.event_testutils import create_test_event
 from speaker.models import Speaker, PublishedSpeaker
-from talk.models import Talk, Vote, TalkComment
+from talk.models import Talk, Vote, TalkComment, Track
 
 User = get_user_model()
 
@@ -51,6 +52,26 @@ class TalkTest(TestCase):
         self.assertIsNone(talk.draft_speaker_id)
         self.assertEqual('{}'.format(talk), '{} - {}'.format(
             published_speaker, 'Test'))
+
+    def test_publish(self):
+        track = Track.objects.create(name='Test track', event=self.event)
+        talk = Talk.objects.create(
+            draft_speaker=self.speaker, title='Test', abstract='Test abstract',
+            event=self.event)
+        talk.publish(track)
+        published_speaker = PublishedSpeaker.objects.get(
+            speaker=self.speaker, event=self.event)
+        self.assertIsInstance(published_speaker, PublishedSpeaker)
+        self.assertEqual(talk.published_speaker, published_speaker)
+        self.assertEqual(talk.track, track)
+
+    def test_clean(self):
+        talk = Talk.objects.create(
+            title='Test', abstract='Test abstract', event=self.event)
+        with self.assertRaisesMessage(
+                ValidationError,
+                _('A draft speaker or a published speaker is required.')):
+            talk.clean()
 
 
 class VoteTest(TestCase):

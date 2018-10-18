@@ -1,9 +1,8 @@
 from django.contrib import admin
-from django.forms import ModelChoiceField
 from django.utils.translation import gettext_lazy as _
 
-from .models import (Talk, TalkFormat, Track, Room, TimeSlot,
-                     TalkSlot, TalkMedia)
+from .models import (Room, Talk, TalkFormat, TalkMedia, TalkSlot, TimeSlot,
+                     Track)
 
 
 class TalkMediaInline(admin.StackedInline):
@@ -13,11 +12,6 @@ class TalkMediaInline(admin.StackedInline):
 class TalkSlotInline(admin.StackedInline):
     model = TalkSlot
     fields = (('room', 'time'),)
-
-
-class AttendeeModelChoiceField(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return "{} ({})".format(obj, obj.event)
 
 
 class RoomAdmin(admin.ModelAdmin):

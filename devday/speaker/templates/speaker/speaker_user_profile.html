@@ -15,12 +15,15 @@
                 <div class="table-responsive">
                     <table class="table">
                         <tbody>
-                            {% for session in sessions %}
-                                <tr>
-                                    <td>{{ session.event.title }}</td>
-                                    <td><a href="{% url 'speaker_talk_details' pk=session.id %}" title="{% trans 'Edit session details' %}">{{ session.title }}</a></td>
-                                </tr>
-                            {% endfor %}
+                        {% for session in sessions %}
+                            <tr>
+                                <td>{{ session.event.title }}</td>
+                                <td>
+                                    <a href="{% url 'speaker_talk_details' pk=session.id %}"
+                                       title="{% trans 'Edit session details' %}">{{ session.title }}</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -38,7 +41,9 @@
                     {% blocktrans %}Submit a session for one of these events:{% endblocktrans %}
                     <ul class="list-group">
                         {% for event in events_open_for_talk_submission %}
-                            <li class="list-group-item"><a href="{% url 'submit_session' event=event.slug %}">{{ event.title }}</a></li>
+                            <li class="list-group-item"><a
+                                    href="{% url 'submit_session' event=event.slug %}">{{ event.title }}</a>
+                            </li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -48,6 +53,26 @@
 {% endblock %}
 {% block content_box_2_wrapper_classes %} content-sidebar{% endblock %}
 {% block content_box_2_wrapper %}
+    {% addtoblock 'css' %}
+        <style type="text/css">
+            #portrait-image {
+                cursor: pointer;
+            }
+
+            .progress {
+                display: none;
+                margin-bottom: 1rem;
+            }
+
+            .alert {
+                display: none;
+            }
+
+            .img-container img {
+                max-width: 100%;
+            }
+        </style>
+    {% endaddtoblock %}
     <div class="row">
         <div class="col-12">
             <h2>{% trans "Portrait picture" %}</h2>
@@ -56,20 +81,249 @@
     <div class="text-center">
         <div class="form-row">
             <div class="col-12">
-                <label for="id_portrait" class="label">
-                    <img id="portrait-image" class="img-fluid"
-                         title="{% trans "Upload new portrait picture" %}"
-                         src="{% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
-                         alt="{{ speaker.name }}">
-                </label>
-                <input type="file" class="sr-only" id="id_portrait" name="portrait" accept="image/*">
+                <img id="portrait-image" class="img-fluid"
+                     title="{% trans "Upload new portrait picture" %}"
+                     src="{% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
+                     alt="{{ speaker.name }}">
             </div>
         </div>
         <div class="form-row">
             <div class="col-12 text-center">
-                <button id="portrait-delete-btn"
+                <button id="delete-portrait-trigger"
                         class="btn btn-danger {% if not speaker.portrait %} d-none{% endif %}">{% trans "Delete portrait picture" %}</button>
+            </div>
+            <div class="progress hide">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     role="progressbar" aria-valuenow="0"
+                     aria-valuemin="0" aria-valuemax="100">0%</div>
+            </div>
+            <div id="portrait-alert" class="col-12 text-center alert" role="alert"></div>
+        </div>
+    </div>
+    <div class="modal fade text-dark" id="portrait-modal" tabindex="-1" role="dialog"
+         aria-labelledby="portraitModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"
+                        id="portraitModalLabel">{% trans "Edit the portrait picture" %}</h4>
+                    <button type="button" class="close"
+                            data-dismiss="modal"
+                            aria-label="{% trans 'Close' %}">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="img-container">
+                        <img id="image"
+                             src="{% if speaker.portrait %}{{ speaker.portrait.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}">
+                    </div>
+                    <input type="file" class="sr-only" id="id_portrait"
+                           name="portrait" accept="image/*">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            id="upload-portrait-button"
+                            title="{% trans 'Upload new portrait picture' %}">{% trans 'Upload' %}</button>
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="button" class="btn btn-primary"
+                            id="crop">{% trans 'Crop' %}</button>
+                </div>
             </div>
         </div>
     </div>
+    <div class="modal fade text-dark" id="delete-confirm-modal" tabindex="-1" role="dialog"
+         aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deleteModalLabel">{% trans "Delete the portrait picture" %}</h4>
+                    <button type="button" class="close"
+                            data-dismiss="modal"
+                            aria-label="{% trans 'Close' %}">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">{% trans "Do you really want to delete your portrait picture?" %}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger"
+                            id="delete-portrait-button">{% trans 'Yes, delete it!' %}</button>
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">{% trans 'Cancel' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% addtoblock 'js' %}
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+                var cropper = null;
+                var hasImage = {% if speaker.portrait %}true{% else %}false{% endif %};
+                var image = document.getElementById('image');
+                var input = document.getElementById('id_portrait');
+                var portrait = document.getElementById('portrait-image');
+
+                var $deleteButton = $('#delete-portrait-button');
+                var $deleteTrigger = $('#delete-portrait-trigger');
+                var $alert = $('#portrait-alert');
+                var $modal = $('#portrait-modal');
+                var $progress = $('.progress');
+                var $progressBar = $('.progress-bar');
+                var $deleteModal = $('#delete-confirm-modal');
+
+                portrait.addEventListener('click', function (e) {
+                    image.src = portrait.src;
+                    $modal.modal("show");
+                });
+
+                function createCropper() {
+                    if (cropper) {
+                        cropper.destroy();
+                        cropper = null;
+                    }
+                    cropper = new Cropper(image, {
+                        aspectRatio: 2 / 3,
+                        viewMode: 3,
+                    });
+                }
+
+                input.addEventListener('change', function (e) {
+                    var files = e.target.files;
+                    var done = function(url) {
+                        input.value = '';
+                        image.src = url;
+                        hasImage = true;
+                        createCropper();
+                    };
+
+                    var reader;
+                    var file;
+
+                    if (files && files.length > 0) {
+                        file = files[0];
+
+                        if (URL) {
+                            done(URL.createObjectURL(file));
+                        } else if (FileReader) {
+                            reader = new FileReader();
+                            reader.onload = function(e) {
+                                done(reader.result);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                });
+
+                $modal.on('shown.bs.modal', function() {
+                    if (hasImage) {
+                        createCropper();
+                    }
+                }).on('hidden.bs.modal', function() {
+                    if (cropper) {
+                        cropper.destroy();
+                        cropper = null;
+                    }
+                });
+
+                document.getElementById('upload-portrait-button').addEventListener('click', function (e) {
+                    input.click();
+                });
+
+                document.getElementById('delete-portrait-trigger').addEventListener('click', function(e) {
+                    $deleteModal.modal("show");
+                });
+
+                $deleteButton.on('click', function (e) {
+                    $alert.removeClass('alert-success alert-warning').text();
+
+                    $deleteModal.modal('hide');
+
+                    $.ajax('{% url "delete_user_speaker_portrait" %}', {
+                        method: 'POST',
+                        data: {},
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        success: function () {
+                            hasImage = false;
+                            portrait.src = '{% static "img/speaker-dummy.png" %}';
+                            $alert.show().addClass('alert-success').text('{% trans "Successfully deleted" %}').fadeOut(1000);
+                            $deleteTrigger.addClass('d-none');
+                        },
+                        error: function () {
+                            $alert.show().addClass('alert-warning').text('{% trans "Deletion failed" %}').fadeOut(1000);
+                        },
+                        complete: function () {
+                            $progress.hide();
+                        },
+                    });
+                });
+
+                document.getElementById('crop').addEventListener('click', function (e) {
+                    var initialPortraitURL;
+                    var canvas;
+
+                    $modal.modal('hide');
+
+                    if (cropper) {
+                        canvas = cropper.getCroppedCanvas({
+                            width: {{ speaker_image_width }},
+                            height: {{ speaker_image_height }},
+                        });
+                        initialPortraitURL = portrait.src;
+                        portrait.src = canvas.toDataURL();
+                        $alert.removeClass('alert-success alert-warning');
+                        canvas.toBlob(function (blob) {
+                            var formData = new FormData();
+
+                            formData.append('portrait', blob, 'portrait.jpg');
+                            $.ajax('{% url "upload_user_speaker_portrait" %}', {
+                                method: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                headers: {
+                                  'X-CSRFToken': '{{ csrf_token }}',
+                                },
+
+                                xhr: function () {
+                                    var xhr = new XMLHttpRequest();
+
+                                    xhr.upload.onprogress = function (e) {
+                                        var percent = 0;
+                                        var percentage = '0%';
+
+                                        if (e.lengthComputable) {
+                                            percent = Math.round((e.loaded / e.total) * 100);
+                                            percentage = percent + '%';
+                                            $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
+                                        }
+                                    };
+
+                                    return xhr;
+                                },
+
+                                success: function () {
+                                    $alert.show().addClass('alert-success').text('{% trans "Upload success" %}').fadeOut(1000);
+                                    $deleteTrigger.removeClass('d-none');
+                                },
+
+                                error: function () {
+                                    portrait.src = initialPortraitURL;
+                                    $alert.show().addClass('alert-warning').text('{% trans "Upload error" %}').fadeOut(1000);
+                                },
+
+                                complete: function () {
+                                    $progress.hide();
+                                },
+                            });
+                        });
+                    }
+                });
+            });
+        </script>
+    {% endaddtoblock 'js' %}
 {% endblock %}

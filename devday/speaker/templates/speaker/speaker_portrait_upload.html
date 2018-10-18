@@ -1,8 +1,6 @@
 {% extends "devday_site.html" %}
 {% load crispy_forms_tags sekizai_tags staticfiles i18n %}
 {% block content_body %}
-    {% addtoblock 'js' %}
-    {% endaddtoblock %}
     {% addtoblock 'css' %}
         <style type="text/css">
             .label {
@@ -61,7 +59,7 @@
                                 id="modalLabel">{% trans "Crop the portrait picture" %}</h4>
                             <button type="button" class="close"
                                     data-dismiss="modal"
-                                    aria-label="Close">
+                                    aria-label="{% trans 'Close' %}">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -110,7 +108,7 @@
                         file = files[0];
 
                         if (URL) {
-                            done(URL.createObjectURL(file))
+                            done(URL.createObjectURL(file));
                         } else if (FileReader) {
                             reader = new FileReader();
                             reader.onload = function (e) {
@@ -135,13 +133,12 @@
                     $modal.modal('hide');
 
                     $alert.removeClass('alert-success alert-warning').text('');
-                    console.log("delete button click");
 
                     $.ajax('{% url "delete_user_speaker_portrait" %}', {
                         method: 'POST',
                         data: {},
                         headers: {
-                           'X-CSRFToken': '{{ csrf_token }}'
+                           'X-CSRFToken': '{{ csrf_token }}',
                         },
                         success: function () {
                             portrait.src = '{% static "img/speaker-dummy.png" %}';

@@ -58,13 +58,17 @@ class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(UserSpeakerProfileView, self).get_context_data(**kwargs)
-        context['events_open_for_talk_submission'] = Event.objects.filter(
-            submission_open=True
-        ).order_by('start_time')
-        context['sessions'] = Talk.objects.filter(
-            draft_speaker=context['speaker']).select_related(
-            'event', 'draft_speaker', 'published_speaker').order_by(
-            '-event__title', 'title')
+        context.update({
+            'events_open_for_talk_submission': Event.objects.filter(
+                submission_open=True
+            ).order_by('start_time'),
+            'sessions': Talk.objects.filter(
+                draft_speaker=context['speaker']).select_related(
+                'event', 'draft_speaker', 'published_speaker').order_by(
+                '-event__title', 'title'),
+            'speaker_image_height': settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT,
+            'speaker_image_width': settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH,
+        })
         return context
 
 

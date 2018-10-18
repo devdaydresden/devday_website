@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 21:18+0000\n"
-"PO-Revision-Date: 2018-10-18 23:20+0200\n"
+"POT-Creation-Date: 2018-10-18 23:11+0000\n"
+"PO-Revision-Date: 2018-10-19 01:12+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -187,7 +187,7 @@ msgid "Portrait picture of %(speaker_name)s"
 msgstr "Portraitfoto von %(speaker_name)s"
 
 #: speaker/templates/speaker/speaker_portrait_confirm_delete.html:5
-#: speaker/templates/speaker/speaker_user_profile.html:71
+#: speaker/templates/speaker/speaker_user_profile.html:93
 msgid "Delete portrait picture"
 msgstr "Portraitfoto löschen"
 
@@ -204,53 +204,66 @@ msgid "Yes please"
 msgstr "Ja bitte"
 
 #: speaker/templates/speaker/speaker_portrait_confirm_delete.html:17
-#: speaker/templates/speaker/speaker_portrait_upload.html:76
+#: speaker/templates/speaker/speaker_portrait_upload.html:74
+#: speaker/templates/speaker/speaker_user_profile.html:129
+#: speaker/templates/speaker/speaker_user_profile.html:155
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:33
+#: speaker/templates/speaker/speaker_portrait_upload.html:31
 msgid "Change your portrait picture"
 msgstr "Tausche dein Portraitfoto aus"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:35
+#: speaker/templates/speaker/speaker_portrait_upload.html:33
 msgid "Speaker portrait"
 msgstr "Speakerfoto"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:48
+#: speaker/templates/speaker/speaker_portrait_upload.html:46
 msgid "Delete"
 msgstr "Löschen"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:51
-#: speaker/templates/speaker/speaker_portrait_upload.html:206
+#: speaker/templates/speaker/speaker_portrait_upload.html:49
+#: speaker/templates/speaker/speaker_portrait_upload.html:203
 msgid "Continue"
 msgstr "Weiter"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:51
-#: speaker/templates/speaker/speaker_portrait_upload.html:148
+#: speaker/templates/speaker/speaker_portrait_upload.html:49
+#: speaker/templates/speaker/speaker_portrait_upload.html:145
 msgid "Skip"
 msgstr "Überspringen"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:61
+#: speaker/templates/speaker/speaker_portrait_upload.html:59
 msgid "Crop the portrait picture"
 msgstr "Portraitfoto zuschneiden"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:78
+#: speaker/templates/speaker/speaker_portrait_upload.html:62
+#: speaker/templates/speaker/speaker_user_profile.html:112
+#: speaker/templates/speaker/speaker_user_profile.html:144
+msgid "Close"
+msgstr "Schließen"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:76
+#: speaker/templates/speaker/speaker_user_profile.html:131
 msgid "Crop"
 msgstr "Zuschneiden"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:149
+#: speaker/templates/speaker/speaker_portrait_upload.html:146
+#: speaker/templates/speaker/speaker_user_profile.html:253
 msgid "Successfully deleted"
 msgstr "Erfolgreich gelöscht"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:152
+#: speaker/templates/speaker/speaker_portrait_upload.html:149
+#: speaker/templates/speaker/speaker_user_profile.html:257
 msgid "Deletion failed"
 msgstr "Löschen fehlgeschlagen"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:207
+#: speaker/templates/speaker/speaker_portrait_upload.html:204
+#: speaker/templates/speaker/speaker_user_profile.html:310
 msgid "Upload success"
 msgstr "Erfolgreich hochgeladen"
 
-#: speaker/templates/speaker/speaker_portrait_upload.html:212
+#: speaker/templates/speaker/speaker_portrait_upload.html:209
+#: speaker/templates/speaker/speaker_user_profile.html:316
 msgid "Upload error"
 msgstr "Fehler beim Hochladen"
 
@@ -266,19 +279,19 @@ msgstr "Deine Sprecherdaten"
 msgid "Your sessions"
 msgstr "Deine Sessions"
 
-#: speaker/templates/speaker/speaker_user_profile.html:21
+#: speaker/templates/speaker/speaker_user_profile.html:23
 msgid "Edit session details"
 msgstr "Session-Details bearbeiten"
 
-#: speaker/templates/speaker/speaker_user_profile.html:28
+#: speaker/templates/speaker/speaker_user_profile.html:31
 msgid "You have not submitted any sessions yet."
 msgstr "Du hast bisher noch keine Sessions eingereicht."
 
-#: speaker/templates/speaker/speaker_user_profile.html:31
+#: speaker/templates/speaker/speaker_user_profile.html:34
 msgid "Submit a session"
 msgstr "Eine Session einreichen"
 
-#: speaker/templates/speaker/speaker_user_profile.html:35
+#: speaker/templates/speaker/speaker_user_profile.html:38
 #, python-format
 msgid ""
 "Submit a session for <a href=\"%(submit_talk_url)s\">%(event_title)s</a>."
@@ -286,17 +299,38 @@ msgstr ""
 "Reiche eine Session für <a href=\"%(submit_talk_url)s\">%(event_title)s</a> "
 "ein."
 
-#: speaker/templates/speaker/speaker_user_profile.html:38
+#: speaker/templates/speaker/speaker_user_profile.html:41
 msgid "Submit a session for one of these events:"
 msgstr "Eine Session für eine dieser Veranstaltungen einreichen:"
 
-#: speaker/templates/speaker/speaker_user_profile.html:53
+#: speaker/templates/speaker/speaker_user_profile.html:78
 msgid "Portrait picture"
 msgstr "Portraitfoto"
 
-#: speaker/templates/speaker/speaker_user_profile.html:61
+#: speaker/templates/speaker/speaker_user_profile.html:85
+#: speaker/templates/speaker/speaker_user_profile.html:127
 msgid "Upload new portrait picture"
 msgstr "Neues Portraitfoto hochladen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:109
+msgid "Edit the portrait picture"
+msgstr "Portraitfoto bearbeiten"
+
+#: speaker/templates/speaker/speaker_user_profile.html:127
+msgid "Upload"
+msgstr "Hochladen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:141
+msgid "Delete the portrait picture"
+msgstr "Portraitfoto löschen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:149
+msgid "Do you really want to delete your portrait picture?"
+msgstr "Willst du dein Portraitfoto wirklich löschen?"
+
+#: speaker/templates/speaker/speaker_user_profile.html:153
+msgid "Yes, delete it!"
+msgstr "Ja, lösche es!"
 
 #~ msgid "Speaker profile"
 #~ msgstr "Sprecherdaten"

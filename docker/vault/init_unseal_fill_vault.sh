@@ -3,6 +3,8 @@
 
 set -e
 
+cd "$(dirname $0)"
+
 # initialize vault
 VAULT_API_URL="https://localhost:8200/v1"
 VAULT_KEY_FILE="${1:-vault-$(date +%Y%m%d-%H%M%S%z).json}"
@@ -82,8 +84,8 @@ if ${CURL} --silent --fail -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/se
 else
   ${CURL} --silent --fail -X POST -H "X-Vault-Token: ${ROOT_TOKEN}" \
     --data "$(printf '{"data": {"postgresql_password": "%s", "secret_key": "%s"}}' \
-    $(dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 -w 0) \
-    $(dd if=/dev/urandom bs=64 count=1 2>/dev/null | base64 -w 0))" \
+    $(openssl rand -base64 30) \
+    $(openssl rand -base64 64))" \
     ${VAULT_API_URL}/secret/data/devday >/dev/null
   ${CURL} --silent --fail -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/secret/data/devday | python -m json.tool
 fi

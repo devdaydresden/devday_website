@@ -7,6 +7,7 @@ from event.tests import event_testutils
 from speaker.forms import CreateSpeakerForm, UserSpeakerPortraitForm
 from speaker.models import Speaker, PublishedSpeaker
 from speaker.tests import speaker_testutils
+from speaker.tests.speaker_testutils import TemporaryMediaTestCase
 from talk.models import Track, Talk
 
 
@@ -64,6 +65,19 @@ class TestCreateSpeakerView(TestCase):
         response = self.client.post(self.url, data=data)
         self.assertRedirects(response, '/speaker/upload_portrait/')
 
+    def test_redirect_form_valid(self):
+        _, password = attendee_testutils.create_test_user(
+            'speaker@example.org')
+        data = {
+            'name': 'Special Tester',
+            'shirt_size': '2', 'video_permission': 'checked',
+            'short_biography': 'A guy from somewhere having something great',
+            'next': '/foo',
+        }
+        self.client.login(email='speaker@example.org', password=password)
+        response = self.client.post(self.url, data=data)
+        self.assertRedirects(response, '/speaker/upload_portrait/?next=/foo')
+
 
 class TestUserSpeakerProfileView(TestCase):
     def setUp(self):
@@ -97,7 +111,7 @@ class TestUserSpeakerProfileView(TestCase):
         self.assertEqual(response.context['speaker'], self.speaker)
 
 
-class TestUserSpeakerPortraitUploadView(TestCase):
+class TestUserSpeakerPortraitUploadView(TemporaryMediaTestCase):
     def setUp(self):
         self.url = '/speaker/upload_portrait/'
 
@@ -211,7 +225,7 @@ class TestUserSpeakerPortraitUploadView(TestCase):
         self.assertFalse(bool(speaker.portrait))
 
 
-class TestUserSpeakerPortraitDeleteView(TestCase):
+class TestUserSpeakerPortraitDeleteView(TemporaryMediaTestCase):
     def setUp(self):
         self.url = '/speaker/delete_portrait/'
 
@@ -273,7 +287,7 @@ class TestUserSpeakerPortraitDeleteView(TestCase):
         self.assertFalse(bool(self.speaker.portrait))
 
 
-class PublishedSpeakerPublicView(TestCase):
+class PublishedSpeakerPublicView(TemporaryMediaTestCase):
     def setUp(self):
         self.event = event_testutils.create_test_event(submission_open=False)
         self.speaker, _, _ = speaker_testutils.create_test_speaker()
@@ -330,3 +344,39 @@ class PublishedSpeakerPublicView(TestCase):
         self.assertIn('talks', response.context)
         self.assertEqual(
             set(response.context['talks']), {self.talk, talk2})
+
+
+class TestPublishedSpeakerListView(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
+        self.speakers = []
+        for i in range(10):
+            self.speakers.append(PublishedSpeaker.objects.create(
+                email='test-speaker-{}@example.org'.format(i),
+                event=self.event,
+                video_permission=True,
+                name='Test Speaker {}'.format(i)))
+        self.url = '/{}/speaker/'.format(self.event.slug)
+
+    def test_get_queryset_no_talks(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['publishedspeaker_list']), 0)
+
+    def test_get_queryset_with_talks(self):
+        track = Track.objects.create(name='Hollow talk')
+        Talk.objects.create(
+            title='Talk 1', abstract='Abstract 1',
+            published_speaker=self.speakers[0], event=self.event, track=track)
+        Talk.objects.create(
+            title='Talk 2', abstract='Abstract 2',
+            published_speaker=self.speakers[0], event=self.event, track=track)
+        Talk.objects.create(
+            title='Talk 3', abstract='Abstract 3',
+            published_speaker=self.speakers[1], event=self.event, track=track)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        speaker_list = response.context['publishedspeaker_list']
+        self.assertEqual(len(speaker_list), 2)
+        self.assertIn(self.speakers[0], speaker_list)
+        self.assertIn(self.speakers[1], speaker_list)

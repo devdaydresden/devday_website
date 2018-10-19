@@ -55,8 +55,7 @@ class SpeakerBase(models.Model):
 
 class Speaker(SpeakerBase):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, null=True, blank=True,
-        related_name='speaker', on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL, related_name='speaker')
     date_registered = models.DateTimeField(
         _('registered as speaker'), default=timezone.now)
     portrait = ValidatedImageField(
@@ -153,6 +152,11 @@ def create_derived_speaker_images(sender, instance, **kwargs):
     if instance.portrait:
         create_public_image(instance.portrait, instance.public_image)
         create_thumbnail(instance.portrait, instance.thumbnail)
+    else:
+        if instance.public_image:
+            instance.public_image.delete()
+        if instance.thumbnail:
+            instance.thumbnail.delete()
 
 
 class PublishedSpeakerManager(models.Manager):
@@ -239,3 +243,8 @@ def create_derived_published_speaker_images(sender, instance, **kwargs):
     if instance.portrait:
         create_public_image(instance.portrait, instance.public_image)
         create_thumbnail(instance.portrait, instance.thumbnail)
+    else:
+        if instance.public_image:
+            instance.public_image.delete()
+        if instance.thumbnail:
+            instance.thumbnail.delete()

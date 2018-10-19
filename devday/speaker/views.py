@@ -159,9 +159,15 @@ class PublishedSpeakerDetailView(DetailView):
 
 
 class PublishedSpeakerListView(ListView):
-    model = Speaker
+    model = PublishedSpeaker
+    event = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return super(PublishedSpeakerListView, self).get_queryset().filter(
+            event=self.event,
             talk__track__isnull=False  # TODO: replace with talk state check
-        ).order_by('name')
+        ).distinct().order_by('name')

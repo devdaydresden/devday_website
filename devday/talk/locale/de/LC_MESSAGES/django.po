@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 21:18+0000\n"
-"PO-Revision-Date: 2018-10-18 23:19+0200\n"
+"POT-Creation-Date: 2018-10-19 11:38+0000\n"
+"PO-Revision-Date: 2018-10-19 13:36+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,10 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:55 talk/models.py:33 talk/models.py:62 talk/models.py:139
+#: talk/admin.py:49 talk/models.py:33 talk/models.py:62 talk/models.py:139
 #: talk/models.py:157
 msgid "Event"
 msgstr "Veranstaltung"
@@ -108,7 +108,7 @@ msgstr "Session"
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:73
+#: talk/models.py:73 talk/tests/test_models.py:73
 msgid "A draft speaker or a published speaker is required."
 msgstr "Ein Sprecher (Entwurf) oder Sprecher (öffentlich) ist erforderlich."
 
@@ -284,16 +284,6 @@ msgstr "Kurzvita"
 #: talk/templates/talk/speaker_profile.html:19
 msgid "Speaker image"
 msgstr "Speakerbild"
-
-#: talk/templates/talk/speaker_list.html:3
-msgid "Speaker Linup"
-msgstr "Sprecher"
-
-#: talk/templates/talk/speaker_list.html:17
-msgid "Session selection is not done yet. No speaker list for you."
-msgstr ""
-"Die Sessionauswahl ist noch nicht abgeschlossen. Es ist noch keine "
-"Sprecherliste verfügbar."
 
 #: talk/templates/talk/speaker_profile.html:8
 #: talk/templates/talk/speaker_profile.html:10
@@ -584,61 +574,3 @@ msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."
 #: talk/tests/test_views.py:662
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
-
-#~ msgid "Fullname"
-#~ msgstr "Voller Name"
-
-#~ msgid "Phone"
-#~ msgstr "Telefon"
-
-#~ msgid "You need to agree to be contacted by us."
-#~ msgstr "Es ist notwendig, dass du der Kontaktaufnahme zustimmst."
-
-#~ msgid "Login"
-#~ msgstr "Anmelden"
-
-#~ msgid ""
-#~ "<label><p class=\"help-block\">By registering as a speaker, I agree to be "
-#~ "contacted by the Dev Day organizers about conference details and my talk "
-#~ "submissions.</p></label>"
-#~ msgstr ""
-#~ "<label><p class=\"help-block\">Durch meine Registrierung als Sprecher "
-#~ "stimme ich zu, dass mich die Dev Day-Organisatoren über Details zur "
-#~ "Konferenz und zu meinen Vortragsvorschlägen kontaktieren dürfen.</p></"
-#~ "label>"
-
-#~ msgid "Update your speaker information"
-#~ msgstr "Sprecherinformationen aktualisieren"
-
-#~ msgid "E-Mail"
-#~ msgstr "E-Mail"
-
-#~ msgid "T-shirt size"
-#~ msgstr "T-Shirtgröße"
-
-#~ msgid "Video permitted"
-#~ msgstr "Videofreigabe erteilt"
-
-#~ msgid ""
-#~ "I hereby agree that audio and visual recordings of me and my session can "
-#~ "be published on the social media channels of the event organizer and the "
-#~ "website devday.de."
-#~ msgstr ""
-#~ "Ich stimme hiermit zu, dass Ton- und Videoaufzeichnungen von mir und "
-#~ "meiner Session auf den Social-Media-Kanälen des Veranstalters und auf der "
-#~ "Webseite devday.de verwendet werden dürfen."
-
-#~ msgid "Speaker image thumbnail"
-#~ msgstr "Vorschau Speakerbild"
-
-#~ msgid "Public speaker image"
-#~ msgstr "Öffentliches Speakerbild"
-
-#~ msgid "Speakers"
-#~ msgstr "Sprecher"
-
-#~ msgid "Talks: %(event)s"
-#~ msgstr "Sessions: %(event)s"
-
-#~ msgid "Become a speaker"
-#~ msgstr "Sprecher werden"

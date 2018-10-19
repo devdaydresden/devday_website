@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 23:11+0000\n"
-"PO-Revision-Date: 2018-10-19 01:12+0200\n"
+"POT-Creation-Date: 2018-10-19 11:38+0000\n"
+"PO-Revision-Date: 2018-10-19 13:37+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #: speaker/apps.py:9 speaker/tests/test_appconfig.py:10
 msgid "Speaker management"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Change your speaker details"
 msgstr "Ändere deine Sprecherdaten"
 
-#: speaker/forms.py:129 speaker/models.py:63 speaker/models.py:210
+#: speaker/forms.py:129 speaker/models.py:62 speaker/models.py:214
 msgid "Speaker image"
 msgstr "Sprecherfoto"
 
@@ -136,43 +136,43 @@ msgstr ""
 msgid "Short biography"
 msgstr "Kurzvita"
 
-#: speaker/models.py:61
+#: speaker/models.py:60
 msgid "registered as speaker"
 msgstr "Als Sprecher angemeldet"
 
-#: speaker/models.py:65 speaker/models.py:213
+#: speaker/models.py:64 speaker/models.py:217
 msgid "Speaker image thumbnail"
 msgstr "Vorschau Speakerbild"
 
-#: speaker/models.py:69 speaker/models.py:217
+#: speaker/models.py:68 speaker/models.py:221
 msgid "Public speaker image"
 msgstr "Öffentliches Speakerbild"
 
-#: speaker/models.py:73
+#: speaker/models.py:72
 msgid "T-shirt size"
 msgstr "T-Shirtgröße"
 
-#: speaker/models.py:76
+#: speaker/models.py:75
 msgid "speaker"
 msgstr "Sprecher"
 
-#: speaker/models.py:77
+#: speaker/models.py:76
 msgid "speakers"
 msgstr "Sprecher"
 
-#: speaker/models.py:207
+#: speaker/models.py:211
 msgid "published as speaker"
 msgstr "Als Sprecher veröffentlicht"
 
-#: speaker/models.py:220
+#: speaker/models.py:224
 msgid "email address"
 msgstr "E-Mailadresse"
 
-#: speaker/models.py:225
+#: speaker/models.py:229
 msgid "published speaker"
 msgstr "veröffentlichter Sprecher"
 
-#: speaker/models.py:226
+#: speaker/models.py:230
 msgid "published speakers"
 msgstr "veröffentlichte Sprecher"
 
@@ -185,6 +185,16 @@ msgstr "Sessions: %(event)s"
 #, python-format
 msgid "Portrait picture of %(speaker_name)s"
 msgstr "Portraitfoto von %(speaker_name)s"
+
+#: speaker/templates/speaker/publishedspeaker_list.html:3
+msgid "Speaker Linup"
+msgstr "Sprecher"
+
+#: speaker/templates/speaker/publishedspeaker_list.html:17
+msgid "Session selection is not done yet. No speaker list for you."
+msgstr ""
+"Die Sessionauswahl ist noch nicht abgeschlossen. Es ist noch keine "
+"Sprecherliste verfügbar."
 
 #: speaker/templates/speaker/speaker_portrait_confirm_delete.html:5
 #: speaker/templates/speaker/speaker_user_profile.html:93
@@ -331,27 +341,3 @@ msgstr "Willst du dein Portraitfoto wirklich löschen?"
 #: speaker/templates/speaker/speaker_user_profile.html:153
 msgid "Yes, delete it!"
 msgstr "Ja, lösche es!"
-
-#~ msgid "Speaker profile"
-#~ msgstr "Sprecherdaten"
-
-#~ msgid "Delete portrait"
-#~ msgstr "Portraitfoto löschen"
-
-#, fuzzy
-#~| msgid "Your current speaker image."
-#~ msgid "Your current speaker portrait."
-#~ msgstr "Dein aktuelles Foto"
-
-#~ msgid ""
-#~ "Talks:\n"
-#~ "                        %(event)s"
-#~ msgstr ""
-#~ "Sessions:\n"
-#~ "                        %(event)s"
-
-#~ msgid "Delete speaker image"
-#~ msgstr "Öffentliches Sprecherfoto löschen"
-
-#~ msgid "Crop the image"
-#~ msgstr "Sprecherfoto zuschneiden"

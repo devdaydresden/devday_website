@@ -1,18 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import errno
+import os
+import random
+import sys
 from datetime import timedelta
 from os import makedirs
 from os.path import isfile, join
 from shutil import copyfile
 
-import errno
-import os
-import random
-import sys
-
 import lorem
-
+from cms import api
+from cms.constants import TEMPLATE_INHERITANCE_MAGIC
+from cms.models import Page
+from cms.models.placeholdermodel import Placeholder
+from cms.models.pluginmodel import CMSPlugin
+from cms.models.static_placeholder import StaticPlaceholder
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -23,21 +27,13 @@ from django.core.management.color import no_style
 from django.core.paginator import Paginator
 from django.utils import timezone
 
-from cms import api
-from cms.constants import TEMPLATE_INHERITANCE_MAGIC
-from cms.models import Page
-from cms.models.placeholdermodel import Placeholder
-from cms.models.pluginmodel import CMSPlugin
-from cms.models.static_placeholder import StaticPlaceholder
-
 from attendee.models import Attendee
+from devday.utils.words import Words
 from event.models import Event
-from speaker.models import Speaker, PublishedSpeaker
+from speaker.models import Speaker
 from talk.models import (
     Room, Talk, TalkFormat, TalkSlot, TimeSlot, Track, Vote)
 from twitterfeed.models import Tweet, TwitterProfileImage
-
-from devday.utils.words import Words
 
 LAST_NAMES = [
     'Schneider', 'Meier', 'Schulze', 'Fischer', 'Weber', 'Becker', 'Lehmann',
@@ -317,6 +313,14 @@ tiefer in ein Thema einsteigen.</p>
                 if amount <= 0:
                     return
 
+    def random_twitter_users(self, count):
+        for i in range(count):
+            first_name = self.rng.choice(FIRST_NAMES)
+            last_name = self.rng.choice(LAST_NAMES)
+            yield (
+                i, '{}{}'.format(first_name, last_name).lower(),
+                '{} {}'.format(first_name, last_name))
+
     def choose_full_name(self):
         for first in FIRST_NAMES:
             for last in LAST_NAMES:
@@ -508,14 +512,12 @@ tiefer in ein Thema einsteigen.</p>
         profile_image = TwitterProfileImage.objects.get(
             user_profile_image_url='http://localhost/twitter_profile.png')
         dt = timezone.now() - timedelta(days=-count)
-        for i in range(count):
-            user = self.rng.choice(list(User.objects.all()))
-            handle = '{}{}'.format(user.first_name, user.last_name).lower()
+        for twitter_id, handle, username in self.random_twitter_users(count):
             text = lorem.sentence()
             Tweet.objects.create(
-                twitter_id=i,
+                twitter_id=twitter_id,
                 user_profile_image=profile_image,
-                user_name='{} {}'.format(user.first_name, user.last_name),
+                user_name=username,
                 user_screen_name=handle,
                 text=text,
                 plain_text=text,

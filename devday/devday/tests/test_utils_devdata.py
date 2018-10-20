@@ -265,10 +265,10 @@ class DevDataTests(TestCase):
         self.assertEquals(ntpp, 1, 'we have 1 twitter profile picture')
 
     def subtest_create_tweets(self):
-        self.devdata.create_objects('tweets', Tweet, 1,
-                                    self.devdata.create_tweets)
-        ntweets = Tweet.objects.count()
-        self.assertEquals(ntweets, 7, 'we have 7 tweets')
+        self.devdata.create_objects(
+            'tweets', Tweet, 1, self.devdata.create_tweets)
+        number_of_tweets = Tweet.objects.count()
+        self.assertEquals(number_of_tweets, 7, 'we have 7 tweets')
 
     def test_create_devdata(self):
         self.subtest_create_admin_user()

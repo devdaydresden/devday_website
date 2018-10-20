@@ -1,11 +1,10 @@
 import luhn
-
 from django.core import mail
 from django.db import IntegrityError
 from django.test import TestCase
 from django.utils.translation import ugettext as _
 
-from attendee.models import DevDayUser, Attendee
+from attendee.models import Attendee, DevDayUser
 from event.models import Event
 from event.tests import event_testutils
 
@@ -70,19 +69,11 @@ class DevDayUserTest(TestCase):
 
     def test_get_full_name(self):
         user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
-        self.assertEqual(user.get_full_name(), '')
-        user.first_name = 'Test'
-        self.assertEqual(user.get_full_name(), 'Test')
-        user.last_name = 'User'
-        self.assertEqual(user.get_full_name(), 'Test User')
+        self.assertEqual(user.get_full_name(), USER_EMAIL)
 
     def test_get_short_name(self):
         user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
-        self.assertEqual(user.get_short_name(), '')
-        user.last_name = 'User'
-        self.assertEqual(user.get_short_name(), '')
-        user.first_name = 'Test'
-        self.assertEqual(user.get_short_name(), 'Test')
+        self.assertEqual(user.get_short_name(), USER_EMAIL)
 
     def test_email_user(self):
         user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
@@ -96,9 +87,6 @@ class DevDayUserTest(TestCase):
     def test___str__(self):
         user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
         self.assertEqual(str(user), USER_EMAIL)
-        user.first_name = 'Test'
-        user.last_name = 'User'
-        self.assertEqual(str(user), "Test User <%s>" % USER_EMAIL)
 
 
 class AttendeeTest(TestCase):
@@ -116,18 +104,15 @@ class AttendeeTest(TestCase):
 
     def test_checkin_code(self):
         event = Event.objects.current_event()
-        user = DevDayUser.objects.create_user(
-            USER_EMAIL, USER_PASSWORD, first_name='Test', last_name='User')
+        user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
         attendee = Attendee.objects.create(user=user, event=event)
-        self.assertEqual(str(attendee.user), 'Test User <test@example.org>')
+        self.assertEqual(str(attendee.user), USER_EMAIL)
         self.assertTrue(len(attendee.checkin_code) > 0, 'has a checkin-code')
         self.assertTrue(luhn.verify(attendee.checkin_code),
                         'checkin-code is valid')
         self.assertIsNone(attendee.checked_in, 'is not checked in')
 
-        u2 = DevDayUser.objects.create_user(
-            'another@example.com', 'foo', first_name='Tony',
-            last_name='Tester')
+        u2 = DevDayUser.objects.create_user('another@example.com', 'foo')
         a2 = Attendee.objects.create(user=u2, event=event)
         self.assertNotEquals(attendee.checkin_code, a2.checkin_code)
         a3 = Attendee.objects.get_by_checkin_code_or_email(

@@ -266,14 +266,13 @@ class InactiveAttendeeView(StaffUserMixin, BaseListView):
         output = StringIO()
         try:
             writer = csv.writer(output, delimiter=';')
-            writer.writerow(('Firstname', 'Lastname', 'Email', 'Date joined'))
+            writer.writerow(('Email', 'Date joined'))
             writer.writerows([(
-                u.first_name.encode('utf8'), u.last_name.encode('utf8'),
                 u.email.encode('utf8'),
                 u.date_joined.strftime("%Y-%m-%d %H:%M:%S"))
                 for u in context.get('object_list', [])])
-            response = HttpResponse(output.getvalue(),
-                                    content_type="txt/csv; charset=utf-8")
+            response = HttpResponse(
+                output.getvalue(), content_type="txt/csv; charset=utf-8")
             response['Content-Disposition'] \
                 = 'attachment; filename=inactive.csv'
             return response
@@ -291,16 +290,6 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
         ).order_by('email').distinct()
         return qs
 
-    #             .raw(
-    #             '''
-    # SELECT * FROM attendee_devdayuser WHERE contact_permission_date IS NOT NULL
-    #   OR EXISTS (
-    #     SELECT id FROM attendee_attendee WHERE event_id={:d}
-    #       AND attendee_attendee.user_id=attendee_devdayuser.id
-    # ) ORDER BY email
-    # '''.format(Event.objects.current_event_id())
-    #        )
-
     def render_to_response(self, context):
         output = StringIO()
         try:
@@ -310,8 +299,8 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
                               for u in context.get('object_list', [])])
             response = HttpResponse(
                 output.getvalue(), content_type="txt/csv; charset=utf-8")
-            response['Content-Disposition'] \
-                = 'attachment; filename=contactable.csv'
+            response['Content-Disposition'] = (
+                'attachment; filename=contactable.csv')
             return response
         finally:
             output.close()
@@ -323,28 +312,19 @@ class AttendeeListView(StaffUserMixin, BaseListView):
     def get_queryset(self):
         return super(AttendeeListView, self).get_queryset().filter(
             event_id=Event.objects.current_event_id()
-        ).order_by("user__last_name", "user__first_name")
+        ).order_by("user__email")
 
     def render_to_response(self, context):
         output = StringIO()
         try:
             writer = csv.writer(output, delimiter=';')
-            writer.writerow(('Lastname', 'Firstname', 'Email', 'Date joined',
-                             'Twitter', 'Phone', 'Position', 'Organization',
-                             'Contact permission date', 'Info source'))
+            writer.writerow(('Email', 'Date joined', 'Contact permission date'))
             writer.writerows([(
-                attendee.user.last_name.encode('utf8'),
-                attendee.user.first_name.encode('utf8'),
                 attendee.user.email.encode('utf8'),
                 attendee.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
-                attendee.user.twitter_handle.encode('utf8'),
-                attendee.user.phone.encode('utf8'),
-                attendee.user.position.encode('utf8'),
-                attendee.user.organization.encode('utf8'),
                 attendee.user.contact_permission_date.strftime(
                     "%Y-%m-%d %H:%M:%S"
                 ) if attendee.user.contact_permission_date else "",
-                attendee.source.encode('utf8'),
             ) for attendee in context.get('object_list', [])])
             response = HttpResponse(
                 output.getvalue(), content_type="txt/csv; charset=utf-8")

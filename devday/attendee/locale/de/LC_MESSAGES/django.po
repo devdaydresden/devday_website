@@ -7,33 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 21:18+0000\n"
-"PO-Revision-Date: 2018-10-18 23:20+0200\n"
-"Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
+"POT-Creation-Date: 2018-10-20 08:35+0000\n"
+"PO-Revision-Date: 2018-10-20 10:35+0200\n"
+"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: attendee/admin.py:36
-msgid "Personal info"
-msgstr "Persönliche Daten"
-
-#: attendee/admin.py:37
+#: attendee/admin.py:34
 msgid "Permissions"
 msgstr "Berechtigungen"
 
-#: attendee/admin.py:39
+#: attendee/admin.py:36
 msgid "Important dates"
 msgstr "Wichtige Daten/Uhrzeiten"
-
-#: attendee/admin.py:41
-msgid "Miscellaneous"
-msgstr "Verschiedenes"
 
 #: attendee/apps.py:7 attendee/tests/test_appconfig.py:10
 msgid "Attendee management"
@@ -129,27 +121,19 @@ msgstr ""
 msgid "{} is already checked in!"
 msgstr "{} ist bereits eingecheckt!"
 
-#: attendee/models.py:55
-msgid "first name"
-msgstr "Vorname"
-
-#: attendee/models.py:56
-msgid "last name"
-msgstr "Nachname"
-
-#: attendee/models.py:57
+#: attendee/models.py:54
 msgid "email address"
 msgstr "E-Mailadresse"
 
-#: attendee/models.py:59
+#: attendee/models.py:56
 msgid "staff status"
 msgstr "Staff-Status"
 
-#: attendee/models.py:65
+#: attendee/models.py:62
 msgid "active"
 msgstr "aktiv"
 
-#: attendee/models.py:68
+#: attendee/models.py:65
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
@@ -157,76 +141,60 @@ msgstr ""
 "Gibt an, ob dieser Nutzer als aktiv behandelt werden soll. Wähle dies ab, "
 "anstatt Nutzer zu löschen."
 
-#: attendee/models.py:73
+#: attendee/models.py:70
 msgctxt "devday website"
 msgid "date joined"
 msgstr "Anmeldedatum"
 
-#: attendee/models.py:75
-msgid "twitter handle"
-msgstr "Twitter-Name"
-
-#: attendee/models.py:77
-msgid "Phone"
-msgstr "Telefon"
-
-#: attendee/models.py:79
-msgid "job or study subject"
-msgstr "Position oder Studiengang"
-
-#: attendee/models.py:81
-msgid "company or institution"
-msgstr "Firma oder Bildungseinrichtung"
-
-#: attendee/models.py:83
+#: attendee/models.py:72
 msgid "contact permission date"
 msgstr "Kontaktaufnahme erteilt"
 
-#: attendee/models.py:91
+#: attendee/models.py:80
 msgid "user"
 msgstr "Nutzer"
 
-#: attendee/models.py:92
+#: attendee/models.py:81
 msgid "users"
 msgstr "Nutzer"
 
-#: attendee/models.py:160
+#: attendee/models.py:149
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: attendee/models.py:165
+#: attendee/models.py:154
 msgid "Check-In Code"
 msgstr "Check-In-Code"
 
-#: attendee/models.py:165
+#: attendee/models.py:154
 msgid "Code to check in attendee manually"
 msgstr "Code zum manuellen Einchecken des Teilnehmners"
 
-#: attendee/models.py:168
+#: attendee/models.py:157
 msgid "Checked-In"
 msgstr "Eingecheckt"
 
-#: attendee/models.py:168
+#: attendee/models.py:157
 msgid "Date and time the attendee checked in"
 msgstr "Datum und Uhrzeit, zu der der Teilnehmer eingecheckt hat"
 
-#: attendee/models.py:171
+#: attendee/models.py:160
 msgid "source"
 msgstr "Informationsquelle"
 
-#: attendee/models.py:171
+#: attendee/models.py:160
 msgid "How have you become aware of this event?"
 msgstr "Wie bist du auf den Dev Day aufmerksam geworden?"
 
-#: attendee/models.py:177
+#: attendee/models.py:166
 msgid "Attendee"
 msgstr "Teilnehmer"
 
-#: attendee/models.py:178
+#: attendee/models.py:167
 msgid "Attendees"
 msgstr "Teilnehmer"
 
-#: attendee/models.py:209
+#: attendee/models.py:198
 #, python-brace-format
 msgid "{email} at {event}"
 msgstr "{email} für {event}"
@@ -444,7 +412,7 @@ msgstr "Anmeldung stornieren"
 msgid "You are not currently registered to participate in any event."
 msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."
 
-#: attendee/tests/test_models.py:114
+#: attendee/tests/test_models.py:102
 msgid "{} at {}"
 msgstr "{} für {}"
 
@@ -456,76 +424,47 @@ msgstr "Du hast bereits eingecheckt."
 msgid "You are not registered for the current event."
 msgstr "Du bist nicht für die aktuelle Veranstaltung angemeldet."
 
-#: attendee/views.py:388
+#: attendee/views.py:368
 #, python-brace-format
 msgid "<{email}> has been checked in successfully to {event}!"
 msgstr "<{email}> wurde erfolgreich für {event} eingecheckt!"
 
-#: attendee/views.py:437
+#: attendee/views.py:417
 msgid "Invalid verification URL"
 msgstr "Ungültige Verifizierungs-URL"
 
-#: attendee/views.py:438
+#: attendee/views.py:418
 msgid "Try again scanning the QR code."
 msgstr "Den QR-Code nochmal scannen."
 
-#: attendee/views.py:446
+#: attendee/views.py:426
 msgid "Attendee not found"
 msgstr "Teilnehmer nicht gefunden"
 
-#: attendee/views.py:448
+#: attendee/views.py:428
 msgid "The attendee is (no longer) registered."
 msgstr "Der Teilnehmer ist (nicht mehr) registriert."
 
-#: attendee/views.py:454
+#: attendee/views.py:434
 msgid "Code is for the wrong event"
 msgstr "Der Code ist für die falsche Veranstaltung"
 
-#: attendee/views.py:456
+#: attendee/views.py:436
 msgid "This checkin code is for another event."
 msgstr "Der Checkin-Code ist für eine andere Veranstaltung."
 
-#: attendee/views.py:465
+#: attendee/views.py:445
 msgid "Already checked in"
 msgstr "Bereits eingecheckt"
 
-#: attendee/views.py:467
+#: attendee/views.py:447
 msgid "Attendee {} has checked in at {}."
 msgstr "Teilnehmer {} hat bereits um {} eingecheckt."
 
-#: attendee/views.py:474
+#: attendee/views.py:454
 msgid "Welcome!"
 msgstr "Willkommen!"
 
-#: attendee/views.py:476
+#: attendee/views.py:456
 msgid "Attendee {} was successfully checked in."
 msgstr "Teilnehmer {} wurde erfolgreich eingecheckt."
-
-#~ msgid ""
-#~ "\n"
-#~ "                            You are registered as speaker and your talk "
-#~ "named &quot;<a href=\"%(first_talk_url)s\">%(talk_name)s</a>&quot; is not "
-#~ "published yet and will be deleted.\n"
-#~ "                        "
-#~ msgid_plural ""
-#~ "\n"
-#~ "                            You are registered as speaker and your "
-#~ "following talks are not published yet and will be deleted:\n"
-#~ "                        "
-#~ msgstr[0] ""
-#~ "\n"
-#~ "                            Du bist als Sprecher angemeldet und deine "
-#~ "Session &quot;<a href=\"%(first_talk_url)s\">%(talk_name)s</a>&quot; "
-#~ "wurde noch nicht veröffentlicht und wird gelöscht.\n"
-#~ "                        "
-#~ msgstr[1] ""
-#~ "\n"
-#~ "                            Du bist als Sprecher registriert und deine "
-#~ "folgenden Session sind noch nicht veröffentlicht und werden gelöscht:\n"
-#~ "                        "
-
-#~ msgid "I would like to receive updates about Dev Day by email."
-#~ msgstr "Ich möchte Updates zum Dev Day per E-Mail erhalten."
-
-#~ msgid "Designates whether the user can log into the admin site."
-#~ msgstr "Gibt an, ob sich der Nutzer an der Admin-Site anmelden kann."

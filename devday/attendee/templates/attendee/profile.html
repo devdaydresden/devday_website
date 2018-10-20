@@ -40,7 +40,7 @@
             {% endif %}
         </div>
     </div>
-    {% if events %}
+    {% if events and checkin_code %}
     <div class="row">
         <div class="offset-lg-2 col-lg-8 col-12 content-area">
             {% include "attendee/checkin_qrcode_include.html" %}

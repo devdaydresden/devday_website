@@ -149,7 +149,7 @@ case "$cmd" in
     echo "    Importing database dump"
     gunzip -c "${dbdump}" | $DOCKER_COMPOSE exec -T db psql -U devday devday
     echo "    Unpacking media dump"
-    $DOCKER_COMPOSE exec -T "${container}" tar xz -C /srv/devday/devday/media < "${mediadump}"
+    $DOCKER_COMPOSE exec -T "${container}" tar xz -C /srv/devday/media < "${mediadump}"
     echo "*** Running migrations"
     $DOCKER_COMPOSE exec "${container}" python manage.py migrate
     echo "*** Import completed"

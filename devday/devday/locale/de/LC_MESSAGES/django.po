@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 17:26+0000\n"
-"PO-Revision-Date: 2018-10-16 19:34+0200\n"
+"POT-Creation-Date: 2018-10-20 08:35+0000\n"
+"PO-Revision-Date: 2018-10-20 10:36+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -35,11 +35,11 @@ msgstr "Benutzer, die kontaktiert werden dürfen"
 msgid "Current event attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
-#: devday/forms.py:28 devday/forms.py:52
+#: devday/forms.py:40 devday/forms.py:68
 msgid "Change my password"
 msgstr "Mein Passwort ändern"
 
-#: devday/forms.py:40
+#: devday/forms.py:56
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
@@ -216,14 +216,23 @@ msgstr "Du bist jetzt abgemeldet."
 msgid "Password changed"
 msgstr "Passwort geändert"
 
-#: devday/templates/django_registration/password_change_done.html:6
+#: devday/templates/django_registration/password_change_done.html:7
 #: devday/templates/django_registration/password_change_form.html:6
 msgid "Password change"
 msgstr "Passwortänderung"
 
-#: devday/templates/django_registration/password_change_done.html:7
-msgid "Your password was changed."
+#: devday/templates/django_registration/password_change_done.html:8
+msgid "Your password has been changed."
 msgstr "Dein Passwort wurde geändert."
+
+#: devday/templates/django_registration/password_change_done.html:9
+#, python-format
+msgid ""
+"Visit <a href=\"%(user_profile)s\">your user profile</a> to review your "
+"registrations."
+msgstr ""
+"Besuche dein <a href=\"%(user_profile)s\">Benutzerprofil</a>, um deine "
+"Anmeldungen zu prüfen."
 
 #: devday/templates/django_registration/password_reset_complete.html:6
 msgid "Password set"
@@ -348,37 +357,3 @@ msgstr ""
 #: devday/templates/django_registration/registration_form.html:3
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
-
-#~ msgid ""
-#~ "Hello %(shortname)s,\n"
-#~ "\n"
-#~ "thank you for registering for Dev Day!\n"
-#~ "\n"
-#~ "To complete your registration please confirm your email address by "
-#~ "clicking the following link.\n"
-#~ msgstr ""
-#~ "Hallo %(shortname)s,\n"
-#~ "\n"
-#~ "danke für deine Anmeldung zum Dev Day!\n"
-#~ "\n"
-#~ "Um deine Anmeldung abzuschließen, verifiziere bitte deine Email-Adresse "
-#~ "durch Klick auf diesen Link:\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "The link is valid for one day.\n"
-#~ msgid_plural ""
-#~ "\n"
-#~ "The link is valid for %(days)s days.\n"
-#~ msgstr[0] ""
-#~ "\n"
-#~ "Der Link ist für einen Tag gültig.\n"
-#~ msgstr[1] ""
-#~ "\n"
-#~ "Der Link ist für %(days)s Tage gültig.\n"
-
-#~ msgid "The Dev Day team\n"
-#~ msgstr "Das Dev Day Team\n"
-
-#~ msgid "Confirm your registration"
-#~ msgstr "Bestätige deine Anmeldung"

@@ -19,12 +19,16 @@ def migrate_existing_speakers(apps, schema_manager):
     OldSpeaker = apps.get_model('talk', 'Speaker')
     Speaker = apps.get_model('speaker', 'Speaker')
     PublishedSpeaker = apps.get_model('speaker', 'PublishedSpeaker')
+    Talk = apps.get_model('talk', 'Talk')
     for old_speaker in OldSpeaker.objects.order_by('-user__event__start_time'):
         attendee = old_speaker.user
         event = attendee.event
         user = attendee.user
 
-        speaker_name = '{0} {1}'.format(user.first_name, user.last_name)
+        speaker_name = '{0} {1}'.format(
+            user.first_name, user.last_name).strip()
+        if not speaker_name:  # we have speakers with no name
+            speaker_name = user.email
         slug = slugify(speaker_name)
         if not Speaker.objects.filter(user=user).exists():
             speaker = Speaker(
@@ -46,24 +50,27 @@ def migrate_existing_speakers(apps, schema_manager):
             speaker.save()
         else:
             speaker = Speaker.objects.get(user=user)
-        published = PublishedSpeaker(
-            name=speaker_name,
-            slug=slug,
-            twitter_handle=user.twitter_handle,
-            phone=user.phone,
-            position=user.position,
-            organization=user.organization,
-            video_permission=old_speaker.videopermission,
-            short_biography=old_speaker.shortbio,
-            speaker=speaker,
-            date_published=event.start_time,
-            event=event,
-            email=user.email,
-        )
-        copy_image_field(old_speaker.portrait, published.portrait)
-        copy_image_field(old_speaker.thumbnail, published.thumbnail)
-        copy_image_field(old_speaker.public_image, published.public_image)
-        published.save()
+        if (Talk.objects.filter(speaker=old_speaker).exists() and
+                not PublishedSpeaker.objects.filter(
+                    speaker=speaker.id).exists()):
+            published = PublishedSpeaker(
+                name=speaker_name,
+                slug=slug,
+                twitter_handle=user.twitter_handle,
+                phone=user.phone,
+                position=user.position,
+                organization=user.organization,
+                video_permission=old_speaker.videopermission,
+                short_biography=old_speaker.shortbio,
+                speaker=speaker,
+                date_published=event.start_time,
+                event=event,
+                email=user.email,
+            )
+            copy_image_field(old_speaker.portrait, published.portrait)
+            copy_image_field(old_speaker.thumbnail, published.thumbnail)
+            copy_image_field(old_speaker.public_image, published.public_image)
+            published.save()
 
 
 class Migration(migrations.Migration):
@@ -71,6 +78,10 @@ class Migration(migrations.Migration):
         ('speaker', '0001_initial'),
         ('attendee', '0007_auto_20180410_1540'),
         ('talk', '0030_fill_session_slugs_from_titles'),
+    ]
+
+    run_before = [
+        ('attendee', '0009_auto_20181020_0802'),
     ]
 
     operations = [

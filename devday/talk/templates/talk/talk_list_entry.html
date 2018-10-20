@@ -4,5 +4,5 @@
     <span class="title"><a
             href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a></span>
     <span class="speaker"><a
-            href="{% url 'public_speaker_profile' event=event slug=talk.published_speaker.slug %}">{{ talk.speaker }}</a></span>
+            href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a></span>
 </span>

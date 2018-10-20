@@ -1,31 +1,39 @@
-{% extends "devday_site.html" %}
-{% load i18n %}
+{% extends "devday.html" %}
+{% load i18n static %}
 {% block title %}{{ publishedspeaker }}{% endblock %}
-{% block content %}
+{% block content_body %}
     <div class="row ">
         <div class="col-12 col-lg-9 order-2 order-lg-1 content-area">
-            <div class="content-center">
-                <h1>{{ publishedspeaker }}
-                    {% if publishedspeaker.organization %} // {{ publishedspeaker.organization }}{% endif %}
+            <div class="align-text-top">
+                <h1>{{ publishedspeaker }}{% if publishedspeaker.organization %} // {{ publishedspeaker.organization }}{% endif %}
                     {% if publishedspeaker.twitter_handle %} // <a href="https://www.twitter.com/{{ publishedspeaker.twitter_handle }}">@{{ publishedspeaker.twitter_handle }}</a>{% endif %}
                 </h1>
-                <p>{{ publishedspeaker.shortbio|linebreaksbr }}</p>
+                <p class="text-justify">{{ publishedspeaker.short_biography|linebreaksbr }}</p>
                 {% if talks %}
-                    <h3>{% blocktrans %}Talks: {{ event }}{% endblocktrans %}</h3>
-                    <ul>
-                        {% for talk in talks %}
-                            <li><a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a></li>
-                        {% endfor %}
-                    </ul>
+                    {% for talk in talks %}
+                        {% ifchanged talk.event %}
+                            {% if not forloop.first %}</ul>{% endif %}
+                        {% endifchanged %}
+                        {% ifchanged talk.event %}
+                        <h3>{% blocktrans with talk_event=talk.event.title %}Talks: {{ talk_event }}{% endblocktrans %}</h3>
+                        <ul>
+                        {% endifchanged %}
+                        <li><a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug %}">{{ talk.title }}</a></li>
+                        {% if forloop.last %}</ul>{% endif %}
+                    {% endfor %}
                 {% endif %}
             </div>
         </div>
-        <div class="col-12 col-lg-3  order-1 order-lg-2 col-center col-highlight">
-            <div class="content-center">
-                <img src="{{ publishedspeaker.public_image.url }}"
-                     class="publishedspeaker-image"
-                     alt="{% blocktrans with speaker_name=publishedspeaker.name %}Portrait picture of {{ speaker_name }}{% endblocktrans %}">
+    </div>
+{% endblock content_body %}
+{% block content_box_2_wrapper_classes %} content-sidebar{% endblock %}
+{% block content_box_2_wrapper %}
+    <div class="text-center">
+        <div class="row">
+            <div class="col-12">
+                <img src="{% if publishedspeaker.public_image %}{{ publishedspeaker.public_image.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
+                     class="img-fluid" alt="{{ speaker }}">
             </div>
         </div>
     </div>
-{% endblock %}
+{% endblock content_box_2_wrapper %}

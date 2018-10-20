@@ -13,7 +13,7 @@ from event.tests import event_testutils
 from speaker.tests import speaker_testutils
 from talk.forms import (TalkCommentForm,
                         EditTalkForm, TalkSpeakerCommentForm)
-from talk.models import Talk, TalkFormat, TalkComment, Vote
+from talk.models import Talk, TalkFormat, TalkComment, Vote, Track
 
 
 # noinspection PyUnresolvedReferences
@@ -207,6 +207,33 @@ class TestTalkOverView(LoginTestMixin, TestCase):
 
 
 class TestTalkDetails(TestCase):
+    def setUp(self):
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.event = event_testutils.create_test_event()
+        self.talk = Talk.objects.create(
+            draft_speaker=speaker, event=self.event, title='Test Talk')
+        track = Track.objects.create(name='Test Track')
+        self.talk.publish(track)
+        self.url = '/{}/talk/{}/'.format(self.event.slug, self.talk.slug)
+
+    def test_needs_no_authentication(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_template(self):
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'talk/talk_details.html')
+
+    def test_get_context_data(self):
+        response = self.client.get(self.url)
+        self.assertIn('speaker', response.context)
+        self.assertIn('event', response.context)
+        self.assertEqual(
+            response.context['speaker'], self.talk.published_speaker)
+        self.assertEqual(response.context['event'], self.event)
+
+
+class TestCommitteeTalkDetails(TestCase):
     def setUp(self):
         speaker, _, _ = speaker_testutils.create_test_speaker()
         event = event_testutils.create_test_event()

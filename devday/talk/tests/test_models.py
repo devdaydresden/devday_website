@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.utils.translation import ugettext as _
 from django.test import TestCase
+from django.utils.translation import ugettext as _
 
 from event.tests.event_testutils import create_test_event
-from speaker.models import Speaker, PublishedSpeaker
-from talk.models import Talk, Vote, TalkComment, Track
+from speaker.models import PublishedSpeaker, Speaker
+from speaker.tests import speaker_testutils
+from talk.models import Room, Talk, TalkComment, TalkSlot, TimeSlot, Track, Vote
 
 User = get_user_model()
 
@@ -112,3 +113,18 @@ class TalkCommentTest(TestCase):
             "{}".format(talk_comment),
             "{} commented {} for {} by {}".format(
                 self.commenter, 'A Test comment', 'Test', self.speaker))
+
+
+class TalkSlotTest(TestCase):
+    def test___str__(self):
+        event = create_test_event()
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        talk = Talk.objects.create(
+            draft_speaker=speaker, title='Test', abstract='Test abstract',
+            event=event)
+        room = Room.objects.create(name='Test Room', event=event)
+        time_slot = TimeSlot.objects.create(name='Morning', event=event)
+        talk_slot = TalkSlot.objects.create(
+            room=room, time=time_slot, talk=talk)
+        self.assertEqual(
+            str(talk_slot), '{} {} ({})'.format(room, time_slot.name, event))

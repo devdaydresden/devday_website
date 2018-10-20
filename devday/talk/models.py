@@ -79,7 +79,7 @@ class Talk(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if self.slug is None or self.slug.strip() == '':
+        if not self.slug:
             self.slug = slugify(self.title)
         super(Talk, self).save(force_insert, force_update, using, update_fields)
 
@@ -182,8 +182,8 @@ class TalkSlot(TimeStampedModel):
 @python_2_unicode_compatible
 class TalkFormat(models.Model):
     name = models.CharField(max_length=40, blank=False)
-    duration = models.PositiveSmallIntegerField(verbose_name=_('Duration'),
-                                                default=60)
+    duration = models.PositiveSmallIntegerField(
+        verbose_name=_('Duration'), default=60)
 
     class Meta:
         unique_together = (('name', 'duration'),)

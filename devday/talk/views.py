@@ -140,18 +140,22 @@ class TalkDetails(DetailView):
     slug_url_kwarg = 'slug'
     slug_field = 'slug'
     template_name_suffix = '_details'
+    event = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=self.kwargs['event'])
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return super(TalkDetails, self).get_queryset().filter(
-            speaker__user__event__slug=self.kwargs['event']
-        ).prefetch_related(
-            'media', 'speaker', 'speaker__user', 'speaker__user__event')
+            event=self.event
+        ).prefetch_related('media', 'published_speaker')
 
     def get_context_data(self, **kwargs):
         context = super(TalkDetails, self).get_context_data(**kwargs)
         context.update({
-            'speaker': context['talk'].speaker,
-            'event': context['talk'].speaker.user.event,
+            'speaker': context['talk'].published_speaker,
+            'event': self.event,
         })
         return context
 

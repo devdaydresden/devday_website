@@ -327,6 +327,8 @@ tiefer in ein Thema einsteigen.</p>
                 yield '{0} {1}'.format(first, last)
 
     def create_attendees(self, amount=sys.maxsize, events=None):
+        if events is None:
+            events = Event.objects.all()
         self.create_users_and_attendees(amount=amount, events=events)
         committee_group = Group.objects.get(name='talk_committee')
         for user in self.rng.sample(list(User.objects.all()), 7):
@@ -341,7 +343,9 @@ tiefer in ein Thema einsteigen.</p>
             result += "    {} {}\n".format(speaker.name, speaker.user.email)
         return result
 
-    def create_speakers(self, events=Event.objects.all()):
+    def create_speakers(self, events=None):
+        if events is None:
+            events = Event.objects.all()
         number_of_speakers = len(events) * self.SPEAKERS_PER_EVENT
         # speakers can come from the whole user population and do not need
         # to be attendees anymore
@@ -400,7 +404,9 @@ tiefer in ein Thema einsteigen.</p>
                 if p < 0.10:
                     self.create_talk(speaker, formats, event)
 
-    def vote_for_talk(self, events=(Event.objects.current_event(),)):
+    def vote_for_talk(self, events=None):
+        if events is None:
+            events = (Event.objects.current_event(),)
         committee = User.objects.filter(groups__name='talk_committee')
         for event in events:
             for talk in Talk.objects.filter(event=event):
@@ -410,9 +416,9 @@ tiefer in ein Thema einsteigen.</p>
                         Vote.objects.create(voter=user, talk=talk, score=p)
         return 'Cast {} votes'.format(Vote.objects.count())
 
-    def create_tracks(
-            self, events=Event.objects.exclude(
-                id=Event.objects.current_event().id)):
+    def create_tracks(self, events=None):
+        if events is None:
+            events = Event.objects.all_but_current()
         tracks = {
             'devdata.17': [
                 'The Human Side', 'Architektur', 'Let Data Rule', 'DevOps',
@@ -430,14 +436,16 @@ tiefer in ein Thema einsteigen.</p>
                 track = Track(name=track_name, event=event)
                 track.save()
 
-    def create_rooms(
-            self, events=Event.objects.exclude(
-                id=Event.objects.current_event_id())):
+    def create_rooms(self, events=None):
+        if events is None:
+            events = Event.objects.all_but_current()
         for event in events:
             [Room.objects.create(name=name, event=event, priority=priority)
              for priority, name in AVAILABLE_ROOMS]
 
-    def create_time_slots(self, events=Event.objects.all()):
+    def create_time_slots(self, events=None):
+        if events is None:
+            events = Event.objects.all()
         time_slots = (
             (10, 30, 12, 0, 'Exkursion'),
             (12, 0, 13, 0, 'Registrierung'),
@@ -465,9 +473,9 @@ tiefer in ein Thema einsteigen.</p>
                     name=name, event=event, start_time=start, end_time=end,
                     text_body=text)
 
-    def create_talk_slots(
-            self, events=Event.objects.exclude(
-                pk=Event.objects.current_event_id())):
+    def create_talk_slots(self, events=None):
+        if events is None:
+            events = Event.objects.all_but_current()
         details = ''
         for event in events:
             keynote_room = Room.objects.get(name='Hamburg', event=event)

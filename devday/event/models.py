@@ -29,6 +29,9 @@ class EventManager(models.Manager):
             return e.submission_open
         return False
 
+    def all_but_current(self):
+        return self.exclude(id=self.current_event_id())
+
     def create_event(self, title, **kwargs):
         event = self.model(title=title, **kwargs)
         event.save()

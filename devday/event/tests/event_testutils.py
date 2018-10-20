@@ -17,7 +17,9 @@ def create_test_event(title='Test Event', **kwargs):
     return Event.objects.create_event(title, **_kwargs)
 
 
-def update_event(event=Event.objects.current_event(), *args, **kwargs):
+def update_event(event=None, *args, **kwargs):
+    if event is None:
+        event = Event.objects.current_event()
     for attr, value in kwargs.items():
         setattr(event, attr, value)
     event.save()

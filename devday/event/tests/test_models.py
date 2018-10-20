@@ -12,7 +12,7 @@ from .event_testutils import unpublish_all_events
 User = get_user_model()
 
 
-class EventTest(TestCase):
+class EventManagerTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.devdata = DevData()
@@ -64,3 +64,19 @@ class EventTest(TestCase):
         self.assertIsNone(Event.objects.current_event_id())
         self.assertFalse(Event.objects.current_submission_open())
         self.assertFalse(Event.objects.current_registration_open())
+
+
+class EventTest(TestCase):
+    def test_without_slug(self):
+        event = Event(
+            title='Test', description='Test Event', start_time=timezone.now(),
+            end_time=timezone.now())
+        event.save()
+        self.assertEqual(event.slug, 'test')
+
+    def test_with_slug(self):
+        event = Event(
+            title='Test', description='Test Event', start_time=timezone.now(),
+            end_time=timezone.now(), slug='other')
+        event.save()
+        self.assertEqual(event.slug, 'other')

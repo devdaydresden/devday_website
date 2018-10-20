@@ -30,11 +30,7 @@ class EventManager(models.Manager):
         return False
 
     def create_event(self, title, **kwargs):
-        if 'slug' in kwargs:
-            slug = kwargs.pop('slug')
-        else:
-            slug = slugify(title)
-        event = self.model(title=title, slug=slug, **kwargs)
+        event = self.model(title=title, **kwargs)
         event.save()
         return event
 
@@ -77,6 +73,12 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('session_list', kwargs={'event': self.slug})
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return self.title

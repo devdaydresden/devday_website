@@ -14,6 +14,7 @@ VAULT_OPENSSL_CNF=${VAULT_DIR}/openssl.cnf
 DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.prod.yml"
 
 [ -f "prod-env" ] || touch prod-env
+[ -f "prod-env-db" ] || touch prod-env-db
 [ -f "prod-env-mail" ] || touch prod-env-mail
 
 if [ $# -lt 1 ]; then
@@ -40,6 +41,8 @@ case "$cmd" in
     [ -f "${VAULT_CERT}" ] || openssl req -new -x509 \
       -config "${VAULT_OPENSSL_CNF}" -key "${VAULT_KEY}" -out "${VAULT_CERT}"
     openssl x509 -in "${VAULT_CERT}" -out docker/app/vault.crt
+    grep -q POSTGRES_PASSWORD prod-env-db \
+      || echo "POSTGRES_PASSWORD=$(openssl openssl rand -base64 30)" >>prod-env-db
     if [ -z "$(cat prod-env-mail)" ]; then
 cat >prod-env-mail <<EOF
 MAILNAME=mail.devday.de

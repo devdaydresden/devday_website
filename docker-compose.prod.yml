@@ -4,6 +4,8 @@ services:
     image: ${DOCKER_REGISTRY}devday-website-db:prod
     build:
       dockerfile: Dockerfile-prod
+    env_file:
+      prod-env-db
   vault:
     image: ${DOCKER_REGISTRY}devday-website-vault:prod
     build:

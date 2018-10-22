@@ -130,6 +130,11 @@ class TalkComment(TimeStampedModel):
             self.talk.draft_speaker)
 
 
+class RoomManager(models.Manager):
+    def for_event(self, event):
+        return self.filter(event=event)
+
+
 @python_2_unicode_compatible
 class Room(TimeStampedModel):
     name = models.CharField(
@@ -137,6 +142,8 @@ class Room(TimeStampedModel):
     priority = models.PositiveSmallIntegerField(
         verbose_name=_('Priority'), default=0)
     event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
+
+    objects = RoomManager()
 
     class Meta:
         verbose_name = _('Room')

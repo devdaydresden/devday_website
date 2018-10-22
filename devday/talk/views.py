@@ -257,7 +257,7 @@ class TalkListView(ListView):
                 'talks_by_time_and_room': talks_by_time_and_room,
                 'talks_by_room_and_time': talks_by_room_and_time,
                 'unscheduled': unscheduled,
-                'rooms': Room.objects.all(),
+                'rooms': Room.objects.for_event(event),
                 'times': TimeSlot.objects.filter(event=event),
                 'has_footage': has_footage,
             }

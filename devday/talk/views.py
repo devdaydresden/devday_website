@@ -289,25 +289,21 @@ class TalkListPreviewView(ListView):
 class TalkVideoView(ListView):
     model = Talk
     template_name_suffix = '_videos'
+    event = None
 
-    def __init__(self, *args, **kwargs):
-        self._event = None
-        super(TalkVideoView, self).__init__(*args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        self._event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        return super(TalkVideoView, self).get(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return super(TalkVideoView, self).get_queryset().filter(
-            speaker__user__event=self._event,
-            track__isnull=False).filter(media__isnull=False).select_related(
-            'speaker', 'speaker__user', 'speaker__user__user', 'media'
-        ).order_by('title')
+            event=self.event, track__isnull=False,
+            media__isnull=False
+        ).select_related('published_speaker', 'media').order_by('title')
 
     def get_context_data(self, **kwargs):
         context = super(TalkVideoView, self).get_context_data(**kwargs)
-        context['event'] = self._event.title
+        context['event'] = self.event
         return context
 
 

@@ -13,7 +13,7 @@ from event.tests import event_testutils
 from speaker.tests import speaker_testutils
 from talk.forms import (TalkCommentForm,
                         EditTalkForm, TalkSpeakerCommentForm)
-from talk.models import Talk, TalkFormat, TalkComment, Vote, Track
+from talk.models import Talk, TalkFormat, TalkComment, Vote, Track, TalkMedia
 
 
 # noinspection PyUnresolvedReferences
@@ -804,3 +804,46 @@ class TestTalkListView(TestCase):
             self.event.title)
         self.assertEquals(len(root.findall('day/room')), 4)
         self.assertEquals(len(root.findall('day/room/event')), 14)
+
+
+class TestTalkVideoView(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
+        self.url = '/{}/videos/'.format(self.event.slug)
+
+    def test_anonymous_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_template(self):
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'talk/talk_videos.html')
+
+    def test_context_data(self):
+        response = self.client.get(self.url)
+        self.assertIn('event', response.context)
+        self.assertEqual(response.context['event'], self.event)
+
+    def test_render_with_talks(self):
+        speaker1, _, _ = speaker_testutils.create_test_speaker(
+            email='testspeaker1@example.org', name='Test Speaker 1')
+        speaker2, _, _ = speaker_testutils.create_test_speaker(
+            email='testspeaker2@example.org', name='Test Speaker 2')
+        talk1 = Talk.objects.create(
+            draft_speaker=speaker1, title='Talk 1', event=self.event)
+        talk2 = Talk.objects.create(
+            draft_speaker=speaker2, title='Talk 2', event=self.event)
+        track = Track.objects.create(name='Things')
+        talk1.publish(track)
+        talk2.publish(track)
+        TalkMedia.objects.create(
+            talk=talk1, codelink='https://example.org/git/talk1code')
+        TalkMedia.objects.create(
+            talk=talk2, codelink='https://example.org/git/talk1code')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('event', response.context)
+        self.assertEqual(response.context['event'], self.event)
+        self.assertIn('talk_list', response.context)
+        self.assertIn(talk1, response.context['talk_list'])
+        self.assertIn(talk2, response.context['talk_list'])

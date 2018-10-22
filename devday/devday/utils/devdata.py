@@ -258,7 +258,7 @@ tiefer in ein Thema einsteigen.</p>
 
     def create_talk_formats(self):
         formats = [
-            {'name': 'Vortrag', 'duration': 45},
+            {'name': 'Vortrag', 'duration': 30},
             {'name': 'Lightning Talk', 'duration': 10},
             {'name': 'Workshop', 'duration': 180},
         ]

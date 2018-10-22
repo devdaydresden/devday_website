@@ -5,12 +5,17 @@
 
 set -e
 
-if [ ! -f prod-env ]; then touch prod-env; fi
+VAULT_DIR=docker/vault
+VAULT_SSL=${VAULT_DIR}/config/ssl
+VAULT_KEY=${VAULT_SSL}/private/vault.key.pem
+VAULT_CERT=${VAULT_SSL}/vault.crt.pem
+VAULT_OPENSSL_CNF=${VAULT_DIR}/openssl.cnf
 
-VAULT_KEYDIR=docker/vault/config/ssl/private
-VAULT_KEY=${VAULT_KEYDIR}/vault.key.pem
-VAULT_CERT=docker/vault/config/ssl/vault.crt.pem
 DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.prod.yml"
+
+[ -f "prod-env" ] || touch prod-env
+[ -f "prod-env-db" ] || touch prod-env-db
+[ -f "prod-env-mail" ] || touch prod-env-mail
 
 if [ $# -lt 1 ]; then
   cmd=""
@@ -31,34 +36,31 @@ case "$cmd" in
     ;;
   build)
     # Relevant for production/test environments with full vault setup
-    mkdir -p "${VAULT_KEYDIR}"
-    if [ ! -f "${VAULT_KEY}" ]; then
-      openssl req -new -x509 -config docker/vault/openssl.cnf -out "${VAULT_CERT}"
-    elif [ ! -f docker/vault/config/ssl/vault.crt.pem ]; then
-      openssl req -new -x509 -config docker/vault/openssl.cnf -key "${VAULT_KEY}" -out "${VAULT_CERT}"
-    fi
+    mkdir -p "$(dirname "${VAULT_KEY}")"
+    [ -f "${VAULT_KEY}" ] || openssl genrsa -out "${VAULT_KEY}" 2048
+    [ -f "${VAULT_CERT}" ] || openssl req -new -x509 \
+      -config "${VAULT_OPENSSL_CNF}" -key "${VAULT_KEY}" -out "${VAULT_CERT}"
     openssl x509 -in "${VAULT_CERT}" -out docker/app/vault.crt
-    if [ ! -f "prod-env-db" ]; then
-      (echo -n "POSTGRES_PASSWORD=" ; dd if=/dev/urandom bs=32 count=1 2>/dev/null | \
-        base64 -w 0) > prod-env-db
-    fi
-    if [ ! -f "prod-env-mail" ]; then
+    grep -q POSTGRES_PASSWORD prod-env-db \
+      || echo "POSTGRES_PASSWORD=$(openssl openssl rand -base64 30)" >>prod-env-db
+    if [ -z "$(cat prod-env-mail)" ]; then
 cat >prod-env-mail <<EOF
 MAILNAME=mail.devday.de
 POSTFIX_ROOT_ALIAS=${USER}
 POSTFIX_RELAY_HOST=$(hostname -f)
 EOF
     fi
-    if [ ! -f "prod-env" ]; then
-	touch prod-env
-    fi
     if ! grep -q DEVDAY_ADMINUSER_EMAIL prod-env; then
-	echo "DEVDAY_ADMINUSER_EMAIL=admin@devday.de" >> prod-env
+      echo "DEVDAY_ADMINUSER_EMAIL=admin@devday.de" >> prod-env
     fi
     $DOCKER_COMPOSE build $@
     ;;
   manage)
     $DOCKER_COMPOSE exec app python manage.py $@
+    ;;
+  restart)
+    $DOCKER_COMPOSE stop app
+    $DOCKER_COMPOSE up --no-deps app
     ;;
   shell)
     echo "*** Starting shell in 'app' container"
@@ -79,9 +81,8 @@ EOF
     container="${1:-app}"
     $DOCKER_COMPOSE stop "${container}"
     ;;
-  restart)
-    $DOCKER_COMPOSE stop app
-    $DOCKER_COMPOSE up --no-deps app
+  update)
+    sh -c "git pull && $DOCKER_COMPOSE up --build -d --no-deps app"
     ;;
   *)
     $DOCKER_COMPOSE $cmd "$@"

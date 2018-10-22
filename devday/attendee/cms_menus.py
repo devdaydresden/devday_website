@@ -12,6 +12,6 @@ class AttendeeCheckinMenu(Menu):
         event = Event.objects.current_event()
         if not request.user.is_staff or not event.sessions_published:
             return []
-        return [NavigationNode(_('Check in'),
-                               reverse_lazy('attendee_checkin'),
-                               99)]
+        return [NavigationNode(
+            _('Check in'), reverse_lazy(
+                'attendee_checkin', kwargs={'event': event.slug}), 99)]

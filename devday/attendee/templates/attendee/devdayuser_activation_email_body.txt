@@ -1,0 +1,18 @@
+{% load i18n %}{% blocktrans %}Hello,
+
+thank you for registering an account for the Dev Day website!
+
+To complete your registration please confirm your email address by clicking the
+following link.
+{% endblocktrans %}
+{{ scheme }}://{{ site.domain }}{% url 'devdayuser_activate' activation_key %}{% if next %}?next={{ next }}{% endif %}
+{% blocktrans count days=expiration_days %}
+The link is valid for one day.
+{% plural %}
+The link is valid for {{ days }} days.
+{% endblocktrans %}
+
+{% blocktrans %}The Dev Day team
+{% endblocktrans %}
+-- {% comment %}keep whitespace for email signature{% endcomment %}
+https://www.devday.de/

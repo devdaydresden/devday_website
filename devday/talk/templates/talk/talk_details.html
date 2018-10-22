@@ -1,63 +1,57 @@
-{% extends "devday_site.html" %}
-{% load i18n sekizai_tags static l10n crispy_forms_tags %}
+{% extends "devday.html" %}
+{% load i18n static l10n %}
 {% block title %}{{ block.super }} // {% trans "Talk" %} -
     {{ talk.title }}{% endblock %}
-{% addtoblock "css" %}
-    <link rel="stylesheet" href="{% static "css/theme-krajee-svg.css" %}">
-{% endaddtoblock %}
-{% block content_block_1 %}
-    <div class="stripe c-white">
-        <div class="container">
-            <div class="row ">
-                <div class="col-12 col-lg-9 order-2 order-lg-1  col-center info">
-                    <div class="content">
-                        <h1>{{ talk.title }}</h1>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a
-                                        href="{% url 'session_list' event=event.slug %}">{{ event }}</a>
-                                </li>
-                                <li class="breadcrumb-item"><a
-                                        href="{% url 'public_speaker_profile' pk=speaker.pk %}">{{ speaker }}</a>
-                                </li>
-                            </ol>
-                        </nav>
-                        <p>{{ talk.abstract|linebreaksbr }}</p>
-                        {% if talk.media.youtube %}
-                            <p>
-                                <strong>{% trans "Video" %}:</strong><br>
-                                <iframe width="560" height="315"
-                                        src="https://www.youtube.com/embed/{{ talk.media.youtube }}"
-                                        frameborder="0"
-                                        allowfullscreen></iframe>
-                            </p>
-                        {% endif %}
-                        {% if talk.media.slideshare %}
-                            <p>
-                                <strong>{% trans "Slide deck" %}:</strong><br>
-                                <iframe width="595" height="485"
-                                        src="https://www.slideshare.net/slideshow/embed_code/key/{{ talk.media.slideshare }}"
-                                        frameborder="0" marginwidth="0"
-                                        scrolling="no" style=""
-                                        allowfullscreen></iframe>
-                            </p>
-                        {% endif %}
-                        {% if talk.media.codelink %}
-                            <p>
-                                <strong>{% trans "Example code" %}:</strong><br>
-                                <a href="{{ talk.media.codelink }}">{{ talk.media.codelink }}</a>
-                            </p>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="col-12 col-lg-3  order-1 order-lg-2 col-center col-highlight">
-                    <div class="content-center">
-                        <img src="{{ speaker.public_image.url }}"
-                             class="speaker-image"
-                             alt="{{ speaker }}">
-                    </div>
-                </div>
+{% block content_body %}
+    {% url 'public_speaker_profile' event=event.slug slug=speaker.slug as speaker_profile_url %}
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ talk.title }}</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'session_list' event=event.slug %}">{{ event }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ speaker_profile_url }}">{{ speaker.name }}</a></li>
+                </ol>
+            </nav>
+            <p>{{ talk.abstract|linebreaksbr }}</p>
+            {% if talk.media.youtube %}
+                <p>
+                    <strong>{% trans "Video" %}:</strong><br>
+                    <iframe width="560" height="315"
+                            src="https://www.youtube.com/embed/{{ talk.media.youtube }}"
+                            frameborder="0"
+                            allowfullscreen></iframe>
+                </p>
+            {% endif %}
+            {% if talk.media.slideshare %}
+                <p>
+                    <strong>{% trans "Slide deck" %}:</strong><br>
+                    <iframe width="595" height="485"
+                            src="https://www.slideshare.net/slideshow/embed_code/key/{{ talk.media.slideshare }}"
+                            frameborder="0" marginwidth="0"
+                            scrolling="no" style=""
+                            allowfullscreen></iframe>
+                </p>
+            {% endif %}
+            {% if talk.media.codelink %}
+                <p>
+                    <strong>{% trans "Example code" %}:</strong><br>
+                    <a href="{{ talk.media.codelink }}">{{ talk.media.codelink }}</a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content_body %}
+{% block content_box_2_wrapper_classes %} content-sidebar{% endblock %}
+{% block content_box_2_wrapper %}
+    {% url 'public_speaker_profile' event=event.slug slug=speaker.slug as speaker_profile_url %}
+    <div class="text-center">
+        <div class="row">
+            <div class="col-12">
+                <a href="{{ speaker_profile_url }}">
+                    <img src="{% if speaker.public_image %}{{ speaker.public_image.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
+                         class="img-fluid" alt="{{ speaker }}"></a>
             </div>
         </div>
     </div>
-{% endblock content_block_1 %}
+{% endblock content_box_2_wrapper %}

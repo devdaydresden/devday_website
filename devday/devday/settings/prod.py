@@ -58,8 +58,6 @@ for logname in [
         'propagate': True,
     }
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 TWITTERFEED_PROXIES = {
     'http': 'http://iproxy.mms-dresden.de:8080/',
     'https': 'http://iproxy.mms-dresden.de:8080/',

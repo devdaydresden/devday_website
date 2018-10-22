@@ -27,8 +27,8 @@
                         <tbody>
                         {% for talk in talk_list %}
                             <tr>
-                                <td><a href="{% url 'speaker_details' pk=talk.speaker.pk %}">{{ talk.speaker }}</a></td>
-                                <td><a href="{% url 'talk_details' pk=talk.pk %}">{{ talk.title }}</a></td>
+                                <td><a href="{% url 'speaker_details' pk=talk.draft_speaker.pk %}">{{ talk.draft_speaker.name }}</a></td>
+                                <td><a href="{% url 'talk_committee_details' pk=talk.pk %}">{{ talk.title }}</a></td>
                                 <td>
                                     {% if talk.average_score %}
                                         <input title="{% trans 'average vote' %}" id="talk-average-{{ talk.pk }}-id"

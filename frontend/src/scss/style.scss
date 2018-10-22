@@ -82,6 +82,9 @@
 // Utility classes
 @import '../../node_modules/bootstrap/scss/utilities.scss';
 
+// Cropper JS CSS
+@import '../../node_modules/cropperjs/src/css/cropper.scss';
+
 @import 'components/base.scss';
 
 @import 'components/navbar.scss';
@@ -109,6 +112,8 @@
 @import 'components/footer.scss';
 
 @import 'components/helper.scss';
+
+@import 'components/sidebar.scss';
 
 @import 'components/forms.scss';
 

@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import TestCase
-from django.utils.timezone import now
 
 from attendee.models import Attendee
-from event.models import Event
-from talk.models import Speaker
+from attendee.tests import attendee_testutils
+from event.tests import event_testutils
+from speaker.tests import speaker_testutils
 
 User = get_user_model()
 
@@ -16,25 +16,22 @@ class TestCommitteeMemberContextProcessor(TestCase):
         self.assertFalse(response.context['is_committee_member'])
 
     def test_is_committee_member_is_false_for_attendee(self):
-        user = User.objects.create_user(email='test@example.org', password='test')
-        event = Event.objects.create(title="Test event", slug="test_event", start_time=now(), end_time=now())
+        user, password = attendee_testutils.create_test_user()
+        event = event_testutils.create_test_event()
         Attendee.objects.create(user=user, event=event)
-        self.client.login(username='test@example.org', password='test')
+        self.client.login(username=user.email, password=password)
         response = self.client.get('/')
         self.assertFalse(response.context['is_committee_member'])
 
     def test_is_committee_member_is_false_for_speaker(self):
-        user = User.objects.create_user(email='test@example.org', password='test')
-        event = Event.objects.create(title="Test event", slug="test_event", start_time=now(), end_time=now())
-        attendee = Attendee.objects.create(user=user, event=event)
-        Speaker.objects.create(user=attendee, videopermission=True, shirt_size=1)
-        self.client.login(username='test@example.org', password='test')
+        speaker, user, password = speaker_testutils.create_test_speaker()
+        self.client.login(username=user.email, password=password)
         response = self.client.get('/')
         self.assertFalse(response.context['is_committee_member'])
 
     def test_is_committee_member_is_true_for_committee_member(self):
-        user = User.objects.create_user(email='test@example.org', password='test')
+        user, password = attendee_testutils.create_test_user()
         user.groups.add(Group.objects.get(name='talk_committee'))
-        self.client.login(username='test@example.org', password='test')
+        self.client.login(username=user.email, password=password)
         response = self.client.get('/')
         self.assertTrue(response.context['is_committee_member'])

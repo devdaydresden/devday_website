@@ -8,7 +8,7 @@
   </div>
   <div class="row">
     <div class="col-12 col-md-10 offset-md-1 content-area">
-      <h4 id='checkin_result' data-code={{ checkin_code }}>{{ checkin_result }}<h4>
+      <h4 id="checkin_result" data-code={{ checkin_code }}>{{ checkin_result }}</h4>
       <p>{{ checkin_message }}</p>
     </div>
   </div>
@@ -20,7 +20,7 @@
   <div class="row">
     <div class="col-12 col-md-10 offset-md-1 content-area col-highlight">
       <p><a class='btn btn-outline btn-call-action m-t-1'
-        href='{% url 'attendee_checkin' %}'>{% trans 'Go to manual check in' %}</a></p>
+        href='{% url 'attendee_checkin' event=event.slug %}'>{% trans 'Go to manual check in' %}</a></p>
     </div>
   </div>
 {% endblock %}

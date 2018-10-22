@@ -10,6 +10,7 @@ documentation links:
 
 - Django: https://docs.djangoproject.com/en/1.11/
 - Django-CMS: http://docs.django-cms.org/en/release-3.5.x/
+- Crispy-Forms: https://django-crispy-forms.readthedocs.io/en/latest/
 - Python 3: https://docs.python.org/3.6/
 - yarn: https://yarnpkg.com/en/docs
 - Sass: https://sass-lang.com/documentation/file.SASS_REFERENCE.html

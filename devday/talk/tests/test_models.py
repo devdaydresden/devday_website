@@ -1,86 +1,89 @@
-import os
-from datetime import timedelta
-
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.test import TestCase
-from django.utils import timezone
+from django.utils.translation import ugettext as _
 
-from attendee.models import Attendee
-from event.tests.testutils import create_test_event
-from talk.models import Speaker, Talk, Vote, TalkComment
+from event.tests.event_testutils import create_test_event
+from speaker.models import PublishedSpeaker, Speaker
+from speaker.tests import speaker_testutils
+from talk.models import Room, Talk, TalkComment, TalkSlot, TimeSlot, Track, Vote
 
 User = get_user_model()
 
 
-class SpeakerTest(TestCase):
-    def setUp(self):
-        user = User.objects.create_user(email='test@example.org')
-        event = create_test_event()
-        self.attendee = Attendee.objects.create(user=user, event=event)
-
-    def test_str(self):
-        speaker = Speaker.objects.create(
-            user=self.attendee, videopermission=True, shirt_size=1)
-        self.assertEqual("{}".format(speaker), "{}".format(self.attendee))
-
-    def test_create_thumbnail_png(self):
-        speaker = Speaker.objects.create(
-            user=self.attendee, videopermission=True, shirt_size=1)
-        speaker.portrait = SimpleUploadedFile(
-            name='mu_at_mil_house.png',
-            content=open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.png'), 'rb').read(),
-            content_type='image/png')
-        speaker.create_thumbnail()
-        self.assertIsNotNone(speaker.thumbnail.name)
-
-    def test_create_thumbnail_jpg(self):
-        speaker = Speaker.objects.create(
-            user=self.attendee, videopermission=True, shirt_size=1)
-        speaker.portrait = SimpleUploadedFile(
-            name='mu_at_mil_house.jpg',
-            content=open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb').read(),
-            content_type='image/jpeg')
-        speaker.create_thumbnail()
-        self.assertIsNotNone(speaker.thumbnail.name)
-
-    def test_save_creates_thumbnail(self):
-        speaker = Speaker.objects.create(
-            user=self.attendee, videopermission=True, shirt_size=1)
-        speaker.portrait = SimpleUploadedFile(
-            name='mu_at_mil_house.jpg',
-            content=open(os.path.join(os.path.dirname(__file__), 'mu_at_mil_house.jpg'), 'rb').read(),
-            content_type='image/jpeg')
-        speaker.save()
-        self.assertIsNotNone(speaker.thumbnail.name)
-
-
 class TalkTest(TestCase):
     def setUp(self):
-        user = User.objects.create_user(email='test@example.org')
-        event = create_test_event()
-        attendee = Attendee.objects.create(user=user, event=event)
+        self.user = User.objects.create_user(email='test@example.org')
+        self.event = create_test_event()
         self.speaker = Speaker.objects.create(
-            user=attendee, videopermission=True, shirt_size=1)
+            user=self.user, video_permission=True, shirt_size=1)
 
-    def test_str(self):
+    def test_str_draft_speaker(self):
         talk = Talk.objects.create(
-            speaker=self.speaker, title='Test', abstract='Test abstract',
-            remarks='Test remarks',
+            draft_speaker=self.speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=self.event
         )
-        self.assertEqual('{}'.format(talk), '{} - {}'.format(self.speaker, 'Test'))
+        self.assertEqual('{}'.format(talk), '{} - {}'.format(
+            self.speaker, 'Test'))
+
+    def test_str_published_speaker(self):
+        published_speaker = PublishedSpeaker.objects.copy_from_speaker(
+            self.speaker, self.event)
+        talk = Talk.objects.create(
+            draft_speaker=self.speaker, published_speaker=published_speaker,
+            title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=self.event
+        )
+        self.assertEqual('{}'.format(talk), '{} - {}'.format(
+            published_speaker, 'Test'))
+
+    def test_str_published_speaker_after_user_deletion(self):
+        published_speaker = PublishedSpeaker.objects.copy_from_speaker(
+            self.speaker, self.event)
+        talk = Talk.objects.create(
+            draft_speaker=self.speaker, published_speaker=published_speaker,
+            title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=self.event
+        )
+        self.user.delete()
+        with self.assertRaises(ObjectDoesNotExist):
+            self.speaker.refresh_from_db()
+        published_speaker.refresh_from_db()
+        talk.refresh_from_db()
+        self.assertIsNone(talk.draft_speaker_id)
+        self.assertEqual('{}'.format(talk), '{} - {}'.format(
+            published_speaker, 'Test'))
+
+    def test_publish(self):
+        track = Track.objects.create(name='Test track', event=self.event)
+        talk = Talk.objects.create(
+            draft_speaker=self.speaker, title='Test', abstract='Test abstract',
+            event=self.event)
+        talk.publish(track)
+        published_speaker = PublishedSpeaker.objects.get(
+            speaker=self.speaker, event=self.event)
+        self.assertIsInstance(published_speaker, PublishedSpeaker)
+        self.assertEqual(talk.published_speaker, published_speaker)
+        self.assertEqual(talk.track, track)
+
+    def test_clean(self):
+        talk = Talk.objects.create(
+            title='Test', abstract='Test abstract', event=self.event)
+        with self.assertRaisesMessage(
+                ValidationError,
+                _('A draft speaker or a published speaker is required.')):
+            talk.clean()
 
 
 class VoteTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(email='speaker@example.org')
         event = create_test_event()
-        attendee = Attendee.objects.create(user=user, event=event)
         self.speaker = Speaker.objects.create(
-            user=attendee, videopermission=True, shirt_size=1)
+            user=user, video_permission=True, shirt_size=1)
         self.talk = Talk.objects.create(
-            speaker=self.speaker, title='Test', abstract='Test abstract',
-            remarks='Test remarks')
+            draft_speaker=self.speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=event)
         self.voter = User.objects.create_user(email='voter@example.org')
 
     def test_str(self):
@@ -95,12 +98,11 @@ class TalkCommentTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(email='speaker@example.org')
         event = create_test_event()
-        attendee = Attendee.objects.create(user=user, event=event)
         self.speaker = Speaker.objects.create(
-            user=attendee, videopermission=True, shirt_size=1)
+            user=user, video_permission=True, shirt_size=1)
         self.talk = Talk.objects.create(
-            speaker=self.speaker, title='Test', abstract='Test abstract',
-            remarks='Test remarks')
+            draft_speaker=self.speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=event)
         self.commenter = User.objects.create_user(email='voter@example.org')
 
     def test_str(self):
@@ -111,3 +113,18 @@ class TalkCommentTest(TestCase):
             "{}".format(talk_comment),
             "{} commented {} for {} by {}".format(
                 self.commenter, 'A Test comment', 'Test', self.speaker))
+
+
+class TalkSlotTest(TestCase):
+    def test___str__(self):
+        event = create_test_event()
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        talk = Talk.objects.create(
+            draft_speaker=speaker, title='Test', abstract='Test abstract',
+            event=event)
+        room = Room.objects.create(name='Test Room', event=event)
+        time_slot = TimeSlot.objects.create(name='Morning', event=event)
+        talk_slot = TalkSlot.objects.create(
+            room=room, time=time_slot, talk=talk)
+        self.assertEqual(
+            str(talk_slot), '{} {} ({})'.format(room, time_slot.name, event))

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-05 20:56+0000\n"
+"POT-Creation-Date: 2018-10-16 17:26+0000\n"
 "PO-Revision-Date: 2018-09-29 18:01+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: jan.dittberner@t-systems.com\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: event/apps.py:11 event/models.py:70
+#: event/apps.py:7 event/models.py:69
 msgid "Events"
 msgstr "Veranstaltungen"
 
@@ -27,62 +27,62 @@ msgstr "Veranstaltungen"
 msgid "Archive"
 msgstr "Archiv"
 
-#: event/cms_menus.py:27
+#: event/cms_menus.py:30
 msgid "Sessions"
 msgstr "Sessions"
 
-#: event/models.py:40
+#: event/models.py:45
 msgid "Event title"
 msgstr "Veranstaltungsname"
 
-#: event/models.py:42
+#: event/models.py:47
 msgid "Short name for URLs"
 msgstr "Kurzname für URLs"
 
-#: event/models.py:43
+#: event/models.py:48
 msgid "Description"
 msgstr "Beschreibung"
 
-#: event/models.py:44
+#: event/models.py:49
 msgid "Location"
 msgstr "Veranstaltungsort"
 
-#: event/models.py:45
+#: event/models.py:51
 msgid "Full day event"
 msgstr "Ganztagsveranstaltung"
 
-#: event/models.py:47
+#: event/models.py:52
 msgid "Start time"
 msgstr "Beginn"
 
-#: event/models.py:48
+#: event/models.py:53
 msgid "End time"
 msgstr "Ende"
 
-#: event/models.py:50
+#: event/models.py:55
 msgid "Published"
 msgstr "Publiziert"
 
-#: event/models.py:52
+#: event/models.py:57
 msgid "Registration Open"
 msgstr "Anmeldungen offen"
 
-#: event/models.py:54
+#: event/models.py:59
 msgid "Submission Open"
 msgstr "Einreichen offen"
 
-#: event/models.py:56
+#: event/models.py:61
 msgid "Grid Published"
 msgstr "Sessions veröffentlicht"
 
-#: event/models.py:58
+#: event/models.py:63
 msgid "Talk Formats"
 msgstr "Session-Formate"
 
-#: event/models.py:65
-msgid "Registration Count"
-msgstr "Anmeldungen"
-
-#: event/models.py:69
+#: event/models.py:68
 msgid "Event"
 msgstr "Veranstaltung"
+
+#: event/models.py:76
+msgid "Registration Count"
+msgstr "Anmeldungen"

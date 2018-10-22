@@ -1,0 +1,343 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-19 11:38+0000\n"
+"PO-Revision-Date: 2018-10-19 13:37+0200\n"
+"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: speaker/apps.py:9 speaker/tests/test_appconfig.py:10
+msgid "Speaker management"
+msgstr "Sprecherverwaltung"
+
+#: speaker/forms.py:61 speaker/forms.py:97
+msgid "How should we present your name to the audience?"
+msgstr "Wie sollen wir dem Publikum deinen Namen anzeigen?"
+
+#: speaker/forms.py:63 speaker/forms.py:99
+msgid ""
+"Tell your audience who you are and what you want people to know about you."
+msgstr ""
+"Erzähl dem Publikum etwas über dich und das was die Leute von dir wissen "
+"sollen."
+
+#: speaker/forms.py:73
+msgid "Register as speaker"
+msgstr "Als Sprecher anmelden"
+
+#: speaker/forms.py:77
+msgid ""
+"By registering as a speaker, I agree to be contacted by the Dev Day "
+"organizers about conference details and my talk submissions."
+msgstr ""
+"Mit der Registrierung als Sprecher stimme ich zu, dass die Dev Day "
+"Organisatoren zu Details zur Konferenz und meinen Sessioneinreichungen "
+"Kontakt mit mir aufnehmen dürfen."
+
+#: speaker/forms.py:109
+msgid "Change your speaker details"
+msgstr "Ändere deine Sprecherdaten"
+
+#: speaker/forms.py:129 speaker/models.py:62 speaker/models.py:214
+msgid "Speaker image"
+msgstr "Sprecherfoto"
+
+#: speaker/forms.py:134
+msgid "Change your speaker profile"
+msgstr "Ändere deine Sprecherdaten"
+
+#: speaker/forms.py:138
+msgid "Submit your portrait"
+msgstr "Lade dein Foto hoch"
+
+#: speaker/forms.py:142
+msgid "Skip upload"
+msgstr "Hochladen überspringen"
+
+#: speaker/models.py:17
+msgid "XS"
+msgstr "XS"
+
+#: speaker/models.py:18
+msgid "S"
+msgstr "S"
+
+#: speaker/models.py:19
+msgid "M"
+msgstr "M"
+
+#: speaker/models.py:20
+msgid "L"
+msgstr "L"
+
+#: speaker/models.py:21
+msgid "XL"
+msgstr "XL"
+
+#: speaker/models.py:22
+msgid "XXL"
+msgstr "XXL"
+
+#: speaker/models.py:23
+msgid "XXXL"
+msgstr "XXXL"
+
+#: speaker/models.py:28
+msgid "speaker name"
+msgstr "Sprechername"
+
+#: speaker/models.py:29
+msgid "slug"
+msgstr "Slug"
+
+#: speaker/models.py:31
+msgid "twitter handle"
+msgstr "Twitter-Handle"
+
+#: speaker/models.py:32
+msgid "Phone"
+msgstr "Telefon"
+
+#: speaker/models.py:34
+msgid "job or study subject"
+msgstr "Beruf oder Studiengang"
+
+#: speaker/models.py:36
+msgid "company or institution"
+msgstr "Firma oder Institution"
+
+#: speaker/models.py:39
+msgid "Video permitted"
+msgstr "Videoerlaubnis erteilt"
+
+#: speaker/models.py:40
+msgid ""
+"I hereby agree that audio and visual recordings of me and my session can be "
+"published on the social media channels of the event organizer and the "
+"website devday.de."
+msgstr ""
+"Ich stimme hiermit zu, dass Ton- und Videoaufzeichnungen von mir und meiner "
+"Session auf den Social-Media-Kanälen des Veranstalters und auf der Webseite "
+"devday.de verwendet werden dürfen."
+
+#: speaker/models.py:45
+msgid "Short biography"
+msgstr "Kurzvita"
+
+#: speaker/models.py:60
+msgid "registered as speaker"
+msgstr "Als Sprecher angemeldet"
+
+#: speaker/models.py:64 speaker/models.py:217
+msgid "Speaker image thumbnail"
+msgstr "Vorschau Speakerbild"
+
+#: speaker/models.py:68 speaker/models.py:221
+msgid "Public speaker image"
+msgstr "Öffentliches Speakerbild"
+
+#: speaker/models.py:72
+msgid "T-shirt size"
+msgstr "T-Shirtgröße"
+
+#: speaker/models.py:75
+msgid "speaker"
+msgstr "Sprecher"
+
+#: speaker/models.py:76
+msgid "speakers"
+msgstr "Sprecher"
+
+#: speaker/models.py:211
+msgid "published as speaker"
+msgstr "Als Sprecher veröffentlicht"
+
+#: speaker/models.py:224
+msgid "email address"
+msgstr "E-Mailadresse"
+
+#: speaker/models.py:229
+msgid "published speaker"
+msgstr "veröffentlichter Sprecher"
+
+#: speaker/models.py:230
+msgid "published speakers"
+msgstr "veröffentlichte Sprecher"
+
+#: speaker/templates/speaker/publishedspeaker_detail.html:14
+#, python-format
+msgid "Talks: %(event)s"
+msgstr "Sessions: %(event)s"
+
+#: speaker/templates/speaker/publishedspeaker_detail.html:27
+#, python-format
+msgid "Portrait picture of %(speaker_name)s"
+msgstr "Portraitfoto von %(speaker_name)s"
+
+#: speaker/templates/speaker/publishedspeaker_list.html:3
+msgid "Speaker Linup"
+msgstr "Sprecher"
+
+#: speaker/templates/speaker/publishedspeaker_list.html:17
+msgid "Session selection is not done yet. No speaker list for you."
+msgstr ""
+"Die Sessionauswahl ist noch nicht abgeschlossen. Es ist noch keine "
+"Sprecherliste verfügbar."
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:5
+#: speaker/templates/speaker/speaker_user_profile.html:93
+msgid "Delete portrait picture"
+msgstr "Portraitfoto löschen"
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:7
+msgid "Do you want to delete your portrait picture?"
+msgstr "Willst du dein Portraitfoto löschen?"
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:8
+msgid "Your current portrait picture"
+msgstr "Dein aktuelles Portraitfoto"
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:14
+msgid "Yes please"
+msgstr "Ja bitte"
+
+#: speaker/templates/speaker/speaker_portrait_confirm_delete.html:17
+#: speaker/templates/speaker/speaker_portrait_upload.html:74
+#: speaker/templates/speaker/speaker_user_profile.html:129
+#: speaker/templates/speaker/speaker_user_profile.html:155
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:31
+msgid "Change your portrait picture"
+msgstr "Tausche dein Portraitfoto aus"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:33
+msgid "Speaker portrait"
+msgstr "Speakerfoto"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:46
+msgid "Delete"
+msgstr "Löschen"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:49
+#: speaker/templates/speaker/speaker_portrait_upload.html:203
+msgid "Continue"
+msgstr "Weiter"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:49
+#: speaker/templates/speaker/speaker_portrait_upload.html:145
+msgid "Skip"
+msgstr "Überspringen"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:59
+msgid "Crop the portrait picture"
+msgstr "Portraitfoto zuschneiden"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:62
+#: speaker/templates/speaker/speaker_user_profile.html:112
+#: speaker/templates/speaker/speaker_user_profile.html:144
+msgid "Close"
+msgstr "Schließen"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:76
+#: speaker/templates/speaker/speaker_user_profile.html:131
+msgid "Crop"
+msgstr "Zuschneiden"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:146
+#: speaker/templates/speaker/speaker_user_profile.html:253
+msgid "Successfully deleted"
+msgstr "Erfolgreich gelöscht"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:149
+#: speaker/templates/speaker/speaker_user_profile.html:257
+msgid "Deletion failed"
+msgstr "Löschen fehlgeschlagen"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:204
+#: speaker/templates/speaker/speaker_user_profile.html:310
+msgid "Upload success"
+msgstr "Erfolgreich hochgeladen"
+
+#: speaker/templates/speaker/speaker_portrait_upload.html:209
+#: speaker/templates/speaker/speaker_user_profile.html:316
+msgid "Upload error"
+msgstr "Fehler beim Hochladen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:3
+msgid "Speaker details"
+msgstr "Sprecherdaten"
+
+#: speaker/templates/speaker/speaker_user_profile.html:7
+msgid "Your speaker details"
+msgstr "Deine Sprecherdaten"
+
+#: speaker/templates/speaker/speaker_user_profile.html:13
+msgid "Your sessions"
+msgstr "Deine Sessions"
+
+#: speaker/templates/speaker/speaker_user_profile.html:23
+msgid "Edit session details"
+msgstr "Session-Details bearbeiten"
+
+#: speaker/templates/speaker/speaker_user_profile.html:31
+msgid "You have not submitted any sessions yet."
+msgstr "Du hast bisher noch keine Sessions eingereicht."
+
+#: speaker/templates/speaker/speaker_user_profile.html:34
+msgid "Submit a session"
+msgstr "Eine Session einreichen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:38
+#, python-format
+msgid ""
+"Submit a session for <a href=\"%(submit_talk_url)s\">%(event_title)s</a>."
+msgstr ""
+"Reiche eine Session für <a href=\"%(submit_talk_url)s\">%(event_title)s</a> "
+"ein."
+
+#: speaker/templates/speaker/speaker_user_profile.html:41
+msgid "Submit a session for one of these events:"
+msgstr "Eine Session für eine dieser Veranstaltungen einreichen:"
+
+#: speaker/templates/speaker/speaker_user_profile.html:78
+msgid "Portrait picture"
+msgstr "Portraitfoto"
+
+#: speaker/templates/speaker/speaker_user_profile.html:85
+#: speaker/templates/speaker/speaker_user_profile.html:127
+msgid "Upload new portrait picture"
+msgstr "Neues Portraitfoto hochladen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:109
+msgid "Edit the portrait picture"
+msgstr "Portraitfoto bearbeiten"
+
+#: speaker/templates/speaker/speaker_user_profile.html:127
+msgid "Upload"
+msgstr "Hochladen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:141
+msgid "Delete the portrait picture"
+msgstr "Portraitfoto löschen"
+
+#: speaker/templates/speaker/speaker_user_profile.html:149
+msgid "Do you really want to delete your portrait picture?"
+msgstr "Willst du dein Portraitfoto wirklich löschen?"
+
+#: speaker/templates/speaker/speaker_user_profile.html:153
+msgid "Yes, delete it!"
+msgstr "Ja, lösche es!"

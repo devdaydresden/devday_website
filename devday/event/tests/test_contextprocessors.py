@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from event.contextprocessors import current_event_contextprocessor
 
-from .testutils import unpublish_all_events
+from .event_testutils import unpublish_all_events
 
 
 class TestCurrentEventContextProcessor(TestCase):

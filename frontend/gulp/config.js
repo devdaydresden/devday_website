@@ -9,7 +9,7 @@
 var basepath           = './';
 var assets             = '../devday/devday/static';
 var srcDir             = 'src';
-var nodemodules              = 'node_modules';
+var nodemodules        = 'node_modules';
 var srcTest            = 'src-test';
 var fs                 = require('fs');
 var pkg                = JSON.parse(fs.readFileSync('./package.json'));
@@ -77,6 +77,7 @@ module.exports = {
             nodemodules + '/bootstrap/dist/js/bootstrap.js',
             nodemodules + '/truncate.js/dist/truncate.js',
             nodemodules + '/qrcode-svg/lib/qrcode.js',
+            nodemodules + '/cropperjs/dist/cropper.js',
             srcDir + '/js/core/class-instance-manager.js',
             srcDir + '/js/core/event-handler.js',
             srcDir + '/js/core/csrf-handler.js',
@@ -112,7 +113,8 @@ module.exports = {
 
     images: {
         src:  [
-            srcDir + '/assets/img/*.*'
+            srcDir + '/assets/img/*.*',
+            nodemodules + '/cropperjs/src/images/bg.png',
         ],
         dest: assets + '/img'
     },

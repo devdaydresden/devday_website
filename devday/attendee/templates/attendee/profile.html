@@ -5,22 +5,32 @@
     <div class="row">
         <div class="offset-lg-2 col-lg-8 col-12 content-area">
             <h1>{% blocktrans with username=user.get_username %}User profile for {{ username }}{% endblocktrans %}</h1>
-            {% static_placeholder "gdpr_teaser" %}
+            <div class="text-justify">{% static_placeholder "gdpr_teaser" %}</div>
             {% crispy form %}
         </div>
-
+        {% if user.speaker %}
+        <div class="offset-lg-2 col-lg-8 col-12 text-justify">
+            {% url 'user_speaker_profile' as speaker_profile %}
+            <h3>{% trans "Speaker" %}</h3>
+            <p>{% blocktrans with speaker_name=user.speaker.name %}You are registered as speaker &quot;{{ speaker_name }}&quot;. Visit your <a href="{{ speaker_profile }}">speaker details page</a> to update your speaker data.{% endblocktrans %}</p>
+        </div>
+        {% endif %}
         <div class="offset-lg-2 col-lg-8 col-12">
+            <h3>{%  trans "Events" %}</h3>
             {% if events %}
-                <h1>{% blocktrans %}You are registered for these events{% endblocktrans %}</h1>
+                <p>{% blocktrans %}You are registered for these events{% endblocktrans %}</p>
                 <div class="table-responsive">
                     <table class="table">
                         {% for event in events %}
                             <tr>
                                 <td>{{ event.title }}</td>
                                 <td>{{ event.description }}</td>
-                                <td>{% if event.id == event_id and not user.get_speaker %}
-                                    <p><a class="btn btn-primary" href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a></p>
-                                {% endif %}</td>
+                                <td>
+                                    {% if event.id == event_id and not user.get_speaker %}
+                                        <p><a class="btn btn-primary float-left float-sm-right"
+                                              href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a>
+                                        </p>
+                                    {% endif %}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -30,5 +40,11 @@
             {% endif %}
         </div>
     </div>
-    {% include "attendee/checkin_qrcode_include.html" %}
+    {% if events and checkin_code %}
+    <div class="row">
+        <div class="offset-lg-2 col-lg-8 col-12 content-area">
+            {% include "attendee/checkin_qrcode_include.html" %}
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}

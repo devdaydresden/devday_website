@@ -1,9 +1,10 @@
+from crispy_forms.helper import FormHelper
 from django.contrib.auth import forms as auth_forms
 from django.contrib.auth import get_user_model
 from django.test import SimpleTestCase
 
-from devday.forms import AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm
-from devday.utils.forms import DevDayFormHelper
+from devday.forms import (
+    AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm)
 
 User = get_user_model()
 
@@ -20,7 +21,7 @@ class AuthenticationFormTest(SimpleTestCase):
 
     def test_has_helper(self):
         form = AuthenticationForm()
-        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertIsInstance(form.helper, FormHelper)
 
     def test_form_tag_disabled(self):
         form = AuthenticationForm()
@@ -29,7 +30,8 @@ class AuthenticationFormTest(SimpleTestCase):
     def test_layout(self):
         form = AuthenticationForm()
         self.assertIsNotNone(form.helper.layout)
-        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        layout_fields = [
+            name for [_, name] in form.helper.layout.get_field_names()]
         self.assertEqual(len(layout_fields), 2)
         self.assertIn('username', layout_fields)
         self.assertIn('password', layout_fields)
@@ -49,7 +51,7 @@ class PasswordChangeFormTest(SimpleTestCase):
     def test_has_helper(self):
         user = User(email='test@example.org')
         form = PasswordChangeForm(user)
-        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertIsInstance(form.helper, FormHelper)
 
     def test_form_method_is_post(self):
         user = User(email='test@example.org')
@@ -60,7 +62,8 @@ class PasswordChangeFormTest(SimpleTestCase):
         user = User(email='test@example.org')
         form = PasswordChangeForm(user)
         self.assertIsNotNone(form.helper.layout)
-        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        layout_fields = [
+            name for [_, name] in form.helper.layout.get_field_names()]
         self.assertEqual(len(layout_fields), 3)
         self.assertIn('old_password', layout_fields)
         self.assertIn('new_password1', layout_fields)
@@ -79,7 +82,7 @@ class PasswordResetFormTest(SimpleTestCase):
 
     def test_has_helper(self):
         form = PasswordResetForm()
-        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertIsInstance(form.helper, FormHelper)
 
     def test_form_action_password_reset(self):
         form = PasswordResetForm()
@@ -92,7 +95,8 @@ class PasswordResetFormTest(SimpleTestCase):
     def test_layout(self):
         form = PasswordResetForm()
         self.assertIsNotNone(form.helper.layout)
-        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        layout_fields = [
+            name for [_, name] in form.helper.layout.get_field_names()]
         self.assertEqual(len(layout_fields), 1)
         self.assertIn('email', layout_fields)
 
@@ -111,7 +115,7 @@ class SetPasswordFormTest(SimpleTestCase):
     def test_has_helper(self):
         user = User(email='test@example.org')
         form = SetPasswordForm(user)
-        self.assertIsInstance(form.helper, DevDayFormHelper)
+        self.assertIsInstance(form.helper, FormHelper)
 
     def test_form_method_is_post(self):
         user = User(email='test@example.org')
@@ -122,7 +126,8 @@ class SetPasswordFormTest(SimpleTestCase):
         user = User(email='test@example.org')
         form = SetPasswordForm(user)
         self.assertIsNotNone(form.helper.layout)
-        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        layout_fields = [
+            name for [_, name] in form.helper.layout.get_field_names()]
         self.assertEqual(len(layout_fields), 2)
         self.assertIn('new_password1', layout_fields)
         self.assertIn('new_password2', layout_fields)

@@ -1,0 +1,17 @@
+{% load crispy_forms_filters %}
+{% load l10n %}
+
+{% include 'bootstrap3/layout/field_errors_block.html' %}
+
+{% for choice in field.field.choices %}
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox"
+               id="id_{{ field.html_name }}_{{ forloop.counter }}"
+               name="{{ field.html_name }}"
+                {% if choice.0 in field.value or choice.0|stringformat:"s" in field.value or choice.0|stringformat:"s" == field.value|default_if_none:""|stringformat:"s" %} checked="checked"{% endif %}
+               value="{{ choice.0|unlocalize }}" {{ field.field.widget.attrs|flatatt }}>
+        <label class="form-check-label"
+               for="id_{{ field.html_name }}_{{ forloop.counter }}">{{ choice.1|unlocalize }}</label>
+    </div>
+{% endfor %}
+{% include 'bootstrap3/layout/help_text.html' %}

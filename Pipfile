@@ -32,8 +32,10 @@ beautifulsoup4 = "*"
 coverage = "*"
 coveralls = "*"
 django-debug-toolbar = "*"
+dj-inmemorystorage = "*"
 lxml = "*"
 mock = "*"
+pip = "==18.0"
 
 [requires]
 python_version = "3.6"

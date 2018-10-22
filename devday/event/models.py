@@ -2,6 +2,7 @@ from django.apps import apps
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -28,16 +29,25 @@ class EventManager(models.Manager):
             return e.submission_open
         return False
 
+    def all_but_current(self):
+        return self.exclude(id=self.current_event_id())
+
+    def create_event(self, title, **kwargs):
+        event = self.model(title=title, **kwargs)
+        event.save()
+        return event
+
 
 @python_2_unicode_compatible
 class Event(models.Model):
-    title = models.CharField(verbose_name=_("Event title"), max_length=256,
-                             null=False, unique=True)
-    slug = models.SlugField(verbose_name=_("Short name for URLs"), unique=True)
-    description = models.TextField(verbose_name=_("Description"), blank=True)
+    title = models.CharField(
+        verbose_name=_("Event title"), max_length=256, unique=True)
+    slug = models.SlugField(
+        verbose_name=_("Short name for URLs"), unique=True)
+    description = models.TextField(verbose_name=_("Description"))
     location = models.TextField(verbose_name=_("Location"), blank=True)
-    full_day = models.BooleanField(verbose_name=_("Full day event"),
-                                   default=False)
+    full_day = models.BooleanField(
+        verbose_name=_("Full day event"), default=False)
     start_time = models.DateTimeField(verbose_name=_("Start time"))
     end_time = models.DateTimeField(verbose_name=_("End time"))
     published = models.BooleanField(
@@ -48,8 +58,8 @@ class Event(models.Model):
         verbose_name=_('Submission Open'), default=False)
     sessions_published = models.BooleanField(
         verbose_name=_('Grid Published'), default=False)
-    talkformat = models.ManyToManyField('talk.TalkFormat',
-                                        verbose_name=_('Talk Formats'))
+    talkformat = models.ManyToManyField(
+        'talk.TalkFormat', verbose_name=_('Talk Formats'))
 
     objects = EventManager()
 
@@ -58,7 +68,7 @@ class Event(models.Model):
         verbose_name_plural = _("Events")
 
     def registration_count(self):
-        "Returns the count of registered attendees."
+        """Returns the count of registered attendees."""
         a = apps.get_app_config('attendee').get_model('Attendee')
         return a.objects.filter(event=self).count()
 
@@ -66,6 +76,12 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('session_list', kwargs={'event': self.slug})
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return self.title

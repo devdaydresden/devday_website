@@ -1,19 +1,18 @@
-import luhn
-
 from base64 import urlsafe_b64encode
 from hashlib import sha1
 from random import SystemRandom
 
+import luhn
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.core.mail import send_mail
-from django.db import models, IntegrityError
+from django.db import IntegrityError, models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import pgettext_lazy, ugettext_lazy as _
 
 from event.models import Event
 
@@ -52,8 +51,6 @@ class DevDayUserManager(BaseUserManager):
 
 @python_2_unicode_compatible
 class DevDayUser(AbstractBaseUser, PermissionsMixin):
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=30, blank=True)
     email = models.EmailField(_('email address'), unique=True)
     is_staff = models.BooleanField(
         _('staff status'),
@@ -71,14 +68,6 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(
         pgettext_lazy('devday website', 'date joined'), default=timezone.now)
-    twitter_handle = models.CharField(
-        _('twitter handle'), blank=True, max_length=64)
-    phone = models.CharField(
-        verbose_name=_("Phone"), blank=True, max_length=32)
-    position = models.CharField(
-        _('job or study subject'), blank=True, max_length=128)
-    organization = models.CharField(
-        _('company or institution'), blank=True, max_length=128)
     contact_permission_date = models.DateTimeField(
         _('contact permission date'), null=True, blank=True)
 
@@ -91,18 +80,20 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('user')
         verbose_name_plural = _('users')
         abstract = False
-        default_manager_name = 'objects'
 
     def get_full_name(self):
         """
-        Returns the first_name plus the last_name, with a space in between.
+        Returns the email address as full name, because we don't keep anything
+        else.
         """
-        full_name = '%s %s' % (self.first_name, self.last_name)
-        return full_name.strip()
+        return self.email
 
     def get_short_name(self):
-        "Returns the short name for the user."
-        return self.first_name
+        """
+        Returns the email address as full name, because we don't keep anything
+        else.
+        """
+        return self.email
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """
@@ -115,7 +106,7 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         Return the attendee object for this user and the given event. If no
         attendee object exists, return None.
         """
-        return Attendee.objects.filter(user=self, event=event).first()
+        return self.attendees.filter(event=event).first()
 
     def get_events(self):
         """
@@ -123,35 +114,19 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         """
         return Event.objects.filter(attendee__user=self)
 
-    def get_speaker(self, event):
-        """
-        Return the speaker object for this user and the given event. If no
-        attendee or speaker object exists, return None.
-        """
-        attendee = self.get_attendee(event)
-        if attendee:
-            try:
-                return attendee.speaker
-            except Attendee.speaker.RelatedObjectDoesNotExist:
-                return None
-        return None
-
     def __str__(self):
-        full_name = self.get_full_name()
-        if full_name:
-            return "{} <{}>".format(full_name, self.email)
         return self.email
 
 
 class AttendeeManager(models.Manager):
-    def get_by_checkin_code_or_email(self, key):
-        '''
+    def get_by_checkin_code_or_email(self, key, event):
+        """
         Returns the attendee with the given checkin code or email address. It
         is the responsibility of the caller to verify that the attendee matches
         the desired event, and that the attendee is not checked in already.
-        '''
-        return self.filter(Q(checkin_code=key) | Q(user__email=key),
-                           event=Event.objects.current_event()).first()
+        """
+        return self.filter(
+            Q(checkin_code=key) | Q(user__email=key), event=event).first()
 
     def is_verification_valid(self, id, verification):
         return self.get_verification(id) == verification
@@ -208,11 +183,11 @@ class Attendee(models.Model):
     def get_verification(self):
         return Attendee.objects.get_verification(self.id)
 
-    def get_checkin_url(self):
+    def get_checkin_url(self, event):
         return reverse(
             'attendee_checkin_url',
-            kwargs={'id': self.id, 'verification': self.get_verification()}
-            )
+            kwargs={'id': self.id, 'verification': self.get_verification(),
+                    'event': event})
 
     def check_in(self):
         if self.checked_in:
@@ -220,5 +195,5 @@ class Attendee(models.Model):
         self.checked_in = timezone.now()
 
     def __str__(self):
-        return '{} at {}'.format(self.user.get_full_name() or self.user.email,
-                                 self.event)
+        return _('{email} at {event}').format(
+            email=self.user.email, event=self.event.title)

@@ -1,37 +1,28 @@
-from attendee.models import DevDayUser, Attendee
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Layout, Field, Submit, Hidden, HTML
-from devday.forms import AuthenticationForm
-from devday.utils.forms import (
-    CombinedFormBase, DevDayFormHelper, DevDayField, DevDayContactField)
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
 from django.forms import ModelForm
+from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic.edit import FormView
 from django_registration.forms import RegistrationFormUniqueEmail
 
-from talk.models import Talk
+from attendee.models import DevDayUser, Attendee
+from devday.forms import AuthenticationForm
 
 User = get_user_model()
 
 
 class DevDayRegistrationForm(RegistrationFormUniqueEmail):
-    accept_devday_contact = forms.BooleanField(
-        label=_('Accept Dev Day contact'),
-        help_text=_(
-            'I would like to receive updates about Dev Day by email.'
-        ),
-        required=False
-    )
     accept_general_contact = forms.BooleanField(
         label=_('Contact for other events'),
         help_text=_(
-            'I would like to receive updates about T-Systems Multimedia '
-            'Solutions GmbH Software Engineering Community by email.'
+            'I would like to receive updates related to events organized by'
+            ' the T-Systems Multimedia Solutions GmbH Software Engineering'
+            ' Community via email.'
         ),
         required=False
     )
@@ -42,12 +33,6 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
             'email',
             'password1',
             'password2',
-            'first_name',
-            'last_name',
-            'twitter_handle',
-            'phone',
-            'position',
-            'organization',
         ]
 
 
@@ -64,9 +49,7 @@ class DevDayUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(DevDayUserCreationForm, self).__init__(*args, **kwargs)
-        if self._meta.model.USERNAME_FIELD in self.fields:
-            self.fields[self._meta.model.USERNAME_FIELD] \
-                .widget.attrs.update({'autofocus': True})
+        self.fields['email'].widget.attrs.update({'autofocus': True})
 
     def save(self, commit=True):
         user = super(DevDayUserCreationForm, self).save(commit=False)
@@ -92,81 +75,61 @@ class AttendeeInlineForm(ModelForm):
         }
 
 
-class AttendeeSourceForm(ModelForm):
-    class Meta:
-        model = Attendee
-        fields = ['source']
-
-
-class DevDayUserForm(ModelForm):
-    class Meta:
-        model = DevDayUser
-        fields = [
-            'first_name',
-            'last_name',
-            'twitter_handle',
-            'phone',
-            'position',
-            'organization'
-        ]
-
-
 class AttendeeProfileForm(ModelForm):
+    """
+    This form is used to register an anonymous user as DevDayUser and for an
+    event.
+    """
+    accept_general_contact = forms.BooleanField(
+        label=_('Contact for other events'),
+        help_text=_(
+            'I would like to receive updates related to events organized by'
+            ' the T-Systems Multimedia Solutions GmbH Software Engineering'
+            ' Community via email.'
+        ),
+        required=False
+    )
+
     class Meta:
         model = DevDayUser
         fields = [
-            'first_name',
-            'last_name',
-            'twitter_handle',
-            'phone',
-            'position',
-            'organization',
             'contact_permission_date',
             'date_joined'
         ]
+        labels = {
+            'contact_permission_date': _('Contact permission granted at'),
+        }
 
     def __init__(self, *args, **kwargs):
         super(AttendeeProfileForm, self).__init__(*args, **kwargs)
-        self.helper = DevDayFormHelper()
+        self.helper = FormHelper()
         self.helper.form_action = 'user_profile'
         self.helper.form_method = 'post'
+        self.helper.html5_required = True
+        self.fields['date_joined'].required = False
+        self.fields['date_joined'].disabled = True
+        self.fields['contact_permission_date'].disabled = True
         buttons = Div(css_class='col-12 col-sm-6 order-2 order-sm-1')
-        if Talk.objects.filter(speaker__user__user=self.instance).count() == 0:
-            buttons.append(
-                HTML('<a href={} class="btn btn-outline-danger">{}</a>'.format(
-                    reverse('attendee_delete'),
-                    _('Delete your account')
-                ))
-            )
-        buttons.append(
-            HTML(
-                '<a href="{}" class="btn btn-outline-secondary">{}</a>'.format(
-                    reverse('auth_password_change'),
-                    _('Change password'))), )
+        buttons.append(HTML(
+            '<a href={} class="btn btn-outline-danger ml-0">{}</a>'.format(
+                reverse('attendee_delete'),
+                _('Delete your account')
+            )))
+        buttons.append(HTML(
+            '<a href="{}" class="btn btn-outline-secondary mr-0">{}</a>'.format(
+                reverse('auth_password_change'),
+                _('Change password'))), )
         self.helper.layout = Layout(
+            HTML('<hr/>'),
             Div(
-                DevDayField('first_name', autofocus='autofocus',
-                            wrapper_class='col-12 col-sm-6'),
-                Field('last_name', wrapper_class='col-12 col-sm-6'),
+                Field('accept_general_contact', wrapper_class='col-12'),
                 css_class='form-row'
             ),
             Div(
-                Field('twitter_handle', wrapper_class='col-12 col-sm-6'),
-                Field('phone', wrapper_class='col-12 col-sm-6'),
-                css_class='form-row',
-            ),
-            HTML('<hr/>'),
-            Div(
-                Field('position', wrapper_class='col-12 col-sm-6'),
-                Field('organization', wrapper_class='col-12 col-sm-6'),
-                css_class='form-row',
-            ),
-            HTML('<hr/>'),
-            Div(
-                DevDayField('contact_permission_date', readonly="readonly",
-                            wrapper_class='col-12 col-sm-6'),
-                DevDayField('date_joined', readonly="readonly",
-                            wrapper_class='col-12 col-sm-6'),
+                Field(
+                    'contact_permission_date',
+                    wrapper_class='col-12 col-sm-6'),
+                Field('date_joined', wrapper_class='col-12 col-sm-6'),
                 css_class='form-row',
             ),
             Div(
@@ -174,54 +137,78 @@ class AttendeeProfileForm(ModelForm):
                 Div(
                     Submit(
                         'submit', _('Update your profile'),
-                        css_class='btn btn-primary float-left float-sm-right'),
+                        css_class='btn btn-primary float-left float-sm-right'
+                                  ' mr-0'),
                     css_class='col-12 col-sm-6 order-1 order-sm-2'
                 ),
                 css_class='form-row',
             ),
         )
-        self.helper.html5_required = True
+
+    def save(self, commit=True):
+        user = super().save(False)
+        if self.cleaned_data.get('accept_general_contact'):
+            if user.contact_permission_date is None:
+                user.contact_permission_date = timezone.now()
+        else:
+            user.contact_permission_date = None
+        if commit:
+            user.save()
+        return user
 
 
-class EventRegistrationForm(FormView):
+class EventRegistrationForm(ModelForm):
+    """
+    This form is used to register an existing DevDayUser for an event.
+    """
+
+    class Meta:
+        model = Attendee
+        fields = []
+
     def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
+        self.user = kwargs.pop('user')
         super(EventRegistrationForm, self).__init__(*args, **kwargs)
-        self.helper = DevDayFormHelper()
-        self.helper.form_action = 'registration_register'
+        self.helper = FormHelper()
+        self.helper.form_action = reverse_lazy(
+            'attendee_registration', kwargs={'event': self.event.slug})
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.helper.layout = Layout(
             Div(
                 Div(
-                    HTML(_('<label><p class="help-block">By registering as an'
+                    HTML(_('<p class="text-info">By registering as an'
                            ' attendee, I agree to be contacted by the Dev Day'
                            ' organizers about conference details.'
-                           '</p></label>')),
-                    css_class='checkbox'
+                           '</p>')),
                 ),
                 Submit('submit', _('Register as attendee')),
                 css_class='col-md-12 offset-lg-2 col-lg-8 text-center',
             )
         )
 
-    def _get_form_by_class(self, clazz):
-        return getattr(self, clazz.__name__.lower())
-
-    def get_user_form(self):
-        return self._get_form_by_class(DevDayRegistrationForm)
+    def save(self, commit=True):
+        attendee = Attendee(event=self.event, user=self.user)
+        if commit:
+            attendee.save()
+        return attendee
 
 
 class RegistrationAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
+        event = kwargs.pop('event')
         super(RegistrationAuthenticationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_action = 'login_or_register_attendee'
+        self.helper.form_action = reverse_lazy(
+            'login_or_register_attendee', kwargs={'event': event.slug})
         self.helper.form_method = 'post'
         self.helper.field_template = 'devday/form/field.html'
         self.helper.html5_required = True
         self.helper.layout = Layout(
             Div(
-                Hidden('next', value=reverse('registration_register')),
+                Hidden('next', value=reverse(
+                    'attendee_registration', kwargs={'event': event.slug})),
                 Field('username', template='devday/form/field.html',
                       autofocus='autofocus'),
                 Field('password', template='devday/form/field.html'),
@@ -233,38 +220,31 @@ class RegistrationAuthenticationForm(AuthenticationForm):
         )
 
 
-class AttendeeRegistrationForm(CombinedFormBase):
-    form_classes = [DevDayRegistrationForm, AttendeeSourceForm]
-
-    def _get_form_by_class(self, clazz):
-        return getattr(self, clazz.__name__.lower())
-
-    def get_user_form(self):
-        return self._get_form_by_class(DevDayRegistrationForm)
+class DevDayUserRegistrationForm(DevDayRegistrationForm):
+    """
+    This form is used to register a DevDayUser without assigning it to
+    a specific event.
+    """
+    next = forms.CharField(widget=forms.HiddenInput, required=False)
 
     def __init__(self, *args, **kwargs):
-        super(AttendeeRegistrationForm, self).__init__(*args, **kwargs)
-        self.helper = DevDayFormHelper()
-        self.helper.form_action = 'registration_register'
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_action = reverse_lazy(
+            'registration_register')
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.fields['email'].help_text = None
         self.fields['email'].label = _('E-Mail')
         self.fields['password1'].help_text = None
         self.fields['password2'].help_text = None
-        self.fields['accept_devday_contact'].initial = True
+        self.fields['accept_general_contact'].label = _('Permit contact')
         self.fields['accept_general_contact'].initial = False
 
         self.helper.layout = Layout(
+            Field('next'),
             Div(
-                DevDayField('email', autofocus='autofocus',
-                            wrapper_class='col-12 col-md-6'),
-                Field('twitter_handle', wrapper_class='col-12 col-md-6'),
-                css_class='form-row'
-            ),
-            Div(
-                Field('first_name', wrapper_class='col-12 col-md-6'),
-                Field('last_name', wrapper_class='col-12 col-md-6'),
+                Field('email', autofocus='autofocus', wrapper_class='col-12'),
                 css_class='form-row'
             ),
             Div(
@@ -273,28 +253,84 @@ class AttendeeRegistrationForm(CombinedFormBase):
                 css_class='form-row'
             ),
             Div(
-                Field('position', wrapper_class='col-12 col-md-6'),
-                Field('organization', wrapper_class='col-12 col-md-6'),
+                Field('accept_general_contact', wrapper_class='col-12'),
                 css_class='form-row'
             ),
             Div(
-                DevDayField('source', rows=1, wrapper_class='col-12'),
-                css_class='form-row',
+                Submit('submit', _('Register for an account')),
+                css_class='col-12 text-center'
+            )
+        )
+
+    def save(self, commit=True):
+        user = super().save(False)
+        user.is_active = False
+        if self.cleaned_data.get('accept_general_contact'):
+            user.contact_permission_date = timezone.now()
+        if commit:
+            user.save()
+        return user
+
+
+class AttendeeRegistrationForm(DevDayRegistrationForm):
+    """
+    This form is used to register a DevDayUser and create an registration for
+    a specific event.
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
+        super(AttendeeRegistrationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_action = reverse_lazy(
+            'attendee_registration', kwargs={'event': self.event.slug})
+        self.helper.form_method = 'post'
+        self.helper.html5_required = True
+        self.fields['email'].help_text = None
+        self.fields['email'].label = _('E-Mail')
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
+        self.fields['accept_general_contact'].initial = False
+
+        self.helper.layout = Layout(
+            Div(
+                Field('email', autofocus='autofocus', wrapper_class='col-12'),
+                css_class='form-row'
+            ),
+            Div(
+                Field('password1', wrapper_class='col-12 col-md-6'),
+                Field('password2', wrapper_class='col-12 col-md-6'),
+                css_class='form-row'
             ),
             Div(
                 Div(
                     HTML(_(
-                        '<label><p class="help-block">By registering as an'
+                        '<p class="text-info">By registering as an'
                         ' attendee, I agree to be contacted by the Dev Day'
                         ' organizers about conference details.</p></label>')),
-                    css_class='checkbox'
+                    css_class='col-12 col-md-6'
                 ),
-                Hidden('accept_devday_contact', value='1'),
-                DevDayContactField('accept_general_contact'),
+                Field(
+                    'accept_general_contact', wrapper_class='col-12 col-md-6'),
+                css_class='form-row'
+            ),
+            Div(
                 Submit('submit', _('Register as attendee')),
-                css_class='col-12 text-center',
+                css_class='col-12 text-center'
             )
         )
+
+    def save(self, commit=True):
+        user = super(AttendeeRegistrationForm, self).save(False)
+        user.is_active = False
+        if self.cleaned_data.get('accept_general_contact'):
+            user.contact_permission_date = timezone.now()
+        attendee = Attendee(user=user, event=self.event)
+        if commit:
+            user.save()
+            attendee.user_id = user.id
+            attendee.save()
+        return attendee
 
 
 class CheckInAttendeeForm(forms.Form):
@@ -302,9 +338,11 @@ class CheckInAttendeeForm(forms.Form):
                                max_length=100)
 
     def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
         super().__init__(*args, **kwargs)
-        self.helper = DevDayFormHelper()
-        self.helper.form_action = 'attendee_checkin'
+        self.helper = FormHelper()
+        self.helper.form_action = reverse_lazy(
+            'attendee_checkin', kwargs={'event': self.event.slug})
         self.helper.form_method = 'post'
         self.helper.html5_required = True
         self.helper.layout = Layout(
@@ -322,11 +360,12 @@ class CheckInAttendeeForm(forms.Form):
 
     def clean_attendee(self):
         checkin_code = self.cleaned_data['attendee']
-        attendee = Attendee.objects.get_by_checkin_code_or_email(checkin_code)
+        attendee = Attendee.objects.get_by_checkin_code_or_email(
+            checkin_code, self.event)
         if not attendee:
-            raise ValidationError(_('Unknown checkin code or email address, or'
-                                    ' attendee is not registered for the'
-                                    ' current event.'))
+            raise ValidationError(
+                _('Unknown checkin code or email address, or attendee is not'
+                  ' registered for the current event.'))
         if attendee.checked_in is not None:
             raise ValidationError(
                 _('{} is already checked in!'.format(attendee.user)))

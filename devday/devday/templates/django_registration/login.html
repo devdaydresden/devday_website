@@ -11,7 +11,7 @@
             </form>
             <p>{% trans "Forgot password?" %} <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
             {% if attendee_registration_open %}
-                <p>{% trans "Not registered yet?" %} <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+                <p>{% trans "Not registered yet?" %} <a href="{% url 'registration_register' %}{% if next %}?next={{ next }}{% endif %}">{% trans "Register" %}</a>!</p>
             {% endif %}
         </div>
     </div>

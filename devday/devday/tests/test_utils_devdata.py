@@ -120,7 +120,7 @@ class DevDataTests(TestCase):
         self.assertEquals(formats[0].name, 'Lightning Talk')
         self.assertEquals(formats[0].duration, 10)
         self.assertEquals(formats[1].name, 'Vortrag')
-        self.assertEquals(formats[1].duration, 45)
+        self.assertEquals(formats[1].duration, 30)
         self.assertEquals(formats[2].name, 'Vortrag')
         self.assertEquals(formats[2].duration, 60)
         self.assertEquals(formats[3].name, 'Workshop')

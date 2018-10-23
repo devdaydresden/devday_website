@@ -32,3 +32,75 @@ form {
         }
     }
 }
+
+// Custom Checkbox
+.form-check {
+    padding-left: 0;
+
+    input[type="checkbox"] {
+        position: absolute; // take it out of document flow
+        opacity: 0; // hide it
+
+        & + label {
+            position: relative;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1.15rem;
+            margin-bottom: 0.25rem;
+        }
+
+        // Box.
+        & + label:before {
+            content: '';
+            margin-right: 10px;
+            display: inline-block;
+            vertical-align: text-top;
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            border: 1px solid $highlight-dark;
+        }
+
+        // Box hover
+        &:hover + label:before {
+            border: 1px solid $highlight-darker;
+        }
+
+        // Box focus
+        &:focus + label:before {
+            box-shadow: 0 0 0 2px $black-50;
+        }
+
+        // Box checked
+        &:checked + label:before {
+            background: $highlight-dark;
+        }
+
+        // Disabled state label.
+        &:disabled + label {
+            color: $gray;
+            cursor: auto;
+        }
+
+        // Disabled box.
+        &:disabled + label:before {
+            box-shadow: none;
+            background: $gray-light;
+            border-color: $gray-light;
+        }
+
+        // Checkmark. Could be replaced with an image
+        &:checked + label:after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 9px;
+            background: $white;
+            width: 2px;
+            height: 2px;
+            box-shadow: 2px 0 0 $white, 4px 0 0 $white, 4px -2px 0 $white, 4px -4px 0 $white, 4px -6px 0 $white, 4px -8px 0 $white;
+            transform: rotate(45deg);
+        }
+    }
+}
+

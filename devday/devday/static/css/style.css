@@ -1,5 +1,5 @@
 /**
- * Build on 2018-10-17
+ * Build on 2018-10-23
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -8864,6 +8864,54 @@ form .btn {
     color: #c7c7c7; }
   .form-group .form-control::placeholder {
     color: #c7c7c7; }
+
+.form-check {
+  padding-left: 0; }
+  .form-check input[type="checkbox"] {
+    position: absolute;
+    opacity: 0; }
+    .form-check input[type="checkbox"] + label {
+      position: relative;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1.15rem;
+      margin-bottom: 0.25rem; }
+    .form-check input[type="checkbox"] + label:before {
+      content: '';
+      margin-right: 10px;
+      display: inline-block;
+      vertical-align: text-top;
+      width: 20px;
+      height: 20px;
+      background: transparent;
+      border: 1px solid #488483; }
+    .form-check input[type="checkbox"]:hover + label:before {
+      border: 1px solid #3f8b89; }
+    .form-check input[type="checkbox"]:focus + label:before {
+      -webkit-box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5);
+              box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5); }
+    .form-check input[type="checkbox"]:checked + label:before {
+      background: #488483; }
+    .form-check input[type="checkbox"]:disabled + label {
+      color: #545454;
+      cursor: auto; }
+    .form-check input[type="checkbox"]:disabled + label:before {
+      -webkit-box-shadow: none;
+              box-shadow: none;
+      background: #c7c7c7;
+      border-color: #c7c7c7; }
+    .form-check input[type="checkbox"]:checked + label:after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 9px;
+      background: #ffffff;
+      width: 2px;
+      height: 2px;
+      -webkit-box-shadow: 2px 0 0 #ffffff, 4px 0 0 #ffffff, 4px -2px 0 #ffffff, 4px -4px 0 #ffffff, 4px -6px 0 #ffffff, 4px -8px 0 #ffffff;
+              box-shadow: 2px 0 0 #ffffff, 4px 0 0 #ffffff, 4px -2px 0 #ffffff, 4px -4px 0 #ffffff, 4px -6px 0 #ffffff, 4px -8px 0 #ffffff;
+      -webkit-transform: rotate(45deg);
+              transform: rotate(45deg); }
 
 .speaker-image {
   max-width: 280px;

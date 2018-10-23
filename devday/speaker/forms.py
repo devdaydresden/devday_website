@@ -73,7 +73,7 @@ class CreateSpeakerForm(forms.ModelForm):
         self.helper.layout = get_edit_speaker_layout(_('Register as speaker'))
         self.helper.layout.insert(0, Field('next'))
         self.helper.layout.append(Div(
-            HTML('<p class="text-info">{}</p>'.format(
+            HTML('<div class="alert alert-info">{}</div>'.format(
                 _('By registering as a speaker, I agree to be contacted by the'
                   ' Dev Day organizers about conference details and my talk'
                   ' submissions.')))))

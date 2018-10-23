@@ -162,7 +162,10 @@ DEVDAY_FACEBOOK_URL = 'https://www.facebook.com/events/193156441425350/'
 DEVDAY_TWITTER_URL = 'https://twitter.com/devdaydresden'
 DEVDAY_XING_URL = 'https://www.xing.com/events/dev-day-2018-1897927'
 
+DEFAULT_EMAIL_SENDER = 'info-bounce@devday.de'
+
 INSTALLED_APPS = [
+    'ckeditor',
     'djangocms_admin_style',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -13,7 +13,8 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': 'devday.extras.show_toolbar_callback'
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'mail.mms-at-work.de'
 
 INSTALLED_APPS += [
     'debug_toolbar',

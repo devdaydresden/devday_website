@@ -33,12 +33,17 @@ class SponsoringView(FormView):
         return initial
 
     def get_email_context(self, form):
+        choices = dict(form.get_possible_choices())
+        chosen = []
+        for choice in form.cleaned_data['sponsoring_options']:
+            chosen.append(choices[int(choice)])
         return {
             'event': self.event,
             'organization': form.cleaned_data['organization'],
             'contact_email': form.cleaned_data['email'],
             'body_text': form.cleaned_data['body'],
             'site': Site.objects.get_current(self.request),
+            'packages': chosen,
             'request': self.request,
         }
 

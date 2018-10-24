@@ -33,6 +33,9 @@ class SponsoringPackage(models.Model):
     def css_class(self):
         return PACKAGE_NAME_CSS_CLASS_MAP[self.package_type]
 
+    def get_type_label(self):
+        return dict(PACKAGE_NAMES)[self.package_type]
+
 
 class SponsoringPackageItem(OrderedModel):
     package = models.ForeignKey(SponsoringPackage, verbose_name=_('Package'))

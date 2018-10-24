@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-24 12:45+0000\n"
-"PO-Revision-Date: 2018-10-24 14:49+0200\n"
+"POT-Creation-Date: 2018-10-24 20:46+0000\n"
+"PO-Revision-Date: 2018-10-24 22:47+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.6\n"
 
-#: sponsoring/apps.py:7
+#: sponsoring/apps.py:7 sponsoring/tests/test_appconfig.py:10
 msgid "Sponsor Management"
 msgstr "Sponsorenverwaltung"
 
@@ -38,11 +38,19 @@ msgstr "Kontaktemailadresse"
 msgid "Your request"
 msgstr "Deine Anfrage"
 
-#: sponsoring/forms.py:27
+#: sponsoring/forms.py:15
+msgid "Interested in sponsoring packages"
+msgstr "Interessiert an folgenden Sponsoringpaketen"
+
+#: sponsoring/forms.py:26
+msgid "Custom"
+msgstr "Sonstiges"
+
+#: sponsoring/forms.py:40
 msgid "Sponsoring request"
 msgstr "Sponsoringanfrage"
 
-#: sponsoring/forms.py:56
+#: sponsoring/forms.py:76
 msgid "Send sponsoring request"
 msgstr "Sponsoringanfrage senden"
 
@@ -62,7 +70,7 @@ msgstr "Bronze"
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: sponsoring/models.py:23 sponsoring/models.py:38
+#: sponsoring/models.py:23 sponsoring/models.py:41
 msgid "Package"
 msgstr "Paket"
 
@@ -78,27 +86,35 @@ msgstr "Sponsoringpaket"
 msgid "Sponsoring Packages"
 msgstr "Sponsoringpakete"
 
-#: sponsoring/models.py:40
+#: sponsoring/models.py:43
 msgid "Name"
 msgstr "Name"
 
-#: sponsoring/models.py:41
+#: sponsoring/models.py:44
 msgid "Description"
 msgstr "Beschreibung"
 
-#: sponsoring/models.py:42
+#: sponsoring/models.py:45
 msgid "Header"
 msgstr "Überschrift"
 
-#: sponsoring/models.py:47
+#: sponsoring/models.py:50
 msgid "Sponsoring Package Item"
 msgstr "Sponsoringpaketbestandteil"
 
-#: sponsoring/models.py:48
+#: sponsoring/models.py:51
 msgid "Sponsoring Package Items"
 msgstr "Sponsoringpaketbestandteile"
 
-#: sponsoring/templates/sponsoring/sponsoring.html:33
+#: sponsoring/templates/sponsoring/sponsoring.html:8
+msgid "Sponsoring Options"
+msgstr "Sponsoringmöglichkeiten"
+
+#: sponsoring/templates/sponsoring/sponsoring.html:9
+msgid "Please have a look at the following list of sponsoring options."
+msgstr "Schau dir die folgende Liste von Sponsoringmöglichkeiten an."
+
+#: sponsoring/templates/sponsoring/sponsoring.html:40
 msgid "There are no sponsoring packages defined yet."
 msgstr "Es wurden noch keine Sponsoringpakete definiert."
 
@@ -120,6 +136,15 @@ msgstr ""
 "%(organization)s schrieb die folgende Anfrage:\n"
 
 #: sponsoring/templates/sponsoring/sponsoring_request_mail_body.txt:10
+msgid "The requester is interested in the following sponsoring oportunity:"
+msgid_plural ""
+"The requester is interested in the following sponsoring oportunities:"
+msgstr[0] ""
+"Der Anfragende ist an der folgenden Sponsoringmöglichkeit interessiert:"
+msgstr[1] ""
+"Der Anfragende ist an folgenden Sponsoringmöglichkeiten interessiert:"
+
+#: sponsoring/templates/sponsoring/sponsoring_request_mail_body.txt:14
 #, python-format
 msgid ""
 "\n"
@@ -144,8 +169,7 @@ msgstr "Danke"
 #: sponsoring/templates/sponsoring/sponsoring_thanks.html:9
 msgid "Thank you for your sponsoring request. We will contact you."
 msgstr ""
-"Danke für deine Sponsoringanfrage. Wir werden Kontakt mit dir "
-"aufnehmen."
+"Danke für deine Sponsoringanfrage. Wir werden Kontakt mit dir aufnehmen."
 
 #: sponsoring/templates/sponsoring/sponsoring_thanks.html:10
 #, python-format

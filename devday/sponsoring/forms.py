@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field, Submit, HTML
+from crispy_forms.layout import Div, Field, HTML, Layout, Submit
 from django import forms
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -11,12 +11,25 @@ class SponsoringContactForm(forms.Form):
     email = forms.EmailField(label=_('Contact email address'))
     body = forms.CharField(
         label=_('Your request'), widget=forms.Textarea(attrs={'rows': 5}))
+    sponsoring_options = forms.MultipleChoiceField(
+        label=_('Interested in sponsoring packages'),
+        widget=forms.CheckboxSelectMultiple())
 
     event = None
+
+    def get_possible_choices(self):
+        choices = []
+        for package in self.event.sponsoringpackage_set.all():
+            choices.append((
+                package.package_type,
+                package.get_type_label()))
+        choices.append((-1, _('Custom')))
+        return choices
 
     def __init__(self, **kwargs):
         self.event = kwargs.pop('event')
         super().__init__(**kwargs)
+        self.fields['sponsoring_options'].choices = self.get_possible_choices()
         self.helper = FormHelper()
         self.helper.form_action = reverse(
             'sponsoring_view', kwargs={'event': self.event.slug})
@@ -39,6 +52,13 @@ class SponsoringContactForm(forms.Form):
                 Div(
                     Field(
                         'email',
+                        wrapper_class='offset-lg-2 col-lg-8 col-12',
+                    ),
+                    css_class='form-row'
+                ),
+                Div(
+                    Field(
+                        'sponsoring_options',
                         wrapper_class='offset-lg-2 col-lg-8 col-12',
                     ),
                     css_class='form-row'

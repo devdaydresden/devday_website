@@ -67,7 +67,8 @@ class SponsoringViewTest(TestCase):
         email = 'test@example.org'
         body_text = 'So nice packages, much money, so wow!'
         data = {
-            'organization': organization, 'email': email, 'body': body_text}
+            'organization': organization, 'email': email, 'body': body_text,
+            'sponsoring_options': ["1", "-1"]}
         response = self.client.post(self.url, data)
         self.assertRedirects(response, '/sponsoring/thanks/')
         self.assertEqual(len(mail.outbox), 1)

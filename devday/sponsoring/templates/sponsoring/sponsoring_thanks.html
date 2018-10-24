@@ -1,0 +1,14 @@
+{% extends "devday_site.html" %}
+{% load i18n cms_tags %}
+{% block content_body %}
+    <div class="content-area">
+        <div class="row">
+            <div class="offset-lg-2 col-lg-8 col-12">
+                <h1>{% trans "Thank you" %}</h1>
+                <p>{% static_placeholder "sponsoring-request-thanks" or %}
+                    {% blocktrans %}Thank you for your sponsoring request. We will contact you.{% endblocktrans %}{% endstatic_placeholder %}</p>
+                <p>{% url 'pages-root' as index_url %}{% blocktrans %}Back to <a href="{{ index_url }}">the Homepage</a>.{% endblocktrans %}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% load i18n %}{% blocktrans with event=event.title %}Hello Sponsoring Team,
+
+the following sponsoring request for {{ event }} has been sent from the Website.
+
+{{ organization }} wrote the following request:
+{% endblocktrans %}
+
+{{ body_text }}
+
+-- {% blocktrans with domain=site.domain host=request.META.HTTP_HOST scheme=request.scheme remote=request.META.REMOTE_ADDR path=request.path %}
+Sent from {{ scheme }}://{{ domain }}{{ path }}
+Remote {{ remote }}
+Host {{ host }}{% endblocktrans %}

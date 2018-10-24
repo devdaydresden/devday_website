@@ -49,9 +49,10 @@ class SponsoringView(FormView):
                 self.email_subject_template, context, self.request),
             body=render_to_string(
                 self.email_body_template, context, self.request),
-            from_email=settings.SPONSORING_FROM_EMAIL,
+            from_email=settings.DEFAULT_EMAIL_SENDER,
             to=settings.SPONSORING_RECIPIENTS,
             reply_to=[context['contact_email']],
+            headers={'From': settings.SPONSORING_FROM_EMAIL},
         )
         email.send(fail_silently=False)
 

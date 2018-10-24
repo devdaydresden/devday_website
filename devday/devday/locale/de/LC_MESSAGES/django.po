@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-20 08:35+0000\n"
+"POT-Creation-Date: 2018-10-24 11:18+0000\n"
 "PO-Revision-Date: 2018-10-20 10:36+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -19,31 +19,63 @@ msgstr ""
 "X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: devday/cms_toolbars.py:11
+#: devday/cms_toolbars.py:10
 msgid "Dev Day"
 msgstr "Dev Day"
 
-#: devday/cms_toolbars.py:13 devday/templates/admin/inc/branding.html:19
+#: devday/cms_toolbars.py:12
+msgid "Send Email"
+msgstr "Email senden"
+
+#: devday/cms_toolbars.py:14 devday/templates/admin/inc/branding.html:19
 msgid "Inactive users"
 msgstr "Inaktive Benutzer"
 
-#: devday/cms_toolbars.py:15 devday/templates/admin/inc/branding.html:20
+#: devday/cms_toolbars.py:16 devday/templates/admin/inc/branding.html:20
 msgid "Users we may contact"
 msgstr "Benutzer, die kontaktiert werden dürfen"
 
-#: devday/cms_toolbars.py:17 devday/templates/admin/inc/branding.html:21
+#: devday/cms_toolbars.py:18 devday/templates/admin/inc/branding.html:21
 msgid "Current event attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
-#: devday/forms.py:40 devday/forms.py:68
+#: devday/extras.py:29 devday/tests/test_extras.py:65
+msgid "Unsupported image file format {}"
+msgstr "Nicht unterstütztes Bild-Dateiformat {}"
+
+#: devday/forms.py:42 devday/forms.py:70
 msgid "Change my password"
 msgstr "Mein Passwort ändern"
 
-#: devday/forms.py:56
+#: devday/forms.py:58
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
-#: devday/settings/base.py:121 devday/settings/base.py:202
+#: devday/forms.py:75
+msgid "Recipient Group"
+msgstr "Empfängergruppe"
+
+#: devday/forms.py:77 devday/forms.py:93
+msgid "Email Subject"
+msgstr "Email-Betreff"
+
+#: devday/forms.py:91
+msgid "Recipients for this email"
+msgstr "Empfänger für diese Email"
+
+#: devday/forms.py:95
+msgid "Email Body"
+msgstr "Email-Text"
+
+#: devday/forms.py:99
+msgid "Send Test Email To Myself"
+msgstr "Test-Email an mich selbst senden"
+
+#: devday/forms.py:101
+msgid "Send Email To Selected Recipients"
+msgstr "Email an ausgewählte Empfängergruppe senden"
+
+#: devday/settings/base.py:121 devday/settings/base.py:205
 msgid "de"
 msgstr "de"
 
@@ -63,7 +95,7 @@ msgstr "col-xs-12"
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/settings/base.py:203
+#: devday/settings/base.py:206
 msgid "en"
 msgstr "en"
 
@@ -115,6 +147,14 @@ msgstr "Profil"
 #: devday/templates/base_menu.html:12
 msgid "Login"
 msgstr "Login"
+
+#: devday/templates/devday/sendemail.html:34
+msgid "Please correct the error below."
+msgstr "Bitte den unten aufgeführten Fehler korrigieren"
+
+#: devday/templates/devday/sendemail.html:34
+msgid "Please correct the errors below."
+msgstr "Bitte die unten aufgeführten Fehler korrigieren"
 
 #: devday/templates/devday_index.html:25
 msgid "Sign up now - Be part of it!"
@@ -357,3 +397,39 @@ msgstr ""
 #: devday/templates/django_registration/registration_form.html:3
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
+
+#: devday/views.py:88
+msgid "past and present attendees"
+msgstr "Frühere und aktuelle Teilnehmer"
+
+#: devday/views.py:91
+msgid "current attendees"
+msgstr "Teilnehmer der aktuellen Veranstaltung"
+
+#: devday/views.py:94
+msgid "registered but inactive attendees"
+msgstr "registrierte aber inaktive Teilnehmer"
+
+#: devday/views.py:97
+msgid "candidate speakers"
+msgstr "Sprecher-Kandidaten"
+
+#: devday/views.py:100
+msgid "accepted speakers"
+msgstr "Angenommene Sprecher"
+
+#: devday/views.py:139
+msgid "Dev Day Attendees {}"
+msgstr "Dev Day Teilnehmer {}"
+
+#: devday/views.py:143
+msgid "Dev Day <{}>"
+msgstr "Dev Day <{}>"
+
+#: devday/views.py:150
+msgid "Successfully sent message to {} {} recipients"
+msgstr "Email erfolgreich an {} {} versendet"
+
+#: devday/views.py:159
+msgid "Successfully sent message for {} to yourself"
+msgstr "Test-Email für {} erfolgreich an dich selbst gesendet"

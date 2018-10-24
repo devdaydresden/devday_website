@@ -7,7 +7,7 @@ from django.contrib.sitemaps.views import sitemap as sitemap_view
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve as serve_static
 
-from devday.views import exception_test_view
+from devday.views import exception_test_view, SendEmailView
 from talk.views import (
     InfoBeamerXMLView, RedirectVideoView,
     TalkDetails, TalkListPreviewView, TalkListView, TalkVideoView)
@@ -16,6 +16,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/send_email/$', SendEmailView.as_view(), name='send_email'),
     url(r'^sitemap\.xml$', sitemap_view,
         {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),

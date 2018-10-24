@@ -139,6 +139,8 @@ DJANGOCMS_STYLE_CHOICES = (
     ('col-xs-12', gettext('col-xs-12')),
     ('col-md-12', gettext('col-md-12')),
 )
+DJANGOCMS_PICTURE_RESPONSIVE_IMAGES = False
+
 CMS_TEMPLATES = (
     ('devday.html', 'Devday'),
     ('devday_index.html', 'Dev Day Startseite'),

@@ -208,7 +208,7 @@ class DevDataTests(TestCase):
         number_of_votes = Vote.objects.count()
         number_of_talks = Talk.objects.filter(event=event).count()
         potential_votes = number_of_talks * User.objects.filter(
-            groups__name='talk_committee').count()
+            groups__name=talk.COMMITTEE_GROUP).count()
         self.assertTrue(
             potential_votes * 0.7 <= number_of_votes <= potential_votes,
             'about {} votes for {} talks: actual {}'.format(

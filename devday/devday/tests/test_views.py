@@ -68,7 +68,7 @@ class BaseTemplateTest(TestCase):
 
     def test_parse_committee_member(self):
         user, password = attendee_testutils.create_test_user()
-        group = Group.objects.get(name='talk_committee')
+        group = Group.objects.get(name=talk.COMMITTEE_GROUP)
         user.groups.add(group)
         user.save()
         self.client.login(username=user.email, password=password)

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-19 11:38+0000\n"
-"PO-Revision-Date: 2018-10-19 13:37+0200\n"
+"POT-Creation-Date: 2018-10-25 09:46+0000\n"
+"PO-Revision-Date: 2018-10-25 11:54+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2\n"
 
 #: speaker/apps.py:9 speaker/tests/test_appconfig.py:10
 msgid "Speaker management"
@@ -176,15 +176,10 @@ msgstr "veröffentlichter Sprecher"
 msgid "published speakers"
 msgstr "veröffentlichte Sprecher"
 
-#: speaker/templates/speaker/publishedspeaker_detail.html:14
+#: speaker/templates/speaker/publishedspeaker_detail.html:18
 #, python-format
-msgid "Talks: %(event)s"
-msgstr "Sessions: %(event)s"
-
-#: speaker/templates/speaker/publishedspeaker_detail.html:27
-#, python-format
-msgid "Portrait picture of %(speaker_name)s"
-msgstr "Portraitfoto von %(speaker_name)s"
+msgid "Talks: %(talk_event)s"
+msgstr "Sessions: %(talk_event)s"
 
 #: speaker/templates/speaker/publishedspeaker_list.html:3
 msgid "Speaker Linup"
@@ -341,3 +336,6 @@ msgstr "Willst du dein Portraitfoto wirklich löschen?"
 #: speaker/templates/speaker/speaker_user_profile.html:153
 msgid "Yes, delete it!"
 msgstr "Ja, lösche es!"
+
+#~ msgid "Portrait picture of %(speaker_name)s"
+#~ msgstr "Portraitfoto von %(speaker_name)s"

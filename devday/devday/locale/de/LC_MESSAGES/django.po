@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-24 11:18+0000\n"
+"POT-Creation-Date: 2018-10-25 09:46+0000\n"
 "PO-Revision-Date: 2018-10-20 10:36+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -19,23 +19,59 @@ msgstr ""
 "X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: devday/cms_toolbars.py:10
-msgid "Dev Day"
-msgstr "Dev Day"
+#: devday/cms_menus.py:23
+#, fuzzy
+#| msgid "Session selection"
+msgid "Sessions"
+msgstr "Session-Auswahl"
 
-#: devday/cms_toolbars.py:12
+#: devday/cms_menus.py:26
+msgid "Archive"
+msgstr ""
+
+#: devday/cms_menus.py:39
+msgid "Profile"
+msgstr "Profil"
+
+#: devday/cms_menus.py:41
+msgid "Settings"
+msgstr ""
+
+#: devday/cms_menus.py:44
+#, fuzzy
+#| msgid "Profile"
+msgid "Speaker Profile"
+msgstr "Profil"
+
+#: devday/cms_menus.py:48
+msgid "Program Committee"
+msgstr ""
+
+#: devday/cms_menus.py:52
+msgid "Logout"
+msgstr "Abmelden"
+
+#: devday/cms_menus.py:57
+msgid "Login"
+msgstr "Login"
+
+#: devday/cms_toolbars.py:14
 msgid "Send Email"
 msgstr "Email senden"
 
-#: devday/cms_toolbars.py:14 devday/templates/admin/inc/branding.html:19
+#: devday/cms_toolbars.py:17
+msgid "Reports as CSV"
+msgstr ""
+
+#: devday/cms_toolbars.py:19 devday/templates/admin/inc/branding.html:19
 msgid "Inactive users"
 msgstr "Inaktive Benutzer"
 
-#: devday/cms_toolbars.py:16 devday/templates/admin/inc/branding.html:20
+#: devday/cms_toolbars.py:21 devday/templates/admin/inc/branding.html:20
 msgid "Users we may contact"
 msgstr "Benutzer, die kontaktiert werden dürfen"
 
-#: devday/cms_toolbars.py:18 devday/templates/admin/inc/branding.html:21
+#: devday/cms_toolbars.py:23 devday/templates/admin/inc/branding.html:21
 msgid "Current event attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
@@ -75,7 +111,7 @@ msgstr "Test-Email an mich selbst senden"
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
-#: devday/settings/base.py:121 devday/settings/base.py:205
+#: devday/settings/base.py:121 devday/settings/base.py:207
 msgid "de"
 msgstr "de"
 
@@ -95,7 +131,7 @@ msgstr "col-xs-12"
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/settings/base.py:206
+#: devday/settings/base.py:208
 msgid "en"
 msgstr "en"
 
@@ -131,22 +167,6 @@ msgstr "Öffne"
 #: devday/templates/admin/inc/branding.html:40
 msgid "my site"
 msgstr "meine Seite"
-
-#: devday/templates/base_menu.html:5
-msgid "Session selection"
-msgstr "Session-Auswahl"
-
-#: devday/templates/base_menu.html:7
-msgid "Logout"
-msgstr "Abmelden"
-
-#: devday/templates/base_menu.html:9
-msgid "Profile"
-msgstr "Profil"
-
-#: devday/templates/base_menu.html:12
-msgid "Login"
-msgstr "Login"
 
 #: devday/templates/devday/sendemail.html:34
 msgid "Please correct the error below."
@@ -433,3 +453,9 @@ msgstr "Email erfolgreich an {} {} versendet"
 #: devday/views.py:159
 msgid "Successfully sent message for {} to yourself"
 msgstr "Test-Email für {} erfolgreich an dich selbst gesendet"
+
+#~ msgid "Session selection"
+#~ msgstr "Session-Auswahl"
+
+#~ msgid "Dev Day"
+#~ msgstr "Dev Day"

@@ -287,7 +287,7 @@ tiefer in ein Thema einsteigen.</p>
 
     def get_committee_members(self):
         r = "Program committee users:\n"
-        for u in User.objects.filter(groups__name='talk_committee') \
+        for u in User.objects.filter(groups__name=talk.COMMITTEE_GROUP) \
                 .order_by('email'):
             r += "    {}\n".format(u.email)
         return r
@@ -330,7 +330,7 @@ tiefer in ein Thema einsteigen.</p>
         if events is None:
             events = Event.objects.all()
         self.create_users_and_attendees(amount=amount, events=events)
-        committee_group = Group.objects.get(name='talk_committee')
+        committee_group = Group.objects.get(name=talk.COMMITTEE_GROUP)
         for user in self.rng.sample(list(User.objects.all()), 7):
             user.groups.add(committee_group)
             user.save()
@@ -407,7 +407,7 @@ tiefer in ein Thema einsteigen.</p>
     def vote_for_talk(self, events=None):
         if events is None:
             events = (Event.objects.current_event(),)
-        committee = User.objects.filter(groups__name='talk_committee')
+        committee = User.objects.filter(groups__name=talk.COMMITTEE_GROUP)
         for event in events:
             for talk in Talk.objects.filter(event=event):
                 for user in committee:

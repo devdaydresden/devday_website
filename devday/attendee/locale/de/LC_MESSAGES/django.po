@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-20 08:35+0000\n"
-"PO-Revision-Date: 2018-10-20 10:35+0200\n"
+"POT-Creation-Date: 2018-10-25 09:46+0000\n"
+"PO-Revision-Date: 2018-10-25 11:50+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: attendee/admin.py:34
@@ -25,13 +25,13 @@ msgstr "Berechtigungen"
 
 #: attendee/admin.py:36
 msgid "Important dates"
-msgstr "Wichtige Daten/Uhrzeiten"
+msgstr "Wichtige Termine"
 
 #: attendee/apps.py:7 attendee/tests/test_appconfig.py:10
 msgid "Attendee management"
 msgstr "Teilnehmerverwaltung"
 
-#: attendee/cms_menus.py:16
+#: attendee/cms_toolbars.py:16
 msgid "Check in"
 msgstr "Einchecken"
 
@@ -44,12 +44,12 @@ msgid ""
 "I would like to receive updates related to events organized by the T-Systems "
 "Multimedia Solutions GmbH Software Engineering Community via email."
 msgstr ""
-"Ich möchte Updates zu Veranstaltungen der T-Systems Multimedia Solutions "
-"GmbH Software Engineering Community per E-Mail erhalten."
+"Ich möchte Updates zu Veranstaltungen der T-Systems Multimedia Solutions GmbH "
+"Software Engineering Community per E-Mail erhalten."
 
 #: attendee/forms.py:100
-msgid "Contact permission granted at"
-msgstr "Kontaktaufnahme erteilt am"
+msgid "Contact permission granted on"
+msgstr "Erlaubnis zur Kontaktaufnahme erteilt am"
 
 #: attendee/forms.py:116
 msgid "Delete your account"
@@ -65,12 +65,12 @@ msgstr "Profil aktualisieren"
 
 #: attendee/forms.py:181
 msgid ""
-"<p class=\"text-info\">By registering as an attendee, I agree to be "
-"contacted by the Dev Day organizers about conference details.</p>"
+"<p class=\"text-info\">By registering as an attendee, I agree to be contacted by "
+"the Dev Day organizers about conference details.</p>"
 msgstr ""
-"<p class=\"text-info\">Durch meine Registrierung als Teilnehmer stimme ich "
-"zu, dass mich die Dev Day-Organisatoren über Details zur Konferenz "
-"kontaktieren dürfen.</p>"
+"<p class=\"text-info\">Durch meine Registrierung als Teilnehmer stimme ich zu, "
+"dass mich die Dev Day-Organisatoren über Details zur Konferenz kontaktieren "
+"dürfen.</p>"
 
 #: attendee/forms.py:186 attendee/forms.py:318
 msgid "Register as attendee"
@@ -94,12 +94,12 @@ msgstr "Ein Benutzerkonto registrieren"
 
 #: attendee/forms.py:308
 msgid ""
-"<p class=\"text-info\">By registering as an attendee, I agree to be "
-"contacted by the Dev Day organizers about conference details.</p></label>"
+"<p class=\"text-info\">By registering as an attendee, I agree to be contacted by "
+"the Dev Day organizers about conference details.</p></label>"
 msgstr ""
-"<p class=\"text-info\">Durch meine Registrierung als Teilnehmer stimme ich "
-"zu, dass mich die Dev Day-Organisatoren über Details zur Konferenz "
-"kontaktieren dürfen.</p>"
+"<p class=\"text-info\">Durch meine Registrierung als Teilnehmer stimme ich zu, "
+"dass mich die Dev Day-Organisatoren über Details zur Konferenz kontaktieren "
+"dürfen.</p>"
 
 #: attendee/forms.py:351
 msgid "Attendee check in code or  email address"
@@ -114,8 +114,8 @@ msgid ""
 "Unknown checkin code or email address, or attendee is not registered for the "
 "current event."
 msgstr ""
-"Unbekannter Check-In-Code oder Email-Adresse, oder der Teilnehmer ist nicht "
-"für die aktuelle Veranstaltung registriert."
+"Unbekannter Check-In-Code oder Email-Adresse, oder der Teilnehmer ist nicht für "
+"die aktuelle Veranstaltung registriert."
 
 #: attendee/forms.py:371
 msgid "{} is already checked in!"
@@ -135,11 +135,11 @@ msgstr "aktiv"
 
 #: attendee/models.py:65
 msgid ""
-"Designates whether this user should be treated as active. Unselect this "
-"instead of deleting accounts."
+"Designates whether this user should be treated as active. Unselect this instead "
+"of deleting accounts."
 msgstr ""
-"Gibt an, ob dieser Nutzer als aktiv behandelt werden soll. Wähle dies ab, "
-"anstatt Nutzer zu löschen."
+"Gibt an, ob dieser Nutzer als aktiv behandelt werden soll. Wähle dies ab, anstatt "
+"Nutzer zu löschen."
 
 #: attendee/models.py:70
 msgctxt "devday website"
@@ -206,15 +206,15 @@ msgid ""
 "\n"
 "thank you for registering for %(event_title)s!\n"
 "\n"
-"To complete your registration please confirm your email address by clicking "
-"the following link.\n"
+"To complete your registration please confirm your email address by clicking the "
+"following link.\n"
 msgstr ""
 "Hallo,\n"
 "\n"
 "danke für deine Anmeldung für die Veranstaltung %(event_title)s!\n"
 "\n"
-"Um deine Anmeldung abzuschließen, verifiziere bitte deine Email-Adresse "
-"durch Klick auf diesen Link:\n"
+"Um deine Anmeldung abzuschließen, verifiziere bitte deine Email-Adresse durch "
+"Klick auf diesen Link:\n"
 
 #: attendee/templates/attendee/attendee_activation_email_body.txt:11
 #: attendee/templates/attendee/devdayuser_activation_email_body.txt:9
@@ -259,11 +259,11 @@ msgstr "Du bist jetzt für die Veranstaltung &quot;%(event)s&quot; angemeldet."
 #: attendee/templates/attendee/attendee_register_success.html:10
 #, python-format
 msgid ""
-"Visit <a href=\"%(user_profile)s\">your user profile</a>. To see review your "
-"registrations."
+"Visit <a href=\"%(user_profile)s\">your user profile</a> to review your "
+"registration."
 msgstr ""
-"Besuche dein <a href=\"%(user_profile)s\">Benutzerprofil</a>, um deine "
-"Anmeldungen zu prüfen."
+"Besuche dein <a href=\"%(user_profile)s\">Benutzerprofil</a>, um deine Anmeldung "
+"zu prüfen."
 
 #: attendee/templates/attendee/checkin_qrcode_include.html:5
 #, python-format
@@ -282,30 +282,21 @@ msgstr "QR-Code funktioniert nicht?"
 msgid "Go to manual check in"
 msgstr "Zum manuellen Checkin"
 
-#: attendee/templates/attendee/cms_menus.py:12
-msgid "Archive"
-msgstr "Archiv"
-
-#: attendee/templates/attendee/cms_menus.py:30
-msgid "Sessions"
-msgstr "Sessions"
-
 #: attendee/templates/attendee/devdayuser_activation_email_body.txt:1
 msgid ""
 "Hello,\n"
 "\n"
 "thank you for registering an account for the Dev Day website!\n"
 "\n"
-"To complete your registration please confirm your email address by clicking "
-"the\n"
+"To complete your registration please confirm your email address by clicking the\n"
 "following link.\n"
 msgstr ""
 "Hallo,\n"
 "\n"
 "danke für die Registrierung eines Benutzerkontos auf der Dev Day website!\n"
 "\n"
-"Um deine Anmeldung abzuschließen, verifiziere bitte deine Email-Adresse "
-"durch Klick auf diesen Link:\n"
+"Um deine Anmeldung abzuschließen, verifiziere bitte deine Email-Adresse durch "
+"Klick auf diesen Link:\n"
 
 #: attendee/templates/attendee/devdayuser_confirm_delete.html:3
 msgid "Delete profile"
@@ -318,29 +309,28 @@ msgstr "Dein Teilnehmerprofil %(username)s löschen"
 
 #: attendee/templates/attendee/devdayuser_confirm_delete.html:10
 msgid ""
-"Do you really want to delete your profile? You will not get information "
-"related to current and future events and you will have to register again if "
-"you choose to attend one of our future events."
+"Do you really want to delete your profile? You will not get information related "
+"to current and future events and you will have to register again if you choose to "
+"attend one of our future events."
 msgstr ""
-"Willst du dein Teilnehmerprofil wirklich löschen? Die Löschung hat zur "
-"Folge, dass du keine Informationen zu aktuellen und zukünftigen "
-"Veranstaltungen mehr von uns bekommen wirst. Du wirst dich neu anmelden "
-"müssen, wenn du dich zukünftig entscheidest wieder an einer unserer "
-"Veranstaltungen teilzunehmen."
+"Willst du dein Teilnehmerprofil wirklich löschen? Die Löschung hat zur Folge, "
+"dass du keine Informationen zu aktuellen und zukünftigen Veranstaltungen mehr von "
+"uns bekommen wirst. Du wirst dich neu anmelden müssen, wenn du dich zukünftig "
+"entscheidest wieder an einer unserer Veranstaltungen teilzunehmen."
 
 #: attendee/templates/attendee/devdayuser_confirm_delete.html:14
 msgid ""
-"You are registered as speaker and your following talk is not published yet "
-"and will be deleted:"
+"You are registered as speaker and your following talk is not published yet and "
+"will be deleted:"
 msgid_plural ""
-"You are registered as speaker and your following talks are not published yet "
-"and will be deleted:"
+"You are registered as speaker and your following talks are not published yet and "
+"will be deleted:"
 msgstr[0] ""
 "Du bist als Sprecher angemeldet und deine folgende Session wurde noch nicht "
 "veröffentlicht und wird gelöscht:"
 msgstr[1] ""
-"Du bist als Sprecher angemeldet und deine folgenden Sessions wurden noch "
-"nicht veröffentlicht und werden gelöscht:"
+"Du bist als Sprecher angemeldet und deine folgenden Sessions wurden noch nicht "
+"veröffentlicht und werden gelöscht:"
 
 #: attendee/templates/attendee/devdayuser_confirm_delete.html:24
 msgid "Confirm"
@@ -361,8 +351,8 @@ msgid "Register"
 msgstr "Anmelden"
 
 #: attendee/templates/attendee/login_or_register.html:26
-msgid "Have you ever attended Dev Day? Use your old credentials!"
-msgstr "Du warst schon mal beim Dev Day? Dann nutze deine alten Anmeldedaten!"
+msgid "Did you attend Dev Day last year? Use your existing credentials!"
+msgstr "Du warst schon mal beim Dev Day? Dann nutze deine vorhandenen Anmeldedaten!"
 
 #: attendee/templates/attendee/login_or_register.html:28
 msgid "Forgotten password?"
@@ -388,13 +378,12 @@ msgstr "Sprecher"
 #: attendee/templates/attendee/profile.html:15
 #, python-format
 msgid ""
-"You are registered as speaker &quot;%(speaker_name)s&quot;. Visit your <a "
-"href=\"%(speaker_profile)s\">speaker details page</a> to update your speaker "
-"data."
+"You are registered as speaker &quot;%(speaker_name)s&quot;. Visit your <a href="
+"\"%(speaker_profile)s\">speaker details page</a> to update your speaker data."
 msgstr ""
-"Du bist als Sprecher &quot;%(speaker_name)s&quot; angemeldet. Besuche deine "
-"<a href=\"%(speaker_profile)s\">Sprecherdetailseite</a>, um deine "
-"Sprecherdaten zu aktualisieren."
+"Du bist als Sprecher &quot;%(speaker_name)s&quot; angemeldet. Besuche deine <a "
+"href=\"%(speaker_profile)s\">Sprecherdetailseite</a>, um deine Sprecherdaten zu "
+"aktualisieren."
 
 #: attendee/templates/attendee/profile.html:19
 msgid "Events"

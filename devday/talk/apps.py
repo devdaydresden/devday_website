@@ -13,7 +13,7 @@ def create_talk_committee(**kwargs):
     Group = apps.get_model('auth', 'Group')
     Permission = apps.get_model('auth', 'Permission')
 
-    group, created = Group.objects.get_or_create(name='talk_committee')
+    group, created = Group.objects.get_or_create(name=talk.COMMITTEE_GROUP)
 
     can_vote = Permission.objects.get(
         content_type__app_label='talk', codename='add_vote')

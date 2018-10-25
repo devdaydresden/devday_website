@@ -5,6 +5,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.4.1",
     "browser-sync": "^2.12.3",
     "browserify": "^16.2.2",
     "del": "^3.0.0",

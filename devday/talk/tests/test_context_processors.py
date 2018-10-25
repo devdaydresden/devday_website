@@ -31,7 +31,7 @@ class TestCommitteeMemberContextProcessor(TestCase):
 
     def test_is_committee_member_is_true_for_committee_member(self):
         user, password = attendee_testutils.create_test_user()
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=talk.COMMITTEE_GROUP))
         self.client.login(username=user.email, password=password)
         response = self.client.get('/')
         self.assertTrue(response.context['is_committee_member'])

@@ -11,7 +11,7 @@ class CheckinToolbar(DevDayToolbar):
     def populate(self):
         super().populate()
         event = Event.objects.current_event()
-        if event.sessions_published:
+        if event.sessions_published:  # pragma: no branch
             self.add_admin_link_item_alphabetically(
                 _('Check in'),
                 reverse_lazy('attendee_checkin', kwargs={'event': event.slug}))

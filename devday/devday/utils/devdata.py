@@ -103,7 +103,7 @@ class DevData:
             self.write_ok()
             if r:
                 self.stdout.write(r, ending='')
-        except Exception:
+        except Exception:  # pragma: no cover
             self.write_error()
             raise
 
@@ -205,7 +205,7 @@ tiefer in ein Thema einsteigen.</p>
                 ph = sph.draft
                 np = CMSPlugin.objects.filter(placeholder=ph,
                                               language=lang).count()
-                if np >= 1:
+                if np >= 1:  # pragma: no branch
                     self.stdout.write('OK', style_func=self.style.SUCCESS)
                     return
             except ObjectDoesNotExist:
@@ -223,8 +223,9 @@ tiefer in ein Thema einsteigen.</p>
                 text = ''
                 for i in range(paras):
                     text += "<p>{}</p>\n".format(lorem.paragraph())
-            if title:
-                text = "<h1>{}</h1>\n{}".format(title, text)
+            if not title:
+                title = name
+            text = "<h1>{}</h1>\n{}".format(title, text)
             p = api.add_plugin(ph, 'TextPlugin', lang, body=text)
             p.save()
             sph.publish(None, lang, True)
@@ -237,7 +238,8 @@ tiefer in ein Thema einsteigen.</p>
         self.stdout.write("Update static placeholders")
         self.create_static_placeholder_text(
             u'checkin-instructions',
-            title='Check attendee in manually')
+            title='Check attendee in manually',
+            text='A small set of instructions on how to check in an attendee.')
         # find devday -name "*.html" | xargs grep static_placeholder \
         # | sed -nEe 's#^.*static_placeholder "([^"]*)".*$#\1#p' | sort -u
         for placeholder in (
@@ -295,8 +297,8 @@ tiefer in ein Thema einsteigen.</p>
         return r
 
     def create_users_and_attendees(self, amount=sys.maxsize, events=None):
-        if not events:
-            events = Event.objects.all()
+        if not events:  # pragma: no branch
+            events = Event.objects.all()  # pragma: no cover
         length = len(FIRST_NAMES) * len(LAST_NAMES)
         if length > amount:
             length = amount
@@ -324,12 +326,12 @@ tiefer in ein Thema einsteigen.</p>
                 '{} {}'.format(first_name, last_name))
 
     def choose_full_name(self):
-        for first in FIRST_NAMES:
+        for first in FIRST_NAMES:  # pragma: no branch
             for last in LAST_NAMES:
                 yield '{0} {1}'.format(first, last)
 
     def create_attendees(self, amount=sys.maxsize, events=None):
-        if events is None:
+        if events is None:  # pragma: no branch
             events = Event.objects.all()
         self.create_users_and_attendees(amount=amount, events=events)
         committee_group = Group.objects.get(name=COMMITTEE_GROUP)
@@ -355,7 +357,7 @@ tiefer in ein Thema einsteigen.</p>
         self.write_action(
             'creating {} speakers for each of the {} events'.format(
                 self.SPEAKERS_PER_EVENT, len(events)))
-        if not isfile(self.speaker_portrait_path):
+        if not isfile(self.speaker_portrait_path):  # pragma: no cover
             try:
                 makedirs(self.speaker_portrait_dir)
             except OSError as e:  # pragma: no cover
@@ -365,7 +367,8 @@ tiefer in ein Thema einsteigen.</p>
                      self.speaker_portrait_path)
         full_name_gen = self.choose_full_name()
         for user in users:
-            if not Speaker.objects.filter(user=user).exists():
+            if not Speaker.objects.filter(  # pragma: no branch
+                    user=user).exists():
                 speaker = Speaker(
                     name=next(full_name_gen),
                     user=user, video_permission=True, shirt_size=3,
@@ -407,7 +410,7 @@ tiefer in ein Thema einsteigen.</p>
                     self.create_talk(speaker, formats, event)
 
     def vote_for_talk(self, events=None):
-        if events is None:
+        if events is None:  # pragma: no branch
             events = (Event.objects.current_event(),)
         committee = User.objects.filter(groups__name=COMMITTEE_GROUP)
         for event in events:

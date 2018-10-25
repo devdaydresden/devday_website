@@ -8,9 +8,8 @@ from cms.cms_toolbars import ADMIN_MENU_IDENTIFIER, ADMINISTRATION_BREAK
 class DevDayToolbar(CMSToolbar):
     DEVDAY_BREAK = 'devday-break'
 
-    def position_in_admin_section(self, name, parent=None):
-        if not parent:
-            parent = self.admin_menu
+    def position_in_admin_section(self, name):
+        parent = self.admin_menu
         first = parent.find_first(
             items.Break, identifier=ADMINISTRATION_BREAK) + 1
         last = parent.find_first(

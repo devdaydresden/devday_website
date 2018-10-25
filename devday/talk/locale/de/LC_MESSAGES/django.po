@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-25 09:46+0000\n"
+"POT-Creation-Date: 2018-10-25 14:40+0000\n"
 "PO-Revision-Date: 2018-10-25 11:53+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -570,7 +570,7 @@ msgstr "Keine Videos, Folien oder Beispielcode gefunden."
 msgid "Videos and Slides for %(event)s have not been published yet."
 msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."
 
-#: talk/tests/test_views.py:352 talk/tests/test_views.py:434
-#: talk/tests/test_views.py:689
+#: talk/tests/test_views.py:353 talk/tests/test_views.py:435
+#: talk/tests/test_views.py:690
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."

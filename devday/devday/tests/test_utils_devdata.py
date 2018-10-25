@@ -14,6 +14,7 @@ from django.test import TestCase
 from devday.utils.devdata import DevData
 from event.models import Event
 from speaker.models import Speaker
+from talk import COMMITTEE_GROUP
 from talk.models import (Room, Talk, TalkFormat, TalkSlot, TimeSlot,
                          Track, Vote)
 from twitterfeed.models import Tweet, TwitterProfileImage
@@ -208,7 +209,7 @@ class DevDataTests(TestCase):
         number_of_votes = Vote.objects.count()
         number_of_talks = Talk.objects.filter(event=event).count()
         potential_votes = number_of_talks * User.objects.filter(
-            groups__name=talk.COMMITTEE_GROUP).count()
+            groups__name=COMMITTEE_GROUP).count()
         self.assertTrue(
             potential_votes * 0.7 <= number_of_votes <= potential_votes,
             'about {} votes for {} talks: actual {}'.format(

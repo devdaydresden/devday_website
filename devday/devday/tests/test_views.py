@@ -14,6 +14,7 @@ from devday.utils.devdata import DevData
 from event.models import Event
 from speaker.models import PublishedSpeaker, Speaker
 from speaker.tests import speaker_testutils
+from talk import COMMITTEE_GROUP
 from talk.models import Talk
 
 
@@ -68,7 +69,7 @@ class BaseTemplateTest(TestCase):
 
     def test_parse_committee_member(self):
         user, password = attendee_testutils.create_test_user()
-        group = Group.objects.get(name=talk.COMMITTEE_GROUP)
+        group = Group.objects.get(name=COMMITTEE_GROUP)
         user.groups.add(group)
         user.save()
         self.client.login(username=user.email, password=password)

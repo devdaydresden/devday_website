@@ -6,6 +6,7 @@ from attendee.models import Attendee
 from attendee.tests import attendee_testutils
 from event.tests import event_testutils
 from speaker.tests import speaker_testutils
+from talk import COMMITTEE_GROUP
 
 User = get_user_model()
 
@@ -31,7 +32,7 @@ class TestCommitteeMemberContextProcessor(TestCase):
 
     def test_is_committee_member_is_true_for_committee_member(self):
         user, password = attendee_testutils.create_test_user()
-        user.groups.add(Group.objects.get(name=talk.COMMITTEE_GROUP))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.client.login(username=user.email, password=password)
         response = self.client.get('/')
         self.assertTrue(response.context['is_committee_member'])

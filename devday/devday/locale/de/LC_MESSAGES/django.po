@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-25 09:46+0000\n"
-"PO-Revision-Date: 2018-10-20 10:36+0200\n"
+"POT-Creation-Date: 2018-10-25 14:40+0000\n"
+"PO-Revision-Date: 2018-10-25 16:47+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,44 +16,52 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: devday/cms_menus.py:23
-#, fuzzy
-#| msgid "Session selection"
+#: devday/cms_menus.py:84
+msgid "Register now for {}"
+msgstr "Jetzt registrieren für {}"
+
+#: devday/cms_menus.py:90
+msgid "Submit session for {}"
+msgstr "Session einreichen für {}"
+
+#: devday/cms_menus.py:96
 msgid "Sessions"
-msgstr "Session-Auswahl"
+msgstr "Sessions"
 
-#: devday/cms_menus.py:26
+#: devday/cms_menus.py:100
 msgid "Archive"
-msgstr ""
+msgstr "Archiv"
 
-#: devday/cms_menus.py:39
+#: devday/cms_menus.py:114
+msgid "Login"
+msgstr "Login"
+
+#: devday/cms_menus.py:119
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/cms_menus.py:41
+#: devday/cms_menus.py:126
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
-#: devday/cms_menus.py:44
-#, fuzzy
-#| msgid "Profile"
+#: devday/cms_menus.py:129
+msgid "Checkin QR Code"
+msgstr "QR-Code für Checkin"
+
+#: devday/cms_menus.py:135
 msgid "Speaker Profile"
-msgstr "Profil"
+msgstr "Sprecher-Profil"
 
-#: devday/cms_menus.py:48
+#: devday/cms_menus.py:141
 msgid "Program Committee"
-msgstr ""
+msgstr "Programmkomittee"
 
-#: devday/cms_menus.py:52
+#: devday/cms_menus.py:145
 msgid "Logout"
 msgstr "Abmelden"
-
-#: devday/cms_menus.py:57
-msgid "Login"
-msgstr "Login"
 
 #: devday/cms_toolbars.py:14
 msgid "Send Email"
@@ -61,7 +69,7 @@ msgstr "Email senden"
 
 #: devday/cms_toolbars.py:17
 msgid "Reports as CSV"
-msgstr ""
+msgstr "CSV-Reports"
 
 #: devday/cms_toolbars.py:19 devday/templates/admin/inc/branding.html:19
 msgid "Inactive users"
@@ -111,7 +119,7 @@ msgstr "Test-Email an mich selbst senden"
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
-#: devday/settings/base.py:121 devday/settings/base.py:207
+#: devday/settings/base.py:121 devday/settings/base.py:208
 msgid "de"
 msgstr "de"
 
@@ -131,7 +139,7 @@ msgstr "col-xs-12"
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/settings/base.py:208
+#: devday/settings/base.py:209
 msgid "en"
 msgstr "en"
 
@@ -170,11 +178,11 @@ msgstr "meine Seite"
 
 #: devday/templates/devday/sendemail.html:34
 msgid "Please correct the error below."
-msgstr "Bitte den unten aufgeführten Fehler korrigieren"
+msgstr "Bitte den unten aufgeführten Fehler korrigieren."
 
 #: devday/templates/devday/sendemail.html:34
 msgid "Please correct the errors below."
-msgstr "Bitte die unten aufgeführten Fehler korrigieren"
+msgstr "Bitte die unten aufgeführten Fehler korrigieren."
 
 #: devday/templates/devday_index.html:25
 msgid "Sign up now - Be part of it!"
@@ -386,7 +394,7 @@ msgstr "Passwortrücksetzung auf %(site_name)s"
 #: devday/templates/django_registration/registration_closed.html:3
 #: devday/templates/django_registration/registration_closed.html:5
 msgid "Registration closed"
-msgstr "Anmeldung geschlossen"
+msgstr "Registrierung geschlossen"
 
 #: devday/templates/django_registration/registration_closed.html:6
 msgid ""

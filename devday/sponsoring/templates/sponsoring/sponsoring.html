@@ -1,0 +1,47 @@
+{% extends "devday_site.html" %}
+{% load crispy_forms_tags i18n cms_tags %}
+{% block content_body %}
+    <div class="content-area">
+        <div class="row">
+            <div class="offset-lg-2 col-lg-8 col-12">
+                {% static_placeholder "sponsoring-intro-text" or %}
+                    <h1>{% trans "Sponsoring Options" %}</h1>
+                    <p>{% trans "Please have a look at the following list of sponsoring options." %}</p>
+                {% endstatic_placeholder %}
+            </div>
+            <div class="col-12">
+                {% if packages %}
+                    <div class="card-deck sponsor-deck mb-3 text-center">
+                    {% for package in packages %}
+                        <div class="card mb-4 box-shadow">
+                            <div class="card-header {{ package.css_class }}">
+                                <h4 class="my-0 font-weight-normal">{{ package.name }}</h4>
+                                <h1 class="card-title pricing-card-title">{{ package.pricing }}</h1>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mt-0 mb-0">
+                                    {% for headline_item in package.package_items %}
+                                        <li><span
+                                                class="list-header">{{ headline_item.name }}</span>
+                                            {% if headline_item.package_items %}
+                                                <ul>
+                                                    {% for subitem in headline_item.package_items %}
+                                                        <li>{{ subitem.name }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    {% trans "There are no sponsoring packages defined yet." %}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr>
+        {% crispy form %}
+{% endblock %}

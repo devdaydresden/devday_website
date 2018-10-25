@@ -181,6 +181,7 @@ INSTALLED_APPS = [
     'event.apps.EventsConfig',
     'attendee.apps.AttendeeConfig',
     'talk.apps.SessionsConfig',
+    'sponsoring',
     'cms',
     'menus',
     'sekizai',
@@ -232,6 +233,8 @@ ROOT_URLCONF = 'devday.urls'
 SECRET_KEY = get_vault_variable('secret_key')
 
 SPONSORING_OPEN = get_variable_cascade('sponsoring_open', bool, False)
+SPONSORING_FROM_EMAIL = 'info@devday.de'
+SPONSORING_RECIPIENTS = ['info@devday.de']
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

@@ -1,0 +1,177 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-24 20:46+0000\n"
+"PO-Revision-Date: 2018-10-24 22:47+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#: sponsoring/apps.py:7 sponsoring/tests/test_appconfig.py:10
+msgid "Sponsor Management"
+msgstr "Sponsorenverwaltung"
+
+#: sponsoring/cms_apps.py:8
+msgid "Sponsoring"
+msgstr "Sponsoring"
+
+#: sponsoring/forms.py:10
+msgid "Your organization"
+msgstr "Deine Organisation"
+
+#: sponsoring/forms.py:11
+msgid "Contact email address"
+msgstr "Kontaktemailadresse"
+
+#: sponsoring/forms.py:13
+msgid "Your request"
+msgstr "Deine Anfrage"
+
+#: sponsoring/forms.py:15
+msgid "Interested in sponsoring packages"
+msgstr "Interessiert an folgenden Sponsoringpaketen"
+
+#: sponsoring/forms.py:26
+msgid "Custom"
+msgstr "Sonstiges"
+
+#: sponsoring/forms.py:40
+msgid "Sponsoring request"
+msgstr "Sponsoringanfrage"
+
+#: sponsoring/forms.py:76
+msgid "Send sponsoring request"
+msgstr "Sponsoringanfrage senden"
+
+#: sponsoring/models.py:8
+msgid "Gold"
+msgstr "Gold"
+
+#: sponsoring/models.py:9
+msgid "Silver"
+msgstr "Silber"
+
+#: sponsoring/models.py:10
+msgid "Bronze"
+msgstr "Bronze"
+
+#: sponsoring/models.py:21
+msgid "Event"
+msgstr "Veranstaltung"
+
+#: sponsoring/models.py:23 sponsoring/models.py:41
+msgid "Package"
+msgstr "Paket"
+
+#: sponsoring/models.py:24
+msgid "Price"
+msgstr "Preis"
+
+#: sponsoring/models.py:27
+msgid "Sponsoring Package"
+msgstr "Sponsoringpaket"
+
+#: sponsoring/models.py:28
+msgid "Sponsoring Packages"
+msgstr "Sponsoringpakete"
+
+#: sponsoring/models.py:43
+msgid "Name"
+msgstr "Name"
+
+#: sponsoring/models.py:44
+msgid "Description"
+msgstr "Beschreibung"
+
+#: sponsoring/models.py:45
+msgid "Header"
+msgstr "Überschrift"
+
+#: sponsoring/models.py:50
+msgid "Sponsoring Package Item"
+msgstr "Sponsoringpaketbestandteil"
+
+#: sponsoring/models.py:51
+msgid "Sponsoring Package Items"
+msgstr "Sponsoringpaketbestandteile"
+
+#: sponsoring/templates/sponsoring/sponsoring.html:8
+msgid "Sponsoring Options"
+msgstr "Sponsoringmöglichkeiten"
+
+#: sponsoring/templates/sponsoring/sponsoring.html:9
+msgid "Please have a look at the following list of sponsoring options."
+msgstr "Schau dir die folgende Liste von Sponsoringmöglichkeiten an."
+
+#: sponsoring/templates/sponsoring/sponsoring.html:40
+msgid "There are no sponsoring packages defined yet."
+msgstr "Es wurden noch keine Sponsoringpakete definiert."
+
+#: sponsoring/templates/sponsoring/sponsoring_request_mail_body.txt:1
+#, python-format
+msgid ""
+"Hello Sponsoring Team,\n"
+"\n"
+"the following sponsoring request for %(event)s has been sent from the "
+"Website.\n"
+"\n"
+"%(organization)s wrote the following request:\n"
+msgstr ""
+"Hallo Sponsoring-Team,\n"
+"\n"
+"die folgende Sponsoringanfrage für %(event)s wurde von der Website "
+"gesendet.\n"
+"\n"
+"%(organization)s schrieb die folgende Anfrage:\n"
+
+#: sponsoring/templates/sponsoring/sponsoring_request_mail_body.txt:10
+msgid "The requester is interested in the following sponsoring oportunity:"
+msgid_plural ""
+"The requester is interested in the following sponsoring oportunities:"
+msgstr[0] ""
+"Der Anfragende ist an der folgenden Sponsoringmöglichkeit interessiert:"
+msgstr[1] ""
+"Der Anfragende ist an folgenden Sponsoringmöglichkeiten interessiert:"
+
+#: sponsoring/templates/sponsoring/sponsoring_request_mail_body.txt:14
+#, python-format
+msgid ""
+"\n"
+"Sent from %(scheme)s://%(domain)s%(path)s\n"
+"Remote %(remote)s\n"
+"Host %(host)s"
+msgstr ""
+"\n"
+"Gesendet von %(scheme)s://%(domain)s%(path)s\n"
+"Remote %(remote)s\n"
+"Host %(host)s"
+
+#: sponsoring/templates/sponsoring/sponsoring_request_mail_subject.txt:1
+#, python-format
+msgid "Sponsoring request for %(event)s from %(organization)s"
+msgstr "Sponsoringanfrage für %(event)s von %(organization)s"
+
+#: sponsoring/templates/sponsoring/sponsoring_thanks.html:7
+msgid "Thank you"
+msgstr "Danke"
+
+#: sponsoring/templates/sponsoring/sponsoring_thanks.html:9
+msgid "Thank you for your sponsoring request. We will contact you."
+msgstr ""
+"Danke für deine Sponsoringanfrage. Wir werden Kontakt mit dir aufnehmen."
+
+#: sponsoring/templates/sponsoring/sponsoring_thanks.html:10
+#, python-format
+msgid "Back to <a href=\"%(index_url)s\">the Homepage</a>."
+msgstr "Zurück <a href=\"%(index_url)s\">zur Startseite</a>."

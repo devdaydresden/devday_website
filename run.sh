@@ -27,6 +27,7 @@ usage: ./run.sh backup
        ./run.sh coveralls
        ./run.sh devdata
        ./run.sh manage [...]
+       ./run.sh messages
        ./run.sh purge
        ./run.sh -d databasedump.sql.gz -m mediadump.tar.gz restore
        ./run.sh [-c container] shell
@@ -122,6 +123,10 @@ case "$cmd" in
     ;;
   manage)
     $DOCKER_COMPOSE exec "${container}" python manage.py $@
+    ;;
+  messages)
+    $DOCKER_COMPOSE exec "${container}" python manage.py makemessages -l de --no-obsolete
+    $DOCKER_COMPOSE exec "${container}" python manage.py compilemessages -l de
     ;;
   purge)
     echo "*** Purge data"

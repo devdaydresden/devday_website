@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-25 14:40+0000\n"
+"POT-Creation-Date: 2018-10-25 16:37+0000\n"
 "PO-Revision-Date: 2018-10-25 16:47+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -19,47 +19,47 @@ msgstr ""
 "X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: devday/cms_menus.py:84
+#: devday/cms_menus.py:86
 msgid "Register now for {}"
 msgstr "Jetzt registrieren für {}"
 
-#: devday/cms_menus.py:90
+#: devday/cms_menus.py:92
 msgid "Submit session for {}"
 msgstr "Session einreichen für {}"
 
-#: devday/cms_menus.py:96
+#: devday/cms_menus.py:98
 msgid "Sessions"
 msgstr "Sessions"
 
-#: devday/cms_menus.py:100
+#: devday/cms_menus.py:102
 msgid "Archive"
 msgstr "Archiv"
 
-#: devday/cms_menus.py:114
+#: devday/cms_menus.py:116
 msgid "Login"
 msgstr "Login"
 
-#: devday/cms_menus.py:119
+#: devday/cms_menus.py:121
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/cms_menus.py:126
+#: devday/cms_menus.py:128
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: devday/cms_menus.py:129
+#: devday/cms_menus.py:132
 msgid "Checkin QR Code"
 msgstr "QR-Code für Checkin"
 
-#: devday/cms_menus.py:135
+#: devday/cms_menus.py:138
 msgid "Speaker Profile"
 msgstr "Sprecher-Profil"
 
-#: devday/cms_menus.py:141
+#: devday/cms_menus.py:144
 msgid "Program Committee"
 msgstr "Programmkomittee"
 
-#: devday/cms_menus.py:145
+#: devday/cms_menus.py:148
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -461,9 +461,3 @@ msgstr "Email erfolgreich an {} {} versendet"
 #: devday/views.py:159
 msgid "Successfully sent message for {} to yourself"
 msgstr "Test-Email für {} erfolgreich an dich selbst gesendet"
-
-#~ msgid "Session selection"
-#~ msgstr "Session-Auswahl"
-
-#~ msgid "Dev Day"
-#~ msgstr "Dev Day"

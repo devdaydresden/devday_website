@@ -5,7 +5,7 @@ from cms.toolbar_base import CMSToolbar
 from cms.cms_toolbars import ADMIN_MENU_IDENTIFIER, ADMINISTRATION_BREAK
 
 
-class DevDayToolbar(CMSToolbar):
+class DevDayToolbarBase(CMSToolbar):
     DEVDAY_BREAK = 'devday-break'
 
     def position_in_admin_section(self, name):

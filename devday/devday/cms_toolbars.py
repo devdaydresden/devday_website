@@ -2,11 +2,11 @@ from cms.toolbar_pool import toolbar_pool
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from devday.utils.devday_toolbar import DevDayToolbar
+from devday.utils.devday_toolbar import DevDayToolbarBase
 
 
 @toolbar_pool.register
-class DevDayToolbar(DevDayToolbar):
+class DevDayToolbar(DevDayToolbarBase):
     def populate(self):
         super().populate()
 

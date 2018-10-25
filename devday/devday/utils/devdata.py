@@ -4,6 +4,7 @@
 import errno
 import os
 import random
+import re
 import sys
 from datetime import timedelta
 from os import makedirs
@@ -325,10 +326,9 @@ tiefer in ein Thema einsteigen.</p>
                 i, '{}{}'.format(first_name, last_name).lower(),
                 '{} {}'.format(first_name, last_name))
 
-    def choose_full_name(self):
-        for first in FIRST_NAMES:  # pragma: no branch
-            for last in LAST_NAMES:
-                yield '{0} {1}'.format(first, last)
+    def get_name_from_email(self, email):
+        m = re.match(r'^([^.]+)\.([^@]+)@.*$', email)
+        return '{} {}'.format(m.group(1).capitalize(), m.group(2).capitalize())
 
     def create_attendees(self, amount=sys.maxsize, events=None):
         if events is None:  # pragma: no branch
@@ -344,7 +344,7 @@ tiefer in ein Thema einsteigen.</p>
         result = "The first couple of speakers:\n"
         speakers = Speaker.objects.all().order_by('name')
         for speaker in Paginator(speakers, 10).page(1).object_list:
-            result += "    {} {}\n".format(speaker.name, speaker.user.email)
+            result += "    {} <{}>\n".format(speaker.name, speaker.user.email)
         return result
 
     def create_speakers(self, events=None):
@@ -353,7 +353,8 @@ tiefer in ein Thema einsteigen.</p>
         number_of_speakers = len(events) * self.SPEAKERS_PER_EVENT
         # speakers can come from the whole user population and do not need
         # to be attendees anymore
-        users = self.rng.sample(list(User.objects.all()), number_of_speakers)
+        users = self.rng.sample(list(User.objects.all())[1:],
+                                number_of_speakers)
         self.write_action(
             'creating {} speakers for each of the {} events'.format(
                 self.SPEAKERS_PER_EVENT, len(events)))
@@ -365,12 +366,11 @@ tiefer in ein Thema einsteigen.</p>
                     raise
             copyfile(self.speaker_placeholder_source_path,
                      self.speaker_portrait_path)
-        full_name_gen = self.choose_full_name()
         for user in users:
             if not Speaker.objects.filter(  # pragma: no branch
                     user=user).exists():
                 speaker = Speaker(
-                    name=next(full_name_gen),
+                    name=self.get_name_from_email(user.email),
                     user=user, video_permission=True, shirt_size=3,
                     short_biography='My short bio')
                 # https://stackoverflow.com/a/5256094

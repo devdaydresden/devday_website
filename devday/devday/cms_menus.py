@@ -69,8 +69,10 @@ class DevDayModifier(Modifier):
 
 
 # It appears Django CMS has no easy way to add menu items in an ordered
-# way when using multiple register_menu classes.  To get the desired order,
-# this class contains all the menus across all applications.
+# way when using multiple register_menu classes.  It appears they are
+# processed in the order the applications are listed in
+# settings.INSTALLED_APPS.  To get the desired order, this class contains
+# all the menus across all applications.
 
 @menu_pool.register_menu
 class DevDayMenu(Menu):

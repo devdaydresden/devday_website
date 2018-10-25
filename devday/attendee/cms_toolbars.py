@@ -3,11 +3,11 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 from .models import Event
-from devday.utils.devday_toolbar import DevDayToolbar
+from devday.utils.devday_toolbar import DevDayToolbarBase
 
 
 @toolbar_pool.register
-class CheckinToolbar(DevDayToolbar):
+class CheckinToolbar(DevDayToolbarBase):
     def populate(self):
         super().populate()
         event = Event.objects.current_event()

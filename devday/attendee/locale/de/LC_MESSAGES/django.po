@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-20 08:35+0000\n"
-"PO-Revision-Date: 2018-10-20 10:35+0200\n"
+"POT-Creation-Date: 2018-10-25 14:40+0000\n"
+"PO-Revision-Date: 2018-10-25 11:50+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: attendee/admin.py:34
@@ -25,13 +25,13 @@ msgstr "Berechtigungen"
 
 #: attendee/admin.py:36
 msgid "Important dates"
-msgstr "Wichtige Daten/Uhrzeiten"
+msgstr "Wichtige Termine"
 
 #: attendee/apps.py:7 attendee/tests/test_appconfig.py:10
 msgid "Attendee management"
 msgstr "Teilnehmerverwaltung"
 
-#: attendee/cms_menus.py:16
+#: attendee/cms_toolbars.py:16
 msgid "Check in"
 msgstr "Einchecken"
 
@@ -48,8 +48,8 @@ msgstr ""
 "GmbH Software Engineering Community per E-Mail erhalten."
 
 #: attendee/forms.py:100
-msgid "Contact permission granted at"
-msgstr "Kontaktaufnahme erteilt am"
+msgid "Contact permission granted on"
+msgstr "Erlaubnis zur Kontaktaufnahme erteilt am"
 
 #: attendee/forms.py:116
 msgid "Delete your account"
@@ -259,11 +259,11 @@ msgstr "Du bist jetzt für die Veranstaltung &quot;%(event)s&quot; angemeldet."
 #: attendee/templates/attendee/attendee_register_success.html:10
 #, python-format
 msgid ""
-"Visit <a href=\"%(user_profile)s\">your user profile</a>. To see review your "
-"registrations."
+"Visit <a href=\"%(user_profile)s\">your user profile</a> to review your "
+"registration."
 msgstr ""
 "Besuche dein <a href=\"%(user_profile)s\">Benutzerprofil</a>, um deine "
-"Anmeldungen zu prüfen."
+"Anmeldung zu prüfen."
 
 #: attendee/templates/attendee/checkin_qrcode_include.html:5
 #, python-format
@@ -281,14 +281,6 @@ msgstr "QR-Code funktioniert nicht?"
 #: attendee/templates/attendee/checkin_result.html:23
 msgid "Go to manual check in"
 msgstr "Zum manuellen Checkin"
-
-#: attendee/templates/attendee/cms_menus.py:12
-msgid "Archive"
-msgstr "Archiv"
-
-#: attendee/templates/attendee/cms_menus.py:30
-msgid "Sessions"
-msgstr "Sessions"
 
 #: attendee/templates/attendee/devdayuser_activation_email_body.txt:1
 msgid ""
@@ -361,8 +353,9 @@ msgid "Register"
 msgstr "Anmelden"
 
 #: attendee/templates/attendee/login_or_register.html:26
-msgid "Have you ever attended Dev Day? Use your old credentials!"
-msgstr "Du warst schon mal beim Dev Day? Dann nutze deine alten Anmeldedaten!"
+msgid "Did you attend Dev Day last year? Use your existing credentials!"
+msgstr ""
+"Du warst schon mal beim Dev Day? Dann nutze deine vorhandenen Anmeldedaten!"
 
 #: attendee/templates/attendee/login_or_register.html:28
 msgid "Forgotten password?"

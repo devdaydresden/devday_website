@@ -4,6 +4,7 @@
 import errno
 import os
 import random
+import re
 import sys
 from datetime import timedelta
 from os import makedirs
@@ -26,6 +27,8 @@ from django.core.management.base import OutputWrapper
 from django.core.management.color import no_style
 from django.core.paginator import Paginator
 from django.utils import timezone
+
+from talk import COMMITTEE_GROUP
 
 from attendee.models import Attendee
 from devday.utils.words import Words
@@ -101,7 +104,7 @@ class DevData:
             self.write_ok()
             if r:
                 self.stdout.write(r, ending='')
-        except Exception:
+        except Exception:  # pragma: no cover
             self.write_error()
             raise
 
@@ -203,7 +206,7 @@ tiefer in ein Thema einsteigen.</p>
                 ph = sph.draft
                 np = CMSPlugin.objects.filter(placeholder=ph,
                                               language=lang).count()
-                if np >= 1:
+                if np >= 1:  # pragma: no branch
                     self.stdout.write('OK', style_func=self.style.SUCCESS)
                     return
             except ObjectDoesNotExist:
@@ -221,8 +224,9 @@ tiefer in ein Thema einsteigen.</p>
                 text = ''
                 for i in range(paras):
                     text += "<p>{}</p>\n".format(lorem.paragraph())
-            if title:
-                text = "<h1>{}</h1>\n{}".format(title, text)
+            if not title:
+                title = name
+            text = "<h1>{}</h1>\n{}".format(title, text)
             p = api.add_plugin(ph, 'TextPlugin', lang, body=text)
             p.save()
             sph.publish(None, lang, True)
@@ -235,7 +239,8 @@ tiefer in ein Thema einsteigen.</p>
         self.stdout.write("Update static placeholders")
         self.create_static_placeholder_text(
             u'checkin-instructions',
-            title='Check attendee in manually')
+            title='Check attendee in manually',
+            text='A small set of instructions on how to check in an attendee.')
         # find devday -name "*.html" | xargs grep static_placeholder \
         # | sed -nEe 's#^.*static_placeholder "([^"]*)".*$#\1#p' | sort -u
         for placeholder in (
@@ -287,14 +292,14 @@ tiefer in ein Thema einsteigen.</p>
 
     def get_committee_members(self):
         r = "Program committee users:\n"
-        for u in User.objects.filter(groups__name='talk_committee') \
+        for u in User.objects.filter(groups__name=COMMITTEE_GROUP) \
                 .order_by('email'):
             r += "    {}\n".format(u.email)
         return r
 
     def create_users_and_attendees(self, amount=sys.maxsize, events=None):
-        if not events:
-            events = Event.objects.all()
+        if not events:  # pragma: no branch
+            events = Event.objects.all()  # pragma: no cover
         length = len(FIRST_NAMES) * len(LAST_NAMES)
         if length > amount:
             length = amount
@@ -321,16 +326,15 @@ tiefer in ein Thema einsteigen.</p>
                 i, '{}{}'.format(first_name, last_name).lower(),
                 '{} {}'.format(first_name, last_name))
 
-    def choose_full_name(self):
-        for first in FIRST_NAMES:
-            for last in LAST_NAMES:
-                yield '{0} {1}'.format(first, last)
+    def get_name_from_email(self, email):
+        m = re.match(r'^([^.]+)\.([^@]+)@.*$', email)
+        return '{} {}'.format(m.group(1).capitalize(), m.group(2).capitalize())
 
     def create_attendees(self, amount=sys.maxsize, events=None):
-        if events is None:
+        if events is None:  # pragma: no branch
             events = Event.objects.all()
         self.create_users_and_attendees(amount=amount, events=events)
-        committee_group = Group.objects.get(name='talk_committee')
+        committee_group = Group.objects.get(name=COMMITTEE_GROUP)
         for user in self.rng.sample(list(User.objects.all()), 7):
             user.groups.add(committee_group)
             user.save()
@@ -340,7 +344,7 @@ tiefer in ein Thema einsteigen.</p>
         result = "The first couple of speakers:\n"
         speakers = Speaker.objects.all().order_by('name')
         for speaker in Paginator(speakers, 10).page(1).object_list:
-            result += "    {} {}\n".format(speaker.name, speaker.user.email)
+            result += "    {} <{}>\n".format(speaker.name, speaker.user.email)
         return result
 
     def create_speakers(self, events=None):
@@ -349,11 +353,12 @@ tiefer in ein Thema einsteigen.</p>
         number_of_speakers = len(events) * self.SPEAKERS_PER_EVENT
         # speakers can come from the whole user population and do not need
         # to be attendees anymore
-        users = self.rng.sample(list(User.objects.all()), number_of_speakers)
+        users = self.rng.sample(list(User.objects.all())[1:],
+                                number_of_speakers)
         self.write_action(
             'creating {} speakers for each of the {} events'.format(
                 self.SPEAKERS_PER_EVENT, len(events)))
-        if not isfile(self.speaker_portrait_path):
+        if not isfile(self.speaker_portrait_path):  # pragma: no cover
             try:
                 makedirs(self.speaker_portrait_dir)
             except OSError as e:  # pragma: no cover
@@ -361,11 +366,11 @@ tiefer in ein Thema einsteigen.</p>
                     raise
             copyfile(self.speaker_placeholder_source_path,
                      self.speaker_portrait_path)
-        full_name_gen = self.choose_full_name()
         for user in users:
-            if not Speaker.objects.filter(user=user).exists():
+            if not Speaker.objects.filter(  # pragma: no branch
+                    user=user).exists():
                 speaker = Speaker(
-                    name=next(full_name_gen),
+                    name=self.get_name_from_email(user.email),
                     user=user, video_permission=True, shirt_size=3,
                     short_biography='My short bio')
                 # https://stackoverflow.com/a/5256094
@@ -405,9 +410,9 @@ tiefer in ein Thema einsteigen.</p>
                     self.create_talk(speaker, formats, event)
 
     def vote_for_talk(self, events=None):
-        if events is None:
+        if events is None:  # pragma: no branch
             events = (Event.objects.current_event(),)
-        committee = User.objects.filter(groups__name='talk_committee')
+        committee = User.objects.filter(groups__name=COMMITTEE_GROUP)
         for event in events:
             for talk in Talk.objects.filter(event=event):
                 for user in committee:

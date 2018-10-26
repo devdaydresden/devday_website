@@ -1,6 +1,7 @@
 from django.apps import apps, AppConfig
 from django.db.models.signals import post_migrate
 
+from talk import COMMITTEE_GROUP
 
 class SessionsConfig(AppConfig):
     name = 'talk'
@@ -13,7 +14,7 @@ def create_talk_committee(**kwargs):
     Group = apps.get_model('auth', 'Group')
     Permission = apps.get_model('auth', 'Permission')
 
-    group, created = Group.objects.get_or_create(name='talk_committee')
+    group, created = Group.objects.get_or_create(name=COMMITTEE_GROUP)
 
     can_vote = Permission.objects.get(
         content_type__app_label='talk', codename='add_vote')

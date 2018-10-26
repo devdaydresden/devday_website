@@ -97,7 +97,7 @@ class AttendeeProfileForm(ModelForm):
             'date_joined'
         ]
         labels = {
-            'contact_permission_date': _('Contact permission granted at'),
+            'contact_permission_date': _('Contact permission granted on'),
         }
 
     def __init__(self, *args, **kwargs):

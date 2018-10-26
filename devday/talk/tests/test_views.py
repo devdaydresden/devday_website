@@ -11,6 +11,7 @@ from devday.utils.devdata import DevData
 from event.models import Event
 from event.tests import event_testutils
 from speaker.tests import speaker_testutils
+from talk import COMMITTEE_GROUP
 from talk.forms import (TalkCommentForm,
                         EditTalkForm, TalkSpeakerCommentForm)
 from talk.models import Talk, TalkFormat, TalkComment, Vote, Track, TalkMedia
@@ -30,7 +31,7 @@ class LoginTestMixin(object):
 
     def login_committee_member(self, email='committee@example.org'):
         user, password = attendee_testutils.create_test_user(email)
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.client.login(email=email, password=password)
         return user
 
@@ -258,7 +259,7 @@ class TestCommitteeTalkDetails(TestCase):
     def test_template(self):
         committee_email = 'committee@example.org'
         user, password = attendee_testutils.create_test_user(committee_email)
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.client.login(email=committee_email, password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
@@ -267,7 +268,7 @@ class TestCommitteeTalkDetails(TestCase):
     def test_get_queryset(self):
         committee_email = 'committee@example.org'
         user, password = attendee_testutils.create_test_user(committee_email)
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.client.login(email=committee_email, password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
@@ -277,7 +278,7 @@ class TestCommitteeTalkDetails(TestCase):
     def test_get_context_data_unvoted(self):
         committee_email = 'committee@example.org'
         user, password = attendee_testutils.create_test_user(committee_email)
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.client.login(email=committee_email, password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
@@ -290,7 +291,7 @@ class TestCommitteeTalkDetails(TestCase):
     def test_get_context_data_voted(self):
         committee_email = 'committee@example.org'
         user, password = attendee_testutils.create_test_user(committee_email)
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.talk.vote_set.create(voter=user, score=3)
         self.client.login(email=committee_email, password=password)
         response = self.client.get(self.url)
@@ -329,7 +330,7 @@ class TestSubmitTalkComment(TestCase):
     def test_needs_post(self):
         committee_email = 'committee@example.org'
         user, password = attendee_testutils.create_test_user(committee_email)
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.client.login(email=committee_email, password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 405)
@@ -337,7 +338,7 @@ class TestSubmitTalkComment(TestCase):
     def test_form_invalid_sets_message(self):
         committee_email = 'committee@example.org'
         user, password = attendee_testutils.create_test_user(committee_email)
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.client.login(email=committee_email, password=password)
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 302)
@@ -354,7 +355,7 @@ class TestSubmitTalkComment(TestCase):
     def test_form_valid_redirects_to_talk_details(self):
         committee_email = 'committee@example.org'
         user, password = attendee_testutils.create_test_user(committee_email)
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.client.login(email=committee_email, password=password)
         response = self.client.post(
             self.url, data={'comment': 'A little comment for yo'})
@@ -372,7 +373,7 @@ class TestSubmitTalkComment(TestCase):
     def test_visible_comment_triggers_mail_to_speaker(self):
         committee_email = 'committee@example.org'
         user, password = attendee_testutils.create_test_user(committee_email)
-        user.groups.add(Group.objects.get(name='talk_committee'))
+        user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.client.login(email=committee_email, password=password)
         response = self.client.post(self.url, data={
             'comment': 'A little comment for yo',
@@ -508,7 +509,7 @@ class TestTalkCommentDelete(LoginTestMixin, TestCase):
         self.talk = Talk.objects.create(draft_speaker=speaker, event=self.event)
         self.user, self.password = attendee_testutils.create_test_user(
             'committee@example.org')
-        self.user.groups.add(Group.objects.get(name='talk_committee'))
+        self.user.groups.add(Group.objects.get(name=COMMITTEE_GROUP))
         self.talk_comment = self.talk.talkcomment_set.create(
             commenter=self.user, comment='A little annoying comment',
             is_visible=False)
@@ -564,7 +565,7 @@ class TestSpeakerTalkDetails(LoginTestMixin, TestCase):
         self.committee_member, _ = attendee_testutils.create_test_user(
             email='committee@example.org')
         self.committee_member.groups.add(
-            Group.objects.get(name='talk_committee'))
+            Group.objects.get(name=COMMITTEE_GROUP))
         self.comment = self.talk.talkcomment_set.create(
             commenter=self.committee_member,
             comment='Is this really important?', is_visible=True)

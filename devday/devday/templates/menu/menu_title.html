@@ -1,0 +1,6 @@
+{% load menu_tags %}
+{% if 'icon' in child.attr %}
+<i class="fas {{ child.attr.icon }}" aria-label="{{ child.get_menu_title }}"></i>
+{% else %}
+{{ child.get_menu_title }}
+{% endif %}

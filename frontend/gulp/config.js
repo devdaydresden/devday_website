@@ -39,6 +39,7 @@ module.exports = {
         allsrc: [
                 srcDir + '/scss/*.scss',
                 srcDir + '/scss/components/*.scss',
+                nodemodules + '@fortawesome/fontawesome-free/scss/*.scss'
         ],
         dest: assets + '/css',
         options: {
@@ -121,7 +122,8 @@ module.exports = {
 
     fonts: {
         src:  [
-            srcDir + '/assets/fonts/**/*'
+            srcDir + '/assets/fonts/**/*',
+            nodemodules + '/@fortawesome/fontawesome-free/webfonts/*'
         ],
         dest: assets + '/fonts/'
     },

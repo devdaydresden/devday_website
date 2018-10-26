@@ -16,24 +16,6 @@ def get_register_menu(register_menu, request):
         return menu_pool.menus[register_menu](renderer)
 
 
-class EventArchiveMenuTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.devdata = DevData()
-        cls.devdata.create_admin_user()
-        cls.devdata.create_pages()
-        cls.devdata.update_events()
-
-    def test_menu(self):
-        request = RequestFactory().get('/')
-        menu = get_register_menu('EventArchiveMenu', request)
-        entries = menu.get_nodes(request)
-        self.assertEquals(
-            len(entries), 1, 'should have one entry')
-        self.assertEquals(
-            len(entries[0].children), 2, 'should have two children')
-
-
 class EventSessionMenuTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -41,12 +23,13 @@ class EventSessionMenuTest(TestCase):
         cls.devdata.create_admin_user()
         cls.devdata.create_pages()
         cls.devdata.update_events()
+        cls.menu = 'DevDayMenu'
 
     def test_menu(self):
         request = RequestFactory().get('/')
-        menu = get_register_menu('EventSessionMenu', request)
+        menu = get_register_menu(self.menu, request)
         entries = menu.get_nodes(request)
-        self.assertEquals(len(entries), 1, 'should have one entry')
+        self.assertEquals(len(entries), 6, 'should have one entry')
         self.assertEquals(
             len(entries[0].children), 0, 'should have no children')
 
@@ -55,6 +38,6 @@ class EventSessionMenuTest(TestCase):
             event.published = False
             event.save()
         request = RequestFactory().get('/')
-        menu = get_register_menu('EventSessionMenu', request)
+        menu = get_register_menu(self.menu, request)
         entries = menu.get_nodes(request)
-        self.assertEquals(len(entries), 0, 'should have one entry')
+        self.assertEquals(len(entries), 3, 'should have three entries')

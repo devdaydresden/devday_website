@@ -44,9 +44,8 @@ urlpatterns = [
 ]
 
 # This is only needed when using runserver.
-if settings.DEBUG:  # pragma: nocover
+if settings.DEBUG:  # pragma: no cover
     import debug_toolbar
-
     urlpatterns = [
                       url(r'^__debug__/', include(debug_toolbar.urls)),
                       url(r'^media/(?P<path>.*)$', serve_static,

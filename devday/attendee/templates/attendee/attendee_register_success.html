@@ -7,7 +7,7 @@
             <h1>{% trans "Attendee registration successful" %}</h1>
             <p>{% blocktrans with event=event.title %}You are now registered for the event &quot;{{ event }}&quot;.{% endblocktrans %}</p>
             {% static_placeholder "register-success" %}
-            <p>{% url 'user_profile' as user_profile %}{% blocktrans %}Visit <a href="{{ user_profile }}">your user profile</a>. To see review your registrations.{% endblocktrans %}</p>
+            <p>{% url 'user_profile' as user_profile %}{% blocktrans %}Visit <a href="{{ user_profile }}">your user profile</a> to review your registration.{% endblocktrans %}</p>
         </div>
     </div>
 {% endblock %}

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 17:26+0000\n"
-"PO-Revision-Date: 2018-09-29 18:01+0200\n"
+"POT-Creation-Date: 2018-10-25 16:37+0000\n"
+"PO-Revision-Date: 2018-10-25 11:55+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: jan.dittberner@t-systems.com\n"
 "Language: de\n"
@@ -16,73 +16,65 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: event/apps.py:7 event/models.py:69
+#: event/apps.py:7 event/models.py:68
 msgid "Events"
 msgstr "Veranstaltungen"
 
-#: event/cms_menus.py:12
-msgid "Archive"
-msgstr "Archiv"
-
-#: event/cms_menus.py:30
-msgid "Sessions"
-msgstr "Sessions"
-
-#: event/models.py:45
+#: event/models.py:44
 msgid "Event title"
 msgstr "Veranstaltungsname"
 
-#: event/models.py:47
+#: event/models.py:46
 msgid "Short name for URLs"
 msgstr "Kurzname für URLs"
 
-#: event/models.py:48
+#: event/models.py:47
 msgid "Description"
 msgstr "Beschreibung"
 
-#: event/models.py:49
+#: event/models.py:48
 msgid "Location"
 msgstr "Veranstaltungsort"
 
-#: event/models.py:51
+#: event/models.py:50
 msgid "Full day event"
-msgstr "Ganztagsveranstaltung"
+msgstr "Ganztägige Veranstaltung"
 
-#: event/models.py:52
+#: event/models.py:51
 msgid "Start time"
 msgstr "Beginn"
 
-#: event/models.py:53
+#: event/models.py:52
 msgid "End time"
 msgstr "Ende"
 
-#: event/models.py:55
+#: event/models.py:54
 msgid "Published"
 msgstr "Publiziert"
 
-#: event/models.py:57
+#: event/models.py:56
 msgid "Registration Open"
 msgstr "Anmeldungen offen"
 
-#: event/models.py:59
+#: event/models.py:58
 msgid "Submission Open"
 msgstr "Einreichen offen"
 
-#: event/models.py:61
+#: event/models.py:60
 msgid "Grid Published"
 msgstr "Sessions veröffentlicht"
 
-#: event/models.py:63
+#: event/models.py:62
 msgid "Talk Formats"
 msgstr "Session-Formate"
 
-#: event/models.py:68
+#: event/models.py:67
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: event/models.py:76
+#: event/models.py:75
 msgid "Registration Count"
 msgstr "Anmeldungen"

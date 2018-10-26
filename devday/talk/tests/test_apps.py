@@ -1,13 +1,14 @@
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 
+from talk import COMMITTEE_GROUP
 from talk.apps import create_talk_committee
 
 
 class AppsTest(TestCase):
     def test_create_talk_committee(self):
         create_talk_committee()
-        group = Group.objects.get(name='talk_committee')
+        group = Group.objects.get(name=COMMITTEE_GROUP)
         can_vote = Permission.objects.get(
             content_type__app_label='talk', codename='add_vote')
         can_comment = Permission.objects.get(

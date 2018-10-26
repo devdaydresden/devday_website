@@ -119,6 +119,10 @@ For development and maintenance tasks, run the Django Admin command inside the a
 $ ./run.sh manage migrate
 ```
 
+### `messages`: Update transation message catalogs
+
+This will run `makemessages` and `compilemessages` with the appropriate options.
+
 ### `restore`: Start the development environment and import a database dump.
 
 Any preexisting volumes will be deleted first

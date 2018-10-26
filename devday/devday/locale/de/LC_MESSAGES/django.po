@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-24 11:18+0000\n"
-"PO-Revision-Date: 2018-10-20 10:36+0200\n"
+"POT-Creation-Date: 2018-10-25 16:37+0000\n"
+"PO-Revision-Date: 2018-10-25 16:47+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,26 +16,70 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: devday/cms_toolbars.py:10
-msgid "Dev Day"
-msgstr "Dev Day"
+#: devday/cms_menus.py:86
+msgid "Register now for {}"
+msgstr "Jetzt registrieren für {}"
 
-#: devday/cms_toolbars.py:12
+#: devday/cms_menus.py:92
+msgid "Submit session for {}"
+msgstr "Session einreichen für {}"
+
+#: devday/cms_menus.py:98
+msgid "Sessions"
+msgstr "Sessions"
+
+#: devday/cms_menus.py:102
+msgid "Archive"
+msgstr "Archiv"
+
+#: devday/cms_menus.py:116
+msgid "Login"
+msgstr "Login"
+
+#: devday/cms_menus.py:121
+msgid "Profile"
+msgstr "Profil"
+
+#: devday/cms_menus.py:128
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: devday/cms_menus.py:132
+msgid "Checkin QR Code"
+msgstr "QR-Code für Checkin"
+
+#: devday/cms_menus.py:138
+msgid "Speaker Profile"
+msgstr "Sprecher-Profil"
+
+#: devday/cms_menus.py:144
+msgid "Program Committee"
+msgstr "Programmkomittee"
+
+#: devday/cms_menus.py:148
+msgid "Logout"
+msgstr "Abmelden"
+
+#: devday/cms_toolbars.py:14
 msgid "Send Email"
 msgstr "Email senden"
 
-#: devday/cms_toolbars.py:14 devday/templates/admin/inc/branding.html:19
+#: devday/cms_toolbars.py:17
+msgid "Reports as CSV"
+msgstr "CSV-Reports"
+
+#: devday/cms_toolbars.py:19 devday/templates/admin/inc/branding.html:19
 msgid "Inactive users"
 msgstr "Inaktive Benutzer"
 
-#: devday/cms_toolbars.py:16 devday/templates/admin/inc/branding.html:20
+#: devday/cms_toolbars.py:21 devday/templates/admin/inc/branding.html:20
 msgid "Users we may contact"
 msgstr "Benutzer, die kontaktiert werden dürfen"
 
-#: devday/cms_toolbars.py:18 devday/templates/admin/inc/branding.html:21
+#: devday/cms_toolbars.py:23 devday/templates/admin/inc/branding.html:21
 msgid "Current event attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
@@ -75,7 +119,7 @@ msgstr "Test-Email an mich selbst senden"
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
-#: devday/settings/base.py:121 devday/settings/base.py:205
+#: devday/settings/base.py:121 devday/settings/base.py:208
 msgid "de"
 msgstr "de"
 
@@ -95,7 +139,7 @@ msgstr "col-xs-12"
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/settings/base.py:206
+#: devday/settings/base.py:209
 msgid "en"
 msgstr "en"
 
@@ -132,29 +176,13 @@ msgstr "Öffne"
 msgid "my site"
 msgstr "meine Seite"
 
-#: devday/templates/base_menu.html:5
-msgid "Session selection"
-msgstr "Session-Auswahl"
-
-#: devday/templates/base_menu.html:7
-msgid "Logout"
-msgstr "Abmelden"
-
-#: devday/templates/base_menu.html:9
-msgid "Profile"
-msgstr "Profil"
-
-#: devday/templates/base_menu.html:12
-msgid "Login"
-msgstr "Login"
-
 #: devday/templates/devday/sendemail.html:34
 msgid "Please correct the error below."
-msgstr "Bitte den unten aufgeführten Fehler korrigieren"
+msgstr "Bitte den unten aufgeführten Fehler korrigieren."
 
 #: devday/templates/devday/sendemail.html:34
 msgid "Please correct the errors below."
-msgstr "Bitte die unten aufgeführten Fehler korrigieren"
+msgstr "Bitte die unten aufgeführten Fehler korrigieren."
 
 #: devday/templates/devday_index.html:25
 msgid "Sign up now - Be part of it!"
@@ -366,7 +394,7 @@ msgstr "Passwortrücksetzung auf %(site_name)s"
 #: devday/templates/django_registration/registration_closed.html:3
 #: devday/templates/django_registration/registration_closed.html:5
 msgid "Registration closed"
-msgstr "Anmeldung geschlossen"
+msgstr "Registrierung geschlossen"
 
 #: devday/templates/django_registration/registration_closed.html:6
 msgid ""

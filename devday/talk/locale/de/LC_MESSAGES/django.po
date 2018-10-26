@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-19 11:38+0000\n"
-"PO-Revision-Date: 2018-10-19 13:36+0200\n"
+"POT-Creation-Date: 2018-10-25 16:37+0000\n"
+"PO-Revision-Date: 2018-10-25 11:53+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:49 talk/models.py:33 talk/models.py:62 talk/models.py:139
-#: talk/models.py:157
+#: talk/admin.py:49 talk/models.py:33 talk/models.py:62 talk/models.py:144
+#: talk/models.py:164
 msgid "Event"
 msgstr "Veranstaltung"
 
@@ -108,7 +108,7 @@ msgstr "Session"
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:73 talk/tests/test_models.py:73
+#: talk/models.py:73 talk/tests/test_models.py:74
 msgid "A draft speaker or a published speaker is required."
 msgstr "Ein Sprecher (Entwurf) oder Sprecher (öffentlich) ist erforderlich."
 
@@ -136,35 +136,35 @@ msgstr "Sichtbar für den Sprecher"
 msgid "Indicates whether the comment is visible to the speaker."
 msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
 
-#: talk/models.py:136
+#: talk/models.py:141
 msgid "Name"
 msgstr "Name"
 
-#: talk/models.py:138
+#: talk/models.py:143
 msgid "Priority"
 msgstr "Priorität"
 
-#: talk/models.py:142
+#: talk/models.py:149
 msgid "Room"
 msgstr "Raum"
 
-#: talk/models.py:143
+#: talk/models.py:150
 msgid "Rooms"
 msgstr "Räume"
 
-#: talk/models.py:160
+#: talk/models.py:167
 msgid "Time slot"
 msgstr "Zeitslot"
 
-#: talk/models.py:161
+#: talk/models.py:168
 msgid "Time slots"
 msgstr "Zeitslots"
 
-#: talk/models.py:185
+#: talk/models.py:193
 msgid "Duration"
 msgstr "Länge"
 
-#: talk/models.py:190 talk/models.py:191
+#: talk/models.py:197 talk/models.py:198
 msgid "Talk Format"
 msgstr "Session-Format"
 
@@ -482,15 +482,15 @@ msgstr[1] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimmen)"
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
-#: talk/templates/talk/talk_details.html:28
+#: talk/templates/talk/talk_details.html:19
 msgid "Video"
 msgstr "Video"
 
-#: talk/templates/talk/talk_details.html:37
+#: talk/templates/talk/talk_details.html:28
 msgid "Slide deck"
 msgstr "Folien"
 
-#: talk/templates/talk/talk_details.html:47
+#: talk/templates/talk/talk_details.html:38
 #: talk/templates/talk/talk_videos.html:41
 msgid "Example code"
 msgstr "Beispielcode"
@@ -553,13 +553,13 @@ msgstr "Session bearbeiten"
 
 #: talk/templates/talk/talk_videos.html:3
 #, python-format
-msgid "%(event)s - Videos, Slides and Example Code"
-msgstr "%(event)s - Videos, Folien und Beispielcode"
+msgid "%(event.title)s - Videos, Slides and Example Code"
+msgstr "%(event.title)s - Videos, Folien und Beispielcode"
 
 #: talk/templates/talk/talk_videos.html:7
 #, python-format
-msgid "Videos, Slides and Example Code for %(event)s"
-msgstr "Videos,Folien und Beispielcode für %(event)s"
+msgid "Videos, Slides and Example Code for %(event.title)s"
+msgstr "Videos, Folien und Beispielcode für %(event.title)s"
 
 #: talk/templates/talk/talk_videos.html:51
 msgid "No videos, slides or example code found."
@@ -570,7 +570,7 @@ msgstr "Keine Videos, Folien oder Beispielcode gefunden."
 msgid "Videos and Slides for %(event)s have not been published yet."
 msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."
 
-#: talk/tests/test_views.py:325 talk/tests/test_views.py:407
-#: talk/tests/test_views.py:662
+#: talk/tests/test_views.py:353 talk/tests/test_views.py:435
+#: talk/tests/test_views.py:690
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."

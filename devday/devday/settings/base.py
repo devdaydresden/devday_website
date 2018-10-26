@@ -139,6 +139,8 @@ DJANGOCMS_STYLE_CHOICES = (
     ('col-xs-12', gettext('col-xs-12')),
     ('col-md-12', gettext('col-md-12')),
 )
+DJANGOCMS_PICTURE_RESPONSIVE_IMAGES = False
+
 CMS_TEMPLATES = (
     ('devday.html', 'Devday'),
     ('devday_index.html', 'Dev Day Startseite'),
@@ -162,7 +164,10 @@ DEVDAY_FACEBOOK_URL = 'https://www.facebook.com/events/193156441425350/'
 DEVDAY_TWITTER_URL = 'https://twitter.com/devdaydresden'
 DEVDAY_XING_URL = 'https://www.xing.com/events/dev-day-2018-1897927'
 
+DEFAULT_EMAIL_SENDER = 'info-bounce@devday.de'
+
 INSTALLED_APPS = [
+    'ckeditor',
     'djangocms_admin_style',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -176,6 +181,7 @@ INSTALLED_APPS = [
     'event.apps.EventsConfig',
     'attendee.apps.AttendeeConfig',
     'talk.apps.SessionsConfig',
+    'sponsoring',
     'cms',
     'menus',
     'sekizai',
@@ -227,6 +233,8 @@ ROOT_URLCONF = 'devday.urls'
 SECRET_KEY = get_vault_variable('secret_key')
 
 SPONSORING_OPEN = get_variable_cascade('sponsoring_open', bool, False)
+SPONSORING_FROM_EMAIL = 'info@devday.de'
+SPONSORING_RECIPIENTS = ['info@devday.de']
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

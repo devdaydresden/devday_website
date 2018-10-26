@@ -1,0 +1,1 @@
+{% load i18n %}[{{ site.name }}] {% blocktrans with event=event.title %}Sponsoring request for {{ event }} from {{ organization }}{% endblocktrans %}

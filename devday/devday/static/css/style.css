@@ -9065,5 +9065,54 @@ table.table.session {
       table.session tbody tr td:nth-child(9)::after {
         background: #171034; } }
 
+.sponsor-deck {
+  padding: 20px 0; }
+  .sponsor-deck .bronze {
+    background: #35a4a3;
+    color: #ffffff; }
+  .sponsor-deck .silver {
+    background: #35a4a3;
+    color: #ffffff; }
+  .sponsor-deck .gold {
+    background: #35a4a3;
+    color: #ffffff; }
+  .sponsor-deck .card-title {
+    color: #ffffff;
+    font-size: 38px;
+    margin-top: 20px; }
+  .sponsor-deck .card {
+    border: 0; }
+    .sponsor-deck .card .card-header {
+      padding: 0.75rem 0;
+      border: 1px solid #488483; }
+      .sponsor-deck .card .card-header h4 {
+        border-bottom: 1px solid #488483;
+        padding-bottom: 15px; }
+  .sponsor-deck .card-body {
+    padding: 0; }
+    .sponsor-deck .card-body > ul {
+      border: 1px solid #171034;
+      border-top: 0;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px; }
+    .sponsor-deck .card-body > ul > li .list-header {
+      padding: 10px 0;
+      border-bottom: 1px solid #ffffff;
+      display: block;
+      background: #3a3f69;
+      color: #ffffff; }
+    .sponsor-deck .card-body > ul > li:last-child .list-header {
+      border-bottom: 0; }
+    .sponsor-deck .card-body > ul > li ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-bottom: 1px solid #ffffff; }
+      .sponsor-deck .card-body > ul > li ul li {
+        padding: 4px;
+        border-bottom: 1px solid #c4c7de; }
+        .sponsor-deck .card-body > ul > li ul li:last-child {
+          border-bottom: none; }
+
 .visible-to-editor-only {
   outline: 2px solid yellow; }

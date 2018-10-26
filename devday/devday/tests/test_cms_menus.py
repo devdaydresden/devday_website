@@ -1,43 +1,99 @@
 from unittest.mock import patch
 
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.test.client import RequestFactory
 from menus.menu_pool import menu_pool
 
+from attendee.models import Attendee
+from attendee.tests.attendee_testutils import create_test_user
+from devday import cms_menus
 from devday.utils.devdata import DevData
 from event.models import Event
 
 
-def get_register_menu(register_menu, request):
-        request.user = AnonymousUser()
-        with patch('menus.menu_pool.use_draft', return_value=False):
-            renderer = menu_pool.get_renderer(request)
-        return menu_pool.menus[register_menu](renderer)
+CLASS_UNDER_TEST = 'DevDayMenu'
 
 
-class EventSessionMenuTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.devdata = DevData()
-        cls.devdata.create_admin_user()
-        cls.devdata.create_pages()
-        cls.devdata.update_events()
-        cls.menu = 'DevDayMenu'
+def filter_nodes_by_namespace(nodes, namespace):
+    for n in nodes[:]:
+        if n.namespace != namespace:
+            nodes.remove(n)
+    return nodes
+
+
+def get_nodes(user=None):
+    request = RequestFactory().get('/')
+    request.user = user if user else AnonymousUser()
+    with patch('menus.menu_pool.use_draft', return_value=False):
+        renderer = menu_pool.get_renderer(request)
+    nodes = renderer.get_nodes()
+    # There are other menu entries (CMSMenu etc.) and they would confuse these
+    # tests, so filter them out.
+    filter_nodes_by_namespace(nodes, CLASS_UNDER_TEST)
+    return nodes
+
+
+class DevDayMenuTest(TestCase):
+    def setUp(self):
+        self.devdata = DevData()
+        self.devdata.create_admin_user()
+        self.devdata.create_pages()
+        self.devdata.update_events()
+        self.event = Event.objects.current_event()
 
     def test_menu(self):
-        request = RequestFactory().get('/')
-        menu = get_register_menu(self.menu, request)
-        entries = menu.get_nodes(request)
-        self.assertEquals(len(entries), 6, 'should have one entry')
+        entries = get_nodes()
+        self.assertIn(cms_menus.USER_CAN_REGISTER, entries[0].attr)
+        self.assertIn(cms_menus.SUBMISSION_OPEN, entries[1].attr)
+        self.assertIn(cms_menus.SESSIONS_PUBLISHED, entries[2].attr)
+        self.assertIn(cms_menus.CHILDREN, entries[3].attr)
         self.assertEquals(
-            len(entries[0].children), 0, 'should have no children')
+            len(entries[3].children), 2, 'Archive should have two children')
+        self.assertEquals(entries[4].url, reverse('auth_login'))
 
     def test_no_current(self):
         for event in Event.objects.all():
             event.published = False
             event.save()
-        request = RequestFactory().get('/')
-        menu = get_register_menu(self.menu, request)
-        entries = menu.get_nodes(request)
-        self.assertEquals(len(entries), 3, 'should have three entries')
+        entries = get_nodes()
+        self.assertEquals(len(entries), 1, 'should have one entry')
+
+    def test_registration_off(self):
+        self.event.registration_open = False
+        self.event.submission_open = True
+        self.event.save()
+        entries = get_nodes()
+        self.assertIn(cms_menus.SUBMISSION_OPEN, entries[0].attr)
+        self.assertIn(cms_menus.SESSIONS_PUBLISHED, entries[1].attr)
+
+    def test_submission_off(self):
+        self.event.registration_open = True
+        self.event.submission_open = False
+        self.event.save()
+        entries = get_nodes()
+        self.assertIn(cms_menus.USER_CAN_REGISTER, entries[0].attr)
+        self.assertIn(cms_menus.SESSIONS_PUBLISHED, entries[1].attr)
+
+    def test_logged_in(self):
+        (user, _) = create_test_user()
+        Attendee.objects.filter(
+            user=user, event=self.event).delete()
+        entries = get_nodes(user=user)
+        self.assertEquals(entries[4].url, '#')
+        children = entries[4].children
+        self.assertEquals(children[0].url, reverse('user_profile'))
+        self.assertEquals(children[1].url, reverse('auth_logout'))
+
+        Attendee.objects.create(user=user, event=self.event)
+        entries = get_nodes(user=user)
+        self.assertEquals(entries[3].url, '#')
+        children = entries[3].children
+        self.assertEquals(len(children), 3,
+                          'profile menu should have three entries')
+        self.assertEquals(children[0].url, reverse('user_profile'))
+        self.assertEquals(children[1].url,
+                          reverse('attendee_checkin_qrcode',
+                                  kwargs={'event': self.event.slug}))
+        self.assertEquals(children[2].url, reverse('auth_logout'))

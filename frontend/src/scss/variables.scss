@@ -37,8 +37,8 @@ $enable-gradients: true !default;
 // Grid breakpoints
 $grid-breakpoints: (
     xs: 0,      // Extra small screen / phone
-    sm: 720px,  // Small screen / phone
-    md: 996px,  // Medium screen / tablet
+    sm: 480px,  // Small screen / phone
+    md: 768px,  // Medium screen / tablet
     lg: 1280px, // Large screen / desktop
     xl: 1600px  // Extra large screen / wide desktop
 ) !default;

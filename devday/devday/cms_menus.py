@@ -20,14 +20,14 @@ USER_CAN_REGISTER = 'user_can_register'
 
 @menu_pool.register_menu
 class DevDayMenu(Menu):
-    '''
+    """
     Create menu entries for our apps. It appears Django CMS has no easy way to
     add menu items in an ordered way when using multiple register_menu classes.
     It appears they are processed in the order the applications are listed in
     settings.INSTALLED_APPS.  To get the desired order, this class contains
     all the menus across all applications.  Additionally, the modifier below
     will move DevDayMenu entries to the back of the list.
-    '''
+    """
 
     def get_nodes(self, request):
         entries = []
@@ -102,11 +102,11 @@ class DevDayMenu(Menu):
 
 @menu_pool.register_modifier
 class DevDayModifier(Modifier):
-    '''
+    """
     Make sure our DevDayMenu entries are only shown when appropriate.
     Additionally, move our entries to the back of the list, so that CMSMenu
     entries are rendered before ours.
-    '''
+    """
 
     def user_can_register(self, request, event):
         return (event and event.published

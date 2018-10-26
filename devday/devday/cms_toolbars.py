@@ -10,7 +10,7 @@ class DevDayToolbar(DevDayToolbarBase):
     def populate(self):
         super().populate()
 
-        self.add_admin_sideframe_item_alphabetically(
+        self.add_admin_link_item_alphabetically(
             _('Send Email'), reverse('send_email'))
 
         menu = self.add_admin_submenu_alphabetically(

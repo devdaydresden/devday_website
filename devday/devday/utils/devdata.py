@@ -253,6 +253,7 @@ tiefer in ein Thema einsteigen.</p>
                 u'register-intro-anonymous',
                 u'register-intro-introtext-authenticated',
                 u'register-success',
+                u'speaker-register',
                 u'speaker_registered',
                 u'sponsoring-intro-text',
                 u'sponsoring-request-thanks',

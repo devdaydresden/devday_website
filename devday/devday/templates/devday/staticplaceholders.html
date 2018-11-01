@@ -6,7 +6,9 @@
     <div class="offset-lg-2 col-lg-8 col-md-12" style="margin-top: 20px">
       <h4>{% trans 'Static Placeholder' %} "{{ placeholder }}"</h4>
       <div style="background: #ccc; padding: 10px">
-      {% static_placeholder placeholder %}
+      {% static_placeholder placeholder or %}
+      <p>{% trans "This static placeholder has not been filled yet." %}</p>
+      {% endstatic_placeholder %}
       </div>
     </div>
     {% endfor %}

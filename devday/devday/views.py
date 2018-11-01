@@ -179,6 +179,7 @@ class StaticPlaceholderView(StaffUserMixin, TemplateView):
             'register-intro-anonymous',
             'register-intro-introtext-authenticated',
             'register-success',
+            'speaker-register',
             'speaker_registered',
             'sponsoring-intro-text',
             'sponsoring-request-thanks',

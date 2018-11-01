@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-01 14:54+0000\n"
+"POT-Creation-Date: 2018-11-01 15:50+0000\n"
 "PO-Revision-Date: 2018-10-25 16:47+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -195,6 +195,10 @@ msgstr "Inhalt der Static Placeholders bearbeiten"
 #: devday/templates/devday/staticplaceholders.html:7
 msgid "Static Placeholder"
 msgstr "Static Placeholder"
+
+#: devday/templates/devday/staticplaceholders.html:10
+msgid "This static placeholder has not been filled yet."
+msgstr "Dieser Static Placeholder wurde noch nicht ausgefüllt."
 
 #: devday/templates/devday_index.html:25
 msgid "Sign up now - Be part of it!"

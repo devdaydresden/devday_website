@@ -1,7 +1,10 @@
 {% extends "devday_site.html" %}
-{% load crispy_forms_tags %}
+{% load cms_tags crispy_forms_tags %}
 {% block content_body %}
     <div class="content-area">
+      <div>
+          {% static_placeholder "speaker-register" %}
+      </div>
         {% crispy form %}
     </div>
 {% endblock %}

@@ -254,6 +254,8 @@ tiefer in ein Thema einsteigen.</p>
                 u'register-intro-introtext-authenticated',
                 u'register-success',
                 u'speaker_registered',
+                u'sponsoring-intro-text',
+                u'sponsoring-request-thanks',
                 u'sponsors',
                 u'submit-session-introtext',
                 u'talk_submission_closed',

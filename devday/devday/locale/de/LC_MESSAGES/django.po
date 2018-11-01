@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-25 16:37+0000\n"
+"POT-Creation-Date: 2018-11-01 14:54+0000\n"
 "PO-Revision-Date: 2018-10-25 16:47+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -19,47 +19,47 @@ msgstr ""
 "X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: devday/cms_menus.py:86
+#: devday/cms_menus.py:39
 msgid "Register now for {}"
 msgstr "Jetzt registrieren für {}"
 
-#: devday/cms_menus.py:92
+#: devday/cms_menus.py:45
 msgid "Submit session for {}"
 msgstr "Session einreichen für {}"
 
-#: devday/cms_menus.py:98
+#: devday/cms_menus.py:51
 msgid "Sessions"
 msgstr "Sessions"
 
-#: devday/cms_menus.py:102
+#: devday/cms_menus.py:55
 msgid "Archive"
 msgstr "Archiv"
 
-#: devday/cms_menus.py:116
+#: devday/cms_menus.py:67
 msgid "Login"
 msgstr "Login"
 
-#: devday/cms_menus.py:121
+#: devday/cms_menus.py:72
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/cms_menus.py:128
+#: devday/cms_menus.py:79
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: devday/cms_menus.py:132
+#: devday/cms_menus.py:83
 msgid "Checkin QR Code"
 msgstr "QR-Code für Checkin"
 
-#: devday/cms_menus.py:138
+#: devday/cms_menus.py:89
 msgid "Speaker Profile"
 msgstr "Sprecher-Profil"
 
-#: devday/cms_menus.py:144
+#: devday/cms_menus.py:95
 msgid "Program Committee"
 msgstr "Programmkomittee"
 
-#: devday/cms_menus.py:148
+#: devday/cms_menus.py:99
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -68,18 +68,22 @@ msgid "Send Email"
 msgstr "Email senden"
 
 #: devday/cms_toolbars.py:17
+msgid "Edit Static Placeholders"
+msgstr "Static Placeholder bearbeiten"
+
+#: devday/cms_toolbars.py:20
 msgid "Reports as CSV"
 msgstr "CSV-Reports"
 
-#: devday/cms_toolbars.py:19 devday/templates/admin/inc/branding.html:19
+#: devday/cms_toolbars.py:22 devday/templates/admin/inc/branding.html:19
 msgid "Inactive users"
 msgstr "Inaktive Benutzer"
 
-#: devday/cms_toolbars.py:21 devday/templates/admin/inc/branding.html:20
+#: devday/cms_toolbars.py:24 devday/templates/admin/inc/branding.html:20
 msgid "Users we may contact"
 msgstr "Benutzer, die kontaktiert werden dürfen"
 
-#: devday/cms_toolbars.py:23 devday/templates/admin/inc/branding.html:21
+#: devday/cms_toolbars.py:26 devday/templates/admin/inc/branding.html:21
 msgid "Current event attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
@@ -183,6 +187,14 @@ msgstr "Bitte den unten aufgeführten Fehler korrigieren."
 #: devday/templates/devday/sendemail.html:34
 msgid "Please correct the errors below."
 msgstr "Bitte die unten aufgeführten Fehler korrigieren."
+
+#: devday/templates/devday/staticplaceholders.html:3
+msgid "Edit Static Placeholder Contents"
+msgstr "Inhalt der Static Placeholders bearbeiten"
+
+#: devday/templates/devday/staticplaceholders.html:7
+msgid "Static Placeholder"
+msgstr "Static Placeholder"
 
 #: devday/templates/devday_index.html:25
 msgid "Sign up now - Be part of it!"
@@ -426,38 +438,38 @@ msgstr ""
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
 
-#: devday/views.py:88
+#: devday/views.py:89
 msgid "past and present attendees"
 msgstr "Frühere und aktuelle Teilnehmer"
 
-#: devday/views.py:91
+#: devday/views.py:92
 msgid "current attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
-#: devday/views.py:94
+#: devday/views.py:95
 msgid "registered but inactive attendees"
 msgstr "registrierte aber inaktive Teilnehmer"
 
-#: devday/views.py:97
+#: devday/views.py:98
 msgid "candidate speakers"
 msgstr "Sprecher-Kandidaten"
 
-#: devday/views.py:100
+#: devday/views.py:101
 msgid "accepted speakers"
 msgstr "Angenommene Sprecher"
 
-#: devday/views.py:139
+#: devday/views.py:140
 msgid "Dev Day Attendees {}"
 msgstr "Dev Day Teilnehmer {}"
 
-#: devday/views.py:143
+#: devday/views.py:144
 msgid "Dev Day <{}>"
 msgstr "Dev Day <{}>"
 
-#: devday/views.py:150
+#: devday/views.py:151
 msgid "Successfully sent message to {} {} recipients"
 msgstr "Email erfolgreich an {} {} versendet"
 
-#: devday/views.py:159
+#: devday/views.py:160
 msgid "Successfully sent message for {} to yourself"
 msgstr "Test-Email für {} erfolgreich an dich selbst gesendet"

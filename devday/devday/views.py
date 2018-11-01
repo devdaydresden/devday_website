@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from html2text import HTML2Text
 
@@ -161,3 +162,30 @@ class SendEmailView(StaffUserMixin, SuccessMessageMixin, FormView):
             messages.success(self.request, self.success_message)
             msg.send()
             return self.render_to_response(self.get_context_data(form=form))
+
+
+class StaticPlaceholderView(StaffUserMixin, TemplateView):
+    template_name = 'devday/staticplaceholders.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['placeholders'] = [
+            'checkin-instructions',
+            'checkin-result',
+            'create-talk-introtext',
+            'gdpr_teaser',
+            'register-attendee-introtext',
+            'register-intro',
+            'register-intro-anonymous',
+            'register-intro-introtext-authenticated',
+            'register-success',
+            'speaker-register',
+            'speaker_registered',
+            'sponsoring-intro-text',
+            'sponsoring-request-thanks',
+            'sponsors',
+            'submit-session-introtext',
+            'talk_submission_closed',
+            'talk_submitted',
+        ]
+        return context

@@ -95,12 +95,12 @@ class DevDataTests(TestCase):
 
         sponsoring = self.get_page('Sponsoring')
         self.assertEquals(sponsoring.languages, 'de', 'Sponsoring is German')
-        self.assertEquals(sponsoring.template, TEMPLATE_INHERITANCE_MAGIC,
+        self.assertEquals(sponsoring.template, 'devday_no_cta.html',
                           'Sponsoring uses correct template')
 
         impress = self.get_page('Impressum')
         self.assertEquals(impress.languages, 'de', 'Impress is German')
-        self.assertEquals(impress.template, TEMPLATE_INHERITANCE_MAGIC,
+        self.assertEquals(impress.template, 'devday_no_cta.html',
                           'Impress uses correct template')
 
     def subtest_update_static_placeholders(self):
@@ -270,6 +270,14 @@ class DevDataTests(TestCase):
             'tweets', Tweet, 1, self.devdata.create_tweets)
         number_of_tweets = Tweet.objects.count()
         self.assertEquals(number_of_tweets, 7, 'we have 7 tweets')
+
+    def test_get_name_from_email(self):
+        self.assertEquals(
+            self.devdata.get_name_from_email('admin@devday.de'),
+            'admin@devday.de')
+        self.assertEquals(
+            self.devdata.get_name_from_email('first.last@devday.de'),
+            'First Last')
 
     def test_create_devdata(self):
         self.subtest_create_admin_user()

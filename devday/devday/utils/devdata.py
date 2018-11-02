@@ -248,6 +248,7 @@ tiefer in ein Thema einsteigen.</p>
                 u'checkin-instructions',
                 u'checkin-result',
                 u'gdpr_teaser',
+                u'login-intro',
                 u'register-attendee-introtext',
                 u'register-intro',
                 u'register-intro-anonymous',

@@ -95,12 +95,12 @@ class DevDataTests(TestCase):
 
         sponsoring = self.get_page('Sponsoring')
         self.assertEquals(sponsoring.languages, 'de', 'Sponsoring is German')
-        self.assertEquals(sponsoring.template, TEMPLATE_INHERITANCE_MAGIC,
+        self.assertEquals(sponsoring.template, 'devday_no_cta.html',
                           'Sponsoring uses correct template')
 
         impress = self.get_page('Impressum')
         self.assertEquals(impress.languages, 'de', 'Impress is German')
-        self.assertEquals(impress.template, TEMPLATE_INHERITANCE_MAGIC,
+        self.assertEquals(impress.template, 'devday_no_cta.html',
                           'Impress uses correct template')
 
     def subtest_update_static_placeholders(self):

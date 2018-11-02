@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-01 15:50+0000\n"
+"POT-Creation-Date: 2018-11-02 10:17+0000\n"
 "PO-Revision-Date: 2018-10-25 16:47+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -123,27 +123,39 @@ msgstr "Test-Email an mich selbst senden"
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
-#: devday/settings/base.py:121 devday/settings/base.py:208
+#: devday/settings/base.py:122 devday/settings/base.py:210
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:137
+#: devday/settings/base.py:138
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:138
+#: devday/settings/base.py:139
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:139
+#: devday/settings/base.py:140
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:140
+#: devday/settings/base.py:141
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/settings/base.py:209
+#: devday/settings/base.py:146
+msgid "Dev Day Page"
+msgstr "Dev-Day-Seite"
+
+#: devday/settings/base.py:147
+msgid "Dev Day Page with Call to Action area"
+msgstr "Dev-Day-Seite mit Call-to-Action-Bereich"
+
+#: devday/settings/base.py:148
+msgid "Dev Day Home Page"
+msgstr "Dev-Day-Homepage"
+
+#: devday/settings/base.py:211
 msgid "en"
 msgstr "en"
 

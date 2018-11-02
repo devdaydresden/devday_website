@@ -271,6 +271,14 @@ class DevDataTests(TestCase):
         number_of_tweets = Tweet.objects.count()
         self.assertEquals(number_of_tweets, 7, 'we have 7 tweets')
 
+    def test_get_name_from_email(self):
+        self.assertEquals(
+            self.devdata.get_name_from_email('admin@devday.de'),
+            'admin@devday.de')
+        self.assertEquals(
+            self.devdata.get_name_from_email('first.last@devday.de'),
+            'First Last')
+
     def test_create_devdata(self):
         self.subtest_create_admin_user()
         self.subtest_update_site()

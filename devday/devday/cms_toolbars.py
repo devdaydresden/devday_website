@@ -13,8 +13,8 @@ class DevDayToolbar(DevDayToolbarBase):
         self.add_admin_link_item_alphabetically(
             _('Send Email'), reverse('send_email'))
 
-        self.add_admin_link_item_alphabetically(
-            _('Edit Static Placeholders'), reverse('edit_static_placeholders'))
+        # self.add_admin_link_item_alphabetically(
+        #     _('Edit Static Placeholders'), reverse('edit_static_placeholders'))
 
         menu = self.add_admin_submenu_alphabetically(
             'reports-menu', _('Reports as CSV'))

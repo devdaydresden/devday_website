@@ -1,8 +1,9 @@
 {% extends "devday_site.html" %}
-{% load i18n crispy_forms_tags %}
+{% load cms_tags i18n crispy_forms_tags %}
 {% block content_body %}
     <div class="row">
         <div class="offset-sm-3 offset-md-4 col-sm-6 col-md-4 col-12 content-area">
+            {% static_placeholder "login-intro" %}
             <form method="post" action="{% url "auth_login" %}">
                 {% crispy form %}
 

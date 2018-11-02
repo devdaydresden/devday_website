@@ -174,6 +174,7 @@ class StaticPlaceholderView(StaffUserMixin, TemplateView):
             'checkin-result',
             'create-talk-introtext',
             'gdpr_teaser',
+            'login-intro',
             'register-attendee-introtext',
             'register-intro',
             'register-intro-anonymous',

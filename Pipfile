@@ -28,6 +28,7 @@ django-registration = "*"
 "html2text" = "*"
 lorem = "*"
 luhn = "*"
+stringcase = "*"
 django-ordered-model = "<3.0"
 
 [dev-packages]

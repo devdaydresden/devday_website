@@ -4,14 +4,13 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ValidationError
-from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-from html2text import HTML2Text
 
 from attendee.views import StaffUserMixin
+from devday.utils.html_mail import create_html_mail
 from event.models import Event
 from speaker.models import PublishedSpeaker, Speaker
 from talk.models import Attendee
@@ -23,15 +22,6 @@ User = get_user_model()
 
 def exception_test_view(request):
     raise Exception("Synthetic server error")
-
-
-class DevDayEmailMessage(EmailMultiAlternatives):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.recipientlist = []
-
-    def recipients(self):
-        return self.recipientlist
 
 
 class DevDayEmailRecipients:
@@ -127,22 +117,8 @@ class SendEmailView(StaffUserMixin, SuccessMessageMixin, FormView):
         return reverse_lazy('send_email')
 
     def form_valid(self, form):
-        conv = HTML2Text()
-        conv.ignore_images = True
-        conv.inline_links = False
-        conv.use_automatic_links = True
-        html_message = form.cleaned_data['body']
-        message = conv.handle(html_message)
-        msg = DevDayEmailMessage(
-            subject=form.cleaned_data['subject'],
-            body=message,
-            from_email=settings.DEFAULT_EMAIL_SENDER,
-            to=(_('Dev Day Attendees {}').format('<undisclosed-recipients:;>'),
-                ),
-        )
-        msg.extra_headers['From'] = _(
-            'Dev Day <{}>').format(settings.DEFAULT_FROM_EMAIL)
-        msg.attach_alternative(html_message, "text/html")
+        msg = create_html_mail(form.cleaned_data['subject'],
+                               form.cleaned_data['body'])
         recipients = form.cleaned_data['recipients']
         if form.cleaned_data.get('sendreal'):
             msg.recipientlist = self.choices.get_email_addresses(recipients)

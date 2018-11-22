@@ -321,19 +321,19 @@ class SendEmailViewTest(TestCase):
         self.assertNotIn('nocontact@example.com', msg.recipients())
 
 
-class StaticPlaceholderViewTest(TestCase):
-    def setUp(self):
-        dev_data = DevData()
-        dev_data.create_admin_user()
-        self.url = reverse_lazy('edit_static_placeholders')
-
-    def test_anonymous_access(self):
-        r = self.client.get(self.url)
-        self.assertRedirects(r, f'/accounts/login/?next={self.url}',
-                             status_code=302)
-
-    def test_open_view(self):
-        self.client.login(username=settings.ADMINUSER_EMAIL,
-                          password='admin')
-        r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 200, 'get should return the form')
+# class StaticPlaceholderViewTest(TestCase):
+#     def setUp(self):
+#         dev_data = DevData()
+#         dev_data.create_admin_user()
+#         self.url = reverse_lazy('edit_static_placeholders')
+#
+#     def test_anonymous_access(self):
+#         r = self.client.get(self.url)
+#         self.assertRedirects(r, f'/accounts/login/?next={self.url}',
+#                              status_code=302)
+#
+#     def test_open_view(self):
+#         self.client.login(username=settings.ADMINUSER_EMAIL,
+#                           password='admin')
+#         r = self.client.get(self.url)
+#         self.assertEquals(r.status_code, 200, 'get should return the form')

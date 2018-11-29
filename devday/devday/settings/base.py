@@ -208,7 +208,7 @@ INSTALLED_APPS = [
 LANGUAGE_CODE = 'de'
 LANGUAGES = (
     ('de', gettext('de')),
-    ('en', gettext('en')),
+    # ('en', gettext('en')),
 )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

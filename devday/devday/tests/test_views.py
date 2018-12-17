@@ -9,8 +9,9 @@ from django.utils import timezone
 
 from attendee.models import Attendee
 from attendee.tests import attendee_testutils
-from devday.views import DevDayEmailMessage, DevDayEmailRecipients
 from devday.utils.devdata import DevData
+from devday.utils.html_mail import DevDayEmailMessage
+from devday.views import DevDayEmailRecipients
 from event.models import Event
 from speaker.models import PublishedSpeaker, Speaker
 from speaker.tests import speaker_testutils
@@ -95,37 +96,6 @@ class BaseTemplateTest(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "base.html")
-
-
-class TestLoginTemplate(TestCase):
-    def setUp(self):
-        self.url = "/accounts/login/"
-
-    def test_parse_anonymous(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "django_registration/login.html")
-
-    def test_parse_anonymous_attendee_registration_open(self):
-        event = Event.objects.current_event()
-        event.registration_open = True
-        event.save()
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "django_registration/login.html")
-
-
-class TestLogin(TestCase):
-    def setUp(self):
-        self.url = "/accounts/login/"
-
-    def test_post_performs_login(self):
-        user, password = attendee_testutils.create_test_user()
-        response = self.client.post(
-            self.url, data={'username': user.email, 'password': password})
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get(response.url)
-        self.assertEqual(response.context['request'].user, user)
 
 
 class DevDayEmailRecipientsTest(TestCase):
@@ -250,6 +220,37 @@ class DevDayEmailRecipientsTest(TestCase):
         self.assertIn('speaker@example.com', addrs)
 
 
+class TestLoginTemplate(TestCase):
+    def setUp(self):
+        self.url = "/accounts/login/"
+
+    def test_parse_anonymous(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "django_registration/login.html")
+
+    def test_parse_anonymous_attendee_registration_open(self):
+        event = Event.objects.current_event()
+        event.registration_open = True
+        event.save()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "django_registration/login.html")
+
+
+class TestLogin(TestCase):
+    def setUp(self):
+        self.url = "/accounts/login/"
+
+    def test_post_performs_login(self):
+        user, password = attendee_testutils.create_test_user()
+        response = self.client.post(
+            self.url, data={'username': user.email, 'password': password})
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(response.url)
+        self.assertEqual(response.context['request'].user, user)
+
+
 class SendEmailViewTest(TestCase):
     def setUp(self):
         dev_data = DevData()
@@ -286,7 +287,8 @@ class SendEmailViewTest(TestCase):
                           'alternative should have two elements')
         self.assertEquals(
             msg.alternatives[0][0],
-            '<p>a single sentence as the <b>message</b>.')
+            ('<html><body><p>a single sentence as the'
+             ' <b>message</b>.</p></body></html>'))
         self.assertEquals(msg.alternatives[0][1], 'text/html')
 
         self.assertNotIn(settings.DEFAULT_FROM_EMAIL, msg.recipients())
@@ -319,3 +321,21 @@ class SendEmailViewTest(TestCase):
         self.assertIn('contact@example.com', msg.recipients())
         self.assertIn('attendee@example.com', msg.recipients())
         self.assertNotIn('nocontact@example.com', msg.recipients())
+
+
+# class StaticPlaceholderViewTest(TestCase):
+#     def setUp(self):
+#         dev_data = DevData()
+#         dev_data.create_admin_user()
+#         self.url = reverse_lazy('edit_static_placeholders')
+#
+#     def test_anonymous_access(self):
+#         r = self.client.get(self.url)
+#         self.assertRedirects(r, f'/accounts/login/?next={self.url}',
+#                              status_code=302)
+#
+#     def test_open_view(self):
+#         self.client.login(username=settings.ADMINUSER_EMAIL,
+#                           password='admin')
+#         r = self.client.get(self.url)
+#         self.assertEquals(r.status_code, 200, 'get should return the form')

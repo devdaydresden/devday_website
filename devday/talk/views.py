@@ -203,7 +203,7 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
 
 class CommitteeSpeakerDetails(CommitteeRequiredMixin, DetailView):
     model = Speaker
-    template_name_suffix = '_details'
+    template_name = 'talk/speaker_details.html'
 
 
 class TalkListView(ListView):

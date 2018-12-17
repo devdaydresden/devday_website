@@ -34,11 +34,6 @@ class DevDayToolbarBase(CMSToolbar):
         item = self.admin_menu.add_link_item(name, url=url, position=position)
         return item
 
-    def add_admin_sideframe_item_alphabetically(self, name, url):
-        position = self.position_in_admin_section(name)
-        item = self.admin_menu.add_modal_item(name, url=url, position=position)
-        return item
-
     def add_admin_submenu_alphabetically(self, label, name):
         position = self.position_in_admin_section(name)
         menu = self.admin_menu.get_or_create_menu(

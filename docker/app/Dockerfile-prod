@@ -37,6 +37,8 @@ RUN apk --no-cache add \
     libmagic \
     libpng \
     libpq \
+    libxml2 \
+    libxslt \
     python3
 
 COPY Pipfile Pipfile.lock /srv/devday/
@@ -51,6 +53,8 @@ RUN apk --no-cache add --virtual build-dependencies \
     jpeg-dev \
     libffi-dev \
     libpng-dev \
+    libxml2-dev \
+    libxslt-dev \
     linux-headers \
     musl-dev \
     postgresql-dev \

@@ -7,7 +7,8 @@ from django.contrib.sitemaps.views import sitemap as sitemap_view
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve as serve_static
 
-from devday.views import exception_test_view, SendEmailView
+from devday.views import (
+    exception_test_view, SendEmailView)
 from talk.views import (
     InfoBeamerXMLView, RedirectVideoView,
     TalkDetails, TalkListPreviewView, TalkListView, TalkVideoView)

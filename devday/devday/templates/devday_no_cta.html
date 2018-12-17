@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% comment %}
+  This is the page template like devday.html, but without the call to action
+  area.
+{% endcomment %}
+{% load cms_tags %}
+
+{% block title %}{% page_attribute "page_title" %}{% endblock title %}
+
+{% block content_block_1 %}
+<div class="stripe c-white">
+    <div class="container">
+        <div class="row ">
+            <div class="col-12 col-lg-9 order-2 order-lg-1{% block content_box_1_wrapper_classes %} col-center{% endblock %} info">
+                <div class="content-center">{% block content_box_1 %}{% placeholder "content" %}{% endblock %}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content_block_2 %}{% endblock %}

@@ -1,8 +1,9 @@
 {% extends "devday_site.html" %}
-{% load i18n crispy_forms_tags %}
+{% load cms_tags i18n crispy_forms_tags %}
 {% block content_body %}
     <div class="row">
         <div class="offset-sm-3 offset-md-4 col-sm-6 col-md-4 col-12 content-area">
+            {% static_placeholder "login-intro" %}
             <form method="post" action="{% url "auth_login" %}">
                 {% crispy form %}
 
@@ -10,7 +11,7 @@
                 <input type="hidden" name="next" value="{{ next }}"/>
             </form>
             <p>{% trans "Forgot password?" %} <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
-            {% if attendee_registration_open %}
+            {% if attendee_registration_open or talk_submission_open %}
                 <p>{% trans "Not registered yet?" %} <a href="{% url 'registration_register' %}{% if next %}?next={{ next }}{% endif %}">{% trans "Register" %}</a>!</p>
             {% endif %}
         </div>

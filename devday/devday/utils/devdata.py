@@ -13,7 +13,6 @@ from shutil import copyfile
 
 import lorem
 from cms import api
-from cms.constants import TEMPLATE_INHERITANCE_MAGIC
 from cms.models import Page
 from cms.models.placeholdermodel import Placeholder
 from cms.models.pluginmodel import CMSPlugin
@@ -27,6 +26,7 @@ from django.core.management.base import OutputWrapper
 from django.core.management.color import no_style
 from django.core.paginator import Paginator
 from django.utils import timezone
+import stringcase
 
 from talk import COMMITTEE_GROUP
 
@@ -135,15 +135,26 @@ class DevData:
             self.write_error()
             raise
 
+    def get_page_title(self, page):
+        return page.get_title_obj_attribute('title', 'de')
+
+    def add_text_plugin_to_placeholder(self, page, slot, body=None):
+        placeholder = page.placeholders.get(slot=slot)
+        if not body:
+            body = "<h1>{} ({})</h1>\n<p>{}</p>\n".format(
+                self.get_page_title(page),
+                stringcase.titlecase(slot),
+                lorem.paragraph())
+        api.add_plugin(placeholder, 'TextPlugin', 'de', body=body)
+
     def create_pages(self):
         index = api.create_page(
             title='Deutsche Homepage', language='de',
             template='devday_index.html',
             parent=None, slug='de', in_navigation=False)
         index.set_as_homepage()
-        eventinfo = index.placeholders.get(slot='eventinfo')
-        api.add_plugin(
-            eventinfo, 'TextPlugin', 'de', body=u'''<h4>Fünf Jahre
+        self.add_text_plugin_to_placeholder(
+            index, 'eventinfo', '''<h4>Fünf Jahre
 DevDay</h4> <p>Der Dev Day feiert seinen fünften Geburtstag - und den wollen
 wir mit euch verbringen! Die <strong>Konferenz</strong> für alle
 <strong>IT-Interessenten</strong> - Studierende oder Professionals, aus Dresden
@@ -159,9 +170,8 @@ zum Wissensaustausch in der T-Systems MMS organisieren wir einmal im Jahr auch
 den Dev Day. Unser größtes Ziel dabei: Wissensaustausch und Vernetzung über die
 Grenzen von Unternehmen und Dresden hinaus.</p>
 ''')
-        cfp_open = index.placeholders.get(slot='cfp_open')
-        api.add_plugin(
-            cfp_open, 'TextPlugin', 'de', body=u'''<h4>Call for Papers</h4>
+        self.add_text_plugin_to_placeholder(
+            index, 'cfp_open', body=u'''<h4>Call for Papers</h4>
 <p>Für den Dev Day 19 brauchen wir wieder eure Unterstützung: meldet euch als
 <strong>Speaker</strong> an und schlagt uns spannende, interessante
 <strong>Vorträge</strong> vor!</p>
@@ -174,27 +184,30 @@ statt eines Abschluss-Vortrags vier weiter, reguläre Talks.</p>
 jeweils bis zu 15 Teilnehmer können zusammen <strong>drei Stunden</strong>
 tiefer in ein Thema einsteigen.</p>
 ''')
-        save_the_date = index.placeholders.get(slot='save_the_date')
-        api.add_plugin(
-            save_the_date, 'TextPlugin', 'de', body=u'''<h4>Save the Date</h4>
+        self.add_text_plugin_to_placeholder(
+            index, 'save_the_date', body=u'''<h4>Save the Date</h4>
 <p>Der Dev Day 19 findet am <strong>21. Mai 2019</strong> am gewohnten Ort, der
 <strong>Börse Dresden</strong> statt.</p>'''
         )
-        sign_up = index.placeholders.get(slot='sign_up')
-        api.add_plugin(
-            sign_up, 'TextPlugin', 'de', body=u'''<h4>Jetzt anmelden</h4>
+        self.add_text_plugin_to_placeholder(
+            index, 'sign_up', body=u'''<h4>Jetzt anmelden</h4>
 <p>Sichert euch jetzt euren kostenfreien Platz auf dem Dev Day!</p>'''
         )
         api.publish_page(index, self.user, 'de')
 
-        api.create_page(
+        sponsoring = api.create_page(
             title='Sponsoring', language='de', published=True,
-            template=TEMPLATE_INHERITANCE_MAGIC,
+            template='devday_no_cta.html',
             reverse_id='sponsoring', parent=None)
-        api.create_page(
+        self.add_text_plugin_to_placeholder(sponsoring, 'content')
+        api.publish_page(sponsoring, self.user, 'de')
+
+        impress = api.create_page(
             title='Impressum', language='de', published=True,
-            template=TEMPLATE_INHERITANCE_MAGIC,
+            template='devday_no_cta.html',
             reverse_id='imprint', parent=None)
+        self.add_text_plugin_to_placeholder(impress, 'content')
+        api.publish_page(impress, self.user, 'de')
 
     def create_static_placeholder_text(self, name, lang='de', paras=3,
                                        title=None, text=None):
@@ -248,12 +261,16 @@ tiefer in ein Thema einsteigen.</p>
                 u'checkin-instructions',
                 u'checkin-result',
                 u'gdpr_teaser',
+                u'login-intro',
                 u'register-attendee-introtext',
                 u'register-intro',
                 u'register-intro-anonymous',
                 u'register-intro-introtext-authenticated',
                 u'register-success',
+                u'speaker-register',
                 u'speaker_registered',
+                u'sponsoring-intro-text',
+                u'sponsoring-request-thanks',
                 u'sponsors',
                 u'submit-session-introtext',
                 u'talk_submission_closed',
@@ -328,7 +345,10 @@ tiefer in ein Thema einsteigen.</p>
 
     def get_name_from_email(self, email):
         m = re.match(r'^([^.]+)\.([^@]+)@.*$', email)
-        return '{} {}'.format(m.group(1).capitalize(), m.group(2).capitalize())
+        if m:
+            return f'{m.group(1).capitalize()} {m.group(2).capitalize()}'
+        else:
+            return email
 
     def create_attendees(self, amount=sys.maxsize, events=None):
         if events is None:  # pragma: no branch

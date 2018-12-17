@@ -17,6 +17,7 @@ import mimetypes
 from requests import get
 
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import ugettext_lazy as _
 
 
 def gettext(s):
@@ -142,8 +143,9 @@ DJANGOCMS_STYLE_CHOICES = (
 DJANGOCMS_PICTURE_RESPONSIVE_IMAGES = False
 
 CMS_TEMPLATES = (
-    ('devday.html', 'Devday'),
-    ('devday_index.html', 'Dev Day Startseite'),
+    ('devday_no_cta.html', _('Dev Day Page')),
+    ('devday.html', _('Dev Day Page with Call to Action area')),
+    ('devday_index.html', _('Dev Day Home Page')),
 )
 CMS_PERMISSION = True
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -206,7 +208,7 @@ INSTALLED_APPS = [
 LANGUAGE_CODE = 'de'
 LANGUAGES = (
     ('de', gettext('de')),
-    ('en', gettext('en')),
+    # ('en', gettext('en')),
 )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -295,7 +297,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)s %(message)s'
+            'format': ('%(levelname)s %(asctime)s %(module)s %(process)d'
+                       ' %(thread)s %(message)s')
         },
         'simple': {
             'format': '%(asctime)s %(levelname)s %(message)s'

@@ -193,6 +193,7 @@ class TalkFormat(models.Model):
         verbose_name=_('Duration'), default=60)
 
     class Meta:
+        ordering = ['duration', 'name']
         unique_together = (('name', 'duration'),)
         verbose_name = _('Talk Format')
         verbose_name_plural = _('Talk Format')

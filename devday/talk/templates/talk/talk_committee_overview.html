@@ -9,6 +9,16 @@
                 {% addtoblock "css" %}
                     <link rel="stylesheet" href="{% static "css/star-rating.css" %}">
                     <link rel="stylesheet" href="{% static "css/theme-krajee-svg.css" %}">
+                    <style>
+                      .talkformat-label {
+                        color: #fff;
+                        background-color: #35a4a3;
+                        border-radius: 6px;
+                        padding: 2px 6px;
+                        font-size: 75%;
+                        white-space: nowrap;
+                      }
+                    </style>
                 {% endaddtoblock %}
                 {% addtoblock "js" %}
                     <script src="{% static "js/star-rating.js" %}" type="text/javascript"></script>
@@ -28,7 +38,8 @@
                         {% for talk in talk_list %}
                             <tr>
                                 <td><a href="{% url 'speaker_details' pk=talk.draft_speaker.pk %}">{{ talk.draft_speaker.name }}</a></td>
-                                <td><a href="{% url 'talk_committee_details' pk=talk.pk %}">{{ talk.title }}</a></td>
+                                <td><a href="{% url 'talk_committee_details' pk=talk.pk %}">{{ talk.title }}</a><br>
+                                {% for fmt in talk.talkformat.all %} <span class="talkformat-label">{{ fmt }}</span> {% endfor %}</td>
                                 <td>
                                     {% if talk.average_score %}
                                         <input title="{% trans 'average vote' %}" id="talk-average-{{ talk.pk }}-id"

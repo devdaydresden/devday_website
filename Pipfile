@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+django = "<=1.99"
 django-cms = ">3.5"
 requests = "*"
 "psycopg2-binary" = "*"

@@ -37,7 +37,7 @@ class DevDayMenu(Menu):
             entries.append(
                 NavigationNode(
                     _('Register now for {}').format(event.title),
-                    reverse('attendee_registration',
+                    reverse('login_or_register_attendee',
                             kwargs={'event': event.slug}),
                     1, attr={USER_CAN_REGISTER: True}))
             entries.append(

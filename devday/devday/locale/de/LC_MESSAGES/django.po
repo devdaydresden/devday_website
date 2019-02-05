@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-02 10:17+0000\n"
+"POT-Creation-Date: 2019-02-04 18:58+0000\n"
 "PO-Revision-Date: 2018-10-25 16:47+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -19,9 +19,13 @@ msgstr ""
 "X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: devday/cms_apps.py:8
+msgid "DevDay"
+msgstr "DevDay"
+
 #: devday/cms_menus.py:39
 msgid "Register now for {}"
-msgstr "Jetzt registrieren für {}"
+msgstr "Jetzt anmelden für {}"
 
 #: devday/cms_menus.py:45
 msgid "Submit session for {}"
@@ -66,10 +70,6 @@ msgstr "Abmelden"
 #: devday/cms_toolbars.py:14
 msgid "Send Email"
 msgstr "Email senden"
-
-#: devday/cms_toolbars.py:17
-msgid "Edit Static Placeholders"
-msgstr "Static Placeholder bearbeiten"
 
 #: devday/cms_toolbars.py:20
 msgid "Reports as CSV"
@@ -154,10 +154,6 @@ msgstr "Dev-Day-Seite mit Call-to-Action-Bereich"
 #: devday/settings/base.py:148
 msgid "Dev Day Home Page"
 msgstr "Dev-Day-Homepage"
-
-#: devday/settings/base.py:211
-msgid "en"
-msgstr "en"
 
 #: devday/templates/400.html:3 devday/templates/400.html:10
 msgid "Bad Request"
@@ -278,24 +274,24 @@ msgstr "Aktivierung des Benutzerkontos fehlgeschlagen"
 msgid "Back to <a href=\"%(root_page)s\">home page</a>."
 msgstr "Zurück zur <a href=\"%(root_page)s\">Startseite</a>."
 
-#: devday/templates/django_registration/login.html:9
+#: devday/templates/django_registration/login.html:10
 #: devday/templates/django_registration/password_reset_complete.html:8
 msgid "Log in"
 msgstr "Login"
 
-#: devday/templates/django_registration/login.html:12
+#: devday/templates/django_registration/login.html:13
 msgid "Forgot password?"
 msgstr "Passwort vergessen?"
 
-#: devday/templates/django_registration/login.html:12
+#: devday/templates/django_registration/login.html:13
 msgid "Reset it"
 msgstr "Zurücksetzen"
 
-#: devday/templates/django_registration/login.html:14
+#: devday/templates/django_registration/login.html:15
 msgid "Not registered yet?"
 msgstr "Noch nicht angemeldet?"
 
-#: devday/templates/django_registration/login.html:14
+#: devday/templates/django_registration/login.html:15
 msgid "Register"
 msgstr "Anmelden"
 
@@ -454,38 +450,38 @@ msgstr ""
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
 
-#: devday/views.py:89
-msgid "past and present attendees"
-msgstr "Frühere und aktuelle Teilnehmer"
-
-#: devday/views.py:92
-msgid "current attendees"
-msgstr "Teilnehmer der aktuellen Veranstaltung"
-
-#: devday/views.py:95
-msgid "registered but inactive attendees"
-msgstr "registrierte aber inaktive Teilnehmer"
-
-#: devday/views.py:98
-msgid "candidate speakers"
-msgstr "Sprecher-Kandidaten"
-
-#: devday/views.py:101
-msgid "accepted speakers"
-msgstr "Angenommene Sprecher"
-
-#: devday/views.py:140
+#: devday/utils/html_mail.py:51
 msgid "Dev Day Attendees {}"
 msgstr "Dev Day Teilnehmer {}"
 
-#: devday/views.py:144
+#: devday/utils/html_mail.py:55
 msgid "Dev Day <{}>"
 msgstr "Dev Day <{}>"
 
-#: devday/views.py:151
+#: devday/views.py:79
+msgid "past and present attendees"
+msgstr "Frühere und aktuelle Teilnehmer"
+
+#: devday/views.py:82
+msgid "current attendees"
+msgstr "Teilnehmer der aktuellen Veranstaltung"
+
+#: devday/views.py:85
+msgid "registered but inactive attendees"
+msgstr "registrierte aber inaktive Teilnehmer"
+
+#: devday/views.py:88
+msgid "candidate speakers"
+msgstr "Sprecher-Kandidaten"
+
+#: devday/views.py:91
+msgid "accepted speakers"
+msgstr "Angenommene Sprecher"
+
+#: devday/views.py:127
 msgid "Successfully sent message to {} {} recipients"
 msgstr "Email erfolgreich an {} {} versendet"
 
-#: devday/views.py:160
+#: devday/views.py:136
 msgid "Successfully sent message for {} to yourself"
 msgstr "Test-Email für {} erfolgreich an dich selbst gesendet"

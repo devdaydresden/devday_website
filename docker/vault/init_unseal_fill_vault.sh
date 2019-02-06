@@ -78,6 +78,12 @@ ${CURL} -X PUT --fail --silent -H "X-Vault-Token: ${ROOT_TOKEN}" \
   ${VAULT_API_URL}/sys/policy/devday
 echo "Uploaded policy devday"
 
+# setup token role
+${CURL} -X POST --fail --silent -H "X-Vault-Token: ${ROOT_TOKEN}" \
+  --data '{"allowed_policies": ["devday"]}"' \
+  ${VAULT_API_URL}/auth/token/roles/devday-app
+echo "Setup token role devday-app"
+
 # setup devday item in Vault if it does not exist
 if ${CURL} --silent --fail -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/secret/data/devday >/dev/null; then
   echo "${VAULT_API_URL}/secret/data/devday exists, doing nothing."
@@ -107,7 +113,7 @@ fi
 # create application token
 APP_TOKEN=$(${CURL} -X POST --silent -H "X-Vault-Token: ${ROOT_TOKEN}" \
   --data '{"policies": ["devday"], "metadata": {"user": "devday"}, "ttl": "24h", "renewable": true}' \
-  ${VAULT_API_URL}/auth/token/create | \
+  ${VAULT_API_URL}/auth/token/create/devday-app | \
   python -c 'import json, sys; print json.load(sys.stdin)["auth"]["client_token"]')
 echo "Created application token"
 

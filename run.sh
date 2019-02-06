@@ -10,7 +10,6 @@ DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
 export DOCKER_REGISTRY="${DOCKER_REGISTRY:-devdaydresden}/"  # note trailing /
 
 docker_compose_up() {
-  touch dev-env
   $DOCKER_COMPOSE up -d vault
   while ! http_proxy= curl --silent --fail http://localhost:8200/v1/sys/health; do
     echo -n '.'
@@ -86,6 +85,8 @@ shift $((OPTIND-1))
 
 cmd="$1"
 shift || true
+
+touch dev-env
 
 case "$cmd" in
   backup)

@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse_lazy
 from django.test import TestCase
 from django.utils import timezone
+from django.utils.timezone import datetime
 
 from attendee.models import Attendee
 from attendee.tests import attendee_testutils
@@ -107,6 +108,15 @@ class DevDayEmailRecipientsTest(TestCase):
         user.save()
         user, _ = attendee_testutils.create_test_user('attendee@example.com')
         Attendee.objects.create(user=user, event=Event.objects.current_event())
+        user, _ = attendee_testutils.create_test_user('past-attendee@example.com')
+        user.contact_permission_date = timezone.now()
+        past = Event.objects.create(
+            title='Past event', slug='past',
+            start_time=timezone.make_aware(datetime(2000, 4, 4, 13, 0)),
+            end_time=timezone.make_aware(datetime(2000, 4, 4, 20, 0)),
+            published=True)
+        user.save()
+        Attendee.objects.create(user=user, event=past)
         user, _ = attendee_testutils.create_test_user('inactive@example.com')
         user.is_active = False
         user.save()
@@ -156,8 +166,8 @@ class DevDayEmailRecipientsTest(TestCase):
         )
 
     def test_form_choices(self):
-        self.assertEquals(len(self.recipients.get_form_choices()), 5,
-                          'should have five options')
+        self.assertEquals(len(self.recipients.get_form_choices()), 6,
+                          'should have six options')
 
     def test_choice_label_invalid(self):
         with self.assertRaises(ValidationError):
@@ -172,6 +182,7 @@ class DevDayEmailRecipientsTest(TestCase):
         self.assertNotIn(settings.ADMINUSER_EMAIL, addrs)
         self.assertIn('contact@example.com', addrs)
         self.assertIn('attendee@example.com', addrs)
+        self.assertIn('past-attendee@example.com', addrs)
         self.assertNotIn('nocontact@example.com', addrs)
         self.assertNotIn('draftspeaker@example.com', addrs)
         self.assertNotIn('inactivedraftspeaker@example.com', addrs)
@@ -182,6 +193,19 @@ class DevDayEmailRecipientsTest(TestCase):
         self.assertNotIn(settings.ADMINUSER_EMAIL, addrs)
         self.assertNotIn('contact@example.com', addrs)
         self.assertIn('attendee@example.com', addrs)
+        self.assertNotIn('past-attendee@example.com', addrs)
+        self.assertNotIn('inactive@example.com', addrs)
+        self.assertNotIn('nocontact@example.com', addrs)
+        self.assertNotIn('draftspeaker@example.com', addrs)
+        self.assertNotIn('inactivedraftspeaker@example.com', addrs)
+        self.assertNotIn('speaker@example.com', addrs)
+
+    def test_email_addresses_former_attendees(self):
+        addrs = self.recipients.get_email_addresses('past')
+        self.assertNotIn(settings.ADMINUSER_EMAIL, addrs)
+        self.assertIn('contact@example.com', addrs)
+        self.assertNotIn('attendee@example.com', addrs)
+        self.assertIn('past-attendee@example.com', addrs)
         self.assertNotIn('inactive@example.com', addrs)
         self.assertNotIn('nocontact@example.com', addrs)
         self.assertNotIn('draftspeaker@example.com', addrs)
@@ -193,6 +217,7 @@ class DevDayEmailRecipientsTest(TestCase):
         self.assertNotIn(settings.ADMINUSER_EMAIL, addrs)
         self.assertNotIn('contact@example.com', addrs)
         self.assertNotIn('attendee@example.com', addrs)
+        self.assertNotIn('past-attendee@example.com', addrs)
         self.assertIn('inactive@example.com', addrs)
         self.assertNotIn('nocontact@example.com', addrs)
         self.assertNotIn('draftspeaker@example.com', addrs)

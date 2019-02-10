@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-04 18:58+0000\n"
+"POT-Creation-Date: 2019-02-09 11:54+0000\n"
 "PO-Revision-Date: 2018-10-25 16:47+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -458,30 +458,34 @@ msgstr "Dev Day Teilnehmer {}"
 msgid "Dev Day <{}>"
 msgstr "Dev Day <{}>"
 
-#: devday/views.py:79
+#: devday/views.py:87
 msgid "past and present attendees"
 msgstr "Frühere und aktuelle Teilnehmer"
 
-#: devday/views.py:82
+#: devday/views.py:90
+msgid "past attendees"
+msgstr "Frühere Teilnehmer"
+
+#: devday/views.py:93
 msgid "current attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
-#: devday/views.py:85
+#: devday/views.py:96
 msgid "registered but inactive attendees"
 msgstr "registrierte aber inaktive Teilnehmer"
 
-#: devday/views.py:88
+#: devday/views.py:99
 msgid "candidate speakers"
 msgstr "Sprecher-Kandidaten"
 
-#: devday/views.py:91
+#: devday/views.py:102
 msgid "accepted speakers"
 msgstr "Angenommene Sprecher"
 
-#: devday/views.py:127
+#: devday/views.py:138
 msgid "Successfully sent message to {} {} recipients"
 msgstr "Email erfolgreich an {} {} versendet"
 
-#: devday/views.py:136
+#: devday/views.py:147
 msgid "Successfully sent message for {} to yourself"
 msgstr "Test-Email für {} erfolgreich an dich selbst gesendet"

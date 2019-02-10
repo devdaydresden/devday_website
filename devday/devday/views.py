@@ -45,6 +45,14 @@ class DevDayEmailRecipients:
         ).filter(is_active=True).order_by('email').distinct()
         return [u.email for u in users]
 
+    def choice_past_attendees(self):
+        users = User.objects.filter(
+            contact_permission_date__isnull=False
+        ).exclude(
+            attendees__event=Event.objects.current_event()
+        ).filter(is_active=True).order_by('email').distinct()
+        return [u.email for u in users]
+
     def choice_attendees(self):
         attendees = Attendee.objects.filter(
             event_id=Event.objects.current_event_id(),
@@ -78,6 +86,9 @@ class DevDayEmailRecipients:
         self.choices['users'] = {
             'label': _('past and present attendees'),
             'q': self.choice_all_attendees}
+        self.choices['past'] = {
+            'label': _('past attendees'),
+            'q': self.choice_past_attendees}
         self.choices['attendees'] = {
             'label': _('current attendees'),
             'q': self.choice_attendees}

@@ -14,7 +14,7 @@ Please keep this list of settings sorted alphabetically!
 """
 import os
 import mimetypes
-from requests import get
+import requests
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
@@ -39,15 +39,19 @@ def get_env_variable(var_name):
 
 
 _VAULT_DATA = None
-_VAULT_URL = vault_url = "{}/v1/secret/data/devday".format(
-    get_env_variable('VAULT_URL'))
+_VAULT_BASE_URL = get_env_variable('VAULT_URL')
+_VAULT_URL = "{}/v1/secret/data/devday".format(_VAULT_BASE_URL)
+_VAULT_RENEW_URL = "{}/v1/auth/token/renew-self".format(_VAULT_BASE_URL)
 
 
 def _fetch_from_vault():
     global _VAULT_DATA
     if not _VAULT_DATA:
-        r = get(_VAULT_URL,
-                headers={'x-vault-token': get_env_variable('VAULT_TOKEN')})
+        s = requests.Session()
+        s.headers.update({'x-vault-token': get_env_variable('VAULT_TOKEN')})
+        r = s.post(_VAULT_RENEW_URL, data='{}')
+        r.raise_for_status()
+        r = s.get(_VAULT_URL)
         r.raise_for_status()
         _VAULT_DATA = r.json()['data']['data']
     return _VAULT_DATA

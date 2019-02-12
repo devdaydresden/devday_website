@@ -10,12 +10,32 @@ DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
 export DOCKER_REGISTRY="${DOCKER_REGISTRY:-devdaydresden}/"  # note trailing /
 
 docker_compose_up() {
-  $DOCKER_COMPOSE up -d
+  $DOCKER_COMPOSE up -d vault
+  while ! http_proxy= curl --silent --fail http://localhost:8200/v1/sys/health; do
+    echo -n '.'
+  done
+  echo " vault is running"
   # fill vault with content
   http_proxy= \
-      curl -X POST -H "X-Vault-Token: devday_root" \
+      curl -X POST -H "X-Vault-Token: devday_root" --fail \
       --data '{"data": {"postgresql_password": "devday", "secret_key": "s3cr3t"}}' \
       http://localhost:8200/v1/secret/data/devday
+  http_proxy= \
+      curl -X PUT -H "X-Vault-Token: devday_root" --fail \
+      --data "$(printf '{"policy": "%s"}' \
+      "$(sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/\\n/g' -e 's/"/\\"/g' < docker/vault/devday_policy.hcl)")" \
+      http://localhost:8200/v1/sys/policy/devday
+  http_proxy= \
+      curl -X POST -H "X-Vault-Token: devday_root" --fail \
+      --data '{"allowed_policies": ["devday"]}"' \
+      http://localhost:8200/v1/auth/token/roles/devday-app
+  http_proxy= \
+      APP_TOKEN=$(curl -X POST --silent -H "X-Vault-Token: devday_root" --fail \
+      --data '{"policies": ["devday"], "metadata": {"user": "devday"}, "ttl": "24h", "renewable": true}' \
+      http://localhost:8200/v1/auth/token/create/devday-app | \
+      python -c 'import json, sys; print json.load(sys.stdin)["auth"]["client_token"]')
+  echo "VAULT_TOKEN=${APP_TOKEN}" > dev-env
+  $DOCKER_COMPOSE up -d
 }
 
 usage() {
@@ -65,6 +85,8 @@ shift $((OPTIND-1))
 
 cmd="$1"
 shift || true
+
+touch dev-env
 
 case "$cmd" in
   backup)

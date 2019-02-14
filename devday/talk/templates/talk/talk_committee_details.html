@@ -12,6 +12,15 @@
             border-radius: 6px;
             padding: 2px 6px;
           }
+          .talkformat-label-10 {
+            background-color: #280;
+          }
+          .talkformat-label-30 {
+            background-color: #046;
+          }
+          .talkformat-label-180 {
+            background-color: #000;
+          }
         </style>
     {% endaddtoblock %}
     {% addtoblock "js" %}
@@ -43,7 +52,7 @@
             <dt>{% trans "Remarks" %}</dt>
             <dd>{{ talk.remarks }}</dd>
             <dt>{% trans "Talk Formats" %}</dt>
-            <dd>{% for fmt in talk.talkformat.all %} <span class="talkformat-label">{{ fmt }}</span> {% endfor %}</dd>
+            <dd>{% for fmt in talk.talkformat.all %} <span class="talkformat-label talkformat-label-{{fmt.duration}}">{{ fmt }}</span> {% endfor %}</dd>
         </dl>
     </div>
     <div class="offset-lg-2 col-lg-8 col-md-12">

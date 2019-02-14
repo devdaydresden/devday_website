@@ -18,6 +18,15 @@
                         font-size: 75%;
                         white-space: nowrap;
                       }
+                      .talkformat-label-10 {
+                        background-color: #280;
+                      }
+                      .talkformat-label-30 {
+                        background-color: #046;
+                      }
+                      .talkformat-label-180 {
+                        background-color: #000;
+                      }
                     </style>
                 {% endaddtoblock %}
                 {% addtoblock "js" %}
@@ -39,7 +48,7 @@
                             <tr>
                                 <td><a href="{% url 'speaker_details' pk=talk.draft_speaker.pk %}">{{ talk.draft_speaker.name }}</a></td>
                                 <td><a href="{% url 'talk_committee_details' pk=talk.pk %}">{{ talk.title }}</a><br>
-                                {% for fmt in talk.talkformat.all %} <span class="talkformat-label">{{ fmt }}</span> {% endfor %}</td>
+                                {% for fmt in talk.talkformat.all %} <span class="talkformat-label talkformat-label-{{fmt.duration}}">{{ fmt }}</span> {% endfor %}</td>
                                 <td>
                                     {% if talk.average_score %}
                                         <input title="{% trans 'average vote' %}" id="talk-average-{{ talk.pk }}-id"

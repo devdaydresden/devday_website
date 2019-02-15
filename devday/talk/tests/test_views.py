@@ -754,6 +754,14 @@ class TestTalkSpeakerCommentDelete(LoginTestMixin, TestCase):
             pk=self.talk_comment.pk)
 
 
+class TestRedirectVideoView(TestCase):
+    def test_redirects_to_current_event_video_list(self):
+        response = self.client.get('/videos/')
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, '/{}/videos/'.format(
+            Event.objects.current_event().slug))
+
+
 class TestTalkListView(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -786,6 +794,13 @@ class TestTalkListView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.event.title)
 
+    def test_inactive_event(self):
+        event = event_testutils.create_test_event('Unpublished')
+        event.published = False
+        event.save()
+        response = self.client.get('/{}/talk/'.format(event.slug))
+        self.assertEquals(response.status_code, 404)
+
     def test_talk_list_preview_view(self):
         response = self.client.get(reverse(
             'session_list_preview',
@@ -805,6 +820,15 @@ class TestTalkListView(TestCase):
             self.event.title)
         self.assertEquals(len(root.findall('day/room')), 4)
         self.assertEquals(len(root.findall('day/room/event')), 14)
+
+
+class TestInfoBeamerXMLView(TestCase):
+    def test_unspecified_event_redirects_to_current(self):
+        response = self.client.get('/schedule.xml')
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, reverse(
+            'infobeamer',
+            kwargs={'event': Event.objects.current_event().slug}))
 
 
 class TestTalkVideoView(TestCase):

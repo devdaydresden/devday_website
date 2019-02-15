@@ -35,3 +35,4 @@ vault-*.json
 /devday/media/
 dev-env
 .python-version
+.env

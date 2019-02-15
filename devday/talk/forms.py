@@ -5,7 +5,8 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from talk.models import Talk, TalkFormat, TalkComment, Vote
+from attendee.models import Attendee
+from talk.models import Talk, TalkFormat, TalkComment, Vote, SessionReservation
 
 User = get_user_model()
 
@@ -151,3 +152,12 @@ class TalkVoteForm(forms.models.ModelForm):
     class Meta:
         model = Vote
         fields = ["score"]
+
+
+class SessionReservationForm(forms.models.ModelForm):
+    attendee = forms.ModelChoiceField(queryset=Attendee.objects.select_related(
+        'user', 'event').distinct())
+
+    class Meta:
+        model = SessionReservation
+        fields = ['talk_slot', 'attendee']

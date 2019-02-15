@@ -650,12 +650,13 @@ class EventSessionSummaryView(StaffUserMixin, BaseListView):
             writer = csv.writer(output, delimiter=';')
             writer.writerow(
                 ('Speaker', 'Organization', 'Title', 'Abstract', 'Remarks',
-                 'Formats', 'Avg. Score', 'Comments'))
+                 'Formats', 'Avg. Score', 'Total Score', 'Comments'))
             writer.writerows([
                 [t.draft_speaker.name, t.draft_speaker.organization,
                  t.title, t.abstract, t.remarks,
                  ", ".join([str(f) for f in t.talkformat.all()]),
                  t.vote_set.aggregate(Avg('score'))['score__avg'],
+                 t.vote_set.aggregate(Sum('score'))['score__sum'],
                  "\n".join(
                      ["%s: %s (%s)" % (c.commenter, c.comment, c.modified)
                       for c in t.talkcomment_set.order_by('modified').all()])]

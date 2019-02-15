@@ -872,3 +872,47 @@ class TestTalkVideoView(TestCase):
         self.assertIn('talk_list', response.context)
         self.assertIn(talk1, response.context['talk_list'])
         self.assertIn(talk2, response.context['talk_list'])
+
+
+class TestEventSessionSummaryView(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.staff, cls.staff_password = attendee_testutils.create_test_user(
+            email='staff@example.org', is_staff=True)
+        cls.user, cls.user_password = attendee_testutils.create_test_user()
+        cls.event = Event.objects.current_event()
+
+    def setUp(self):
+        self.speaker, _, _ = speaker_testutils.create_test_speaker(
+            email='testspeaker@example.org', name='Test Speaker',
+            organization='Test Org')
+        self.talk = Talk.objects.create(
+            draft_speaker=self.speaker, title='A Talk', event=self.event
+        )
+        self.url = reverse('admin_csv_session_summary')
+
+    def test_get_session_summary_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 302)
+        self.assertEquals(
+            r.url, '/accounts/login/?next={}'.format(self.url),
+            'should redirect to login page')
+
+    def test_get_session_summary_regular_user(self):
+        self.client.login(username=self.user, password=self.user_password)
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 302)
+        self.assertEquals(
+            r.url, '/accounts/login/?next={}'.format(self.url),
+            'should redirect to login page')
+
+    def test_get_session_summary_staff(self):
+        self.client.login(
+            username=self.staff.email, password=self.staff_password)
+        r = self.client.get(self.url)
+        self.assertEquals(
+            r.status_code, 200,
+            'should retrieve data from {}'.format(self.url))
+        self.assertIn(
+            self.talk.title, r.content.decode(),
+            'talk should be listed in session summary')

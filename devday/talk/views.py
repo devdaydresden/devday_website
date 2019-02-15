@@ -1,6 +1,8 @@
+import csv
 import logging
 import xml.etree.ElementTree as ElementTree
 from datetime import date, timedelta
+from io import StringIO
 
 from django.conf import settings
 from django.contrib import messages
@@ -24,6 +26,7 @@ from django.views.generic.edit import (
 from django.views.generic.list import BaseListView
 
 from attendee.forms import DevDayRegistrationForm
+from attendee.views import StaffUserMixin
 from event.models import Event
 from speaker.models import Speaker
 from talk.forms import (
@@ -631,3 +634,36 @@ class RedirectVideoView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         return reverse(
             'video_list', kwargs={'event': Event.objects.current_event().slug})
+
+
+class EventSessionSummaryView(StaffUserMixin, BaseListView):
+    model = Talk
+
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            event=Event.objects.current_event()).select_related(
+            'draft_speaker').order_by('title')
+
+    def render_to_response(self, context):
+        output = StringIO()
+        try:
+            writer = csv.writer(output, delimiter=';')
+            writer.writerow(
+                ('Speaker', 'Organization', 'Title', 'Abstract', 'Remarks',
+                 'Formats', 'Avg. Score', 'Comments'))
+            writer.writerows([
+                [t.draft_speaker.name, t.draft_speaker.organization,
+                 t.title, t.abstract, t.remarks,
+                 ", ".join([str(f) for f in t.talkformat.all()]),
+                 t.vote_set.aggregate(Avg('score'))['score__avg'],
+                 "\n".join(
+                     ["%s: %s (%s)" % (c.commenter, c.comment, c.modified)
+                      for c in t.talkcomment_set.order_by('modified').all()])]
+                for t in context.get('object_list', [])])
+            response = HttpResponse(
+                output.getvalue(), content_type="txt/csv; charset=utf-8")
+            response['Content-Disposition'] \
+                = 'attachment; filename=session-summary.csv'
+            return response
+        finally:
+            output.close()

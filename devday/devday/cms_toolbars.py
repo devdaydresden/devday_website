@@ -25,3 +25,6 @@ class DevDayToolbar(DevDayToolbarBase):
         self.add_link_item_alphabetically(
             menu, _('Current event attendees'),
             reverse('admin_csv_attendees'))
+        self.add_link_item_alphabetically(
+            menu, _('Current event session summary'),
+            reverse('admin_csv_session_summary'))

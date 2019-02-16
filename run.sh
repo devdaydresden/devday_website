@@ -33,7 +33,7 @@ docker_compose_up() {
       APP_TOKEN=$(curl -X POST --silent -H "X-Vault-Token: devday_root" --fail \
       --data '{"policies": ["devday"], "metadata": {"user": "devday"}, "ttl": "24h", "renewable": true}' \
       http://localhost:8200/v1/auth/token/create/devday-app | \
-      python -c 'import json, sys; print json.load(sys.stdin)["auth"]["client_token"]')
+      python -c 'from __future__ import print_function; import json, sys; print(json.load(sys.stdin)["auth"]["client_token"])')
   echo "VAULT_TOKEN=${APP_TOKEN}" > dev-env
   $DOCKER_COMPOSE up -d
 }

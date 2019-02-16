@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^', include('speaker.urls')),
     url(r'^', include('cms.urls')),
     url(r'^csvviews/', include('attendee.csv_urls')),
+    url(r'^csvviews/', include('talk.csv_urls')),
 ]
 
 # This is only needed when using runserver.

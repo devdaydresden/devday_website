@@ -33,6 +33,7 @@ luhn = "*"
 lxml = "*"
 stringcase = "*"
 django-ordered-model = "<3.0"
+django-formtools = "*"
 
 [dev-packages]
 coverage = "*"

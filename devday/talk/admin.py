@@ -9,19 +9,44 @@ from django.utils.translation import gettext_lazy as _, ngettext_lazy
 from formtools.wizard.views import SessionWizardView
 
 from event.models import Event
+from speaker.models import Speaker, PublishedSpeaker
 from talk.forms import SessionReservationForm, TalkSlotForm, \
     AddTalkSlotFormStep2, AddTalkSlotFormStep1
 from .models import (Room, Talk, TalkFormat, TalkMedia, TalkSlot, TimeSlot,
                      Track, SessionReservation)
 
 
+class PrefetchAdmin(object):
+    # noinspection PyUnresolvedReferences
+    def get_field_queryset(self, db, db_field, request):
+        qs = super().get_field_queryset(db, db_field, request)
+        if db_field.name in self.queryset_prefetch_fields:
+            prefetch_fields = self.queryset_prefetch_fields[db_field.name]
+            if qs is None:
+                qs = prefetch_fields[0].objects.select_related(
+                    *prefetch_fields[1])
+            else:
+                qs = qs.select_related(
+                    *prefetch_fields[1])
+        return qs
+
+
 class TalkMediaInline(admin.StackedInline):
     model = TalkMedia
 
 
-class TalkSlotInline(admin.StackedInline):
+class TalkSlotInline(PrefetchAdmin, admin.StackedInline):
     model = TalkSlot
     fields = (('room', 'time'),)
+
+    queryset_prefetch_fields = {
+        'room': (Room, ('event',)),
+        'time': (TimeSlot, ('event',)),
+    }
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'room', 'time', 'room__event')
 
 
 @admin.register(Room)
@@ -32,7 +57,7 @@ class RoomAdmin(admin.ModelAdmin):
 
 
 @admin.register(Talk)
-class TalkAdmin(admin.ModelAdmin):
+class TalkAdmin(PrefetchAdmin, admin.ModelAdmin):
     list_display = ('title', 'draft_speaker', 'event', 'track')
     search_fields = (
         'title', 'draft_speaker__name', 'event__title',
@@ -48,6 +73,20 @@ class TalkAdmin(admin.ModelAdmin):
     filter_horizontal = ('talkformat',)
     prepopulated_fields = {'slug': ("title",)}
     actions = ['publish_talks']
+
+    queryset_prefetch_fields = {
+        'draft_speaker': (
+            Speaker, ('user',)),
+        'published_speaker': (
+            PublishedSpeaker, ('speaker', 'speaker__user', 'event')),
+        'track': (
+            Track, ('event',)),
+    }
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'event', 'draft_speaker', 'published_speaker', 'track',
+            'track__event')
 
     def publish_talks(self, request, queryset):
         if 'apply' in request.POST:

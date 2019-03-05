@@ -2,11 +2,14 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from attendee.models import Attendee
+from attendee.tests import attendee_testutils
 from devday.utils.devdata import DevData
 from event.models import Event
 from speaker.tests import speaker_testutils
 from talk.forms import AddTalkSlotFormStep1, AddTalkSlotFormStep2
-from talk.models import Talk, Track, TimeSlot, Room, TalkSlot
+from talk.models import Talk, Track, TimeSlot, Room, TalkSlot, \
+    SessionReservation
 
 User = get_user_model()
 
@@ -128,7 +131,6 @@ class AdminTest(TestCase):
             '1-talk': str(talk.pk),
             '1-time': str(time_slot.pk),
             '1-room': str(room.pk),
-            '1-spots': '0',
             'submit': 'Submit',
         })
         self.assertRedirects(
@@ -137,3 +139,25 @@ class AdminTest(TestCase):
         self.assertEquals(talk_slot.talk_id, talk.id)
         self.assertEquals(talk_slot.room_id, room.id)
         self.assertEquals(talk_slot.time_id, time_slot.id)
+
+    def test_session_reservation_admin(self):
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+
+        talk = Talk.objects.create(
+            draft_speaker=speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=self.event
+        )
+        track = Track.objects.filter(event=self.event).first()
+        talk.publish(track)
+
+        user, _ = attendee_testutils.create_test_user('test@example.org')
+        attendee = Attendee.objects.create(user=user, event=self.event)
+
+        SessionReservation.objects.create(attendee=attendee, talk=talk)
+
+        response = self.client.get(
+            reverse('admin:talk_sessionreservation_changelist'))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context['cl'].result_count, 1,
+                          'should list 1 session registration')
+        self.assertTrue(response.is_rendered)

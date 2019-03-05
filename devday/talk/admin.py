@@ -164,13 +164,13 @@ class TrackAdmin(admin.ModelAdmin):
 class SessionReservationAdmin(admin.ModelAdmin):
     list_display = ('email', 'talk_title', 'is_confirmed')
     list_select_related = (
-        'attendee', 'talk_slot', 'talk_slot__talk', 'attendee__user')
+        'attendee', 'talk', 'attendee__user')
     list_filter = ('attendee__event', 'is_confirmed')
-    ordering = ('talk_slot__talk__title',)
+    ordering = ('talk__title', 'attendee__user__email')
     form = SessionReservationForm
 
     def email(self, obj):
         return obj.attendee.user.email
 
     def talk_title(self, obj):
-        return obj.talk_slot.talk.title
+        return obj.talk.title

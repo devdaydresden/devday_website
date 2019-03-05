@@ -74,6 +74,17 @@ class TalkTest(TestCase):
                 _('A draft speaker or a published speaker is required.')):
             talk.clean()
 
+    def test_is_limited_default(self):
+        talk = Talk.objects.create(
+            title='Test', abstract='Test abstract', event=self.event)
+        self.assertFalse(talk.is_limited)
+
+    def test_is_limited_with_spots(self):
+        talk = Talk.objects.create(
+            title='Test', abstract='Test abstract', event=self.event,
+            spots=10)
+        self.assertTrue(talk.is_limited)
+
 
 class VoteTest(TestCase):
     def setUp(self):

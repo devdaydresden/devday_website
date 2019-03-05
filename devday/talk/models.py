@@ -92,6 +92,10 @@ class Talk(models.Model):
         else:
             return "{} - {}".format(self.draft_speaker, self.title)
 
+    @property
+    def is_limited(self):
+        return self.spots > 0
+
 
 class TalkMedia(models.Model):
     talk = models.OneToOneField(Talk, related_name='media')
@@ -184,9 +188,6 @@ class TalkSlot(TimeStampedModel):
 
     class Meta:
         unique_together = (('room', 'time'),)
-
-    def is_limited(self):
-        return self.spots > 0
 
     def __str__(self):
         return "{} {}".format(self.room, self.time)

@@ -21,7 +21,7 @@ class TalkMediaInline(admin.StackedInline):
 
 class TalkSlotInline(admin.StackedInline):
     model = TalkSlot
-    fields = (('room', 'time', 'spots'),)
+    fields = (('room', 'time'),)
 
 
 @admin.register(Room)
@@ -101,8 +101,7 @@ class AddTalkSlotView(SessionWizardView):
     def done(self, form_list, **kwargs):
         data = self.get_all_cleaned_data()
         TalkSlot.objects.create(
-            talk=data['talk'], room=data['room'], time=data['time'],
-            spots=data['spots'])
+            talk=data['talk'], room=data['room'], time=data['time'])
 
         kwargs['admin'].message_user(
             self.request, _("Talk slot created successfully"))
@@ -115,7 +114,7 @@ create_talk_slot = AddTalkSlotView.as_view()
 
 @admin.register(TalkSlot)
 class TalkSlotAdmin(admin.ModelAdmin):
-    list_display = ['time', 'event', 'room', 'talk', 'spots']
+    list_display = ['time', 'event', 'room', 'talk']
     list_filter = ['time__event']
     list_select_related = (
         'time', 'talk', 'room', 'time__event', 'talk__published_speaker',

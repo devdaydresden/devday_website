@@ -8,8 +8,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from attendee.models import Attendee
 from event.models import Event
-from talk.models import Talk, TalkFormat, TalkComment, Vote, SessionReservation, \
-    TalkSlot, TimeSlot, Room
+from talk.models import (
+    Talk, TalkFormat, TalkComment, Vote, SessionReservation, TalkSlot, TimeSlot,
+    Room)
 
 User = get_user_model()
 
@@ -163,7 +164,7 @@ class SessionReservationForm(forms.ModelForm):
 
     class Meta:
         model = SessionReservation
-        fields = ['talk_slot', 'attendee']
+        fields = ['talk', 'attendee']
 
 
 class TalkSlotForm(forms.ModelForm):
@@ -175,7 +176,7 @@ class TalkSlotForm(forms.ModelForm):
 
     class Meta:
         model = TalkSlot
-        fields = ["talk", "room", "time", "spots"]
+        fields = ["talk", "room", "time"]
 
 
 class AddTalkSlotFormStep1(forms.Form):
@@ -186,7 +187,7 @@ class AddTalkSlotFormStep1(forms.Form):
 class AddTalkSlotFormStep2(forms.ModelForm):
     class Meta:
         model = TalkSlot
-        fields = ('talk', 'spots', 'room', 'time')
+        fields = ('talk', 'room', 'time')
 
     def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
                  initial=None, error_class=ErrorList, label_suffix=None,

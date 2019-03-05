@@ -60,6 +60,9 @@ class Talk(models.Model):
         'TalkFormat', verbose_name=_('Talk Formats'))
     event = models.ForeignKey(
         Event, verbose_name=_('Event'), null=False, blank=False)
+    spots = models.PositiveIntegerField(
+        default=0, verbose_name=_('Spots'),
+        help_text=_('Maximum number of attendees for this talk'))
 
     class Meta:
         verbose_name = _("Session")
@@ -178,9 +181,6 @@ class TalkSlot(TimeStampedModel):
     talk = models.OneToOneField(Talk)
     room = models.ForeignKey(Room)
     time = models.ForeignKey(TimeSlot)
-    spots = models.PositiveIntegerField(
-        default=0, verbose_name=_('Spots'),
-        help_text=_('Maximum number of attendees for this talk'))
 
     class Meta:
         unique_together = (('room', 'time'),)
@@ -214,8 +214,8 @@ class SessionReservation(TimeStampedModel):
         Attendee, verbose_name=_("Attendee"), null=False,
         limit_choices_to={'event__published': True},
         on_delete=models.CASCADE)
-    talk_slot = models.ForeignKey(
-        TalkSlot, verbose_name=_("Talk"), null=False,
+    talk = models.ForeignKey(
+        Talk, verbose_name=_("Talk"), null=False,
         limit_choices_to={'spots__gt': 0},
         on_delete=models.CASCADE)
     is_confirmed = models.BooleanField(
@@ -224,4 +224,4 @@ class SessionReservation(TimeStampedModel):
     class Meta:
         verbose_name = _("Session reservation")
         verbose_name_plural = _("Session reservations")
-        unique_together = [('attendee', 'talk_slot')]
+        unique_together = [('attendee', 'talk')]

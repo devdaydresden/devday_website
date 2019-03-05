@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                      'verbose_name_plural': 'Talk Format'},
         ),
         migrations.AddField(
-            model_name='talkslot',
+            model_name='talk',
             name='spots',
             field=models.PositiveIntegerField(
                 default=0,
@@ -45,9 +45,9 @@ class Migration(migrations.Migration):
                  models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
                                    to='attendee.Attendee',
                                    verbose_name='Attendee')),
-                ('talk_slot',
+                ('talk',
                  models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                   to='talk.TalkSlot', verbose_name='Talk')),
+                                   to='talk.Talk', verbose_name='Talk')),
             ],
             options={
                 'verbose_name': 'Session reservation',
@@ -56,6 +56,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='sessionreservation',
-            unique_together={('attendee', 'talk_slot')},
+            unique_together={('attendee', 'talk')},
         ),
     ]

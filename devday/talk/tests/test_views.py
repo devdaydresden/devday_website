@@ -787,7 +787,7 @@ class TestTalkListView(TestCase):
         devdata.create_time_slots(events=[cls.event])
         devdata.create_talk_slots(events=[cls.event])
 
-        cls.url = '/{}/talk/'.format(cls.event.slug)
+        cls.url = '/{}/'.format(cls.event.slug)
 
     def test_talk_list_view(self):
         response = self.client.get(self.url)
@@ -798,7 +798,7 @@ class TestTalkListView(TestCase):
         event = event_testutils.create_test_event('Unpublished')
         event.published = False
         event.save()
-        response = self.client.get('/{}/talk/'.format(event.slug))
+        response = self.client.get('/{}/'.format(event.slug))
         self.assertEquals(response.status_code, 404)
 
     def test_talk_list_preview_view(self):
@@ -820,6 +820,11 @@ class TestTalkListView(TestCase):
             self.event.title)
         self.assertEquals(len(root.findall('day/room')), 4)
         self.assertEquals(len(root.findall('day/room/event')), 14)
+
+    def test_legacy_list_url(self):
+        response = self.client.get(self.url + 'talk/')
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, self.url)
 
 
 class TestInfoBeamerXMLView(TestCase):

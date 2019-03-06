@@ -255,10 +255,6 @@ msgid "Speaker profile"
 msgstr "Sprecherprofil"
 
 #: talk/templates/talk/speaker_details.html:7
-#, fuzzy, python-format
-#| msgid ""
-#| "Speaker profile for\n"
-#| "                    %(username)s"
 msgid ""
 "Speaker profile for\n"
 "                %(username)s"

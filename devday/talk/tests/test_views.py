@@ -826,6 +826,12 @@ class TestTalkListView(TestCase):
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response.url, self.url)
 
+    def test_talk_archive_list_view(self):
+        event = Event.objects.all_but_current().first()
+        response = self.client.get('/{}/'.format(event.slug))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, event.title)
+
 
 class TestInfoBeamerXMLView(TestCase):
     def test_unspecified_event_redirects_to_current(self):

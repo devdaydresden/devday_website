@@ -60,6 +60,9 @@ class Talk(models.Model):
         'TalkFormat', verbose_name=_('Talk Formats'))
     event = models.ForeignKey(
         Event, verbose_name=_('Event'), null=False, blank=False)
+    spots = models.PositiveIntegerField(
+        default=0, verbose_name=_('Spots'),
+        help_text=_('Maximum number of attendees for this talk'))
 
     class Meta:
         verbose_name = _("Session")
@@ -88,6 +91,10 @@ class Talk(models.Model):
             return "{} - {}".format(self.published_speaker, self.title)
         else:
             return "{} - {}".format(self.draft_speaker, self.title)
+
+    @property
+    def is_limited(self):
+        return self.spots > 0
 
 
 class TalkMedia(models.Model):
@@ -201,3 +208,21 @@ class TalkFormat(models.Model):
     def __str__(self):
         h, m = divmod(self.duration, 60)
         return '{} ({:d}:{:02d}h)'.format(self.name, h, m)
+
+
+class SessionReservation(TimeStampedModel):
+    attendee = models.ForeignKey(
+        Attendee, verbose_name=_("Attendee"), null=False,
+        limit_choices_to={'event__published': True},
+        on_delete=models.CASCADE)
+    talk = models.ForeignKey(
+        Talk, verbose_name=_("Talk"), null=False,
+        limit_choices_to={'spots__gt': 0},
+        on_delete=models.CASCADE)
+    is_confirmed = models.BooleanField(
+        verbose_name=_("Confirmed"), default=False)
+
+    class Meta:
+        verbose_name = _("Session reservation")
+        verbose_name_plural = _("Session reservations")
+        unique_together = [('attendee', 'talk')]

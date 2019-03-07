@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-06 15:14+0000\n"
-"PO-Revision-Date: 2018-10-25 11:53+0200\n"
+"POT-Creation-Date: 2019-02-25 13:46+0000\n"
+"PO-Revision-Date: 2019-02-25 14:49+0100\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,23 +16,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:49 talk/models.py:33 talk/models.py:62 talk/models.py:144
+#: talk/admin.py:64
+#, python-format
+msgid "One Session has been published."
+msgid_plural "%(count)d sessions have been published."
+msgstr[0] "One Session has been published."
+msgstr[1] "%(count)d Sessions wurden veröffentlicht."
+
+#: talk/admin.py:75
+msgid "Publish selected sessions"
+msgstr "Ausgewählte Sessions veröffentlichen"
+
+#: talk/admin.py:130 talk/models.py:33 talk/models.py:62 talk/models.py:144
 #: talk/models.py:164
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: talk/forms.py:62
+#: talk/forms.py:66
 msgid "Submit"
 msgstr "Session einreichen"
 
-#: talk/forms.py:87
+#: talk/forms.py:91
 msgid "Update session"
 msgstr "Session aktualisieren"
 
-#: talk/forms.py:116 talk/forms.py:142
+#: talk/forms.py:120 talk/forms.py:146
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
@@ -160,13 +171,42 @@ msgstr "Zeitslot"
 msgid "Time slots"
 msgstr "Zeitslots"
 
-#: talk/models.py:193
+#: talk/models.py:182
+msgid "Spots"
+msgstr "Plätze"
+
+#: talk/models.py:183
+msgid "Maximum number of attendees for this talk"
+msgstr "Maximale Anzahl von Teilnehmern für diese Session"
+
+#: talk/models.py:199
 msgid "Duration"
 msgstr "Länge"
 
 #: talk/models.py:198 talk/models.py:199
 msgid "Talk Format"
 msgstr "Session-Format"
+
+#: talk/models.py:214
+msgid "Attendee"
+msgstr "Teilnehmer"
+
+#: talk/models.py:218 talk/templates/talk/talk_committee_details.html:3
+#: talk/templates/talk/talk_details.html:3
+msgid "Talk"
+msgstr "Session"
+
+#: talk/models.py:222
+msgid "Confirmed"
+msgstr "Bestätigt"
+
+#: talk/models.py:225
+msgid "Session reservation"
+msgstr "Platzreservierung"
+
+#: talk/models.py:226
+msgid "Session reservations"
+msgstr "Platzreservierungen"
 
 #: talk/templates/talk/prepare_submit_session.html:11
 msgid "You already have an account"
@@ -255,10 +295,13 @@ msgid "Speaker profile"
 msgstr "Sprecherprofil"
 
 #: talk/templates/talk/speaker_details.html:7
+#, python-format
 msgid ""
 "Speaker profile for\n"
 "                %(username)s"
-msgstr "Sprecherprofil für %(username)s"
+msgstr ""
+"Sprecherprofil für\n"
+"\t\t%(username)s"
 
 #: talk/templates/talk/speaker_details.html:13
 msgid "Email address"
@@ -385,11 +428,6 @@ msgstr ""
 #, python-format
 msgid "[devday] New comment on your talk submission %(talk_title)s"
 msgstr "[devday] Neuer Kommentar für deine Sessioneinreichung %(talk_title)s"
-
-#: talk/templates/talk/talk_committee_details.html:3
-#: talk/templates/talk/talk_details.html:3
-msgid "Talk"
-msgstr "Session"
 
 #: talk/templates/talk/talk_committee_details.html:59
 msgid "Votes"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-15 17:46+0100\n"
-"PO-Revision-Date: 2019-02-15 17:47+0100\n"
+"POT-Creation-Date: 2019-02-25 13:46+0000\n"
+"PO-Revision-Date: 2019-02-25 14:51+0100\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -453,6 +453,34 @@ msgstr ""
 #: devday/templates/django_registration/registration_form.html:3
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
+
+#: devday/templates/talk/admin/publish_talks.html:8
+msgid ""
+"You are about to publish the following items. Please select a track for each "
+"item."
+msgstr ""
+"Du bist dabei die folgenden Einträge zu veröffentlichen. Bitte wähle einen "
+"Track für jeden Eintrag."
+
+#: devday/templates/talk/admin/publish_talks.html:35
+msgid "Publish talks"
+msgstr "Sessions veröffentlichen"
+
+#: devday/templates/talk/admin/talkslot_add_done.html:5
+msgid "Talk slot created successfully"
+msgstr "Talk-Slot erfolgreich angelegt"
+
+#: devday/templates/talk/admin/talkslot_add_form.html:24
+msgid "first step"
+msgstr "erster Schritt"
+
+#: devday/templates/talk/admin/talkslot_add_form.html:26
+msgid "prev step"
+msgstr "vorheriger Schritt"
+
+#: devday/templates/talk/admin/talkslot_add_form.html:28
+msgid "submit"
+msgstr "Abschicken"
 
 #: devday/utils/html_mail.py:51
 msgid "Dev Day Attendees {}"

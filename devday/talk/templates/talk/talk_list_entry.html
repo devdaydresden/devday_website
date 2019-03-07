@@ -1,8 +1,10 @@
 {% load i18n %}
-<span class="talk-entry">
-    <span class="track">{% trans "Track" %} «{{ talk.track.name }}»</span>
-    <span class="title"><a
-            href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a></span>
-    <span class="speaker"><a
-            href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a></span>
-</span>
+<div class="talk-entry">
+  <h3 class="title"><a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
+    {% if talk.media.youtube %}<i class="fab fa-youtube" aria-hidden="true"></i>{% endif %}
+    {% if talk.media.slideshare %}<i class="fab fa-slideshare"></i>{% endif %}
+    {% if talk.media.codelink %}<i class="fas fa-file-code"></i>{% endif %}
+  </h3>
+  <h4><a href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a></h4>
+  <p>{{ talk.abstract|truncatechars:80 }}</p>
+</div>

@@ -527,7 +527,8 @@ tiefer in ein Thema einsteigen.</p>
             for time_slot in session_slots:
                 for room in rooms:
                     talk = talks.pop()
-                    talk.media = TalkMedia.objects.create(talk=talk)
+                    talk.media = TalkMedia()
+                    talk.media.talk = talk
                     if self.rng.randint(0, 2) > 0:
                         talk.media.youtube = 'exampleid'
                     if self.rng.randint(0, 2) > 0:

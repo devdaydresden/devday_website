@@ -222,16 +222,18 @@ class TalkListView(ListView):
 
     def get_queryset(self):
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        return super(TalkListView, self).get_queryset().filter(
+        qs = super(TalkListView, self).get_queryset().filter(
             track__isnull=False, event=event,
             talkslot__time__event=event).select_related(
             'track', 'published_speaker', 'event',
             'talkslot', 'talkslot__time', 'talkslot__room'
-        ).order_by('talkslot__time__start_time', 'talkslot__room__name')
+        )
+        if event == Event.objects.current_event():
+            return qs.order_by(
+                'talkslot__time__start_time', 'talkslot__room__name')
+        return qs.order_by('title')
 
-    def get_context_data(self, **kwargs):
-        context = super(TalkListView, self).get_context_data(**kwargs)
-        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+    def get_context_data_for_grid(self, context, event, **kwargs):
         talks = context.get('talk_list', [])
         talks_by_time_and_room = {}
         talks_by_room_and_time = {}
@@ -262,6 +264,25 @@ class TalkListView(ListView):
             }
         )
         return context
+
+    def get_context_data_for_list(self, context, event, **kwargs):
+        context.update({
+            'event': event,
+        })
+        return context
+
+    def get_context_data(self, **kwargs):
+        context = super(TalkListView, self).get_context_data(**kwargs)
+        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        if event == Event.objects.current_event():
+            return self.get_context_data_for_grid(context, event, **kwargs)
+        return self.get_context_data_for_list(context, event, **kwargs)
+
+    def get_template_names(self):
+        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        if event == Event.objects.current_event():
+            return 'talk/talk_grid.html'
+        return 'talk/talk_list.html'
 
 
 class TalkListPreviewView(ListView):

@@ -75,7 +75,7 @@ msgstr "XXL"
 msgid "XXXL"
 msgstr "XXXL"
 
-#: talk/models.py:36 talk/templates/talk/talk_list_entry.html:3
+#: talk/models.py:36 talk/templates/talk/talk_grid_entry.html:3
 msgid "Track"
 msgstr "Track"
 
@@ -183,7 +183,7 @@ msgstr "Maximale Anzahl von Teilnehmern für diese Session"
 msgid "Duration"
 msgstr "Länge"
 
-#: talk/models.py:204 talk/models.py:205
+#: talk/models.py:198 talk/models.py:199
 msgid "Talk Format"
 msgstr "Session-Format"
 
@@ -538,16 +538,17 @@ msgstr "Session einreichen"
 msgid "Submit a session for %(event_title)s"
 msgstr "Eine Session für %(event_title)s einreichen"
 
-#: talk/templates/talk/talk_list.html:3 talk/templates/talk/talk_list.html:13
+#: talk/templates/talk/talk_grid.html:3 talk/templates/talk/talk_grid.html:13
+#: talk/templates/talk/talk_list.html:3
 #: talk/templates/talk/talk_list_preview.html:3
 msgid "Schedule"
 msgstr "Sessionplan"
 
-#: talk/templates/talk/talk_list.html:9
+#: talk/templates/talk/talk_grid.html:9
 msgid "Videos, Slides and Code"
 msgstr "Videos, Folien und Beispielcode"
 
-#: talk/templates/talk/talk_list.html:11
+#: talk/templates/talk/talk_grid.html:11
 #, python-format
 msgid ""
 "See <a href=\"%(video_url)s\">videos, slides and example code</a> from this "
@@ -556,21 +557,25 @@ msgstr ""
 "Wir haben <a href=\"%(video_url)s\">Videos, Folien und Beispielcode</a> zu "
 "dieser Veranstaltung veröffentlich."
 
-#: talk/templates/talk/talk_list.html:19
+#: talk/templates/talk/talk_grid.html:19
 msgid "Time"
 msgstr "Zeit"
 
-#: talk/templates/talk/talk_list.html:50
+#: talk/templates/talk/talk_grid.html:50
 msgid "Nothing scheduled here"
 msgstr "Hier ist noch nichts geplant"
 
-#: talk/templates/talk/talk_list.html:58
+#: talk/templates/talk/talk_grid.html:58
 msgid "no schedule defined yet"
 msgstr "Es wurde noch kein Sessionplan definiert"
 
-#: talk/templates/talk/talk_list.html:61
+#: talk/templates/talk/talk_grid.html:61
 msgid "Unscheduled talks"
 msgstr "Sessions ohne Zuordnung"
+
+#: talk/templates/talk/talk_list.html:8
+msgid "Archive: List of Talks at"
+msgstr "Archiv: Liste der Vorträge vom "
 
 #: talk/templates/talk/talk_list_preview.html:7
 msgid "Schedule Preview"

@@ -35,7 +35,7 @@ from devday.utils.words import Words
 from event.models import Event
 from speaker.models import Speaker
 from talk.models import (
-    Room, Talk, TalkFormat, TalkSlot, TimeSlot, Track, Vote)
+    Room, Talk, TalkFormat, TalkMedia, TalkSlot, TimeSlot, Track, Vote)
 from twitterfeed.models import Tweet, TwitterProfileImage
 
 LAST_NAMES = [
@@ -527,6 +527,14 @@ tiefer in ein Thema einsteigen.</p>
             for time_slot in session_slots:
                 for room in rooms:
                     talk = talks.pop()
+                    talk.media = TalkMedia.objects.create(talk=talk)
+                    if self.rng.randint(0, 2) > 0:
+                        talk.media.youtube = 'exampleid'
+                    if self.rng.randint(0, 2) > 0:
+                        talk.media.slideshare = 'exampleid'
+                    if self.rng.randint(0, 2) > 0:
+                        talk.media.codelink = 'https://git.example.com/'
+                    talk.media.save()
                     TalkSlot.objects.create(
                         time=time_slot, room=room, talk=talk)
                     talk.publish(self.rng.choice(tracks))

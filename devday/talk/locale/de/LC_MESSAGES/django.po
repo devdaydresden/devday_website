@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-07 16:50+0000\n"
-"PO-Revision-Date: 2019-03-07 17:54+0100\n"
+"POT-Creation-Date: 2019-03-08 15:49+0000\n"
+"PO-Revision-Date: 2019-03-08 16:53+0100\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: talk/admin.py:104
@@ -123,7 +123,7 @@ msgstr "Plätze"
 msgid "Maximum number of attendees for this talk"
 msgstr "Maximale Anzahl von Teilnehmern für diese Session"
 
-#: talk/models.py:68
+#: talk/models.py:68 talk/templates/talk/talk_voting.html:16
 msgid "Session"
 msgstr "Session"
 
@@ -495,6 +495,8 @@ msgid "No votes yet"
 msgstr "Noch keine Bewertungen"
 
 #: talk/templates/talk/talk_committee_details.html:67
+#: talk/templates/talk/talk_voting.html:18
+#: talk/templates/talk/talk_voting.html:31
 msgid "Your vote"
 msgstr "Deine Bewertung"
 
@@ -503,6 +505,7 @@ msgid "your vote"
 msgstr "deine Bewertung"
 
 #: talk/templates/talk/talk_committee_details.html:88
+#: talk/templates/talk/talk_voting.html:80
 msgid "Delete"
 msgstr "Löschen"
 
@@ -608,15 +611,15 @@ msgstr ""
 msgid "Time"
 msgstr "Zeit"
 
-#: talk/templates/talk/talk_grid.html:50
+#: talk/templates/talk/talk_grid.html:53
 msgid "Nothing scheduled here"
 msgstr "Hier ist noch nichts geplant"
 
-#: talk/templates/talk/talk_grid.html:58
+#: talk/templates/talk/talk_grid.html:61
 msgid "no schedule defined yet"
 msgstr "Es wurde noch kein Sessionplan definiert"
 
-#: talk/templates/talk/talk_grid.html:61
+#: talk/templates/talk/talk_grid.html:64
 msgid "Unscheduled talks"
 msgstr "Sessions ohne Zuordnung"
 
@@ -655,6 +658,14 @@ msgstr "Keine Videos, Folien oder Beispielcode gefunden."
 #, python-format
 msgid "Videos and Slides for %(event)s have not been published yet."
 msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."
+
+#: talk/templates/talk/talk_voting.html:4
+msgid "Schedule preview and voting"
+msgstr "Sessionvorschau und Abstimmung"
+
+#: talk/templates/talk/talk_voting.html:11
+msgid "Vote for your favourite sessions"
+msgstr "Stimme für deine bevorzugten Sessions"
 
 #: talk/tests/test_views.py:353 talk/tests/test_views.py:435
 #: talk/tests/test_views.py:690

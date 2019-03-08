@@ -142,19 +142,23 @@ class UserSpeakerPortraitDeleteView(
 class PublishedSpeakerDetailView(DetailView):
     model = PublishedSpeaker
 
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=self.kwargs['event'])
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         return super(PublishedSpeakerDetailView, self).get_queryset().filter(
-            talk__track__isnull=False  # TODO: replace with talk state check
+            talk__track__isnull=False, event=self.event,
+            # TODO: replace with talk state check
         ).prefetch_related('talk_set').distinct()
 
     def get_context_data(self, **kwargs):
         context = super(PublishedSpeakerDetailView, self).get_context_data(
             **kwargs)
+        context['event'] = self.event
         context['talks'] = context['publishedspeaker'].talk_set.filter(
             track__isnull=False  # TODO: replace with talk state check
         )
-        context['event'] = get_object_or_404(
-            Event, slug=self.kwargs.get('event'))
         return context
 
 

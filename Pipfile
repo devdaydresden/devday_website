@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+django = "<=1.99"
 django-cms = ">3.5"
 requests = "*"
 "psycopg2-binary" = "*"
@@ -32,6 +33,7 @@ luhn = "*"
 lxml = "*"
 stringcase = "*"
 django-ordered-model = "<3.0"
+django-formtools = "*"
 
 [dev-packages]
 coverage = "*"

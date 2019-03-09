@@ -1,5 +1,5 @@
 /**
- * Build on 2018-12-17
+ * Build on 2019-3-6
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -12318,6 +12318,20 @@ readers do not read off random characters that represent icons */
   overflow: visible;
   position: static;
   width: auto; }
+
+/*!
+ * Font Awesome Free 5.4.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ */
+@font-face {
+  font-family: 'Font Awesome 5 Brands';
+  font-style: normal;
+  font-weight: normal;
+  src: url("../fonts/fa-brands-400.eot");
+  src: url("../fonts/fa-brands-400.eot?#iefix") format("embedded-opentype"), url("../fonts/fa-brands-400.woff2") format("woff2"), url("../fonts/fa-brands-400.woff") format("woff"), url("../fonts/fa-brands-400.ttf") format("truetype"), url("../fonts/fa-brands-400.svg#fontawesome") format("svg"); }
+
+.fab {
+  font-family: 'Font Awesome 5 Brands'; }
 
 /*!
  * Font Awesome Free 5.4.1 by @fontawesome - https://fontawesome.com

@@ -2,9 +2,14 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from attendee.models import Attendee
+from attendee.tests import attendee_testutils
 from devday.utils.devdata import DevData
 from event.models import Event
-from talk.models import Talk
+from speaker.tests import speaker_testutils
+from talk.forms import AddTalkSlotFormStep1, AddTalkSlotFormStep2
+from talk.models import Talk, Track, TimeSlot, Room, TalkSlot, \
+    SessionReservation
 
 User = get_user_model()
 
@@ -45,8 +50,114 @@ class AdminTest(TestCase):
                                            args=(talk.id,)))
         self.assertEquals(response.status_code, 200)
 
+    def test_talk_admin_publish(self):
+        talks = Talk.objects.filter(event=self.event)
+        response = self.client.post(reverse('admin:talk_talk_changelist'), {
+            'action': 'publish_talks',
+            '_selected_action': [str(talk.pk) for talk in talks],
+        })
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'talk/admin/publish_talks.html')
+
+    def test_talk_admin_publish_apply(self):
+        tracks = Track.objects.filter(event=self.event)
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+
+        talk = Talk.objects.create(
+            draft_speaker=speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=self.event
+        )
+
+        response = self.client.post(reverse('admin:talk_talk_changelist'), {
+            'action': 'publish_talks',
+            'apply': 'Submit',
+            '_selected_action': [str(talk.pk)],
+            'selected_track-{}'.format(talk.pk): '',
+        })
+        self.assertRedirects(response, reverse('admin:talk_talk_changelist'))
+        talk = Talk.objects.get(pk=talk.pk)
+        self.assertIsNone(talk.track_id)
+        self.assertIsNone(talk.published_speaker)
+
+        response = self.client.post(reverse('admin:talk_talk_changelist'), {
+            'action': 'publish_talks',
+            'apply': 'Submit',
+            '_selected_action': [str(talk.pk)],
+            'selected_track-{}'.format(talk.pk): str(tracks[0].pk),
+        })
+        self.assertRedirects(response, reverse('admin:talk_talk_changelist'))
+        talk = Talk.objects.get(pk=talk.pk)
+        self.assertEquals(talk.track, tracks[0])
+        self.assertIsNotNone(talk.published_speaker)
+
     def test_talkslot_admin_list(self):
         response = self.client.get(reverse('admin:talk_talkslot_changelist'))
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['cl'].result_count, 14,
                           'should list 14 talkslots')
+        self.assertTrue(response.is_rendered)
+
+    def test_talkslot_admin_add(self):
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+
+        talk = Talk.objects.create(
+            draft_speaker=speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=self.event
+        )
+        track = Track.objects.filter(event=self.event).first()
+        talk.publish(track)
+
+        response = self.client.get(reverse('admin:talk_talkslot_add'))
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context['form'], AddTalkSlotFormStep1)
+        self.assertTemplateUsed('talk/admin/talkslot_add_form.html')
+
+        response = self.client.post(reverse('admin:talk_talkslot_add'), {
+            'add_talk_slot_view-current_step': '0',
+            '0-event': str(self.event.pk),
+            'submit': 'Submit',
+        })
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context['form'], AddTalkSlotFormStep2)
+        self.assertTemplateUsed('talk/admin/talkslot_add_form.html')
+
+        time_slot = TimeSlot.objects.filter(event=self.event).first()
+        room = Room.objects.filter(event=self.event).first()
+
+        response = self.client.post(reverse('admin:talk_talkslot_add'), {
+            'add_talk_slot_view-current_step': '1',
+            '1-talk': str(talk.pk),
+            '1-time': str(time_slot.pk),
+            '1-room': str(room.pk),
+            'submit': 'Submit',
+        })
+        self.assertRedirects(
+            response, reverse('admin:talk_talkslot_changelist'))
+        talk_slot = TalkSlot.objects.filter(talk=talk).get()
+        self.assertEquals(talk_slot.talk_id, talk.id)
+        self.assertEquals(talk_slot.room_id, room.id)
+        self.assertEquals(talk_slot.time_id, time_slot.id)
+
+    def test_session_reservation_admin(self):
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+
+        talk = Talk.objects.create(
+            draft_speaker=speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=self.event
+        )
+        track = Track.objects.filter(event=self.event).first()
+        talk.publish(track)
+
+        user, _ = attendee_testutils.create_test_user('test@example.org')
+        attendee = Attendee.objects.create(user=user, event=self.event)
+
+        SessionReservation.objects.create(attendee=attendee, talk=talk)
+
+        response = self.client.get(
+            reverse('admin:talk_sessionreservation_changelist'))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context['cl'].result_count, 1,
+                          'should list 1 session registration')
+        self.assertTrue(response.is_rendered)

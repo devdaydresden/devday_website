@@ -5,6 +5,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap as sitemap_view
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.generic.base import RedirectView
 from django.views.static import serve as serve_static
 
 from devday.views import (
@@ -33,8 +34,11 @@ urlpatterns = [
     url(r'^synthetic_server_error/$', exception_test_view),
     url(r'^(?P<event>[^/]+)/talk-preview/$', TalkListPreviewView.as_view(),
         name='session_list_preview'),
-    url(r'^(?P<event>[^/]+)/talk/$', TalkListView.as_view(),
+    url(r'^(?P<event>[^/]+)/$', TalkListView.as_view(),
         name='session_list'),
+    url(r'^(?P<event>[^/]+)/talk/$',
+        RedirectView.as_view(pattern_name='session_list'),
+        name='session_list_legacy'),
     url(r'^(?P<event>[^/]+)/videos/$', TalkVideoView.as_view(),
         name='video_list'),
     url(r'^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/$', TalkDetails.as_view(),
@@ -42,6 +46,7 @@ urlpatterns = [
     url(r'^', include('speaker.urls')),
     url(r'^', include('cms.urls')),
     url(r'^csvviews/', include('attendee.csv_urls')),
+    url(r'^csvviews/', include('talk.csv_urls')),
 ]
 
 # This is only needed when using runserver.

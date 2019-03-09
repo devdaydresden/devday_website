@@ -1,4 +1,4 @@
-FROM node:8-stretch
+FROM node:8.12-stretch
 MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
 LABEL vendor=T-Systems\ Multimedia\ Solutions\ GmbH
 LABEL devday.release=0.1

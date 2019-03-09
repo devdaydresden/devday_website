@@ -3,14 +3,19 @@ from crispy_forms.layout import Div, Field, Layout, Submit
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
 
-from talk.models import Talk, TalkFormat, TalkComment, Vote
+from attendee.models import Attendee
+from event.models import Event
+from talk.models import (
+    Talk, TalkFormat, TalkComment, Vote, SessionReservation, TalkSlot, TimeSlot,
+    Room)
 
 User = get_user_model()
 
 
-class TalkForm(forms.models.ModelForm):
+class TalkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TalkForm, self).__init__(*args, **kwargs)
         self.fields['talkformat'].initial = TalkFormat.objects.all()
@@ -93,7 +98,7 @@ class EditTalkForm(TalkForm):
         )
 
 
-class TalkCommentForm(forms.models.ModelForm):
+class TalkCommentForm(forms.ModelForm):
     class Meta:
         model = TalkComment
         fields = ['comment', 'is_visible']
@@ -121,7 +126,7 @@ class TalkCommentForm(forms.models.ModelForm):
         )
 
 
-class TalkSpeakerCommentForm(forms.models.ModelForm):
+class TalkSpeakerCommentForm(forms.ModelForm):
     class Meta:
         model = TalkComment
         fields = ['comment']
@@ -147,7 +152,58 @@ class TalkSpeakerCommentForm(forms.models.ModelForm):
         )
 
 
-class TalkVoteForm(forms.models.ModelForm):
+class TalkVoteForm(forms.ModelForm):
     class Meta:
         model = Vote
         fields = ["score"]
+
+
+class SessionReservationForm(forms.ModelForm):
+    attendee = forms.ModelChoiceField(queryset=Attendee.objects.select_related(
+        'user', 'event').distinct())
+
+    class Meta:
+        model = SessionReservation
+        fields = ['talk', 'attendee']
+
+
+class TalkSlotForm(forms.ModelForm):
+    talk = forms.ModelChoiceField(queryset=Talk.objects.select_related(
+        'event', 'draft_speaker', 'published_speaker',
+        'published_speaker__event').distinct())
+    time = forms.ModelChoiceField(queryset=TimeSlot.objects.select_related(
+        'event'))
+
+    class Meta:
+        model = TalkSlot
+        fields = ["talk", "room", "time"]
+
+
+class AddTalkSlotFormStep1(forms.Form):
+    event = forms.ModelChoiceField(
+        queryset=Event.objects.order_by('start_time'))
+
+
+class AddTalkSlotFormStep2(forms.ModelForm):
+    class Meta:
+        model = TalkSlot
+        fields = ('talk', 'room', 'time')
+
+    def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
+                 initial=None, error_class=ErrorList, label_suffix=None,
+                 empty_permitted=False, instance=None,
+                 use_required_attribute=None, **kwargs):
+        self.event = kwargs.pop('event')
+        super().__init__(
+            data, files, auto_id, prefix, initial, error_class, label_suffix,
+            empty_permitted, instance, use_required_attribute)
+        self.fields['talk'].queryset = Talk.objects.filter(
+            event=self.event, track_id__isnull=False, talkslot__isnull=True
+        ).select_related(
+            'event', 'draft_speaker', 'published_speaker',
+            'published_speaker__event').distinct()
+        self.fields['time'].queryset = TimeSlot.objects.filter(
+            event=self.event).select_related(
+            'event')
+        self.fields['room'].queryset = Room.objects.filter(
+            event=self.event)

@@ -754,6 +754,14 @@ class TestTalkSpeakerCommentDelete(LoginTestMixin, TestCase):
             pk=self.talk_comment.pk)
 
 
+class TestRedirectVideoView(TestCase):
+    def test_redirects_to_current_event_video_list(self):
+        response = self.client.get('/videos/')
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, '/{}/videos/'.format(
+            Event.objects.current_event().slug))
+
+
 class TestTalkListView(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -779,12 +787,19 @@ class TestTalkListView(TestCase):
         devdata.create_time_slots(events=[cls.event])
         devdata.create_talk_slots(events=[cls.event])
 
-        cls.url = '/{}/talk/'.format(cls.event.slug)
+        cls.url = '/{}/'.format(cls.event.slug)
 
     def test_talk_list_view(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.event.title)
+
+    def test_inactive_event(self):
+        event = event_testutils.create_test_event('Unpublished')
+        event.published = False
+        event.save()
+        response = self.client.get('/{}/'.format(event.slug))
+        self.assertEquals(response.status_code, 404)
 
     def test_talk_list_preview_view(self):
         response = self.client.get(reverse(
@@ -805,6 +820,26 @@ class TestTalkListView(TestCase):
             self.event.title)
         self.assertEquals(len(root.findall('day/room')), 4)
         self.assertEquals(len(root.findall('day/room/event')), 14)
+
+    def test_legacy_list_url(self):
+        response = self.client.get(self.url + 'talk/')
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, self.url)
+
+    def test_talk_archive_list_view(self):
+        event = Event.objects.all_but_current().first()
+        response = self.client.get('/{}/'.format(event.slug))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, event.title)
+
+
+class TestInfoBeamerXMLView(TestCase):
+    def test_unspecified_event_redirects_to_current(self):
+        response = self.client.get('/schedule.xml')
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, reverse(
+            'infobeamer',
+            kwargs={'event': Event.objects.current_event().slug}))
 
 
 class TestTalkVideoView(TestCase):
@@ -848,3 +883,47 @@ class TestTalkVideoView(TestCase):
         self.assertIn('talk_list', response.context)
         self.assertIn(talk1, response.context['talk_list'])
         self.assertIn(talk2, response.context['talk_list'])
+
+
+class TestEventSessionSummaryView(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.staff, cls.staff_password = attendee_testutils.create_test_user(
+            email='staff@example.org', is_staff=True)
+        cls.user, cls.user_password = attendee_testutils.create_test_user()
+        cls.event = Event.objects.current_event()
+
+    def setUp(self):
+        self.speaker, _, _ = speaker_testutils.create_test_speaker(
+            email='testspeaker@example.org', name='Test Speaker',
+            organization='Test Org')
+        self.talk = Talk.objects.create(
+            draft_speaker=self.speaker, title='A Talk', event=self.event
+        )
+        self.url = reverse('admin_csv_session_summary')
+
+    def test_get_session_summary_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 302)
+        self.assertEquals(
+            r.url, '/accounts/login/?next={}'.format(self.url),
+            'should redirect to login page')
+
+    def test_get_session_summary_regular_user(self):
+        self.client.login(username=self.user, password=self.user_password)
+        r = self.client.get(self.url)
+        self.assertEquals(r.status_code, 302)
+        self.assertEquals(
+            r.url, '/accounts/login/?next={}'.format(self.url),
+            'should redirect to login page')
+
+    def test_get_session_summary_staff(self):
+        self.client.login(
+            username=self.staff.email, password=self.staff_password)
+        r = self.client.get(self.url)
+        self.assertEquals(
+            r.status_code, 200,
+            'should retrieve data from {}'.format(self.url))
+        self.assertIn(
+            self.talk.title, r.content.decode(),
+            'talk should be listed in session summary')

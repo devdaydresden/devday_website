@@ -6,9 +6,11 @@
   <div class="row">
     <div class="col-12 col-md-10 offset-md-1">
       <h1>{% trans "Archive: List of Talks at" %} {{ event.title }}</h1>
-      {% for talk in talk_list %}
-      {% include "talk/talk_list_entry.html" %}
-      {% endfor %}
+      <div class="row">
+        {% for talk in talk_list %}
+        {% include "talk/talk_list_entry.html" %}
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>

@@ -18,6 +18,9 @@ from talk.models import Talk, TalkFormat, TalkComment, Vote, Track, TalkMedia
 
 
 # noinspection PyUnresolvedReferences
+from talk.tests import talk_testutils
+
+
 class LoginTestMixin(object):
     def login_user(self, email='test@example.org'):
         _, password = attendee_testutils.create_test_user(email)
@@ -831,6 +834,23 @@ class TestTalkListView(TestCase):
         response = self.client.get('/{}/'.format(event.slug))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, event.title)
+
+    def test_talk_list_with_unscheduled(self):
+        test_speaker, _, _ = speaker_testutils.create_test_speaker(
+            'unscheduled@example.org', 'Unscheduled Talk Speaker')
+        unscheduled_session = talk_testutils.create_test_talk(
+            test_speaker, self.event)
+        unscheduled_session.title = 'Unscheduled'
+        unscheduled_session.slug = 'unscheduled'
+        unscheduled_session.save()
+        track = Track.objects.create(event=self.event, name='Test Track')
+        unscheduled_session.publish(track)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('unscheduled', response.context)
+        self.assertTemplateUsed(response, "talk/talk_grid.html")
+        self.assertTemplateUsed(response, "talk/talk_list_entry.html")
+        self.assertIn(unscheduled_session, response.context['unscheduled'])
 
 
 class TestInfoBeamerXMLView(TestCase):

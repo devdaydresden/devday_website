@@ -380,17 +380,14 @@ class InfoBeamerXMLView(BaseListView):
         talks = context.get('talk_list', [])
         talks_by_room_and_time = {}
         for talk in talks:
-            try:
-                # build dictionary grouped by room and time (sm and xs display)
-                talks_by_room_and_time.setdefault(
-                    talk.talkslot.room, []).append(talk)
-            except TalkSlot.DoesNotExist:
-                continue
+            # build dictionary grouped by room and time (sm and xs display)
+            talks_by_room_and_time.setdefault(
+                talk.talkslot.room, []).append(talk)
         context.update(
             {
                 'event': event,
                 'talks_by_room_and_time': talks_by_room_and_time,
-                'rooms': Room.objects.all(),
+                'rooms': event.room_set.all(),
                 'times': TimeSlot.objects.filter(event=event)
             }
         )
@@ -416,34 +413,34 @@ class InfoBeamerXMLView(BaseListView):
             date=self.to_xml_date(context['min_time'], context),
             start=self.to_xml_timestamp(context['min_time'], context),
             end=self.to_xml_timestamp(context['max_time'], context))
-        for room in context['rooms']:
-            room_xml = ElementTree.SubElement(day_xml, 'room', name=room.name)
-            room_talks = context['talks_by_room_and_time']
-            if room in room_talks:
-                for talk in room_talks[room]:
-                    event_xml = ElementTree.SubElement(
-                        room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
-                    start_time = talk.talkslot.time.start_time
-                    duration = talk.talkslot.time.end_time - start_time
-                    ElementTree.SubElement(
-                        event_xml, 'date'
-                    ).text = self.to_xml_timestamp(start_time, context)
-                    ElementTree.SubElement(
-                        event_xml, 'start'
-                    ).text = self.to_xml_localtime(start_time, context)
-                    ElementTree.SubElement(event_xml,
-                                           'duration').text = "%02d:%02d" % (
-                        duration.seconds / 3600, duration.seconds % 3600 / 60)
-                    ElementTree.SubElement(event_xml, 'room').text = room.name
-                    ElementTree.SubElement(event_xml, 'title').text = talk.title
-                    ElementTree.SubElement(event_xml,
-                                           'abstract').text = talk.abstract
-                    ElementTree.SubElement(event_xml, 'language').text = 'de'
-                    persons_xml = ElementTree.SubElement(event_xml, 'persons')
-                    ElementTree.SubElement(
-                        persons_xml, 'person',
-                        id=str(talk.published_speaker_id)
-                    ).text = talk.published_speaker.name
+        room_talks = context['talks_by_room_and_time']
+        for room in room_talks:
+            room_xml = ElementTree.SubElement(
+                day_xml, 'room', name=room.name)
+            for talk in room_talks[room]:
+                event_xml = ElementTree.SubElement(
+                    room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
+                start_time = talk.talkslot.time.start_time
+                duration = talk.talkslot.time.end_time - start_time
+                ElementTree.SubElement(
+                    event_xml, 'date'
+                ).text = self.to_xml_timestamp(start_time, context)
+                ElementTree.SubElement(
+                    event_xml, 'start'
+                ).text = self.to_xml_localtime(start_time, context)
+                ElementTree.SubElement(event_xml,
+                                       'duration').text = "%02d:%02d" % (
+                    duration.seconds / 3600, duration.seconds % 3600 / 60)
+                ElementTree.SubElement(event_xml, 'room').text = room.name
+                ElementTree.SubElement(event_xml, 'title').text = talk.title
+                ElementTree.SubElement(event_xml,
+                                       'abstract').text = talk.abstract
+                ElementTree.SubElement(event_xml, 'language').text = 'de'
+                persons_xml = ElementTree.SubElement(event_xml, 'persons')
+                ElementTree.SubElement(
+                    persons_xml, 'person',
+                    id=str(talk.published_speaker_id)
+                ).text = talk.published_speaker.name
 
         response_kwargs.setdefault('content_type', 'application/xml')
         return HttpResponse(content=ElementTree.tostring(schedule_xml, 'utf-8'),

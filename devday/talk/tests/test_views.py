@@ -1,3 +1,4 @@
+from datetime import datetime
 from xml.etree import ElementTree
 
 from django.contrib.auth.models import Group
@@ -12,15 +13,13 @@ from event.models import Event
 from event.tests import event_testutils
 from speaker.tests import speaker_testutils
 from talk import COMMITTEE_GROUP
-from talk.forms import (TalkCommentForm,
-                        EditTalkForm, TalkSpeakerCommentForm)
-from talk.models import Talk, TalkFormat, TalkComment, Vote, Track, TalkMedia
-
-
+from talk.forms import (EditTalkForm, TalkCommentForm, TalkSpeakerCommentForm)
+from talk.models import Talk, TalkComment, TalkFormat, TalkMedia, Track, Vote
 # noinspection PyUnresolvedReferences
 from talk.tests import talk_testutils
 
 
+# noinspection PyUnresolvedReferences
 class LoginTestMixin(object):
     def login_user(self, email='test@example.org'):
         _, password = attendee_testutils.create_test_user(email)
@@ -813,8 +812,7 @@ class TestTalkListView(TestCase):
 
     def test_infobeamer_xml_view(self):
         response = self.client.get(reverse(
-            'infobeamer',
-            kwargs={'event': self.event.slug}))
+            'infobeamer', kwargs={'event': self.event.slug}))
         self.assertEqual(response.status_code, 200)
         root = ElementTree.fromstring(response.content)
         self.assertEquals(root.tag, 'schedule')
@@ -823,6 +821,59 @@ class TestTalkListView(TestCase):
             self.event.title)
         self.assertEquals(len(root.findall('day/room')), 4)
         self.assertEquals(len(root.findall('day/room/event')), 14)
+
+    def test_infobeamer_xml_view_with_starttoday(self):
+        response = self.client.get(reverse(
+            'infobeamer', kwargs={'event': self.event.slug}),
+            data={'starttoday': ''})
+        self.assertEqual(response.status_code, 200)
+        root = ElementTree.fromstring(response.content)
+        self.assertEquals(root.tag, 'schedule')
+        self.assertEquals(
+            root.find('./conference/title').text,
+            self.event.title)
+        self.assertEquals(len(root.findall('day/room')), 4)
+        self.assertEquals(len(root.findall('day/room/event')), 14)
+        start_date = datetime.strptime(
+            root.find('./conference/start').text, '%Y-%m-%d')
+        start_time = root.find('./day').attrib['start']
+        talk_start_time = root.find('./day/room/event/date').text
+        # workaround for Python < 3.7 that cannot parse time zone information
+        # with colon
+        start_time = datetime.strptime(
+            start_time[:-3] + start_time[-2:], '%Y-%m-%dT%H:%M:%S%z')
+        talk_start_time = datetime.strptime(
+            talk_start_time[:-3] + talk_start_time[-2:], '%Y-%m-%dT%H:%M:%S%z')
+        today = datetime.today().date()
+        self.assertEquals(today, start_date.date())
+        self.assertEqual(today, start_time.date())
+        self.assertEqual(today, talk_start_time.date())
+
+    def test_infobeamer_xml_view_skips_unscheduled_session(self):
+        test_speaker, _, _ = speaker_testutils.create_test_speaker(
+            'unscheduled@example.org', 'Unscheduled Talk Speaker')
+        unscheduled_session = talk_testutils.create_test_talk(
+            test_speaker, self.event)
+        unscheduled_session.title = 'Unscheduled'
+        unscheduled_session.slug = 'unscheduled'
+        unscheduled_session.save()
+        track = Track.objects.create(event=self.event, name='Test Track')
+        unscheduled_session.publish(track)
+        response = self.client.get(reverse(
+            'infobeamer', kwargs={'event': self.event.slug}))
+        self.assertEqual(response.status_code, 200)
+        root = ElementTree.fromstring(response.content)
+        self.assertEquals(root.tag, 'schedule')
+        self.assertEquals(len(root.findall('day/room/event')), 14)
+
+    def test_infobeamer_xml_view_skips_unused_room(self):
+        self.event.room_set.create(name='Besenkammer')
+        response = self.client.get(reverse(
+            'infobeamer', kwargs={'event': self.event.slug}))
+        self.assertEqual(response.status_code, 200)
+        root = ElementTree.fromstring(response.content)
+        self.assertEquals(root.tag, 'schedule')
+        self.assertEquals(len(root.findall('day/room')), 4)
 
     def test_legacy_list_url(self):
         response = self.client.get(self.url + 'talk/')

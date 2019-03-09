@@ -16,7 +16,8 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import (
     Avg, Case, Count, F, IntegerField, Max, Min, Sum, When)
 from django.http import (
-    Http404, HttpResponse, HttpResponseRedirect, JsonResponse)
+    Http404, HttpResponse, HttpResponseRedirect, JsonResponse,
+    HttpResponseBadRequest)
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -692,12 +693,12 @@ class AttendeeVotingView(LoginRequiredMixin, ListView):
     model = Talk
     template_name_suffix = "_voting"
 
-    def dispatch(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         self.event = get_object_or_404(
             Event, slug=kwargs['event'], voting_open=True)
         self.attendee = get_object_or_404(
             Attendee, user=request.user)
-        return super().dispatch(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         return super().get_queryset().filter(
@@ -722,15 +723,17 @@ class AttendeeTalkVote(LoginRequiredMixin, BaseFormView):
     http_method_names = ['post']
     form_class = AttendeeTalkVoteForm
 
-    def dispatch(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.event = get_object_or_404(
             Event, slug=kwargs['event'], voting_open=True)
-        self.attendee = get_object_or_404(
-            Attendee, user=request.user)
+        if 'talk-id' not in self.request.POST:
+            return HttpResponseBadRequest()
         self.talk = get_object_or_404(
             Talk, id=self.request.POST.get('talk-id', -1),
             event=self.event, track__isnull=False)
-        return super().dispatch(request, *args, **kwargs)
+        self.attendee = get_object_or_404(
+            Attendee, user=request.user)
+        return super().post(request, *args, **kwargs)
 
     def form_invalid(self, form):
         return JsonResponse({'message': 'error', 'errors': form.errors})
@@ -751,16 +754,15 @@ class AttendeeTalkClearVote(LoginRequiredMixin, View):
     model = Talk
     http_method_names = ['post']
 
-    def dispatch(self, request, *args, **kwargs):
-        self.event = get_object_or_404(
-            Event, slug=kwargs['event'], voting_open=True)
-        self.attendee = get_object_or_404(
-            Attendee, user=request.user)
-        self.talk = get_object_or_404(
-            Talk, id=self.request.POST.get('talk-id', -1),
-            event=self.event, track__isnull=False)
-        return super().dispatch(request, *args, **kwargs)
-
     def post(self, request, *args, **kwargs):
-        self.talk.attendeevote_set.filter(attendee=self.attendee).delete()
+        event = get_object_or_404(
+            Event, slug=kwargs['event'], voting_open=True)
+        if 'talk-id' not in self.request.POST:
+            return HttpResponseBadRequest()
+        talk = get_object_or_404(
+            Talk, id=request.POST.get('talk-id', -1),
+            event=event, track__isnull=False)
+        attendee = get_object_or_404(
+            Attendee, user=request.user)
+        talk.attendeevote_set.filter(attendee=attendee).delete()
         return JsonResponse({'message': 'vote deleted'})

@@ -159,6 +159,7 @@ class TalkDetails(DetailView):
         context.update({
             'speaker': context['talk'].published_speaker,
             'event': self.event,
+            'current': self.event == Event.objects.current_event()
         })
         return context
 

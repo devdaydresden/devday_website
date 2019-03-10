@@ -5,8 +5,8 @@
 {% block content_body %}
     {% url 'public_speaker_profile' event=event.slug slug=speaker.slug as speaker_profile_url %}
     <div class="row">
-        <div class="col-12">
-            <h1>{{ talk.title }}</h1>
+        <div class="col-12 {% if current %}current-event{% else %}archive-event{% endif %}">
+            <h1>{% if not current %}{% trans "Archive"%}: {%endif%}{{ talk.title }}</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'session_list' event=event.slug %}">{{ event }}</a></li>

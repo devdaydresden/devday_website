@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from model_utils.models import TimeStampedModel
 
 from attendee.models import Attendee
@@ -226,3 +226,51 @@ class SessionReservation(TimeStampedModel):
         verbose_name = _("Session reservation")
         verbose_name_plural = _("Session reservations")
         unique_together = [('attendee', 'talk')]
+
+
+class AttendeeVote(TimeStampedModel):
+    attendee = models.ForeignKey(
+        Attendee, verbose_name=_("Attendee"), null=False,
+        limit_choices_to={"event__published": True},
+        on_delete=models.CASCADE)
+    talk = models.ForeignKey(
+        Talk, verbose_name=_("Talk"), null=False,
+        limit_choices_to={"track__is_null": False},
+        on_delete=models.CASCADE)
+    score = models.PositiveSmallIntegerField()
+
+    class Meta:
+        verbose_name = _("Attendee vote")
+        verbose_name_plural = _("Attendee votes")
+        unique_together = ['attendee', 'talk']
+
+    def __str__(self):
+        return '{} voted {} for {} by {}'.format(
+            self.attendee, self.score, self.talk.title,
+            self.talk.published_speaker)
+
+
+class AttendeeFeedback(TimeStampedModel):
+    attendee = models.ForeignKey(
+        Attendee, verbose_name=_("Attendee"), null=True, blank=True,
+        limit_choices_to={"event__published": True},
+        on_delete=models.SET_NULL)
+    talk = models.ForeignKey(
+        Talk, verbose_name=_("Talk"), null=False,
+        limit_choices_to={"track__is_null": False},
+        on_delete=models.CASCADE)
+    score = models.PositiveSmallIntegerField()
+    comment = models.TextField(verbose_name=_("Comment"), blank=True)
+
+    class Meta:
+        verbose_name = pgettext_lazy(
+            "attendee feedback singular form", "Attendee feedback")
+        verbose_name_plural = pgettext_lazy(
+            "attendee feedback plural form", "Attendee feedback")
+        unique_together = ['attendee', 'talk']
+
+    def __str__(self):
+        return "{} gave feedback for {} by {}: score={}, comment={}".format(
+            self.attendee, self.talk.title, self.talk.published_speaker,
+            self.score, self.comment,
+        )

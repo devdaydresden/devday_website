@@ -1,3 +1,4 @@
+from datetime import datetime
 from xml.etree import ElementTree
 
 from django.contrib.auth.models import Group
@@ -6,15 +7,18 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 
+from attendee.models import Attendee
 from attendee.tests import attendee_testutils
 from devday.utils.devdata import DevData
 from event.models import Event
 from event.tests import event_testutils
 from speaker.tests import speaker_testutils
 from talk import COMMITTEE_GROUP
-from talk.forms import (TalkCommentForm,
-                        EditTalkForm, TalkSpeakerCommentForm)
-from talk.models import Talk, TalkFormat, TalkComment, Vote, Track, TalkMedia
+from talk.forms import (EditTalkForm, TalkCommentForm, TalkSpeakerCommentForm)
+from talk.models import (
+    AttendeeVote, Talk, TalkComment, TalkFormat, TalkMedia, Track, Vote)
+# noinspection PyUnresolvedReferences
+from talk.tests import talk_testutils
 
 
 # noinspection PyUnresolvedReferences
@@ -810,8 +814,7 @@ class TestTalkListView(TestCase):
 
     def test_infobeamer_xml_view(self):
         response = self.client.get(reverse(
-            'infobeamer',
-            kwargs={'event': self.event.slug}))
+            'infobeamer', kwargs={'event': self.event.slug}))
         self.assertEqual(response.status_code, 200)
         root = ElementTree.fromstring(response.content)
         self.assertEquals(root.tag, 'schedule')
@@ -820,6 +823,59 @@ class TestTalkListView(TestCase):
             self.event.title)
         self.assertEquals(len(root.findall('day/room')), 4)
         self.assertEquals(len(root.findall('day/room/event')), 14)
+
+    def test_infobeamer_xml_view_with_starttoday(self):
+        response = self.client.get(reverse(
+            'infobeamer', kwargs={'event': self.event.slug}),
+            data={'starttoday': ''})
+        self.assertEqual(response.status_code, 200)
+        root = ElementTree.fromstring(response.content)
+        self.assertEquals(root.tag, 'schedule')
+        self.assertEquals(
+            root.find('./conference/title').text,
+            self.event.title)
+        self.assertEquals(len(root.findall('day/room')), 4)
+        self.assertEquals(len(root.findall('day/room/event')), 14)
+        start_date = datetime.strptime(
+            root.find('./conference/start').text, '%Y-%m-%d')
+        start_time = root.find('./day').attrib['start']
+        talk_start_time = root.find('./day/room/event/date').text
+        # workaround for Python < 3.7 that cannot parse time zone information
+        # with colon
+        start_time = datetime.strptime(
+            start_time[:-3] + start_time[-2:], '%Y-%m-%dT%H:%M:%S%z')
+        talk_start_time = datetime.strptime(
+            talk_start_time[:-3] + talk_start_time[-2:], '%Y-%m-%dT%H:%M:%S%z')
+        today = datetime.today().date()
+        self.assertEquals(today, start_date.date())
+        self.assertEqual(today, start_time.date())
+        self.assertEqual(today, talk_start_time.date())
+
+    def test_infobeamer_xml_view_skips_unscheduled_session(self):
+        test_speaker, _, _ = speaker_testutils.create_test_speaker(
+            'unscheduled@example.org', 'Unscheduled Talk Speaker')
+        unscheduled_session = talk_testutils.create_test_talk(
+            test_speaker, self.event)
+        unscheduled_session.title = 'Unscheduled'
+        unscheduled_session.slug = 'unscheduled'
+        unscheduled_session.save()
+        track = Track.objects.create(event=self.event, name='Test Track')
+        unscheduled_session.publish(track)
+        response = self.client.get(reverse(
+            'infobeamer', kwargs={'event': self.event.slug}))
+        self.assertEqual(response.status_code, 200)
+        root = ElementTree.fromstring(response.content)
+        self.assertEquals(root.tag, 'schedule')
+        self.assertEquals(len(root.findall('day/room/event')), 14)
+
+    def test_infobeamer_xml_view_skips_unused_room(self):
+        self.event.room_set.create(name='Besenkammer')
+        response = self.client.get(reverse(
+            'infobeamer', kwargs={'event': self.event.slug}))
+        self.assertEqual(response.status_code, 200)
+        root = ElementTree.fromstring(response.content)
+        self.assertEquals(root.tag, 'schedule')
+        self.assertEquals(len(root.findall('day/room')), 4)
 
     def test_legacy_list_url(self):
         response = self.client.get(self.url + 'talk/')
@@ -831,6 +887,23 @@ class TestTalkListView(TestCase):
         response = self.client.get('/{}/'.format(event.slug))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, event.title)
+
+    def test_talk_list_with_unscheduled(self):
+        test_speaker, _, _ = speaker_testutils.create_test_speaker(
+            'unscheduled@example.org', 'Unscheduled Talk Speaker')
+        unscheduled_session = talk_testutils.create_test_talk(
+            test_speaker, self.event)
+        unscheduled_session.title = 'Unscheduled'
+        unscheduled_session.slug = 'unscheduled'
+        unscheduled_session.save()
+        track = Track.objects.create(event=self.event, name='Test Track')
+        unscheduled_session.publish(track)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('unscheduled', response.context)
+        self.assertTemplateUsed(response, "talk/talk_grid.html")
+        self.assertTemplateUsed(response, "talk/talk_list_entry.html")
+        self.assertIn(unscheduled_session, response.context['unscheduled'])
 
 
 class TestInfoBeamerXMLView(TestCase):
@@ -927,3 +1000,161 @@ class TestEventSessionSummaryView(TestCase):
         self.assertIn(
             self.talk.title, r.content.decode(),
             'talk should be listed in session summary')
+
+
+class TestAttendeeVotingView(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event('test event')
+        self.event.voting_open = True
+        self.event.save()
+        self.speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.session = talk_testutils.create_test_talk(
+            self.speaker, self.event)
+        self.session.title = 'Test session'
+        self.session.slug = 'test-session'
+        self.session.publish(Track.objects.create(name='Test track'))
+        self.user, self.password = attendee_testutils.create_test_user(
+            'testattendee@example.org')
+        self.attendee = Attendee.objects.create(
+            user=self.user, event=self.event)
+        self.url = '/{}/voting/'.format(self.event.slug)
+
+    def test_voting_view_requires_login(self):
+        response = self.client.get(self.url)
+        self.assertRedirects(
+            response, '/accounts/login/?next={}'.format(self.url))
+
+    def test_voting_template(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'talk/talk_voting.html')
+        self.assertIn(self.session, response.context['talk_list'])
+
+    def test_no_unpublished_sessions_for_voting(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'talk/talk_voting.html')
+        unpublished = talk_testutils.create_test_talk(
+            self.speaker, self.event)
+        unpublished.title = 'Other session'
+        unpublished.slug = 'other-session'
+        unpublished.save()
+        self.assertNotIn(unpublished, response.context['talk_list'])
+
+
+class TestAttendeeTalkVote(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event('test event')
+        self.event.voting_open = True
+        self.event.save()
+        self.speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.talk = talk_testutils.create_test_talk(
+            self.speaker, self.event)
+        self.talk.title = 'Test session'
+        self.talk.slug = 'test-session'
+        self.talk.publish(Track.objects.create(name='Test track'))
+        self.user, self.password = attendee_testutils.create_test_user(
+            'testattendee@example.org')
+        self.attendee = Attendee.objects.create(
+            user=self.user, event=self.event)
+        self.url = '/{}/submit-vote/'.format(self.event.slug)
+
+    def test_voting_view_requires_login(self):
+        response = self.client.post(
+            self.url, data={'talk-id': self.talk.id})
+        self.assertRedirects(
+            response, '/accounts/login/?next={}'.format(self.url))
+
+    def test_voting_requires_post(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 405)
+
+    def test_voting_requires_talk_id(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.post(
+            self.url)
+        self.assertEquals(response.status_code, 400)
+
+    def test_voting_requires_score(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.post(
+            self.url, data={'talk-id': self.talk.id})
+        self.assertEquals(response.status_code, 200)
+        data = response.json()
+        self.assertEquals(data['message'], 'error')
+        self.assertIn('score', data['errors'])
+
+    def test_voting_creates_attendee_vote(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.post(
+            self.url, data={'talk-id': self.talk.id, 'score': 3})
+        self.assertEquals(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'message': 'ok'})
+        vote = self.attendee.attendeevote_set.get(talk=self.talk)
+        self.assertEquals(vote.score, 3)
+
+    def test_voting_updates_existing_vote(self):
+        vote = self.talk.attendeevote_set.create(
+            attendee=self.attendee, score=4)
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.post(
+            self.url, data={'talk-id': self.talk.id, 'score': 3})
+        self.assertEquals(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'message': 'ok'})
+        vote.refresh_from_db()
+        self.assertEquals(vote.score, 3)
+
+
+class TestAttendeeTalkClearVote(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event('test event')
+        self.event.voting_open = True
+        self.event.save()
+        self.speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.talk = talk_testutils.create_test_talk(
+            self.speaker, self.event)
+        self.talk.title = 'Test session'
+        self.talk.slug = 'test-session'
+        self.talk.publish(Track.objects.create(name='Test track'))
+        self.user, self.password = attendee_testutils.create_test_user(
+            'testattendee@example.org')
+        self.attendee = Attendee.objects.create(
+            user=self.user, event=self.event)
+        self.url = '/{}/clear-vote/'.format(self.event.slug)
+
+    def test_clear_voting_view_requires_login(self):
+        response = self.client.post(
+            self.url, data={'talk-id': self.talk.id})
+        self.assertRedirects(
+            response, '/accounts/login/?next={}'.format(self.url))
+
+    def test_clear_voting_requires_post(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 405)
+
+    def test_clear_voting_requires_talk_id(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.post(
+            self.url)
+        self.assertEquals(response.status_code, 400)
+
+    def test_clear_voting_removes_attendee_vote(self):
+        vote = self.talk.attendeevote_set.create(
+            attendee=self.attendee, score=4)
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.post(
+            self.url, data={'talk-id': self.talk.id})
+        self.assertEquals(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'message': 'vote deleted'})
+        self.assertRaises(AttendeeVote.DoesNotExist, vote.refresh_from_db)
+
+    def test_clear_voting_does_not_fail_with_no_existing_attendee_vote(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.post(
+            self.url, data={'talk-id': self.talk.id})
+        self.assertEquals(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'message': 'vote deleted'})

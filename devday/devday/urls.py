@@ -5,14 +5,9 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap as sitemap_view
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.views.generic.base import RedirectView
 from django.views.static import serve as serve_static
 
-from devday.views import (
-    exception_test_view, SendEmailView)
-from talk.views import (
-    InfoBeamerXMLView, RedirectVideoView,
-    TalkDetails, TalkListPreviewView, TalkListView, TalkVideoView)
+from devday.views import (SendEmailView, exception_test_view)
 
 admin.autodiscover()
 
@@ -24,25 +19,11 @@ urlpatterns = [
     url(r'^select2/', include('django_select2.urls')),
     url(r'', include('attendee.urls')),
     url(r'^accounts/', include('devday.registration_urls')),
-    url(r'^schedule\.xml$', InfoBeamerXMLView.as_view()),
-    url(r'^(?P<event>[^/]+)/schedule\.xml$', InfoBeamerXMLView.as_view(),
-        name='infobeamer'),
-    url(r'^videos/$', RedirectVideoView.as_view()),
     url(r'^upload/', include('django_file_form.urls')),
     url(r'^session/', include('talk.urls')),
     url(r'^committee/', include('talk.urls_committee')),
     url(r'^synthetic_server_error/$', exception_test_view),
-    url(r'^(?P<event>[^/]+)/talk-preview/$', TalkListPreviewView.as_view(),
-        name='session_list_preview'),
-    url(r'^(?P<event>[^/]+)/$', TalkListView.as_view(),
-        name='session_list'),
-    url(r'^(?P<event>[^/]+)/talk/$',
-        RedirectView.as_view(pattern_name='session_list'),
-        name='session_list_legacy'),
-    url(r'^(?P<event>[^/]+)/videos/$', TalkVideoView.as_view(),
-        name='video_list'),
-    url(r'^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/$', TalkDetails.as_view(),
-        name='talk_details'),
+    url(r'^', include('talk.urls_event')),
     url(r'^', include('speaker.urls')),
     url(r'^', include('cms.urls')),
     url(r'^csvviews/', include('attendee.csv_urls')),

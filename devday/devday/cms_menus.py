@@ -14,6 +14,7 @@ EVENT = 'event'
 IS_SPEAKER = 'is_speaker'
 IS_COMMITTEE_MEMBER = 'is_committee_member'
 SUBMISSION_OPEN = 'submission_open'
+VOTING_OPEN = 'voting_open'
 SESSIONS_PUBLISHED = 'sessions_published'
 USER_CAN_REGISTER = 'user_can_register'
 
@@ -48,9 +49,14 @@ class DevDayMenu(Menu):
                     2, attr={SUBMISSION_OPEN: True}))
             entries.append(
                 NavigationNode(
+                    _('Vote for your favourite sessions'),
+                    reverse('attendee_voting', kwargs={'event': event.slug}),
+                    3, attr={VOTING_OPEN: True, CAN_CHECK_IN: True}))
+            entries.append(
+                NavigationNode(
                     _('Sessions'),
                     event.get_absolute_url(),
-                    3, attr={SESSIONS_PUBLISHED: True}))
+                    4, attr={SESSIONS_PUBLISHED: True}))
 
         archive = NavigationNode(_('Archive'), '#', 50, attr={CHILDREN: True})
         events = Event.objects.filter(
@@ -150,6 +156,8 @@ class DevDayModifier(Modifier):
                          lambda: self.user_can_register(request, event))
         self.prune_nodes(nodes, SUBMISSION_OPEN,
                          lambda: event.submission_open)
+        self.prune_nodes(nodes, VOTING_OPEN,
+                         lambda: event.voting_open)
         self.prune_nodes(nodes, SESSIONS_PUBLISHED,
                          lambda: (request.user.is_staff
                                   or event.sessions_published))

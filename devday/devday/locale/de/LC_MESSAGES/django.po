@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-25 13:46+0000\n"
-"PO-Revision-Date: 2019-02-25 14:51+0100\n"
+"POT-Creation-Date: 2019-03-08 15:49+0000\n"
+"PO-Revision-Date: 2019-03-08 16:53+0100\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,54 +16,58 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: devday/cms_apps.py:8
 msgid "DevDay"
 msgstr "DevDay"
 
-#: devday/cms_menus.py:39
+#: devday/cms_menus.py:40
 msgid "Register now for {}"
 msgstr "Jetzt anmelden für {}"
 
-#: devday/cms_menus.py:45
+#: devday/cms_menus.py:46
 msgid "Submit session for {}"
 msgstr "Session einreichen für {}"
 
-#: devday/cms_menus.py:51
+#: devday/cms_menus.py:52
+msgid "Vote for your favourite sessions"
+msgstr "Stimme für deine bevorzugten Sessions"
+
+#: devday/cms_menus.py:57
 msgid "Sessions"
 msgstr "Sessions"
 
-#: devday/cms_menus.py:55
+#: devday/cms_menus.py:61
 msgid "Archive"
 msgstr "Archiv"
 
-#: devday/cms_menus.py:67
+#: devday/cms_menus.py:73
 msgid "Login"
 msgstr "Login"
 
-#: devday/cms_menus.py:72
+#: devday/cms_menus.py:78
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/cms_menus.py:79
+#: devday/cms_menus.py:85
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: devday/cms_menus.py:83
+#: devday/cms_menus.py:89
 msgid "Checkin QR Code"
 msgstr "QR-Code für Checkin"
 
-#: devday/cms_menus.py:89
+#: devday/cms_menus.py:95
 msgid "Speaker Profile"
 msgstr "Sprecher-Profil"
 
-#: devday/cms_menus.py:95
+#: devday/cms_menus.py:101
 msgid "Program Committee"
 msgstr "Programmkomittee"
 
-#: devday/cms_menus.py:99
+#: devday/cms_menus.py:105
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -453,34 +457,6 @@ msgstr ""
 #: devday/templates/django_registration/registration_form.html:3
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
-
-#: devday/templates/talk/admin/publish_talks.html:8
-msgid ""
-"You are about to publish the following items. Please select a track for each "
-"item."
-msgstr ""
-"Du bist dabei die folgenden Einträge zu veröffentlichen. Bitte wähle einen "
-"Track für jeden Eintrag."
-
-#: devday/templates/talk/admin/publish_talks.html:35
-msgid "Publish talks"
-msgstr "Sessions veröffentlichen"
-
-#: devday/templates/talk/admin/talkslot_add_done.html:5
-msgid "Talk slot created successfully"
-msgstr "Talk-Slot erfolgreich angelegt"
-
-#: devday/templates/talk/admin/talkslot_add_form.html:24
-msgid "first step"
-msgstr "erster Schritt"
-
-#: devday/templates/talk/admin/talkslot_add_form.html:26
-msgid "prev step"
-msgstr "vorheriger Schritt"
-
-#: devday/templates/talk/admin/talkslot_add_form.html:28
-msgid "submit"
-msgstr "Abschicken"
 
 #: devday/utils/html_mail.py:51
 msgid "Dev Day Attendees {}"

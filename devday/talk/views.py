@@ -7,33 +7,36 @@ from io import StringIO
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (
+    AccessMixin, LoginRequiredMixin, PermissionRequiredMixin)
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Avg, Count, Sum, Min, Max
-from django.http import (Http404, HttpResponse, HttpResponseRedirect,
-                         JsonResponse)
+from django.db.models import (
+    Avg, Case, Count, F, IntegerField, Max, Min, Sum, When)
+from django.http import (
+    Http404, HttpResponse, HttpResponseRedirect, JsonResponse,
+    HttpResponseBadRequest)
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.generic import ListView, RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import (
-    UpdateView, CreateView,
-    FormView)
+    BaseFormView, CreateView, FormView, UpdateView)
 from django.views.generic.list import BaseListView
 
 from attendee.forms import DevDayRegistrationForm
+from attendee.models import Attendee
 from attendee.views import StaffUserMixin
 from event.models import Event
 from speaker.models import Speaker
 from talk.forms import (
-    CreateTalkForm, EditTalkForm, TalkCommentForm,
-    TalkVoteForm, TalkSpeakerCommentForm)
+    AttendeeTalkVoteForm, CreateTalkForm, EditTalkForm, TalkCommentForm,
+    TalkSpeakerCommentForm, TalkVoteForm)
 from talk.models import (
-    Talk, Vote, TalkComment, Room, TimeSlot, TalkSlot)
+    AttendeeVote, Room, Talk, TalkComment, TalkSlot, TimeSlot, Vote)
 
 logger = logging.getLogger('talk')
 
@@ -214,35 +217,33 @@ class TalkListView(ListView):
     model = Talk
 
     def dispatch(self, request, *args, **kwargs):
-        event = self.kwargs.get('event')
-        event = get_object_or_404(Event, slug=event)
-        if (event.published and event.sessions_published) \
+        self.event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        if (self.event.published and self.event.sessions_published) \
                 or request.user.is_staff:
             return super(TalkListView, self).dispatch(request, *args, **kwargs)
         raise Http404
 
     def get_queryset(self):
-        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
         qs = super(TalkListView, self).get_queryset().filter(
-            track__isnull=False, event=event,
-            talkslot__time__event=event).select_related(
+            track__isnull=False, event=self.event).select_related(
             'track', 'published_speaker', 'event',
             'talkslot', 'talkslot__time', 'talkslot__room'
         )
-        if event == Event.objects.current_event():
+        if self.event == Event.objects.current_event():
             return qs.order_by(
                 'talkslot__time__start_time', 'talkslot__room__name')
         return qs.order_by('title')
 
-    def get_context_data_for_grid(self, context, event, **kwargs):
+    def get_context_data_for_grid(self, context, **kwargs):
         talks = context.get('talk_list', [])
         talks_by_time_and_room = {}
         talks_by_room_and_time = {}
         unscheduled = []
         has_footage = Talk.objects.filter(
-            event=event, track__isnull=False
+            event=self.event, track__isnull=False
         ).filter(media__isnull=False).select_related(
             'published_speaker', 'media').count() > 0
+        have_scheduled = False
         for talk in talks:
             try:
                 # build dictionary grouped by time and room (md and lg display)
@@ -251,37 +252,37 @@ class TalkListView(ListView):
                 # build dictionary grouped by room and time (sm and xs display)
                 talks_by_room_and_time.setdefault(
                     talk.talkslot.room, []).append(talk)
+                have_scheduled = True
             except TalkSlot.DoesNotExist:
                 unscheduled.append(talk)
         context.update(
             {
-                'event': event,
+                'event': self.event,
                 'talks_by_time_and_room': talks_by_time_and_room,
                 'talks_by_room_and_time': talks_by_room_and_time,
                 'unscheduled': unscheduled,
-                'rooms': Room.objects.for_event(event),
-                'times': TimeSlot.objects.filter(event=event),
+                'have_scheduled': have_scheduled,
+                'rooms': Room.objects.for_event(self.event),
+                'times': TimeSlot.objects.filter(event=self.event),
                 'has_footage': has_footage,
             }
         )
         return context
 
-    def get_context_data_for_list(self, context, event, **kwargs):
+    def get_context_data_for_list(self, context, **kwargs):
         context.update({
-            'event': event,
+            'event': self.event,
         })
         return context
 
     def get_context_data(self, **kwargs):
         context = super(TalkListView, self).get_context_data(**kwargs)
-        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        if event == Event.objects.current_event():
-            return self.get_context_data_for_grid(context, event, **kwargs)
-        return self.get_context_data_for_list(context, event, **kwargs)
+        if self.event == Event.objects.current_event():
+            return self.get_context_data_for_grid(context, **kwargs)
+        return self.get_context_data_for_list(context, **kwargs)
 
     def get_template_names(self):
-        event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        if event == Event.objects.current_event():
+        if self.event == Event.objects.current_event():
             return 'talk/talk_grid.html'
         return 'talk/talk_list.html'
 
@@ -381,17 +382,14 @@ class InfoBeamerXMLView(BaseListView):
         talks = context.get('talk_list', [])
         talks_by_room_and_time = {}
         for talk in talks:
-            try:
-                # build dictionary grouped by room and time (sm and xs display)
-                talks_by_room_and_time.setdefault(
-                    talk.talkslot.room, []).append(talk)
-            except TalkSlot.DoesNotExist:
-                continue
+            # build dictionary grouped by room and time (sm and xs display)
+            talks_by_room_and_time.setdefault(
+                talk.talkslot.room, []).append(talk)
         context.update(
             {
                 'event': event,
                 'talks_by_room_and_time': talks_by_room_and_time,
-                'rooms': Room.objects.all(),
+                'rooms': event.room_set.all(),
                 'times': TimeSlot.objects.filter(event=event)
             }
         )
@@ -417,34 +415,34 @@ class InfoBeamerXMLView(BaseListView):
             date=self.to_xml_date(context['min_time'], context),
             start=self.to_xml_timestamp(context['min_time'], context),
             end=self.to_xml_timestamp(context['max_time'], context))
-        for room in context['rooms']:
-            room_xml = ElementTree.SubElement(day_xml, 'room', name=room.name)
-            room_talks = context['talks_by_room_and_time']
-            if room in room_talks:
-                for talk in room_talks[room]:
-                    event_xml = ElementTree.SubElement(
-                        room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
-                    start_time = talk.talkslot.time.start_time
-                    duration = talk.talkslot.time.end_time - start_time
-                    ElementTree.SubElement(
-                        event_xml, 'date'
-                    ).text = self.to_xml_timestamp(start_time, context)
-                    ElementTree.SubElement(
-                        event_xml, 'start'
-                    ).text = self.to_xml_localtime(start_time, context)
-                    ElementTree.SubElement(event_xml,
-                                           'duration').text = "%02d:%02d" % (
-                        duration.seconds / 3600, duration.seconds % 3600 / 60)
-                    ElementTree.SubElement(event_xml, 'room').text = room.name
-                    ElementTree.SubElement(event_xml, 'title').text = talk.title
-                    ElementTree.SubElement(event_xml,
-                                           'abstract').text = talk.abstract
-                    ElementTree.SubElement(event_xml, 'language').text = 'de'
-                    persons_xml = ElementTree.SubElement(event_xml, 'persons')
-                    ElementTree.SubElement(
-                        persons_xml, 'person',
-                        id=str(talk.published_speaker_id)
-                    ).text = talk.published_speaker.name
+        room_talks = context['talks_by_room_and_time']
+        for room in room_talks:
+            room_xml = ElementTree.SubElement(
+                day_xml, 'room', name=room.name)
+            for talk in room_talks[room]:
+                event_xml = ElementTree.SubElement(
+                    room_xml, 'event', guid=str(talk.pk), id=str(talk.pk))
+                start_time = talk.talkslot.time.start_time
+                duration = talk.talkslot.time.end_time - start_time
+                ElementTree.SubElement(
+                    event_xml, 'date'
+                ).text = self.to_xml_timestamp(start_time, context)
+                ElementTree.SubElement(
+                    event_xml, 'start'
+                ).text = self.to_xml_localtime(start_time, context)
+                ElementTree.SubElement(event_xml,
+                                       'duration').text = "%02d:%02d" % (
+                    duration.seconds / 3600, duration.seconds % 3600 / 60)
+                ElementTree.SubElement(event_xml, 'room').text = room.name
+                ElementTree.SubElement(event_xml, 'title').text = talk.title
+                ElementTree.SubElement(event_xml,
+                                       'abstract').text = talk.abstract
+                ElementTree.SubElement(event_xml, 'language').text = 'de'
+                persons_xml = ElementTree.SubElement(event_xml, 'persons')
+                ElementTree.SubElement(
+                    persons_xml, 'person',
+                    id=str(talk.published_speaker_id)
+                ).text = talk.published_speaker.name
 
         response_kwargs.setdefault('content_type', 'application/xml')
         return HttpResponse(content=ElementTree.tostring(schedule_xml, 'utf-8'),
@@ -690,3 +688,82 @@ class EventSessionSummaryView(StaffUserMixin, BaseListView):
             return response
         finally:
             output.close()
+
+
+class AttendeeVotingView(LoginRequiredMixin, ListView):
+    model = Talk
+    template_name_suffix = "_voting"
+
+    def get(self, request, *args, **kwargs):
+        self.event = get_object_or_404(
+            Event, slug=kwargs['event'], voting_open=True)
+        self.attendee = get_object_or_404(
+            Attendee, user=request.user)
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            track__isnull=False, event=self.event).select_related(
+            'track', 'published_speaker'
+        ).annotate(attendee_score=Case(
+            When(
+                attendeevote__attendee=self.attendee,
+                then=F('attendeevote__score')
+            ),
+            default=0, output_field=IntegerField()
+        )).order_by('title')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['event'] = self.event
+        return context
+
+
+class AttendeeTalkVote(LoginRequiredMixin, BaseFormView):
+    model = Talk
+    http_method_names = ['post']
+    form_class = AttendeeTalkVoteForm
+
+    def post(self, request, *args, **kwargs):
+        self.event = get_object_or_404(
+            Event, slug=kwargs['event'], voting_open=True)
+        if 'talk-id' not in self.request.POST:
+            return HttpResponseBadRequest()
+        self.talk = get_object_or_404(
+            Talk, id=self.request.POST.get('talk-id', -1),
+            event=self.event, track__isnull=False)
+        self.attendee = get_object_or_404(
+            Attendee, user=request.user)
+        return super().post(request, *args, **kwargs)
+
+    def form_invalid(self, form):
+        return JsonResponse({'message': 'error', 'errors': form.errors})
+
+    def form_valid(self, form):
+        score = form.cleaned_data['score']
+        try:
+            vote = self.talk.attendeevote_set.get(attendee=self.attendee)
+            vote.score = score
+            vote.save()
+        except AttendeeVote.DoesNotExist:
+            self.talk.attendeevote_set.create(
+                attendee=self.attendee, score=score)
+        return JsonResponse({'message': 'ok'})
+
+
+class AttendeeTalkClearVote(LoginRequiredMixin, View):
+    model = Talk
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        event = get_object_or_404(
+            Event, slug=kwargs['event'], voting_open=True)
+        if 'talk-id' not in self.request.POST:
+            return HttpResponseBadRequest()
+        talk = get_object_or_404(
+            Talk, id=request.POST.get('talk-id', -1),
+            event=event, track__isnull=False)
+        attendee = get_object_or_404(
+            Attendee, user=request.user)
+        talk.attendeevote_set.filter(attendee=attendee).delete()
+        return JsonResponse({'message': 'vote deleted'})

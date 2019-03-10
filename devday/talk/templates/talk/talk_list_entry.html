@@ -18,9 +18,9 @@
             <p>{{ talk.abstract|truncatechars:140 }}</p>
 
             <div class="media-list">
-                {% if talk.media.youtube %}<a href="#" title="Video"><i class="fab fa-youtube" aria-hidden="true"></i></a>{% endif %}
-                {% if talk.media.slideshare %}<a href="#" title="Slides"><i class="fab fa-slideshare" aria-hidden="true"></i></a>{% endif %}
-                {% if talk.media.codelink %}<a href="#" title="Code"><i class="fas fa-file-code" aria-hidden="true"></i></a>{% endif %}
+                {% if talk.media.youtube %}<a href="{% url 'talk_details' event=event.slug slug=talk.slug %}" title="Video"><i class="fab fa-youtube" aria-hidden="true"></i></a>{% endif %}
+                {% if talk.media.slideshare %}<a href="{% url 'talk_details' event=event.slug slug=talk.slug %}" title="Slides"><i class="fab fa-slideshare" aria-hidden="true"></i></a>{% endif %}
+                {% if talk.media.codelink %}<a href="{% url 'talk_details' event=event.slug slug=talk.slug %}" title="Code"><i class="fas fa-file-code" aria-hidden="true"></i></a>{% endif %}
             </div>
 
         </div>

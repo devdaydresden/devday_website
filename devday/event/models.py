@@ -56,6 +56,9 @@ class Event(models.Model):
         verbose_name=_('Registration Open'), default=False)
     submission_open = models.BooleanField(
         verbose_name=_('Submission Open'), default=False)
+    voting_open = models.BooleanField(
+        verbose_name=_('Voting Open'), default=False,
+        help_text=_('Attendees can vote for their preferred sessions'))
     sessions_published = models.BooleanField(
         verbose_name=_('Grid Published'), default=False)
     talkformat = models.ManyToManyField(

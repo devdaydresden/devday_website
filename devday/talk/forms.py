@@ -10,7 +10,7 @@ from attendee.models import Attendee
 from event.models import Event
 from talk.models import (
     Talk, TalkFormat, TalkComment, Vote, SessionReservation, TalkSlot, TimeSlot,
-    Room)
+    Room, AttendeeVote)
 
 User = get_user_model()
 
@@ -207,3 +207,9 @@ class AddTalkSlotFormStep2(forms.ModelForm):
             'event')
         self.fields['room'].queryset = Room.objects.filter(
             event=self.event)
+
+
+class AttendeeTalkVoteForm(forms.ModelForm):
+    class Meta:
+        model = AttendeeVote
+        fields = ["score"]

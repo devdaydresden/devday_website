@@ -1,9 +1,9 @@
 from django.conf.urls import url
 
 from talk.views import (
-    CreateTalkView, TalkSubmittedView, SpeakerTalkDetails,
-    TalkSpeakerCommentDelete, SubmitTalkSpeakerComment,
-    TalkSubmissionClosed, PrepareSubmitSessionView)
+    CreateTalkView, PrepareSubmitSessionView, SpeakerTalkDetails,
+    SubmitTalkSpeakerComment, TalkSpeakerCommentDelete,
+    TalkSubmissionClosed, TalkSubmittedView)
 
 urlpatterns = [
     url(r'^(?P<event>[^/]+)/submit/$', CreateTalkView.as_view(),

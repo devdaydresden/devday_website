@@ -3,10 +3,13 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.test import TestCase
 from django.utils.translation import ugettext as _
 
+from attendee.models import Attendee
+from attendee.tests import attendee_testutils
 from event.tests.event_testutils import create_test_event
 from speaker.models import PublishedSpeaker, Speaker
 from speaker.tests import speaker_testutils
-from talk.models import Room, Talk, TalkComment, TalkSlot, TimeSlot, Track, Vote
+from talk.models import Room, Talk, TalkComment, TalkSlot, TimeSlot, Track, \
+    Vote, AttendeeVote, AttendeeFeedback
 
 User = get_user_model()
 
@@ -139,3 +142,43 @@ class TalkSlotTest(TestCase):
             room=room, time=time_slot, talk=talk)
         self.assertEqual(
             str(talk_slot), '{} {} ({})'.format(room, time_slot.name, event))
+
+
+class AttendeeVoteTest(TestCase):
+    def setUp(self):
+        event = create_test_event()
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.talk = Talk.objects.create(
+            draft_speaker=speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=event)
+        self.test_user, _ = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(user=self.test_user, event=event)
+
+    def test_str(self):
+        vote = AttendeeVote.objects.create(
+            attendee=self.attendee, talk=self.talk, score=5)
+        self.assertEqual(
+            '{}'.format(vote),
+            '{} voted {} for {} by {}'.format(
+                self.attendee, 5, 'Test', self.talk.published_speaker))
+
+
+class AttendeeFeedbackTest(TestCase):
+    def setUp(self):
+        event = create_test_event()
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.talk = Talk.objects.create(
+            draft_speaker=speaker, title='Test', abstract='Test abstract',
+            remarks='Test remarks', event=event)
+        track = Track.objects.create(name='Test')
+        self.talk.publish(track=track)
+        self.test_user, _ = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(user=self.test_user, event=event)
+
+    def test_str(self):
+        vote = AttendeeFeedback.objects.create(
+            attendee=self.attendee, talk=self.talk, score=5, comment='LGTM')
+        self.assertEqual(
+            '{}'.format(vote),
+            '{} gave feedback for {} by {}: score={}, comment={}'.format(
+                self.attendee, 'Test', self.talk.published_speaker, 5, 'LGTM'))

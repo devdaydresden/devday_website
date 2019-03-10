@@ -1,5 +1,5 @@
 /**
- * Build on 2019-3-9
+ * Build on 2019-3-10
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -13168,6 +13168,91 @@ table.table.session {
       .talk-card .media-list a:hover {
         background: #35a4a3;
         color: #ffffff; }
+
+.talk-details .talk-title {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: #e9ecef;
+  margin-bottom: 1.5rem; }
+  .talk-details .talk-title .year {
+    display: inline;
+    position: relative;
+    padding: 13px 16px;
+    background: #3f8b89;
+    color: #ffffff;
+    margin-right: 38px; }
+    .talk-details .talk-title .year::after {
+      position: absolute;
+      width: 0;
+      height: 0;
+      content: '';
+      border-top: 25px solid transparent;
+      border-bottom: 25px solid transparent;
+      border-left: 25px solid #3f8b89;
+      right: -25px;
+      top: 0; }
+    .talk-details .talk-title .year.archive {
+      background: #545454; }
+      .talk-details .talk-title .year.archive::after {
+        border-left-color: #545454; }
+  .talk-details .talk-title .talk-name {
+    margin: 0;
+    padding: 8px 0; }
+
+.talk-details .card {
+  padding-top: 0;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e9ecef; }
+  .talk-details .card .card-header {
+    border-bottom: 1px solid #e9ecef;
+    background: #e9ecef;
+    color: #171034; }
+    .talk-details .card .card-header i {
+      margin-right: 15px; }
+  .talk-details .card .card-body {
+    text-align: center; }
+    .talk-details .card .card-body iframe {
+      margin: 0 auto; }
+
+.speaker-datails .speaker-name {
+  font-size: 30px;
+  margin-top: 8px;
+  margin-bottom: 34px; }
+  .speaker-datails .speaker-name a {
+    color: #ffffff; }
+
+.speaker-datails .speaker-image img {
+  max-width: 250px; }
+
+@media (max-width: 767.98px) {
+  .talk-details .talk-title {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: baseline;
+    -webkit-align-items: baseline;
+        -ms-flex-align: baseline;
+            align-items: baseline; }
+    .talk-details .talk-title .talk-name {
+      padding: 8px 15px; } }
 
 .visible-to-editor-only {
   outline: 2px solid yellow; }

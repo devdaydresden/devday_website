@@ -4,40 +4,54 @@
     {{ talk.title }}{% endblock %}
 {% block content_body %}
     {% url 'public_speaker_profile' event=event.slug slug=speaker.slug as speaker_profile_url %}
-    <div class="row">
+    <div class="row talk-details">
         <div class="col-12">
-            <h1>{{ talk.title }}</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'session_list' event=event.slug %}">{{ event }}</a></li>
-                    <li class="breadcrumb-item"><a href="{{ speaker_profile_url }}">{{ speaker.name }}</a></li>
-                </ol>
-            </nav>
+            <div class="talk-title">
+                <span class="year">{{ event }}</span>
+                <h1 class="talk-name">{{ talk.title }}</h1>
+            </div>
+            <div class="talk-title">
+                <span class="year archive">{{ event }}</span>
+                <h1 class="talk-name">{{ talk.title }}</h1>
+            </div>
             <p>{{ talk.abstract|linebreaksbr }}</p>
+
             {% if talk.media.youtube %}
-                <p>
-                    <strong>{% trans "Video" %}:</strong><br>
-                    <iframe width="560" height="315"
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fab fa-youtube" aria-hidden="true"></i>{% trans "Video" %}
+                    </div>
+                    <div class="card-body">
+                        <iframe width="560" height="315"
                             src="https://www.youtube.com/embed/{{ talk.media.youtube }}"
                             frameborder="0"
                             allowfullscreen></iframe>
-                </p>
+                    </div>
+                </div>
             {% endif %}
             {% if talk.media.slideshare %}
-                <p>
-                    <strong>{% trans "Slide deck" %}:</strong><br>
-                    <iframe width="595" height="485"
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fab fa-slideshare" aria-hidden="true"></i>{% trans "Slide deck" %}
+                    </div>
+                    <div class="card-body">
+                        <iframe width="595" height="485"
                             src="https://www.slideshare.net/slideshow/embed_code/key/{{ talk.media.slideshare }}"
                             frameborder="0" marginwidth="0"
                             scrolling="no" style=""
                             allowfullscreen></iframe>
-                </p>
+                    </div>
+                </div>
             {% endif %}
             {% if talk.media.codelink %}
-                <p>
-                    <strong>{% trans "Example code" %}:</strong><br>
-                    <a href="{{ talk.media.codelink }}">{{ talk.media.codelink }}</a>
-                </p>
+                 <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-file-code" aria-hidden="true"></i>{% trans "Example code" %}
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ talk.media.codelink }}">{{ talk.media.codelink }}</a>
+                    </div>
+                </div>
             {% endif %}
         </div>
     </div>
@@ -46,9 +60,10 @@
 {% block content_box_2_wrapper %}
     {% url 'public_speaker_profile' event=event.slug slug=speaker.slug as speaker_profile_url %}
     <div class="text-center">
-        <div class="row">
+        <div class="row speaker-datails">
             <div class="col-12">
-                <a href="{{ speaker_profile_url }}">
+                <h1 class="speaker-name"><a href="{{ speaker_profile_url }}">{{ speaker.name }}</a></h1>
+                <a class="speaker-image" href="{{ speaker_profile_url }}">
                     <img src="{% if speaker.public_image %}{{ speaker.public_image.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
                          class="img-fluid" alt="{{ speaker }}"></a>
             </div>

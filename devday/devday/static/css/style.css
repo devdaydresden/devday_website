@@ -1,5 +1,5 @@
 /**
- * Build on 2019-3-6
+ * Build on 2019-3-9
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -13076,11 +13076,11 @@ table.table.session {
   float: left;
   margin-right: 32px; }
 
-.card {
+.card:not(.talk-card) {
   position: relative;
   padding-top: 110px;
   margin-top: 100px; }
-  .card img {
+  .card:not(.talk-card) img {
     position: absolute;
     top: -100px;
     border-radius: 50%;
@@ -13091,8 +13091,83 @@ table.table.session {
     left: 50%;
     -webkit-transform: translateX(-50%);
             transform: translateX(-50%); }
-  .card .carb-body {
+  .card:not(.talk-card) .carb-body {
     text-align: center; }
+
+.talk-card {
+  margin-bottom: 1.5rem; }
+  .talk-card .card-header {
+    position: relative;
+    min-height: 130px;
+    background: -webkit-linear-gradient(119deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
+    background: linear-gradient(-29deg, #373D7A 0%, #2B2E4C 52%, #22232C 98%, #22232C 100%);
+    overflow: hidden; }
+    .talk-card .card-header img {
+      position: absolute;
+      width: 100%;
+      bottom: 50%;
+      -webkit-transform: translateY(50%);
+              transform: translateY(50%);
+      left: 0;
+      mix-blend-mode: luminosity;
+      opacity: 0.2;
+      z-index: 2; }
+    .talk-card .card-header .card-title {
+      position: absolute;
+      width: 100%;
+      margin: 0;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.5);
+      color: #35a4a3;
+      z-index: 3;
+      top: 0;
+      left: 0;
+      text-align: center; }
+      .talk-card .card-header .card-title a {
+        font-size: 1.5rem; }
+        .talk-card .card-header .card-title a:hover {
+          color: #ffffff;
+          text-decoration: none; }
+  .talk-card .card-body {
+    z-index: 4;
+    text-align: center; }
+    .talk-card .card-body .speaker-image {
+      display: block;
+      width: 100px;
+      height: 100px;
+      margin: -70px auto 0 auto;
+      border: 4px solid #ffffff;
+      background: #2A2D49;
+      color: #ffffff;
+      border-radius: 50%;
+      overflow: hidden; }
+      .talk-card .card-body .speaker-image svg {
+        display: block;
+        width: 55px;
+        margin: 12px auto 0 auto; }
+    .talk-card .card-body .speaker-name {
+      margin-top: 10px; }
+  .talk-card .media-list {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    margin: 0 -20px -20px -20px;
+    background: #F6F6F6; }
+    .talk-card .media-list a {
+      padding: 12px 24px; }
+      .talk-card .media-list a:hover {
+        background: #35a4a3;
+        color: #ffffff; }
 
 .visible-to-editor-only {
   outline: 2px solid yellow; }

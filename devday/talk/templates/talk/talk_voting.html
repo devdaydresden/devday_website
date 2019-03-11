@@ -55,72 +55,73 @@ Template for attendee talk voting
                 {% trans "There are no sessions published yet." %}
             </div>
         {% endif %}
-        {% addtoblock "js" %}
-            <script src="{% static "js/star-rating.js" %}"
-                    type="text/javascript"></script>
-            <script type="text/javascript">
-                function getCookie(name) {
-                    var cookieValue = null;
-                    if (document.cookie && document.cookie !== '') {
-                        var cookies = document.cookie.split(';');
-                        for (var i = 0; i < cookies.length; i++) {
-                            var cookie = jQuery.trim(cookies[i]);
-                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                break;
-                            }
+    </div>
+    {% addtoblock "js" %}
+        <script src="{% static "js/star-rating.js" %}"
+                type="text/javascript"></script>
+        <script type="text/javascript">
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
                         }
                     }
-                    return cookieValue;
                 }
-            </script>
-        {% endaddtoblock %}
-        {% addtoblock "css" %}
-            <link rel="stylesheet"
-                  href="{% static "css/star-rating.css" %}">
-            <link rel="stylesheet"
-                  href="{% static "css/theme-krajee-svg.css" %}">
-        {% endaddtoblock %}
-        {% addtoblock "js" %}
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    $('.rating-loading').rating({
-                        theme: 'krajee-svg',
-                        filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
-                        emptyStar: '<span class="krajee-icon krajee-icon-star"></span>',
-                        clearButton: '<a class="btn">{% trans "Delete" %}</span>',
-                        showCaption: false,
-                        step: 1,
-                    }).on('rating.clear', function (event) {
-                        $.ajax(
-                            "{% url 'attendee_vote_clear' event=event.slug %}",
-                            {
-                                data: {
-                                    "score": null,
-                                    "talk-id": $(event.target).data('talk-id')
-                                },
-                                headers: {
-                                    "X-CSRFToken": getCookie('csrftoken')
-                                },
-                                method: 'POST'
-                            }
-                        );
-                    }).on('rating.change', function (event, value, caption) {
-                        $.ajax(
-                            "{% url "attendee_vote_change" event=event.slug %}",
-                            {
-                                data: {
-                                    "score": value,
-                                    "talk-id": $(event.target).data('talk-id')
-                                },
-                                headers: {
-                                    "X-CSRFToken": getCookie('csrftoken')
-                                },
-                                method: 'POST'
-                            }
-                        )
-                    });
+                return cookieValue;
+            }
+        </script>
+    {% endaddtoblock %}
+    {% addtoblock "css" %}
+        <link rel="stylesheet"
+              href="{% static "css/star-rating.css" %}">
+        <link rel="stylesheet"
+              href="{% static "css/theme-krajee-svg.css" %}">
+    {% endaddtoblock %}
+    {% addtoblock "js" %}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.rating-loading').rating({
+                    theme: 'krajee-svg',
+                    filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                    emptyStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                    clearButton: '<a class="btn">{% trans "Delete" %}</span>',
+                    showCaption: false,
+                    step: 1,
+                }).on('rating.clear', function (event) {
+                    $.ajax(
+                        "{% url 'attendee_vote_clear' event=event.slug %}",
+                        {
+                            data: {
+                                "score": null,
+                                "talk-id": $(event.target).data('talk-id')
+                            },
+                            headers: {
+                                "X-CSRFToken": getCookie('csrftoken')
+                            },
+                            method: 'POST'
+                        }
+                    );
+                }).on('rating.change', function (event, value, caption) {
+                    $.ajax(
+                        "{% url "attendee_vote_change" event=event.slug %}",
+                        {
+                            data: {
+                                "score": value,
+                                "talk-id": $(event.target).data('talk-id')
+                            },
+                            headers: {
+                                "X-CSRFToken": getCookie('csrftoken')
+                            },
+                            method: 'POST'
+                        }
+                    )
                 });
-            </script>
-        {% endaddtoblock %}
+            });
+        </script>
+    {% endaddtoblock %}
 {% endblock %}

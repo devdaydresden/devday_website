@@ -275,6 +275,7 @@ tiefer in ein Thema einsteigen.</p>
                 u'submit-session-introtext',
                 u'talk_submission_closed',
                 u'talk_submitted',
+                u'talk-voting-intro-text'
         ):
             self.create_static_placeholder_text(placeholder)
 

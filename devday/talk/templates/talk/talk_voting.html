@@ -1,5 +1,5 @@
 {% extends "devday_site.html" %}
-{% load i18n l10n sekizai_tags static %}
+{% load i18n l10n sekizai_tags static cms_tags %}
 {% block title %}{{ block.super }} -
     {% trans "Schedule preview and voting" %}{% endblock %}
 {% comment %}
@@ -9,7 +9,13 @@ Template for attendee talk voting
     <div class="content-area">
         <div class="row">
             <h1>{% trans "Vote for your favourite sessions" %}</h1>
-            <div class="table-responsive">
+        </div>
+        {% if talk_list %}
+            <div class="row">
+                <p>{% static_placeholder "talk-voting-intro-text" or %}
+                    {% trans "You may vote for your favourite sessions. We will use the voting results to plan the room assignments." %}{% endstatic_placeholder %}</p>
+            </div>
+            <div class="row table-responsive">
                 <table class="table">
                     <thead>
                     <tr>
@@ -27,22 +33,28 @@ Template for attendee talk voting
                                 -
                                 <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
                             </td>
-                            <td><input
-                                    title="{% trans "Your vote" %}"
-                                    id="talk-vote-{{ talk.pk }}-id"
-                                    name="talk-vote-{{ talk.pk }}"
-                                    type="number"
-                                    class="rating-loading"
-                                    data-size="xs"
-                                    data-talk-id="{{ talk.pk }}"
-                                    value="{{ talk.attendee_score|unlocalize }}">
-                            </td>
+                            {% if not event.sessions_published %}
+                                <td><input
+                                        title="{% trans "Your vote" %}"
+                                        id="talk-vote-{{ talk.pk }}-id"
+                                        name="talk-vote-{{ talk.pk }}"
+                                        type="number"
+                                        class="rating-loading"
+                                        data-size="xs"
+                                        data-talk-id="{{ talk.pk }}"
+                                        value="{{ talk.attendee_score|unlocalize }}">
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
-        </div>
+        {% else %}
+            <div class="row">
+                {% trans "There are no sessions published yet." %}
+            </div>
+        {% endif %}
     </div>
     {% addtoblock "js" %}
         <script src="{% static "js/star-rating.js" %}"
@@ -80,7 +92,7 @@ Template for attendee talk voting
                     clearButton: '<a class="btn">{% trans "Delete" %}</span>',
                     showCaption: false,
                     step: 1,
-                }).on('rating.clear', function(event) {
+                }).on('rating.clear', function (event) {
                     $.ajax(
                         "{% url 'attendee_vote_clear' event=event.slug %}",
                         {
@@ -94,7 +106,7 @@ Template for attendee talk voting
                             method: 'POST'
                         }
                     );
-                }).on('rating.change', function(event, value, caption) {
+                }).on('rating.change', function (event, value, caption) {
                     $.ajax(
                         "{% url "attendee_vote_change" event=event.slug %}",
                         {

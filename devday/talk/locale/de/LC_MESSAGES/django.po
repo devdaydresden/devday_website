@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 15:49+0000\n"
-"PO-Revision-Date: 2019-03-08 16:53+0100\n"
+"POT-Creation-Date: 2019-03-11 12:58+0000\n"
+"PO-Revision-Date: 2019-03-11 14:00+0100\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: talk/admin.py:104
@@ -123,7 +123,7 @@ msgstr "Plätze"
 msgid "Maximum number of attendees for this talk"
 msgstr "Maximale Anzahl von Teilnehmern für diese Session"
 
-#: talk/models.py:68 talk/templates/talk/talk_voting.html:16
+#: talk/models.py:68 talk/templates/talk/talk_voting.html:22
 msgid "Session"
 msgstr "Session"
 
@@ -495,8 +495,8 @@ msgid "No votes yet"
 msgstr "Noch keine Bewertungen"
 
 #: talk/templates/talk/talk_committee_details.html:67
-#: talk/templates/talk/talk_voting.html:18
-#: talk/templates/talk/talk_voting.html:31
+#: talk/templates/talk/talk_voting.html:24
+#: talk/templates/talk/talk_voting.html:37
 msgid "Your vote"
 msgstr "Deine Bewertung"
 
@@ -505,7 +505,7 @@ msgid "your vote"
 msgstr "deine Bewertung"
 
 #: talk/templates/talk/talk_committee_details.html:88
-#: talk/templates/talk/talk_voting.html:80
+#: talk/templates/talk/talk_voting.html:90
 msgid "Delete"
 msgstr "Löschen"
 
@@ -566,15 +566,15 @@ msgstr[1] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimmen)"
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
-#: talk/templates/talk/talk_details.html:19
+#: talk/templates/talk/talk_details.html:25
 msgid "Video"
 msgstr "Video"
 
-#: talk/templates/talk/talk_details.html:28
+#: talk/templates/talk/talk_details.html:38
 msgid "Slide deck"
 msgstr "Folien"
 
-#: talk/templates/talk/talk_details.html:38
+#: talk/templates/talk/talk_details.html:52
 #: talk/templates/talk/talk_videos.html:41
 msgid "Example code"
 msgstr "Beispielcode"
@@ -667,7 +667,20 @@ msgstr "Sessionvorschau und Abstimmung"
 msgid "Vote for your favourite sessions"
 msgstr "Stimme für deine bevorzugten Sessions"
 
-#: talk/tests/test_views.py:353 talk/tests/test_views.py:435
-#: talk/tests/test_views.py:690
+#: talk/templates/talk/talk_voting.html:16
+msgid ""
+"You may vote for your favourite sessions. We will use the voting results to "
+"plan the room assignments."
+msgstr ""
+"Hier kannst du für die Sessions abstimmen, die dich am meisten "
+"interessieren. Wir werden die Abstimmungsergebnisse  bei der Raumzuordnung "
+"für die Sessions zu berücksichtigen."
+
+#: talk/templates/talk/talk_voting.html:54
+msgid "There are no sessions published yet."
+msgstr "Es wurden noch keine Sessions veröffentlicht."
+
+#: talk/tests/test_views.py:357 talk/tests/test_views.py:439
+#: talk/tests/test_views.py:694
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."

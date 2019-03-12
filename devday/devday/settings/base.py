@@ -150,6 +150,8 @@ CMS_TEMPLATES = (
     ('devday_no_cta.html', _('Dev Day Page')),
     ('devday.html', _('Dev Day Page with Call to Action area')),
     ('devday_index.html', _('Dev Day Home Page')),
+    ('devday_all_static_placeholders.html',
+     _('Page with all static placeholders not for menu'))
 )
 CMS_PERMISSION = True
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

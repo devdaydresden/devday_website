@@ -7,52 +7,57 @@ Template for attendee talk voting
 {% endcomment %}
 {% block content %}
     <div class="content-area">
-        <div class="row">
-            <h1>{% trans "Vote for your favourite sessions" %}</h1>
-        </div>
         {% if talk_list %}
             <div class="row">
-                <p>{% static_placeholder "talk-voting-intro-text" or %}
-                    {% trans "You may vote for your favourite sessions. We will use the voting results to plan the room assignments." %}{% endstatic_placeholder %}</p>
+                <div class="col-12">
+                    {% static_placeholder "talk-voting-intro-text" or %}
+                        <h1>{% trans "Vote for your favourite sessions" %}</h1>
+                        <p>{% trans "You may vote for your favourite sessions. We will use the voting results to plan the room assignments." %}</p>
+                    {% endstatic_placeholder %}
+                </div>
             </div>
-            <div class="row table-responsive">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>{% trans "Session" %}</th>
-                        {% if not event.sessions_published %}
-                            <th>{% trans "Your vote" %}</th>
-                        {% endif %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for talk in talk_list %}
+            <div class="row">
+                <div class="col-12 table-responsive">
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td>
-                                <a href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a>
-                                -
-                                <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
-                            </td>
+                            <th>{% trans "Session" %}</th>
                             {% if not event.sessions_published %}
-                                <td><input
-                                        title="{% trans "Your vote" %}"
-                                        id="talk-vote-{{ talk.pk }}-id"
-                                        name="talk-vote-{{ talk.pk }}"
-                                        type="number"
-                                        class="rating-loading"
-                                        data-size="xs"
-                                        data-talk-id="{{ talk.pk }}"
-                                        value="{{ talk.attendee_score|unlocalize }}">
-                                </td>
+                                <th>{% trans "Your vote" %}</th>
                             {% endif %}
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {% for talk in talk_list %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a>
+                                    -
+                                    <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
+                                </td>
+                                {% if not event.sessions_published %}
+                                    <td><input
+                                            title="{% trans "Your vote" %}"
+                                            id="talk-vote-{{ talk.pk }}-id"
+                                            name="talk-vote-{{ talk.pk }}"
+                                            type="number"
+                                            class="rating-loading"
+                                            data-size="xs"
+                                            data-talk-id="{{ talk.pk }}"
+                                            value="{{ talk.attendee_score|unlocalize }}">
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         {% else %}
             <div class="row">
-                {% trans "There are no sessions published yet." %}
+                <div class="col-12">
+                    {% trans "There are no sessions published yet." %}
+                </div>
             </div>
         {% endif %}
     </div>

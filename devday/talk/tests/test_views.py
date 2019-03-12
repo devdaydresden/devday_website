@@ -888,6 +888,14 @@ class TestTalkListView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, event.title)
 
+    def test_talk_list_view_404_for_unpublished_event(self):
+        event = event_testutils.create_test_event('Unpublished')
+        event.published = False
+        event.slug = 'unpublished'
+        event.save()
+        response = self.client.get('/unpublished/sessions/')
+        self.assertEquals(response.status_code, 404)
+
     def test_talk_list_with_unscheduled(self):
         test_speaker, _, _ = speaker_testutils.create_test_speaker(
             'unscheduled@example.org', 'Unscheduled Talk Speaker')

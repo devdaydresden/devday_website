@@ -764,6 +764,6 @@ class AttendeeTalkClearVote(LoginRequiredMixin, View):
             Talk, id=request.POST.get('talk-id', -1),
             event=event, track__isnull=False)
         attendee = get_object_or_404(
-            Attendee, user=request.user, event=self.event)
+            Attendee, user=request.user, event=event)
         talk.attendeevote_set.filter(attendee=attendee).delete()
         return JsonResponse({'message': 'vote deleted'})

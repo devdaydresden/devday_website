@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 15:49+0000\n"
-"PO-Revision-Date: 2019-03-08 16:53+0100\n"
+"POT-Creation-Date: 2019-03-12 18:45+0000\n"
+"PO-Revision-Date: 2019-03-12 19:45+0100\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: devday/cms_apps.py:8
@@ -131,7 +131,7 @@ msgstr "Test-Email an mich selbst senden"
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
-#: devday/settings/base.py:126 devday/settings/base.py:214
+#: devday/settings/base.py:126 devday/settings/base.py:216
 msgid "de"
 msgstr "de"
 
@@ -162,6 +162,10 @@ msgstr "Dev-Day-Seite mit Call-to-Action-Bereich"
 #: devday/settings/base.py:152
 msgid "Dev Day Home Page"
 msgstr "Dev-Day-Homepage"
+
+#: devday/settings/base.py:154
+msgid "Page with all static placeholders not for menu"
+msgstr "Seite mit allen statischen Platzhaltern, nicht im Menü verlinken"
 
 #: devday/templates/400.html:3 devday/templates/400.html:10
 msgid "Bad Request"

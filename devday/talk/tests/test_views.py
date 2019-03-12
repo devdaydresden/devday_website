@@ -791,7 +791,7 @@ class TestTalkListView(TestCase):
         devdata.create_time_slots(events=[cls.event])
         devdata.create_talk_slots(events=[cls.event])
 
-        cls.url = '/{}/'.format(cls.event.slug)
+        cls.url = '/{}/sessions/'.format(cls.event.slug)
 
     def test_talk_list_view(self):
         response = self.client.get(self.url)
@@ -878,13 +878,13 @@ class TestTalkListView(TestCase):
         self.assertEquals(len(root.findall('day/room')), 4)
 
     def test_legacy_list_url(self):
-        response = self.client.get(self.url + 'talk/')
+        response = self.client.get(self.url[:-len('sessions/')] + 'talk/')
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response.url, self.url)
 
     def test_talk_archive_list_view(self):
         event = Event.objects.all_but_current().first()
-        response = self.client.get('/{}/'.format(event.slug))
+        response = self.client.get('/{}/sessions/'.format(event.slug))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, event.title)
 

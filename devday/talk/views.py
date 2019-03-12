@@ -698,7 +698,7 @@ class AttendeeVotingView(LoginRequiredMixin, ListView):
         self.event = get_object_or_404(
             Event, slug=kwargs['event'], voting_open=True)
         self.attendee = get_object_or_404(
-            Attendee, user=request.user)
+            Attendee, user=request.user, event=self.event)
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -733,7 +733,7 @@ class AttendeeTalkVote(LoginRequiredMixin, BaseFormView):
             Talk, id=self.request.POST.get('talk-id', -1),
             event=self.event, track__isnull=False)
         self.attendee = get_object_or_404(
-            Attendee, user=request.user)
+            Attendee, user=request.user, event=self.event)
         return super().post(request, *args, **kwargs)
 
     def form_invalid(self, form):
@@ -764,6 +764,6 @@ class AttendeeTalkClearVote(LoginRequiredMixin, View):
             Talk, id=request.POST.get('talk-id', -1),
             event=event, track__isnull=False)
         attendee = get_object_or_404(
-            Attendee, user=request.user)
+            Attendee, user=request.user, event=self.event)
         talk.attendeevote_set.filter(attendee=attendee).delete()
         return JsonResponse({'message': 'vote deleted'})

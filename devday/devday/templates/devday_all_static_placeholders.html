@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% comment %}
+  This is the page template for all pages except for the home page, which
+  is devday_index.html.
+{% endcomment %}
+{% load cms_tags %}
+
+{% block title %}{% page_attribute "page_title" %}{% endblock title %}
+
+{% block content_block_1 %}
+    <div class="stripe c-white">
+        <div class="row">
+            <div class="col-12">
+                <h2>checkin-instructions</h2>
+                <p>{% static_placeholder "checkin-instructions" or %}
+                    checkin-instruction{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>checkin-result</h2>
+                <p>{% static_placeholder "checkin-result" or %}
+                    checkin-result{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>create-talk-introtext</h2>
+                <p>{% static_placeholder "create-talk-introtext" or %}
+                    create-talk-introtext{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>gdpr_teaser</h2>
+                <p>{% static_placeholder "gdpr_teaser" or %}
+                    gdpr_teaser{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>login-intro</h2>
+                <p>{% static_placeholder "login-intro" or %}
+                    login-intro{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>register-attendee-introtext</h2>
+                <p>{% static_placeholder "register-attendee-introtext" or %}
+                    register-attendee-introtext{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>register-intro-anonymous</h2>
+                <p>{% static_placeholder "register-intro-anonymous" or %}
+                    register-intro-anymous{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>register-intro-introtext-authenticated</h2>
+                <p>
+                    {% static_placeholder "register-intro-introtext-authenticated" or %}
+                        register-intro-introtext-authenticated{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>register-intro</h2>
+                <p>{% static_placeholder "register-intro" or %}
+                    register-intro{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>register-success</h2>
+                <p>{% static_placeholder "register-success" or %}
+                    register-success{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>speaker_registered</h2>
+                <p>{% static_placeholder "speaker_registered" or %}
+                    speaker_registered{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>speaker-register</h2>
+                <p>{% static_placeholder "speaker-register" or %}
+                    speaker-register{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>sponsoring-intro-text</h2>
+                <p>{% static_placeholder "sponsoring-intro-text" or %}
+                    sponsoring-intro-text{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>sponsoring-request-thanks</h2>
+                <p>{% static_placeholder "sponsoring-request-thanks" or %}
+                    sponsoring-request-thanks{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>submit-session-introtext</h2>
+                <p>{% static_placeholder "submit-session-introtext" or %}
+                    submit-session-introtext{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>talk_submission_closed</h2>
+                <p>{% static_placeholder "talk_submission_closed" or %}
+                    talk_submission_closed{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>talk_submitted</h2>
+                <p>{% static_placeholder "talk_submitted" or %}
+                    talk_submitted{% endstatic_placeholder %}</p>
+                <hr>
+
+                <h2>talk-voting-intro-text</h2>
+                <p>{% static_placeholder "talk-voting-intro-text" or %}
+                    talk-voting-intro-text{% endstatic_placeholder %}</p>
+            </div>
+        </div>
+        <div class="container">
+            {% block content_body %}{% block content %}
+            {% endblock %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content_block_2 %}{% endblock %}

@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^videos/$', RedirectVideoView.as_view()),
     url(r'^(?P<event>[^/]+)/talk-preview/$', TalkListPreviewView.as_view(),
         name='session_list_preview'),
-    url(r'^(?P<event>[^/]+)/$', TalkListView.as_view(),
+    url(r'^(?P<event>[^/]+)/sessions/$', TalkListView.as_view(),
         name='session_list'),
     url(r'^(?P<event>[^/]+)/talk/$',
         RedirectView.as_view(pattern_name='session_list'),

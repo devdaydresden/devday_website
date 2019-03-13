@@ -44,7 +44,7 @@ Template for attendee talk voting
                                             class="rating-loading"
                                             data-size="xs"
                                             data-talk-id="{{ talk.pk }}"
-                                            value="{{ talk.attendee_score|unlocalize }}">
+                                            value="{% for score in scores.values %}{% if score.talk_id == talk.pk %}{{ score.score|unlocalize }}{% endif %}{% endfor %}">
                                     </td>
                                 {% endif %}
                             </tr>

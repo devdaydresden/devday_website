@@ -14,7 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import (
-    Avg, Case, Count, F, IntegerField, Max, Min, Sum, When, Q)
+    Avg, Case, Count, F, IntegerField, Max, Min, Sum, When, Q, Prefetch)
 from django.http import (
     Http404, HttpResponse, HttpResponseRedirect, JsonResponse,
     HttpResponseBadRequest)
@@ -702,22 +702,22 @@ class AttendeeVotingView(LoginRequiredMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return super().get_queryset().filter(
-            Q(track__isnull=False), Q(event=self.event),
-            Q(attendeevote__attendee=self.attendee) |
-            Q(attendeevote__attendee__isnull=True)).select_related(
-            'track', 'published_speaker'
-        ).annotate(attendee_score=Case(
-            When(
-                attendeevote__attendee=self.attendee,
-                then=F('attendeevote__score')
-            ),
-            default=0, output_field=IntegerField()
-        )).order_by('title')
+        qs = super().get_queryset().filter(
+            track__isnull=False, event=self.event).select_related(
+            'track', 'published_speaker').prefetch_related(
+        ).order_by('title')
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['event'] = self.event
+        attendee_scores = self.attendee.attendeevote_set.all()
+        scores = {talk.pk: {'talk_id': talk.pk, 'score': 0}
+                  for talk in context['talk_list']}
+        for score in attendee_scores:
+            scores[score.talk_id] = {
+                'talk_id': score.talk_id, 'score': score.score}
+        context['scores'] = scores
         return context
 
 

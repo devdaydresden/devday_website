@@ -1020,7 +1020,8 @@ class TestAttendeeVotingView(TestCase):
             self.speaker, self.event)
         self.session.title = 'Test session'
         self.session.slug = 'test-session'
-        self.session.publish(Track.objects.create(name='Test track'))
+        self.track = Track.objects.create(name='Test track')
+        self.session.publish(self.track)
         self.user, self.password = attendee_testutils.create_test_user(
             'testattendee@example.org')
         self.attendee = Attendee.objects.create(
@@ -1069,6 +1070,25 @@ class TestAttendeeVotingView(TestCase):
             attendee=other_attendee, talk=self.session, score=4)
         response = self.client.get(self.url)
         self.assertEqual(len(response.context['talk_list']), 1)
+
+    def test_all_sessions_are_shown_with_no_own_votes(self):
+        self.client.login(username=self.user.email, password=self.password)
+
+        session2 = talk_testutils.create_test_talk(self.speaker, self.event)
+        session2.title = 'Test session 2'
+        session2.slug = 'test-session-2'
+        session2.publish(self.track)
+
+        other_user, _ = attendee_testutils.create_test_user(
+            'testattendee2@example.org')
+        other_attendee = Attendee.objects.create(
+            user=other_user, event=self.event)
+        AttendeeVote.objects.create(
+            attendee=other_attendee, talk=self.session, score=4)
+        AttendeeVote.objects.create(
+            attendee=other_attendee, talk=session2, score=3)
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['talk_list']), 2)
 
 
 class TestAttendeeTalkVote(TestCase):

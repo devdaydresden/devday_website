@@ -1051,6 +1051,25 @@ class TestAttendeeVotingView(TestCase):
         unpublished.save()
         self.assertNotIn(unpublished, response.context['talk_list'])
 
+    def test_other_attendee_votes_do_not_duplicate_entries(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['talk_list']), 1)
+
+        AttendeeVote.objects.create(
+            attendee=self.attendee, talk=self.session, score=3)
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['talk_list']), 1)
+
+        other_user, _ = attendee_testutils.create_test_user(
+            'testattendee2@example.org')
+        other_attendee = Attendee.objects.create(
+            user=other_user, event=self.event)
+        AttendeeVote.objects.create(
+            attendee=other_attendee, talk=self.session, score=4)
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['talk_list']), 1)
+
 
 class TestAttendeeTalkVote(TestCase):
     def setUp(self):

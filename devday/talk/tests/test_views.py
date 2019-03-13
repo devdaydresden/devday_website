@@ -888,6 +888,14 @@ class TestTalkListView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, event.title)
 
+    def test_talk_list_view_404_for_unpublished_event(self):
+        event = event_testutils.create_test_event('Unpublished')
+        event.published = False
+        event.slug = 'unpublished'
+        event.save()
+        response = self.client.get('/unpublished/sessions/')
+        self.assertEquals(response.status_code, 404)
+
     def test_talk_list_with_unscheduled(self):
         test_speaker, _, _ = speaker_testutils.create_test_speaker(
             'unscheduled@example.org', 'Unscheduled Talk Speaker')
@@ -1042,6 +1050,25 @@ class TestAttendeeVotingView(TestCase):
         unpublished.slug = 'other-session'
         unpublished.save()
         self.assertNotIn(unpublished, response.context['talk_list'])
+
+    def test_other_attendee_votes_do_not_duplicate_entries(self):
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['talk_list']), 1)
+
+        AttendeeVote.objects.create(
+            attendee=self.attendee, talk=self.session, score=3)
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['talk_list']), 1)
+
+        other_user, _ = attendee_testutils.create_test_user(
+            'testattendee2@example.org')
+        other_attendee = Attendee.objects.create(
+            user=other_user, event=self.event)
+        AttendeeVote.objects.create(
+            attendee=other_attendee, talk=self.session, score=4)
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['talk_list']), 1)
 
 
 class TestAttendeeTalkVote(TestCase):

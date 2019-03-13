@@ -14,7 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import (
-    Avg, Case, Count, F, IntegerField, Max, Min, Sum, When)
+    Avg, Case, Count, F, IntegerField, Max, Min, Sum, When, Q)
 from django.http import (
     Http404, HttpResponse, HttpResponseRedirect, JsonResponse,
     HttpResponseBadRequest)
@@ -703,7 +703,9 @@ class AttendeeVotingView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return super().get_queryset().filter(
-            track__isnull=False, event=self.event).select_related(
+            Q(track__isnull=False), Q(event=self.event),
+            Q(attendeevote__attendee=self.attendee) |
+            Q(attendeevote__attendee__isnull=True)).select_related(
             'track', 'published_speaker'
         ).annotate(attendee_score=Case(
             When(

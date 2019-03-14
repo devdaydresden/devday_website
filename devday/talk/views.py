@@ -15,6 +15,7 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import (
     Avg, Case, Count, F, IntegerField, Max, Min, Sum, When, Q, Prefetch)
+from django.db.transaction import atomic
 from django.http import (
     Http404, HttpResponse, HttpResponseRedirect, JsonResponse,
     HttpResponseBadRequest)
@@ -741,6 +742,7 @@ class AttendeeTalkVote(LoginRequiredMixin, BaseFormView):
     def form_invalid(self, form):
         return JsonResponse({'message': 'error', 'errors': form.errors})
 
+    @atomic
     def form_valid(self, form):
         score = form.cleaned_data['score']
         try:
@@ -757,6 +759,7 @@ class AttendeeTalkClearVote(LoginRequiredMixin, View):
     model = Talk
     http_method_names = ['post']
 
+    @atomic
     def post(self, request, *args, **kwargs):
         event = get_object_or_404(
             Event, slug=kwargs['event'], voting_open=True)

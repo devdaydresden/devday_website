@@ -742,16 +742,12 @@ class AttendeeTalkVote(LoginRequiredMixin, BaseFormView):
     def form_invalid(self, form):
         return JsonResponse({'message': 'error', 'errors': form.errors})
 
-    @atomic
     def form_valid(self, form):
         score = form.cleaned_data['score']
-        try:
-            vote = self.talk.attendeevote_set.get(attendee=self.attendee)
-            vote.score = score
-            vote.save()
-        except AttendeeVote.DoesNotExist:
-            self.talk.attendeevote_set.create(
-                attendee=self.attendee, score=score)
+        AttendeeVote.objects.upsert(
+            conflict_target=['attendee', 'talk'],
+            fields={
+                'attendee': self.attendee, 'score': score, 'talk': self.talk})
         return JsonResponse({'message': 'ok'})
 
 

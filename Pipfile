@@ -34,6 +34,7 @@ lxml = "*"
 stringcase = "*"
 django-ordered-model = "<3.0"
 django-formtools = "*"
+django-postgres-extra = "*"
 
 [dev-packages]
 coverage = "*"

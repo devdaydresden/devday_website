@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-11 12:58+0000\n"
-"PO-Revision-Date: 2019-03-11 14:00+0100\n"
+"POT-Creation-Date: 2019-03-14 13:51+0000\n"
+"PO-Revision-Date: 2019-03-14 14:51+0100\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -34,8 +34,8 @@ msgstr "Ausgewählte Sessions veröffentlichen"
 msgid "Talk slot created successfully"
 msgstr "Talk-Slot erfolgreich angelegt"
 
-#: talk/admin.py:168 talk/models.py:33 talk/models.py:62 talk/models.py:151
-#: talk/models.py:171
+#: talk/admin.py:168 talk/models.py:34 talk/models.py:63 talk/models.py:152
+#: talk/models.py:172
 msgid "Event"
 msgstr "Veranstaltung"
 
@@ -51,182 +51,182 @@ msgstr "Session aktualisieren"
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
-#: talk/models.py:18
+#: talk/models.py:19
 msgid "XS"
 msgstr "XS"
 
-#: talk/models.py:19
+#: talk/models.py:20
 msgid "S"
 msgstr "S"
 
-#: talk/models.py:20
+#: talk/models.py:21
 msgid "M"
 msgstr "M"
 
-#: talk/models.py:21
+#: talk/models.py:22
 msgid "L"
 msgstr "L"
 
-#: talk/models.py:22
+#: talk/models.py:23
 msgid "XL"
 msgstr "XL"
 
-#: talk/models.py:23
+#: talk/models.py:24
 msgid "XXL"
 msgstr "XXL"
 
-#: talk/models.py:24
+#: talk/models.py:25
 msgid "XXXL"
 msgstr "XXXL"
 
-#: talk/models.py:36 talk/templates/talk/talk_grid_entry.html:3
+#: talk/models.py:37 talk/templates/talk/talk_grid_entry.html:3
 msgid "Track"
 msgstr "Track"
 
-#: talk/models.py:37
+#: talk/models.py:38
 msgid "Tracks"
 msgstr "Tracks"
 
-#: talk/models.py:48
+#: talk/models.py:49
 msgid "Speaker (draft)"
 msgstr "Sprecher (Entwurf)"
 
-#: talk/models.py:51
+#: talk/models.py:52
 msgid "Speaker (public)"
 msgstr "Sprecher (öffentlich)"
 
-#: talk/models.py:54 talk/templates/talk/talk_committee_overview.html:40
+#: talk/models.py:55 talk/templates/talk/talk_committee_overview.html:40
 msgid "Session title"
 msgstr "Sessionname"
 
-#: talk/models.py:55
+#: talk/models.py:56
 msgid "Slug"
 msgstr "Slug"
 
-#: talk/models.py:56 talk/templates/talk/talk_committee_details.html:50
+#: talk/models.py:57 talk/templates/talk/talk_committee_details.html:50
 msgid "Abstract"
 msgstr "Kurzbeschreibung"
 
-#: talk/models.py:57 talk/templates/talk/talk_committee_details.html:52
+#: talk/models.py:58 talk/templates/talk/talk_committee_details.html:52
 msgid "Remarks"
 msgstr "Anmerkungen"
 
-#: talk/models.py:60 talk/templates/talk/talk_committee_details.html:54
+#: talk/models.py:61 talk/templates/talk/talk_committee_details.html:54
 msgid "Talk Formats"
 msgstr "Session-Formate"
 
-#: talk/models.py:64
+#: talk/models.py:65
 msgid "Spots"
 msgstr "Plätze"
 
-#: talk/models.py:65
+#: talk/models.py:66
 msgid "Maximum number of attendees for this talk"
 msgstr "Maximale Anzahl von Teilnehmern für diese Session"
 
-#: talk/models.py:68 talk/templates/talk/talk_voting.html:22
+#: talk/models.py:69 talk/templates/talk/talk_voting.html:24
 msgid "Session"
 msgstr "Session"
 
-#: talk/models.py:69
+#: talk/models.py:70
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:76 talk/tests/test_models.py:77
+#: talk/models.py:77 talk/tests/test_models.py:77
 msgid "A draft speaker or a published speaker is required."
 msgstr "Ein Sprecher (Entwurf) oder Sprecher (öffentlich) ist erforderlich."
 
-#: talk/models.py:103
+#: talk/models.py:104
 msgid "Youtube video id"
 msgstr "Youtube-Video-ID"
 
-#: talk/models.py:105
+#: talk/models.py:106
 msgid "Slideshare id"
 msgstr "Slideshare-ID"
 
-#: talk/models.py:107
+#: talk/models.py:108
 msgid "Source code"
 msgstr "Quellcode"
 
-#: talk/models.py:128 talk/models.py:263
+#: talk/models.py:129 talk/models.py:266
 msgid "Comment"
 msgstr "Kommentar"
 
-#: talk/models.py:130
+#: talk/models.py:131
 msgid "Visible for Speaker"
 msgstr "Sichtbar für den Sprecher"
 
-#: talk/models.py:132
+#: talk/models.py:133
 msgid "Indicates whether the comment is visible to the speaker."
 msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
 
-#: talk/models.py:148 talk/templates/talk/speaker_details.html:11
+#: talk/models.py:149 talk/templates/talk/speaker_details.html:11
 msgid "Name"
 msgstr "Name"
 
-#: talk/models.py:150
+#: talk/models.py:151
 msgid "Priority"
 msgstr "Priorität"
 
-#: talk/models.py:156
+#: talk/models.py:157
 msgid "Room"
 msgstr "Raum"
 
-#: talk/models.py:157
+#: talk/models.py:158
 msgid "Rooms"
 msgstr "Räume"
 
-#: talk/models.py:174
+#: talk/models.py:175
 msgid "Time slot"
 msgstr "Zeitslot"
 
-#: talk/models.py:175
+#: talk/models.py:176
 msgid "Time slots"
 msgstr "Zeitslots"
 
-#: talk/models.py:200
+#: talk/models.py:201
 msgid "Duration"
 msgstr "Länge"
 
-#: talk/models.py:205 talk/models.py:206
+#: talk/models.py:206 talk/models.py:207
 msgid "Talk Format"
 msgstr "Session-Format"
 
-#: talk/models.py:215 talk/models.py:233 talk/models.py:255
+#: talk/models.py:216 talk/models.py:234 talk/models.py:258
 msgid "Attendee"
 msgstr "Teilnehmer"
 
-#: talk/models.py:219 talk/models.py:237 talk/models.py:259
+#: talk/models.py:220 talk/models.py:238 talk/models.py:262
 #: talk/templates/talk/talk_committee_details.html:3
 #: talk/templates/talk/talk_details.html:3
 msgid "Talk"
 msgstr "Session"
 
-#: talk/models.py:223
+#: talk/models.py:224
 msgid "Confirmed"
 msgstr "Bestätigt"
 
-#: talk/models.py:226
+#: talk/models.py:227
 msgid "Session reservation"
 msgstr "Platzreservierung"
 
-#: talk/models.py:227
+#: talk/models.py:228
 msgid "Session reservations"
 msgstr "Platzreservierungen"
 
-#: talk/models.py:243
+#: talk/models.py:246
 msgid "Attendee vote"
 msgstr "Teilnehmerabstimmung"
 
-#: talk/models.py:244
+#: talk/models.py:247
 msgid "Attendee votes"
 msgstr "Teilnehmerabstimmungen"
 
-#: talk/models.py:267
+#: talk/models.py:270
 msgctxt "attendee feedback singular form"
 msgid "Attendee feedback"
 msgstr "Teilnehmerfeedback"
 
-#: talk/models.py:269
+#: talk/models.py:272
 msgctxt "attendee feedback plural form"
 msgid "Attendee feedback"
 msgstr "Teilnehmerfeedback"
@@ -491,12 +491,13 @@ msgstr "durchschnittliche Bewertung"
 
 #: talk/templates/talk/talk_committee_details.html:65
 #: talk/templates/talk/talk_committee_overview.html:59
+#: talk/templates/talk/talk_voting.html:54
 msgid "No votes yet"
 msgstr "Noch keine Bewertungen"
 
 #: talk/templates/talk/talk_committee_details.html:67
-#: talk/templates/talk/talk_voting.html:24
-#: talk/templates/talk/talk_voting.html:37
+#: talk/templates/talk/talk_voting.html:26
+#: talk/templates/talk/talk_voting.html:43
 msgid "Your vote"
 msgstr "Deine Bewertung"
 
@@ -505,7 +506,7 @@ msgid "your vote"
 msgstr "deine Bewertung"
 
 #: talk/templates/talk/talk_committee_details.html:88
-#: talk/templates/talk/talk_voting.html:90
+#: talk/templates/talk/talk_voting.html:103
 msgid "Delete"
 msgstr "Löschen"
 
@@ -663,11 +664,11 @@ msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."
 msgid "Schedule preview and voting"
 msgstr "Sessionvorschau und Abstimmung"
 
-#: talk/templates/talk/talk_voting.html:11
+#: talk/templates/talk/talk_voting.html:14
 msgid "Vote for your favourite sessions"
 msgstr "Stimme für deine bevorzugten Sessions"
 
-#: talk/templates/talk/talk_voting.html:16
+#: talk/templates/talk/talk_voting.html:15
 msgid ""
 "You may vote for your favourite sessions. We will use the voting results to "
 "plan the room assignments."
@@ -676,7 +677,16 @@ msgstr ""
 "interessieren. Wir werden die Abstimmungsergebnisse  bei der Raumzuordnung "
 "für die Sessions zu berücksichtigen."
 
+#: talk/templates/talk/talk_voting.html:29
+msgid "Results"
+msgstr "Ergebnisse"
+
 #: talk/templates/talk/talk_voting.html:54
+#, python-format
+msgid "Average: %(average)s (Votes: %(count)s)"
+msgstr "Durchschnitt: %(average)s (Stimmen: %(count)s)"
+
+#: talk/templates/talk/talk_voting.html:65
 msgid "There are no sessions published yet."
 msgstr "Es wurden noch keine Sessions veröffentlicht."
 

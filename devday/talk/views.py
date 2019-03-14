@@ -706,19 +706,22 @@ class AttendeeVotingView(LoginRequiredMixin, ListView):
         qs = super().get_queryset().filter(
             track__isnull=False, event=self.event).select_related(
             'track', 'published_speaker').prefetch_related(
-        ).order_by('title')
-        return qs
+        )
+        if self.request.user.is_staff:
+            qs = qs.annotate(
+                vote_count=Count('attendeevote'),
+                vote_average=Avg('attendeevote__score'))
+        return qs.order_by('title')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['event'] = self.event
         attendee_scores = self.attendee.attendeevote_set.all()
-        scores = {talk.pk: {'talk_id': talk.pk, 'score': 0}
-                  for talk in context['talk_list']}
+        scores = {talk.pk: 0 for talk in context['talk_list']}
         for score in attendee_scores:
-            scores[score.talk_id] = {
-                'talk_id': score.talk_id, 'score': score.score}
-        context['scores'] = scores
+            scores[score.talk_id] = score.score
+        for talk in context['talk_list']:
+            setattr(talk, 'score', scores[talk.id])
         return context
 
 

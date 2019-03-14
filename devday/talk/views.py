@@ -746,12 +746,13 @@ class AttendeeTalkVote(LoginRequiredMixin, BaseFormView):
     def form_valid(self, form):
         score = form.cleaned_data['score']
         try:
-            vote = self.talk.attendeevote_set.get(attendee=self.attendee)
-            vote.score = score
-            vote.save()
-        except AttendeeVote.DoesNotExist:
             self.talk.attendeevote_set.create(
                 attendee=self.attendee, score=score)
+        except AttendeeVote.IntegrityError:
+            vote = self.talk.attendeevote_set.get(
+                attendee=self.attendee)
+            vote.score = score
+            vote.save()
         return JsonResponse({'message': 'ok'})
 
 

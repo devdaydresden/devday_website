@@ -25,6 +25,9 @@ Template for attendee talk voting
                             {% if not event.sessions_published %}
                                 <th>{% trans "Your vote" %}</th>
                             {% endif %}
+                            {% if user.is_staff %}
+                                <th>{% trans "Results" %}</th>
+                            {% endif %}
                         </tr>
                         </thead>
                         <tbody>
@@ -44,8 +47,11 @@ Template for attendee talk voting
                                             class="rating-loading"
                                             data-size="xs"
                                             data-talk-id="{{ talk.pk }}"
-                                            value="{% for score in scores.values %}{% if score.talk_id == talk.pk %}{{ score.score|unlocalize }}{% endif %}{% endfor %}">
+                                            value="{{ talk.score|unlocalize }}">
                                     </td>
+                                {% endif %}
+                                {% if user.is_staff %}
+                                    <td>{% if talk.vote_count %}{% blocktrans with count=talk.vote_count average=talk.vote_average|floatformat:"2" %}Average: {{ average }} (Votes: {{ count }}){% endblocktrans %}{% else %}{% trans "No votes yet" %}{% endif %}</td>
                                 {% endif %}
                             </tr>
                         {% endfor %}

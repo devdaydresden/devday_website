@@ -1090,6 +1090,35 @@ class TestAttendeeVotingView(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(len(response.context['talk_list']), 2)
 
+    def test_results_are_shown_for_staff(self):
+        staff, password = attendee_testutils.create_test_user(
+            'staff@example.org')
+        staff.is_staff = True
+        staff.save()
+        staff_attendee = Attendee.objects.create(user=staff, event=self.event)
+
+        AttendeeVote.objects.create(
+            attendee=self.attendee, talk=self.session, score=4)
+        AttendeeVote.objects.create(
+            attendee=staff_attendee, talk=self.session, score=2)
+
+        self.client.login(username=staff.email, password=password)
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['talk_list']), 1)
+        response_talk = response.context['talk_list'][0]
+        self.assertTrue(hasattr(response_talk, 'vote_count'))
+        self.assertEqual(response_talk.score, 2)
+        self.assertEqual(response_talk.vote_count, 2)
+        self.assertEqual(response_talk.vote_average, 3.0)
+
+        self.client.logout()
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['talk_list']), 1)
+        response_talk = response.context['talk_list'][0]
+        self.assertFalse(hasattr(response_talk, 'vote_count'))
+        self.assertEqual(response_talk.score, 4)
+
 
 class TestAttendeeTalkVote(TestCase):
     def setUp(self):

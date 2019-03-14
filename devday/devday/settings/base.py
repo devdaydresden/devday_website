@@ -159,7 +159,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 DATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'psqlextra.backend',
         'NAME': get_variable_cascade('DEVDAY_PG_DBNAME'),
         'USER': get_variable_cascade('DEVDAY_PG_USER'),
         'PASSWORD': get_variable_cascade('postgresql_password'),
@@ -209,6 +209,8 @@ INSTALLED_APPS = [
     'django_file_form.ajaxuploader',
     'twitterfeed',
     'speaker.apps.SpeakerConfig',
+    'django.contrib.postgres',
+    'psqlextra',
 ]
 
 LANGUAGE_CODE = 'de'

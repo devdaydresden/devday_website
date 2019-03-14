@@ -8,6 +8,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from model_utils.models import TimeStampedModel
+from psqlextra.manager import PostgresManager
 
 from attendee.models import Attendee
 from event.models import Event
@@ -238,6 +239,8 @@ class AttendeeVote(TimeStampedModel):
         limit_choices_to={"track__is_null": False},
         on_delete=models.CASCADE)
     score = models.PositiveSmallIntegerField()
+
+    objects = PostgresManager()
 
     class Meta:
         verbose_name = _("Attendee vote")

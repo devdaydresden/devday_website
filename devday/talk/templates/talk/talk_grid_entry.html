@@ -2,7 +2,7 @@
 <span class="talk-entry">
     <span class="track">{% trans "Track" %} «{{ talk.track.name }}»</span>
     <span class="title"><a
-            href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a></span>
+            href="{% url 'talk_details' event=talk.event.slug slug=talk.slug %}">{{ talk.title }}</a></span>
     <span class="speaker"><a
-            href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a></span>
+            href="{% url 'public_speaker_profile' event=talk.published_speaker.event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a></span>
 </span>

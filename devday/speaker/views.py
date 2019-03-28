@@ -4,12 +4,16 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
-    CreateView, DetailView, ListView, TemplateView, UpdateView)
+    CreateView,
+    DetailView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
 from event.models import Event
-from speaker.forms import (
-    CreateSpeakerForm, EditSpeakerForm, UserSpeakerPortraitForm)
+from speaker.forms import CreateSpeakerForm, EditSpeakerForm, UserSpeakerPortraitForm
 from speaker.models import PublishedSpeaker, Speaker
 from talk.models import Talk
 
@@ -17,85 +21,86 @@ from talk.models import Talk
 class NoSpeakerYetMixin(object):
     def dispatch(self, request, *args, **kwargs):
         if Speaker.objects.filter(user=request.user).exists():
-            return redirect('user_speaker_profile')
+            return redirect("user_speaker_profile")
         # noinspection PyUnresolvedReferences
-        return super(NoSpeakerYetMixin, self).dispatch(
-            request, *args, **kwargs)
+        return super(NoSpeakerYetMixin, self).dispatch(request, *args, **kwargs)
 
 
 class CreateSpeakerView(LoginRequiredMixin, NoSpeakerYetMixin, CreateView):
     model = Speaker
     form_class = CreateSpeakerForm
-    success_url = reverse_lazy('upload_user_speaker_portrait')
+    success_url = reverse_lazy("upload_user_speaker_portrait")
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
         return kwargs
 
     def get_initial(self):
         initial = super().get_initial()
-        initial['next'] = self.request.GET.get('next', None)
+        initial["next"] = self.request.GET.get("next", None)
         return initial
 
     def form_valid(self, form):
         self.object = form.save(commit=True)
-        next_url = form.cleaned_data.get('next', '')
+        next_url = form.cleaned_data.get("next", "")
         if next_url:
-            return redirect('{}?next={}'.format(
-                self.get_success_url(), next_url))
+            return redirect("{}?next={}".format(self.get_success_url(), next_url))
         return redirect(self.get_success_url())
 
 
 class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
     model = Speaker
-    template_name_suffix = '_user_profile'
+    template_name_suffix = "_user_profile"
     form_class = EditSpeakerForm
-    success_url = reverse_lazy('user_speaker_profile')
+    success_url = reverse_lazy("user_speaker_profile")
 
     def get_object(self, queryset=None):
         return get_object_or_404(Speaker, user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(UserSpeakerProfileView, self).get_context_data(**kwargs)
-        context.update({
-            'events_open_for_talk_submission': Event.objects.filter(
-                submission_open=True
-            ).order_by('start_time'),
-            'sessions': Talk.objects.filter(
-                draft_speaker=context['speaker']).select_related(
-                'event', 'draft_speaker', 'published_speaker').order_by(
-                '-event__title', 'title'),
-            'speaker_image_height': settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT,
-            'speaker_image_width': settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH,
-        })
+        context.update(
+            {
+                "events_open_for_talk_submission": Event.objects.filter(
+                    submission_open=True
+                ).order_by("start_time"),
+                "sessions": Talk.objects.filter(draft_speaker=context["speaker"])
+                .select_related("event", "draft_speaker", "published_speaker")
+                .order_by("-event__title", "title"),
+                "speaker_image_height": settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT,
+                "speaker_image_width": settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH,
+            }
+        )
         return context
 
 
 class UserSpeakerPortraitUploadView(LoginRequiredMixin, UpdateView):
     model = Speaker
     form_class = UserSpeakerPortraitForm
-    template_name_suffix = '_portrait_upload'
-    success_url = reverse_lazy('user_speaker_profile')
+    template_name_suffix = "_portrait_upload"
+    success_url = reverse_lazy("user_speaker_profile")
 
     def get_object(self, queryset=None):
         return get_object_or_404(Speaker, user=self.request.user)
 
     def get_initial(self):
         initial = super().get_initial()
-        initial['next'] = self.request.GET.get('next', None)
+        initial["next"] = self.request.GET.get("next", None)
         return initial
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        next_url = context['form'].initial.get('next', '')
+        next_url = context["form"].initial.get("next", "")
         if not next_url:
             next_url = self.success_url
-        context.update({
-            'next': next_url,
-            'speaker_image_height': settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT,
-            'speaker_image_width': settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH,
-        })
+        context.update(
+            {
+                "next": next_url,
+                "speaker_image_height": settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT,
+                "speaker_image_width": settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH,
+            }
+        )
         return context
 
     def form_valid(self, form):
@@ -116,7 +121,7 @@ class UserSpeakerPortraitDeleteView(
     model = Speaker
     template_name = "speaker/speaker_portrait_confirm_delete.html"
     fields = []
-    success_url = reverse_lazy('user_speaker_profile')
+    success_url = reverse_lazy("user_speaker_profile")
     object = None
 
     def get_object(self, queryset=None):
@@ -127,8 +132,7 @@ class UserSpeakerPortraitDeleteView(
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        return super(UserSpeakerPortraitDeleteView, self).get(
-            request, *args, **kwargs)
+        return super(UserSpeakerPortraitDeleteView, self).get(request, *args, **kwargs)
 
     def form_valid(self, form):
         speaker = self.get_object()
@@ -143,22 +147,46 @@ class PublishedSpeakerDetailView(DetailView):
     model = PublishedSpeaker
 
     def dispatch(self, request, *args, **kwargs):
-        self.event = get_object_or_404(Event, slug=self.kwargs['event'])
+        self.event = get_object_or_404(Event, slug=self.kwargs["event"])
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return super(PublishedSpeakerDetailView, self).get_queryset().filter(
-            talk__track__isnull=False, event=self.event,
-            # TODO: replace with talk state check
-        ).prefetch_related('talk_set').distinct()
+        return (
+            super(PublishedSpeakerDetailView, self)
+            .get_queryset()
+            .filter(
+                talk__track__isnull=False,
+                event=self.event,
+                # TODO: replace with talk state check
+            )
+            .prefetch_related("talk_set")
+            .distinct()
+        )
 
     def get_context_data(self, **kwargs):
-        context = super(PublishedSpeakerDetailView, self).get_context_data(
-            **kwargs)
-        context['event'] = self.event
-        context['talks'] = context['publishedspeaker'].talk_set.filter(
-            track__isnull=False  # TODO: replace with talk state check
+        context = super(PublishedSpeakerDetailView, self).get_context_data(**kwargs)
+        context["event"] = self.event
+        talks = list(
+            context["publishedspeaker"].talk_set.filter(
+                track__isnull=False  # TODO: replace with talk state check
+            )
         )
+        # check for talks from other events
+        if context["publishedspeaker"].speaker is not None:
+            talks += list(
+                context["publishedspeaker"]
+                .speaker.talk_set.filter(
+                    track__isnull=False, event__sessions_published=True
+                )
+                .exclude(event=self.event)
+                .prefetch_related("event")
+            )
+
+        def talk_event_sort_key(talk):
+            return talk.event.start_time
+
+        context["talks"] = sorted(
+            set(talks), key=talk_event_sort_key, reverse=True)
         return context
 
 
@@ -167,11 +195,17 @@ class PublishedSpeakerListView(ListView):
     event = None
 
     def dispatch(self, request, *args, **kwargs):
-        self.event = get_object_or_404(Event, slug=self.kwargs.get('event'))
+        self.event = get_object_or_404(Event, slug=self.kwargs.get("event"))
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return super(PublishedSpeakerListView, self).get_queryset().filter(
-            event=self.event,
-            talk__track__isnull=False  # TODO: replace with talk state check
-        ).distinct().order_by('name')
+        return (
+            super(PublishedSpeakerListView, self)
+            .get_queryset()
+            .filter(
+                event=self.event,
+                talk__track__isnull=False,  # TODO: replace with talk state check
+            )
+            .distinct()
+            .order_by("name")
+        )

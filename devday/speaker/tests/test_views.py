@@ -345,6 +345,14 @@ class PublishedSpeakerPublicView(TemporaryMediaTestCase):
         self.assertEqual(
             set(response.context['talks']), {self.talk, talk2})
 
+    def test_context_has_talks_for_deleted_draft_speaker(self):
+        self.published_speaker.speaker.delete()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('talks', response.context)
+        self.assertEqual(
+            set(response.context['talks']), {self.talk})
+
 
 class TestPublishedSpeakerListView(TestCase):
     def setUp(self):

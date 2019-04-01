@@ -1,21 +1,23 @@
 from django.conf.urls import url
 from django.views.generic import RedirectView
-
 from talk.views import (
+    AttendeeTalkClearVote,
+    AttendeeTalkVote,
     AttendeeVotingView,
     InfoBeamerXMLView,
     RedirectVideoView,
-    TalkDetails,
-    TalkListPreviewView,
-    TalkListView,
-    TalkVideoView,
-    AttendeeTalkVote,
-    AttendeeTalkClearVote,
     TalkAddReservation,
     TalkCancelReservation,
     TalkConfirmReservation,
-    TalkResendReservationConfirmation, TalkReservationConfirmationSent)
-
+    TalkDetails,
+    TalkListPreviewView,
+    TalkListView,
+    TalkResendReservationConfirmation,
+    TalkReservationConfirmationSent,
+    TalkReservationConfirmed,
+    TalkReservationWaiting,
+    TalkVideoView,
+)
 
 urlpatterns = [
     url(r"^schedule\.xml$", InfoBeamerXMLView.as_view()),
@@ -66,6 +68,16 @@ urlpatterns = [
         r"^(?P<event>[^/]+)/confirm-reservation/(?P<confirmation_key>[-:\w]+)/$",
         TalkConfirmReservation.as_view(),
         name="talk_confirm_reservation",
+    ),
+    url(
+        r"^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/reservation-confirmed/$",
+        TalkReservationConfirmed.as_view(),
+        name="talk_reservation_confirmed",
+    ),
+    url(
+        r"^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/reservation-waiting/$",
+        TalkReservationWaiting.as_view(),
+        name="talk_reservation_waiting",
     ),
     url(
         r"^(?P<event>[^/]+)/voting/$",

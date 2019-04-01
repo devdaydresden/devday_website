@@ -4,6 +4,9 @@ import xml.etree.ElementTree as ElementTree
 from datetime import date, timedelta
 from io import StringIO
 
+from attendee.forms import DevDayRegistrationForm
+from attendee.models import Attendee
+from attendee.views import StaffUserMixin
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -22,49 +25,48 @@ from django.db.transaction import atomic
 from django.http import (
     Http404,
     HttpResponse,
+    HttpResponseBadRequest,
     HttpResponseRedirect,
     JsonResponse,
-    HttpResponseBadRequest,
 )
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import (
     BaseFormView,
     CreateView,
+    DeleteView,
     FormView,
     UpdateView,
-    DeleteView,
 )
 from django.views.generic.list import BaseListView
-
-from attendee.forms import DevDayRegistrationForm
-from attendee.models import Attendee
-from attendee.views import StaffUserMixin
 from event.models import Event
 from speaker.models import Speaker
+from talk import signals
 from talk.forms import (
     AttendeeTalkVoteForm,
     CreateTalkForm,
     EditTalkForm,
+    TalkAddReservationForm,
     TalkCommentForm,
     TalkSpeakerCommentForm,
     TalkVoteForm,
-    TalkAddReservationForm,
 )
 from talk.models import (
     AttendeeVote,
     Room,
+    SessionReservation,
     Talk,
     TalkComment,
     TalkSlot,
     TimeSlot,
     Vote,
-    SessionReservation,
 )
+from talk.reservation import get_reservation_email_context
 
 logger = logging.getLogger("talk")
 
@@ -918,14 +920,6 @@ class ReservationConfirmationViewMixin(object):
             kwargs={"event": self.talk.event.slug, "slug": self.talk.slug},
         )
 
-    def get_activation_key(self, reservation):
-        return signing.dumps(
-            obj="{}:{}".format(
-                reservation.attendee.user.get_username(), reservation.talk.id
-            ),
-            salt=CONFIRMATION_SALT,
-        )
-
     def get_email_context(self, activation_key):
         scheme = "https" if self.request.is_secure() else "http"
         return {
@@ -940,8 +934,10 @@ class ReservationConfirmationViewMixin(object):
 
     def send_confirmation_mail(self, reservation):
         user = reservation.attendee.user
-        activation_key = self.get_activation_key(reservation)
-        context = self.get_email_context(activation_key)
+        confirmation_key = reservation.get_confirmation_key()
+        context = get_reservation_email_context(
+            reservation, self.request, confirmation_key
+        )
         subject = render_to_string(
             template_name=self.email_subject_template,
             context=context,
@@ -977,6 +973,12 @@ class TalkAddReservation(
         self.get_talk_and_attendee(request, **kwargs)
         return super().post(request, *args, **kwargs)
 
+    def get_waiting_url(self):
+        return reverse(
+            "talk_reservation_waiting",
+            kwargs={"event": self.kwargs["event"], "slug": self.kwargs["slug"]},
+        )
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({"attendee": self.attendee, "talk": self.talk})
@@ -984,7 +986,7 @@ class TalkAddReservation(
 
     def get_talk_and_attendee(self, request, **kwargs):
         self.talk = get_object_or_404(
-            Talk, event__slug=kwargs["event"], slug=kwargs["slug"]
+            Talk, event__slug=kwargs["event"], slug=kwargs["slug"], spots__gt=0
         )
         self.attendee = get_object_or_404(
             Attendee, event__slug=kwargs["event"], user=request.user
@@ -1005,6 +1007,8 @@ class TalkAddReservation(
 
     def form_valid(self, form):
         reservation = form.save(commit=True)
+        if reservation.is_waiting:
+            return HttpResponseRedirect(self.get_waiting_url())
         self.send_confirmation_mail(reservation)
         return HttpResponseRedirect(self.get_success_url())
 
@@ -1064,6 +1068,15 @@ class TalkCancelReservation(LoginRequiredMixin, DeleteView):
             kwargs={"event": self.kwargs["event"], "slug": self.kwargs["slug"]},
         )
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        signals.session_reservation_cancelled.send(
+            sender=self.__class__, reservation=self.object, request=self.request
+        )
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
 
 class ConfirmationError(Exception):
     def __init__(self, message, code=None, params=None):
@@ -1076,13 +1089,27 @@ class ConfirmationError(Exception):
 class TalkConfirmReservation(LoginRequiredMixin, TemplateView):
     EXPIRED_MESSAGE = _("This confirmation key has expired.")
     INVALID_KEY_MESSAGE = _("The confirmation key you provided is invalid.")
-    template_name = "talk/sessionreservation_confirmed.html"
+    OVERBOOKED = _("The talk is overbooked.")
+    template_name = "talk/sessionreservation_confirm_failed.html"
 
     event = None
     reservation = None
 
+    def get_success_url(self, reservation=None):
+        return reverse(
+            "talk_reservation_confirmed",
+            kwargs={"event": self.event.slug, "slug": reservation.talk.slug},
+        )
+
     def confirm_reservation(self, *args, **kwargs):
         reservation = self.validate_key(kwargs.get("confirmation_key"))
+        if (
+            reservation.talk.spots
+            < SessionReservation.objects.filter(
+                is_confirmed=True, talk_id=reservation.talk_id
+            ).count()
+        ):
+            raise ConfirmationError(self.OVERBOOKED, code="overbooked")
         reservation.is_confirmed = True
         reservation.save()
         return reservation
@@ -1112,16 +1139,53 @@ class TalkConfirmReservation(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, slug=kwargs["event"], published=True)
-        self.reservation = self.confirm_reservation(*args, **kwargs)
-        return super().get(request, *args, **kwargs)
+        extra_context = {}
+        try:
+            reservation = self.confirm_reservation(*args, **kwargs)
+        except ConfirmationError as e:
+            extra_context["confirmation_error"] = {
+                "message": e.message,
+                "code": e.code,
+                "params": e.params,
+            }
+        else:
+            signals.session_reservation_confirmed.send(
+                sender=self.__class__, reservation=reservation, request=self.request
+            )
+            return HttpResponseRedirect(force_text(self.get_success_url(reservation)))
+        context_data = self.get_context_data()
+        context_data.update(extra_context)
+        return self.render_to_response(context_data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"event": self.event, "reservation": self.reservation})
+        return context
+
+
+class TalkReservationConfirmed(LoginRequiredMixin, TemplateView):
+    template_name = "talk/sessionreservation_confirmed.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(
             {
-                "event": self.event,
-                "reservation": self.reservation,
-                "talk": self.reservation.talk,
+                "event": get_object_or_404(Event, slug=kwargs["event"]),
+                "talk": get_object_or_404(Talk, slug=kwargs["slug"]),
+            }
+        )
+        return context
+
+
+class TalkReservationWaiting(LoginRequiredMixin, TemplateView):
+    template_name = "talk/sessionreservation_waiting.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "event": get_object_or_404(Event, slug=kwargs["event"]),
+                "talk": get_object_or_404(Talk, slug=kwargs["slug"]),
             }
         )
         return context

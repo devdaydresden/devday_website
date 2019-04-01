@@ -200,18 +200,18 @@ class AddTalkSlotFormStep2(forms.ModelForm):
         fields = ("talk", "room", "time")
 
     def __init__(
-            self,
-            data=None,
-            files=None,
-            auto_id="id_%s",
-            prefix=None,
-            initial=None,
-            error_class=ErrorList,
-            label_suffix=None,
-            empty_permitted=False,
-            instance=None,
-            use_required_attribute=None,
-            **kwargs
+        self,
+        data=None,
+        files=None,
+        auto_id="id_%s",
+        prefix=None,
+        initial=None,
+        error_class=ErrorList,
+        label_suffix=None,
+        empty_permitted=False,
+        instance=None,
+        use_required_attribute=None,
+        **kwargs
     ):
         self.event = kwargs.pop("event")
         super().__init__(
@@ -229,12 +229,14 @@ class AddTalkSlotFormStep2(forms.ModelForm):
         self.fields["talk"].queryset = (
             Talk.objects.filter(
                 event=self.event, track_id__isnull=False, talkslot__isnull=True
-            ).select_related(
+            )
+            .select_related(
                 "event",
                 "draft_speaker",
                 "published_speaker",
                 "published_speaker__event",
-            ).distinct()
+            )
+            .distinct()
         )
         self.fields["time"].queryset = TimeSlot.objects.filter(
             event=self.event
@@ -273,4 +275,9 @@ class TalkAddReservationForm(forms.ModelForm):
         self.instance.attendee = self.attendee
         self.instance.talk = self.talk
         self.instance.is_confirmed = False
+        if (
+            self.instance.talk.sessionreservation_set.filter(is_confirmed=True).count()
+            >= self.instance.talk.spots
+        ):
+            self.instance.is_waiting = True
         return super().save(commit)

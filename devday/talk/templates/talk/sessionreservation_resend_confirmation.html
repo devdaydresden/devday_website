@@ -1,0 +1,21 @@
+{% extends "devday_site.html" %}
+{% load crispy_forms_tags static i18n %}
+{% block title %}{{ block.super }} //
+    {% blocktrans with title=sessionreservation.talk.title %}Resend reservation mail for
+        {{ title }}{% endblocktrans %}{% endblock %}
+{% block content_body %}
+    {% with title=sessionreservation.talk.title %}
+        <h1>{% blocktrans %}Resend the reservation mail for
+            „{{ title }}“{% endblocktrans %}</h1>
+        <p>{% blocktrans %}You reserved a spot in „{{ title }}“ but have not confirmed
+            your reservation yet. If you have not received the email with the confirmation
+            link you can resend it by clicking on the button below.{% endblocktrans %}</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <button class="btn btn-primary"
+                        type="submit">{% trans "Resend reservation mail" %}</button>
+            </div>
+        </form>
+    {% endwith %}
+{% endblock %}

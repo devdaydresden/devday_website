@@ -18,7 +18,24 @@
             </div>
             {% endif %}
             <p>{{ talk.abstract|linebreaksbr }}</p>
-
+            {% if current %}
+                {% if talk.spots %}
+                    <p><span class="talk-actions">
+                        {% if reservation %}
+                            {% if reservation.is_confirmed %}
+                                <span class="fas fa-calendar-times"></span>
+                                <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Cancel reservation" %}</a>
+                            {% else %}
+                                <span class="fas fa-send"></span>
+                                <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}">{% trans "Resend confirmation mail" %}</a>
+                            {% endif %}
+                        {% else %}
+                            <span class="fas fa-calendar-check"></span>
+                            <a href="{% url "talk_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Reserve spot" %}</a>
+                        {% endif %}
+                    </span></p>
+                {% endif %}
+            {% endif %}
             {% if talk.media.youtube %}
                 <div class="card">
                     <div class="card-header">

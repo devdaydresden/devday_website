@@ -68,6 +68,9 @@
                                 <a href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a>
                                 -
                                 <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
+                                {% if talk.spots %}
+                                    <span class="talk-icons"><span class="fas fa-calendar-check" title="{% trans "Needs reservation" %}"></span></span>
+                                {% endif %}
                             </li>
                         {% endfor %}
                     </ul>

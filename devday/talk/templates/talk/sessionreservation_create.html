@@ -1,23 +1,20 @@
 {% extends "devday_site.html" %}
 {% load cms_tags crispy_forms_tags static i18n %}
-{% block title %}{{ block.super }} // {% blocktrans with title=talk.title %}Reserve your
-    spot for {{ title }}{% endblocktrans %}{% endblock %}
+{% block title %}{{ block.super }} // {% blocktrans with title=talk.title %}Reserve spot for „{{ title }}“{% endblocktrans %}{% endblock %}
 {% block content_body %}
     {% if fully_booked %}
         {% static_placeholder "session-reservation-intro-fully-booked" or %}
-        <h1>{% blocktrans with title=talk.title %}{{ title }} is fully
-            booked{% endblocktrans %}</h1>
-        <p>{% blocktrans %}Click the button below to get on the waiting list. You will get
-            notified if another attendees' reservation is
-            withdrawn.{% endblocktrans %}</p>
+            <h1>{% trans "Session is fully booked" %}</h1>
+            <p>
+                {% blocktrans with title=talk.title %}The session „{{ title }}“ is fully booked.{% endblocktrans %}
+                {% trans "Click the button below to get on the waiting list." %}
+                {% trans "You will get notified if another attendees' reservation is withdrawn." %}
+            </p>
         {% endstatic_placeholder %}
     {% else %}
         {% static_placeholder "session-reservation-intro-free-slots" or %}
-        <h1>{% blocktrans with title=talk.title %}Reserve your spot for
-            {{ title }}{% endblocktrans %}</h1>
-        <p>{% blocktrans %}Click the button below to reserve your spot for the session.
-            You will get an email containing a link to confirm your
-            reservation.{% endblocktrans %}</p>
+            <h1>{% blocktrans with title=talk.title %}Reserve your spot for „{{ title }}“{% endblocktrans %}</h1>
+            <p>{% trans "Click the button below to reserve your spot for the session." %}</p>
         {% endstatic_placeholder %}
     {% endif %}
     {% crispy form %}

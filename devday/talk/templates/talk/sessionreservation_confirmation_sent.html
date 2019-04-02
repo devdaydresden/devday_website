@@ -1,12 +1,10 @@
 {% extends "devday_site.html" %}
 {% load crispy_forms_tags static i18n %}
-{% block title %}{{ block.super }} // {% blocktrans with title=talk.title %}Confirmation
-    email for „{{ title }}“ sent{% endblocktrans %}{% endblock %}
+{% block title %}{{ block.super }} // {% blocktrans with title=talk.title %}Confirmation email for „{{ title }}“ sent{% endblocktrans %}{% endblock %}
 {% block content_body %}
-    {% with title=talk.title %}
-        <h1>{% trans "Confirmation email sent" %}</h1>
-        <p>{% blocktrans %}We sent an email with a confirmation link to your email
-            address. Please click on the link in the email to confirm your reservation for
-            „{{ title }}“.{% endblocktrans %}</p>
-    {% endwith %}
+    <h1>{% trans "Confirmation email sent" %}</h1>
+    <p>
+        {% trans "We sent an email with a confirmation link to your email address." %}
+        {% blocktrans with title=talk.title %}You need to follow that link in the email to confirm your reservation for „{{ title }}“.{% endblocktrans %}
+    </p>
 {% endblock %}

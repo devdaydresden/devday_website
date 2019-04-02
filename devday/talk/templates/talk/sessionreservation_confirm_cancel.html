@@ -1,14 +1,15 @@
 {% extends "devday_site.html" %}
 {% load crispy_forms_tags static i18n %}
-{% block title %}{{ block.super }} //
-    {% blocktrans with title=sessionreservation.talk.title %}Cancel your reservation for {{ title }}{% endblocktrans %}{% endblock %}
+{% block title %}{{ block.super }} // {% blocktrans with title=sessionreservation.talk.title %}Cancel reservation for „{{ title }}“{% endblocktrans %}{% endblock %}
 {% block content_body %}
-    <h1>{% blocktrans with title=sessionreservation.talk.title %}Cancel your reservation for {{ title }}{% endblocktrans %}</h1>
+    {% with title=sessionreservation.talk.title %}
+        <h1>{% trans "Cancel your reservation" %}</h1>
+        <p>{% blocktrans %}Please click on the button below to cancel your reservation for „{{ title }}“.{% endblocktrans %}</p>
+    {% endwith %}
     <form method="post">
         {% csrf_token %}
         <div class="form-row">
-                <button class="btn btn-warning"
-                    type="submit">{% trans "Cancel reservation" %}</button>
+            <button class="btn btn-warning" type="submit">{% trans "Cancel reservation" %}</button>
         </div>
     </form>
 {% endblock %}

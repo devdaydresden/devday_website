@@ -1,11 +1,10 @@
 {% extends "devday_site.html" %}
 {% load crispy_forms_tags static i18n %}
-{% block title %}{{ block.super }} // {% blocktrans with title=talk.title %}Waiting list
-    for {{ title }}{% endblocktrans %}{% endblock %}
+{% block title %}{{ block.super }} // {% blocktrans with title=talk.title %}Waiting list for „{{ title }}“{% endblocktrans %}{% endblock %}
 {% block content_body %}
-    <h1>{% blocktrans with title=talk.title %}Waiting list for
-        „{{ title }}“{% endblocktrans %}</h1>
-    <p>{% blocktrans %}The session is fully booked. You are now placed on the waiting list
-        for this session and will be notified if a spot becomes
-        available.{% endblocktrans %}</p>
+    <h1>{% blocktrans with title=talk.title %}Waiting list for „{{ title }}“{% endblocktrans %}</h1>
+    <p>
+        {% trans "The session is fully booked." %}
+        {% trans "You are now placed on the waiting list for this session and will be notified if a spot becomes available." %}
+    </p>
 {% endblock %}

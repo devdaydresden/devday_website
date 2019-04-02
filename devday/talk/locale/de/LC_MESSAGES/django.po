@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-02 10:59+0000\n"
-"PO-Revision-Date: 2019-04-02 13:06+0200\n"
+"POT-Creation-Date: 2019-04-02 17:06+0000\n"
+"PO-Revision-Date: 2019-04-02 19:07+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -930,22 +930,26 @@ msgstr "Durchschnitt: %(average)s (Stimmen: %(count)s)"
 msgid "There are no sessions published yet."
 msgstr "Es wurden noch keine Sessions veröffentlicht."
 
-#: talk/tests/test_views.py:357 talk/tests/test_views.py:439
-#: talk/tests/test_views.py:694
+#: talk/tests/test_views.py:398 talk/tests/test_views.py:478
+#: talk/tests/test_views.py:741
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
-#: talk/views.py:1089
+#: talk/views.py:1093
 msgid "This confirmation key has expired."
 msgstr "Der Bestätigungslink ist abgelaufen."
 
-#: talk/views.py:1090
+#: talk/views.py:1094
 msgid "The confirmation key you provided is invalid."
 msgstr "Der Bestätigungslink ist ungültig."
 
-#: talk/views.py:1091
+#: talk/views.py:1095
 msgid "The talk is overbooked."
 msgstr "Die Session ist überbucht."
+
+#: talk/views.py:1096
+msgid "You can confirm your own reservations only."
+msgstr "Du kannst nur deine eigenen Reservierungen bestätigen."
 
 #~ msgid ""
 #~ "Confirmation\n"

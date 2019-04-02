@@ -338,7 +338,7 @@ class TalkListView(ListView):
                 for r in list(
                     SessionReservation.objects.filter(
                         talk__event=self.event, attendee__user=self.request.user
-                    )
+                    ).only("talk")
                 )
             }
         return context
@@ -913,23 +913,14 @@ class ReservationConfirmationViewMixin(object):
     attendee = None
     request = None
 
-    def get_success_url(self):
+    def get_success_url(self, reservation=None):
+        if reservation and reservation.is_waiting:
+            pattern_name = "talk_reservation_waiting"
+        else:
+            pattern_name = "talk_reservation_confirmation_sent"
         return reverse(
-            "talk_reservation_confirmation_sent",
-            kwargs={"event": self.talk.event.slug, "slug": self.talk.slug},
+            pattern_name, kwargs={"event": self.talk.event.slug, "slug": self.talk.slug}
         )
-
-    def get_email_context(self, activation_key):
-        scheme = "https" if self.request.is_secure() else "http"
-        return {
-            "scheme": scheme,
-            "confirmation_key": activation_key,
-            "expiration_days": settings.TALK_RESERVATION_CONFIRMATION_DAYS,
-            "site": get_current_site(self.request),
-            "talk": self.talk,
-            "event": self.talk.event,
-            "user": self.attendee.user,
-        }
 
     def send_confirmation_mail(self, reservation):
         user = reservation.attendee.user
@@ -960,23 +951,24 @@ class TalkAddReservation(
     template_name_suffix = "_create"
     form_class = TalkAddReservationForm
 
+    def check_reservation(self):
+        return SessionReservation.objects.filter(
+            talk=self.talk, attendee=self.attendee
+        ).first()
+
     def get(self, request, *args, **kwargs):
         self.get_talk_and_attendee(request, **kwargs)
-        if SessionReservation.objects.filter(
-            talk=self.talk, attendee=self.attendee
-        ).exists():
-            return redirect(self.get_success_url())
+        reservation = self.check_reservation()
+        if reservation:
+            return redirect(self.get_success_url(reservation=reservation))
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         self.get_talk_and_attendee(request, **kwargs)
+        reservation = self.check_reservation()
+        if reservation:
+            return redirect(self.get_success_url(reservation=reservation))
         return super().post(request, *args, **kwargs)
-
-    def get_waiting_url(self):
-        return reverse(
-            "talk_reservation_waiting",
-            kwargs={"event": self.kwargs["event"], "slug": self.kwargs["slug"]},
-        )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -1006,10 +998,9 @@ class TalkAddReservation(
 
     def form_valid(self, form):
         reservation = form.save(commit=True)
-        if reservation.is_waiting:
-            return HttpResponseRedirect(self.get_waiting_url())
-        self.send_confirmation_mail(reservation)
-        return HttpResponseRedirect(self.get_success_url())
+        if not reservation.is_waiting:
+            self.send_confirmation_mail(reservation)
+        return HttpResponseRedirect(self.get_success_url(reservation=reservation))
 
 
 class TalkResendReservationConfirmation(
@@ -1017,7 +1008,7 @@ class TalkResendReservationConfirmation(
 ):
     model = SessionReservation
     fields = []
-    success_url = "talk__confirmation_sent"
+    success_url = "talk_confirmation_sent"
     template_name_suffix = "_resend_confirmation"
 
     def get_talk_and_attendee(self, request, **kwargs):
@@ -1030,9 +1021,21 @@ class TalkResendReservationConfirmation(
 
     def get_object(self, queryset=None):
         self.get_talk_and_attendee(self.request, **self.kwargs)
-        return (queryset or SessionReservation.objects).get(
-            talk=self.talk, attendee=self.attendee
+        return get_object_or_404(
+            SessionReservation, talk=self.talk, attendee=self.attendee
         )
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.is_confirmed or self.object.is_waiting:
+            return HttpResponseBadRequest()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.is_confirmed or self.object.is_waiting:
+            return HttpResponseBadRequest()
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         self.send_confirmation_mail(self.object)
@@ -1055,7 +1058,8 @@ class TalkCancelReservation(LoginRequiredMixin, DeleteView):
     template_name_suffix = "_confirm_cancel"
 
     def get_object(self, queryset=None):
-        return (queryset or self.get_queryset()).get(
+        return get_object_or_404(
+            SessionReservation,
             attendee__user=self.request.user,
             talk__event__slug=self.kwargs["event"],
             talk__slug=self.kwargs["slug"],
@@ -1089,6 +1093,7 @@ class TalkConfirmReservation(LoginRequiredMixin, TemplateView):
     EXPIRED_MESSAGE = _("This confirmation key has expired.")
     INVALID_KEY_MESSAGE = _("The confirmation key you provided is invalid.")
     OVERBOOKED = _("The talk is overbooked.")
+    WRONG_USER = _("You can confirm your own reservations only.")
     template_name = "talk/sessionreservation_confirm_failed.html"
 
     event = None
@@ -1102,12 +1107,16 @@ class TalkConfirmReservation(LoginRequiredMixin, TemplateView):
 
     def confirm_reservation(self, *args, **kwargs):
         reservation = self.validate_key(kwargs.get("confirmation_key"))
+        if reservation.attendee.user != self.request.user:
+            raise ConfirmationError(self.WRONG_USER, code="wrong_user")
         if (
             reservation.talk.spots
-            < SessionReservation.objects.filter(
+            <= SessionReservation.objects.filter(
                 is_confirmed=True, talk_id=reservation.talk_id
             ).count()
         ):
+            reservation.is_waiting = True
+            reservation.save()
             raise ConfirmationError(self.OVERBOOKED, code="overbooked")
         reservation.is_confirmed = True
         reservation.save()

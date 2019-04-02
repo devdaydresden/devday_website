@@ -26,8 +26,6 @@ T_SHIRT_SIZES = (
     (7, _("XXXL")),
 )
 
-CONFIRMATION_SALT = getattr(settings, "CONFIRMATION_SALT", "devday_confirmation_salt")
-
 log = logging.getLogger(__name__)
 
 
@@ -252,7 +250,7 @@ class SessionReservation(TimeStampedModel):
     def get_confirmation_key(self):
         return signing.dumps(
             obj="{}:{}".format(self.attendee.user.get_username(), self.talk_id),
-            salt=CONFIRMATION_SALT,
+            salt=settings.CONFIRMATION_SALT,
         )
 
 

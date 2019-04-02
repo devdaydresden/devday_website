@@ -73,7 +73,6 @@ logger = logging.getLogger("talk")
 User = get_user_model()
 
 XML_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
-CONFIRMATION_SALT = getattr(settings, "CONFIRMATION_SALT", "devday_confirmation_salt")
 
 
 class PrepareSubmitSessionView(FormView):
@@ -1118,7 +1117,7 @@ class TalkConfirmReservation(LoginRequiredMixin, TemplateView):
         try:
             data = signing.loads(
                 confirmation_key,
-                salt=CONFIRMATION_SALT,
+                salt=settings.CONFIRMATION_SALT,
                 max_age=settings.TALK_RESERVATION_CONFIRMATION_DAYS * 86400,
             )
             username, talk_id = data.split(":")

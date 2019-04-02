@@ -9,9 +9,9 @@ from django.template.loader import render_to_string
 from talk.models import SessionReservation
 from talk.reservation import get_reservation_email_context
 
-session_reservation_confirmed = Signal(providing_args=["registration", "request"])
+session_reservation_confirmed = Signal(providing_args=["reservation", "request"])
 
-session_reservation_cancelled = Signal(providing_args=["registration", "request"])
+session_reservation_cancelled = Signal(providing_args=["reservation", "request"])
 
 TALK_RESERVATION_EMAIL_SUBJECT_TEMPLATE = "talk/sessionreservation_confirm_subject.txt"
 TALK_RESERVATION_EMAIL_BODY_TEMPLATE = "talk/sessionreservation_confirm_body.txt"

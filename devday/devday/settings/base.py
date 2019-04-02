@@ -39,7 +39,7 @@ def get_env_variable(var_name):
 
 
 _VAULT_DATA = None
-_VAULT_BASE_URL = get_env_variable('VAULT_URL')
+_VAULT_BASE_URL = get_env_variable("VAULT_URL")
 _VAULT_URL = "{}/v1/secret/data/devday".format(_VAULT_BASE_URL)
 _VAULT_RENEW_URL = "{}/v1/auth/token/renew-self".format(_VAULT_BASE_URL)
 
@@ -48,12 +48,12 @@ def _fetch_from_vault():
     global _VAULT_DATA
     if not _VAULT_DATA:
         s = requests.Session()
-        s.headers.update({'x-vault-token': get_env_variable('VAULT_TOKEN')})
-        r = s.post(_VAULT_RENEW_URL, data='{}')
+        s.headers.update({"x-vault-token": get_env_variable("VAULT_TOKEN")})
+        r = s.post(_VAULT_RENEW_URL, data="{}")
         r.raise_for_status()
         r = s.get(_VAULT_URL)
         r.raise_for_status()
-        _VAULT_DATA = r.json()['data']['data']
+        _VAULT_DATA = r.json()["data"]["data"]
     return _VAULT_DATA
 
 
@@ -94,10 +94,9 @@ def get_variable_cascade(var_name, type=str, default_value=None):
             value = os.environ[var_name.upper()]
         except KeyError:
             if default_value is None:
-                error_msg = ('Define %s in Vault key at %s or set the'
-                             ' environment variable %s') % (
-                                var_name, _VAULT_URL, var_name.upper()
-                            )
+                error_msg = (
+                    "Define %s in Vault key at %s or set the" " environment variable %s"
+                ) % (var_name, _VAULT_URL, var_name.upper())
                 raise ImproperlyConfigured(error_msg)
             else:
                 return default_value
@@ -105,7 +104,8 @@ def get_variable_cascade(var_name, type=str, default_value=None):
         return type(value)
     except ValueError:
         raise ImproperlyConfigured(
-            'Cannot interpret value %s as %s', value, type.__name__)
+            "Cannot interpret value %s as %s", value, type.__name__
+        )
 
 
 mimetypes.add_type("image/svg+xml", ".svg", True)
@@ -114,215 +114,214 @@ mimetypes.add_type("image/svg+xml", ".svg", True)
 # see: https://django-registration.readthedocs.io/en/2.1.1/index.html
 ACCOUNT_ACTIVATION_DAYS = 14
 ALLOWED_HOSTS = []
-AUTH_USER_MODEL = 'attendee.DevDayUser'
+AUTH_USER_MODEL = "attendee.DevDayUser"
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 CMS_LANGUAGES = {
     1: [
         {
-            'code': 'de',
-            'name': gettext('de'),
-            'public': True,
-            'hide_untranslated': False,
-            'redirect_on_fallback': True,
-        },
+            "code": "de",
+            "name": gettext("de"),
+            "public": True,
+            "hide_untranslated": False,
+            "redirect_on_fallback": True,
+        }
     ],
-    'default': {
-        'fallbacks': ['de'],
-        'redirect_on_fallback': True,
-        'public': True,
-        'hide_untranslated': False,
+    "default": {
+        "fallbacks": ["de"],
+        "redirect_on_fallback": True,
+        "public": True,
+        "hide_untranslated": False,
     },
 }
 CMS_PLACEHOLDER_CONF = {}
 DJANGOCMS_STYLE_CHOICES = (
     # styles for bootstrap grid model
-    ('row', gettext('row')),
-    ('container', gettext('container')),
-    ('col-xs-12', gettext('col-xs-12')),
-    ('col-md-12', gettext('col-md-12')),
+    ("row", gettext("row")),
+    ("container", gettext("container")),
+    ("col-xs-12", gettext("col-xs-12")),
+    ("col-md-12", gettext("col-md-12")),
 )
 DJANGOCMS_PICTURE_RESPONSIVE_IMAGES = False
 
 CMS_TEMPLATES = (
-    ('devday_no_cta.html', _('Dev Day Page')),
-    ('devday.html', _('Dev Day Page with Call to Action area')),
-    ('devday_index.html', _('Dev Day Home Page')),
-    ('devday_all_static_placeholders.html',
-     _('Page with all static placeholders not for menu'))
+    ("devday_no_cta.html", _("Dev Day Page")),
+    ("devday.html", _("Dev Day Page with Call to Action area")),
+    ("devday_index.html", _("Dev Day Home Page")),
+    (
+        "devday_all_static_placeholders.html",
+        _("Page with all static placeholders not for menu"),
+    ),
 )
 CMS_PERMISSION = True
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+CRISPY_TEMPLATE_PACK = "bootstrap3"
 
 DATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 DATABASES = {
-    'default': {
-        'ENGINE': 'psqlextra.backend',
-        'NAME': get_variable_cascade('DEVDAY_PG_DBNAME'),
-        'USER': get_variable_cascade('DEVDAY_PG_USER'),
-        'PASSWORD': get_variable_cascade('postgresql_password'),
-        'HOST': get_variable_cascade('DEVDAY_PG_HOST'),
-        'PORT': get_variable_cascade('DEVDAY_PG_PORT'),
+    "default": {
+        "ENGINE": "psqlextra.backend",
+        "NAME": get_variable_cascade("DEVDAY_PG_DBNAME"),
+        "USER": get_variable_cascade("DEVDAY_PG_USER"),
+        "PASSWORD": get_variable_cascade("postgresql_password"),
+        "HOST": get_variable_cascade("DEVDAY_PG_HOST"),
+        "PORT": get_variable_cascade("DEVDAY_PG_PORT"),
     }
 }
 DEBUG = False
-DEVDAY_FACEBOOK_URL = 'https://www.facebook.com/events/193156441425350/'
-DEVDAY_TWITTER_URL = 'https://twitter.com/devdaydresden'
-DEVDAY_XING_URL = 'https://www.xing.com/events/dev-day-2018-1897927'
+DEVDAY_FACEBOOK_URL = "https://www.facebook.com/events/193156441425350/"
+DEVDAY_TWITTER_URL = "https://twitter.com/devdaydresden"
+DEVDAY_XING_URL = "https://www.xing.com/events/dev-day-2018-1897927"
 
-DEFAULT_EMAIL_SENDER = 'info-bounce@devday.de'
+DEFAULT_EMAIL_SENDER = "info-bounce@devday.de"
 
 INSTALLED_APPS = [
-    'ckeditor',
-    'djangocms_admin_style',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.admin',
-    'django.contrib.sites',
-    'django.contrib.sitemaps',
-    'django.contrib.staticfiles',
-    'django.contrib.messages',
-    'devday',
-    'event.apps.EventsConfig',
-    'attendee.apps.AttendeeConfig',
-    'talk.apps.SessionsConfig',
-    'sponsoring',
-    'cms',
-    'menus',
-    'sekizai',
-    'treebeard',
-    'easy_thumbnails',
-    'filer',
-    'djangocms_text_ckeditor',
-    'djangocms_style',
-    'djangocms_column',
-    'djangocms_file',
-    'djangocms_link',
-    'djangocms_picture',
-    'djangocms_teaser',
-    'djangocms_video',
-    'crispy_forms',
-    'django_file_form',
-    'django_file_form.ajaxuploader',
-    'twitterfeed',
-    'speaker.apps.SpeakerConfig',
-    'django.contrib.postgres',
-    'psqlextra',
+    "ckeditor",
+    "djangocms_admin_style",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.admin",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
+    "django.contrib.staticfiles",
+    "django.contrib.messages",
+    "devday",
+    "event.apps.EventsConfig",
+    "attendee.apps.AttendeeConfig",
+    "talk.apps.SessionsConfig",
+    "sponsoring",
+    "cms",
+    "menus",
+    "sekizai",
+    "treebeard",
+    "easy_thumbnails",
+    "filer",
+    "djangocms_text_ckeditor",
+    "djangocms_style",
+    "djangocms_column",
+    "djangocms_file",
+    "djangocms_link",
+    "djangocms_picture",
+    "djangocms_teaser",
+    "djangocms_video",
+    "crispy_forms",
+    "django_file_form",
+    "django_file_form.ajaxuploader",
+    "twitterfeed",
+    "speaker.apps.SpeakerConfig",
+    "django.contrib.postgres",
+    "psqlextra",
 ]
 
-LANGUAGE_CODE = 'de'
+LANGUAGE_CODE = "de"
 LANGUAGES = (
-    ('de', gettext('de')),
+    ("de", gettext("de")),
     # ('en', gettext('en')),
 )
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 MIDDLEWARE_CLASSES = [
-    'cms.middleware.utils.ApphookReloadMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'cms.middleware.user.CurrentUserMiddleware',
-    'cms.middleware.page.CurrentPageMiddleware',
-    'cms.middleware.toolbar.ToolbarMiddleware',
-    'cms.middleware.language.LanguageCookieMiddleware',
+    "cms.middleware.utils.ApphookReloadMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "cms.middleware.user.CurrentUserMiddleware",
+    "cms.middleware.page.CurrentPageMiddleware",
+    "cms.middleware.toolbar.ToolbarMiddleware",
+    "cms.middleware.language.LanguageCookieMiddleware",
 ]
 MIGRATION_MODULES = {}
 
-ROOT_URLCONF = 'devday.urls'
+ROOT_URLCONF = "devday.urls"
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_vault_variable('secret_key')
+SECRET_KEY = get_vault_variable("secret_key")
 
-SPONSORING_OPEN = get_variable_cascade('sponsoring_open', bool, False)
-SPONSORING_FROM_EMAIL = 'info@devday.de'
-SPONSORING_RECIPIENTS = ['info@devday.de']
+SPONSORING_OPEN = get_variable_cascade("sponsoring_open", bool, False)
+SPONSORING_FROM_EMAIL = "info@devday.de"
+SPONSORING_RECIPIENTS = ["info@devday.de"]
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SITE_ID = 1
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'devday', 'static'),
-)
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "/static/"
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "devday", "static"),)
 
 TALK_RESERVATION_CONFIRMATION_DAYS = 5
-DEVDAY_CONFIRMATION_SALT = get_vault_variable("confirmation_salt")
+CONFIRMATION_SALT = get_vault_variable("confirmation_salt")
 
 TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT = 960
 TALK_PUBLIC_SPEAKER_IMAGE_WIDTH = 636
 TALK_THUMBNAIL_HEIGHT = 320
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'devday', 'templates'), ],
-        'OPTIONS': {
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.template.context_processors.media',
-                'django.template.context_processors.csrf',
-                'django.template.context_processors.tz',
-                'sekizai.context_processors.sekizai',
-                'django.template.context_processors.static',
-                'cms.context_processors.cms_settings',
-                'devday.contextprocessors.devdaysettings_contextprocessor',
-                'talk.context_processors.committee_member_context_processor',
-                'twitterfeed.contextprocessors.twitter_feed_context_processor',
-                'event.contextprocessors.current_event_contextprocessor',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "devday", "templates")],
+        "OPTIONS": {
+            "context_processors": [
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.template.context_processors.media",
+                "django.template.context_processors.csrf",
+                "django.template.context_processors.tz",
+                "sekizai.context_processors.sekizai",
+                "django.template.context_processors.static",
+                "cms.context_processors.cms_settings",
+                "devday.contextprocessors.devdaysettings_contextprocessor",
+                "talk.context_processors.committee_member_context_processor",
+                "twitterfeed.contextprocessors.twitter_feed_context_processor",
+                "event.contextprocessors.current_event_contextprocessor",
             ],
-            'loaders': [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-                'django.template.loaders.eggs.Loader',
+            "loaders": [
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader",
+                "django.template.loaders.eggs.Loader",
             ],
         },
-    },
+    }
 ]
 THUMBNAIL_HIGH_RESOLUTION = True
 THUMBNAIL_PROCESSORS = (
-    'easy_thumbnails.processors.colorspace',
-    'easy_thumbnails.processors.autocrop',
+    "easy_thumbnails.processors.colorspace",
+    "easy_thumbnails.processors.autocrop",
     # 'easy_thumbnails.processors.scale_and_crop',
-    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
-    'easy_thumbnails.processors.filters',
+    "filer.thumbnail_processors.scale_and_crop_with_subject_location",
+    "easy_thumbnails.processors.filters",
 )
-TIME_ZONE = 'Europe/Berlin'
+TIME_ZONE = "Europe/Berlin"
 TWITTERFEED_PROXIES = {}
-TWITTERFEED_PATHS = ['/']
+TWITTERFEED_PATHS = ["/"]
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': ('%(levelname)s %(asctime)s %(module)s %(process)d'
-                       ' %(thread)s %(message)s')
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": (
+                "%(levelname)s %(asctime)s %(module)s %(process)d"
+                " %(thread)s %(message)s"
+            )
         },
-        'simple': {
-            'format': '%(asctime)s %(levelname)s %(message)s'
+        "simple": {"format": "%(asctime)s %(levelname)s %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+            "level": "INFO",
         }
     },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-            'level': 'INFO'
-        }
-    },
-    'loggers': {}
+    "loggers": {},
 }
 
 USE_I18N = True

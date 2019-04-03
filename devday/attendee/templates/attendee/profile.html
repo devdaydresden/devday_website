@@ -24,7 +24,33 @@
                         {% for event in events %}
                             <tr>
                                 <td>{{ event.title }}</td>
-                                <td>{{ event.description }}</td>
+                                <td>{{ event.description }}
+                                    {% if event.id in reservations %}
+                                        <p><strong>{% trans "Workshops / Sessions" %}:</strong>
+                                        <ul class="reservations">
+                                        {% for r_event_id, r_reservations in reservations.items %}
+                                            {% if event.id == r_event_id %}
+                                                {% for reservation in r_reservations %}
+                                                    {% with talk=reservation.talk %}
+                                                        {% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}
+                                                        <a href="{{ talk_details }}">{{ talk.title }}</a>
+                                                        {% if event.id == event_id %}
+                                                            {% if reservation.is_confirmed or reservation.is_waiting %}
+                                                                <span class="fas fa-calendar-times"></span>
+                                                                <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Cancel reservation" %}</a>
+                                                            {% else %}
+                                                                <span class="fas fa-send"></span>
+                                                                <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}">{% trans "Resend confirmation mail" %}</a>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        </ul>
+                                        </p>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% if event.id == event_id and not user.get_speaker %}
                                         <p><a class="btn btn-primary float-left float-sm-right"

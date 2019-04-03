@@ -21,6 +21,8 @@ from event.models import Event
 from event.tests import event_testutils
 from speaker.models import PublishedSpeaker
 from speaker.tests import speaker_testutils
+from talk.models import SessionReservation, Track
+from talk.tests import talk_testutils
 
 ADMIN_EMAIL = "admin@example.org"
 ADMIN_PASSWORD = "sUp3rS3cr3t"
@@ -30,7 +32,7 @@ USER_PASSWORD = "s3cr3t"
 
 class AttendeeProfileViewTest(TestCase):
     """
-    Tests for attendee.views.AttendeeProfileView
+    Tests for attendee.views.DevDayUserProfileView
 
     """
 
@@ -58,6 +60,8 @@ class AttendeeProfileViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("events", response.context)
         self.assertIn(self.event, response.context["events"])
+        self.assertIn("reservations", response.context)
+        self.assertEqual(len(response.context["reservations"]), 0)
 
     def test_allow_contact(self):
         user, password = attendee_testutils.create_test_user()
@@ -93,6 +97,25 @@ class AttendeeProfileViewTest(TestCase):
         self.assertRedirects(response, self.url)
         user.refresh_from_db()
         self.assertIsNone(user.contact_permission_date)
+
+    def test_contains_reservations_for_attended_event(self):
+        user, password = attendee_testutils.create_test_user()
+        attendee = Attendee.objects.create(user=user, event=self.event)
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        talk = talk_testutils.create_test_talk(
+            speaker=speaker, event=self.event, title="Test talk"
+        )
+        track = Track.objects.create(name="Test track")
+        talk.publish(track)
+        reservation = SessionReservation.objects.create(attendee=attendee, talk=talk)
+        self.client.login(username=user.email, password=password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("events", response.context)
+        self.assertIn(self.event, response.context["events"])
+        self.assertIn("reservations", response.context)
+        self.assertIn(self.event.id, response.context["reservations"])
+        self.assertIn(reservation, response.context["reservations"][self.event.id])
 
 
 class AttendeeRegistrationViewTest(TestCase):

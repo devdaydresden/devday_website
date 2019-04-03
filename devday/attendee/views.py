@@ -31,7 +31,7 @@ from django_registration.backends.activation.views import (
     RegistrationView,
 )
 from event.models import Event
-from talk.models import Attendee, Talk
+from talk.models import Attendee, Talk, SessionReservation
 
 from .models import DevDayUser
 
@@ -92,6 +92,13 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView)
         context["events"] = self.request.user.get_events().order_by("id")
         context["current_event"] = Event.objects.current_event()
         context["event_id"] = Event.objects.current_event_id()
+        reservations = {}
+        for reservation in SessionReservation.objects.filter(
+            attendee__user_id=self.request.user.id
+        ).order_by("talk__event", "talk__title"):
+            reservations.setdefault(reservation.talk.event_id, [])
+            reservations[reservation.talk.event_id].append(reservation)
+        context["reservations"] = reservations
         self.attendee_qrcode_context(context)
         return context
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-12 18:45+0000\n"
-"PO-Revision-Date: 2019-03-12 19:45+0100\n"
+"POT-Creation-Date: 2019-04-03 15:40+0000\n"
+"PO-Revision-Date: 2019-04-03 17:43+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -131,35 +131,35 @@ msgstr "Test-Email an mich selbst senden"
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
-#: devday/settings/base.py:126 devday/settings/base.py:216
+#: devday/settings/base.py:125 devday/settings/base.py:219
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:142
+#: devday/settings/base.py:141
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:143
+#: devday/settings/base.py:142
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:144
+#: devday/settings/base.py:143
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:145
+#: devday/settings/base.py:144
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/settings/base.py:150
+#: devday/settings/base.py:149
 msgid "Dev Day Page"
 msgstr "Dev-Day-Seite"
 
-#: devday/settings/base.py:151
+#: devday/settings/base.py:150
 msgid "Dev Day Page with Call to Action area"
 msgstr "Dev-Day-Seite mit Call-to-Action-Bereich"
 
-#: devday/settings/base.py:152
+#: devday/settings/base.py:151
 msgid "Dev Day Home Page"
 msgstr "Dev-Day-Homepage"
 
@@ -221,10 +221,18 @@ msgid "This static placeholder has not been filled yet."
 msgstr "Dieser Static Placeholder wurde noch nicht ausgefüllt."
 
 #: devday/templates/devday_index.html:25
+msgid "Reserve your spot in one of the workshops or the excursion."
+msgstr "Reserviere deinen Platz für einen der Workshops oder die Exkursion."
+
+#: devday/templates/devday_index.html:28
+msgid "Register spots"
+msgstr "Plätze reservieren"
+
+#: devday/templates/devday_index.html:37
 msgid "Sign up now - Be part of it!"
 msgstr "Jetzt anmelden - Sei dabei!"
 
-#: devday/templates/devday_index.html:32
+#: devday/templates/devday_index.html:44
 msgid "Submit session now"
 msgstr "Jetzt eine Session einreichen"
 

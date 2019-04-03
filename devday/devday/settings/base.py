@@ -279,6 +279,7 @@ TEMPLATES = [
                 "cms.context_processors.cms_settings",
                 "devday.contextprocessors.devdaysettings_contextprocessor",
                 "talk.context_processors.committee_member_context_processor",
+                "talk.context_processors.reservation_context_processor",
                 "twitterfeed.contextprocessors.twitter_feed_context_processor",
                 "event.contextprocessors.current_event_contextprocessor",
             ],

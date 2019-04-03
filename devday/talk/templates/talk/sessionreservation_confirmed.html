@@ -4,6 +4,7 @@
 {% block content_body %}
     <h1>{% trans "Your spot is confirmed" %}</h1>
     <p>
-        {% blocktrans with title=talk.title %}You successfully confirmed the reservation of your spot for „{{ title }}“.{% endblocktrans %}
+        {% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}
+        {% blocktrans with title=talk.title %}You successfully confirmed the reservation of your spot for „<a href="{{ talk_details }}">{{ title }}</a>“.{% endblocktrans %}
     </p>
 {% endblock %}

@@ -1780,3 +1780,83 @@ class TestTalkReservationWaiting(TestCase):
         self.assertTemplateUsed(response, "talk/sessionreservation_waiting.html")
         self.assertIn("event", response.context)
         self.assertIn("talk", response.context)
+
+
+class TestLimitedTalkList(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event(
+            "test event", published=True, sessions_published=True
+        )
+        speaker1, _, _ = speaker_testutils.create_test_speaker()
+        speaker2, _, _ = speaker_testutils.create_test_speaker(
+            email="testspeaker2@example.org", name="Test Speaker 2"
+        )
+        speaker3, _, _ = speaker_testutils.create_test_speaker(
+            email="testspeaker3@example.org", name="Test Speaker 3"
+        )
+        self.talk1 = talk_testutils.create_test_talk(
+            speaker=speaker1, event=self.event, title="Test talk 1", spots=10
+        )
+        self.talk2 = talk_testutils.create_test_talk(
+            speaker=speaker1, event=self.event, title="Test talk 2", spots=10
+        )
+        self.talk3 = talk_testutils.create_test_talk(
+            speaker=speaker1, event=self.event, title="Test talk 3"
+        )
+        track = Track.objects.create(name="Test track")
+        self.talk1.publish(track)
+        self.talk2.publish(track)
+        self.talk3.publish(track)
+        self.url = "/{}/talk/needing-reservation/".format(self.event.slug)
+
+    def test_get_works_anonymously(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("talk_list", response.context)
+        self.assertEqual(len(response.context["talk_list"]), 2)
+        self.assertNotIn("reservations", response.context)
+        self.assertTemplateUsed(response, "talk/talk_limited_list.html")
+        self.assertTemplateUsed(response, "talk/talk_limited_list_entry.html")
+
+    def test_get_no_reservations_if_not_attendee(self):
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("reservations", response.context)
+
+    def test_get_empty_reservations_if_attendee_without_reservations(self):
+        user, password = attendee_testutils.create_test_user()
+        attendee = Attendee.objects.create(event=self.event, user=user)
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("reservations", response.context)
+        self.assertEqual(len(response.context["reservations"]), 0)
+
+    def test_get_reservations_if_attendee_with_reservations(self):
+        user, password = attendee_testutils.create_test_user()
+        attendee = Attendee.objects.create(event=self.event, user=user)
+        SessionReservation.objects.create(
+            attendee=attendee, talk=self.talk1, is_confirmed=True
+        )
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("reservations", response.context)
+        self.assertEqual(len(response.context["reservations"]), 1)
+        self.assertIn(self.talk1.id, response.context["reservations"])
+
+    def test_get_only_attendees_own_reservations(self):
+        user, password = attendee_testutils.create_test_user()
+        Attendee.objects.create(event=self.event, user=user)
+        user2, _ = attendee_testutils.create_test_user(email="test2@example.org")
+        attendee2 = Attendee.objects.create(user=user2, event=self.event)
+        SessionReservation.objects.create(
+            attendee=attendee2, talk=self.talk1, is_confirmed=True
+        )
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("reservations", response.context)
+        self.assertEqual(len(response.context["reservations"]), 0)

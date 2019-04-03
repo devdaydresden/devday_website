@@ -1197,3 +1197,29 @@ class TalkReservationWaiting(LoginRequiredMixin, TemplateView):
             }
         )
         return context
+
+
+class LimitedTalkList(ListView):
+    model = Talk
+    template_name_suffix = "_limited_list"
+
+    def get_queryset(self):
+        return (
+            Talk.objects.filter(
+                event__slug=self.kwargs.get("event"), track__isnull=False, spots__gt=0
+            )
+            .order_by("title")
+            .select_related("published_speaker")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            attendee = Attendee.objects.filter(
+                event__slug=self.kwargs.get("event"), user=self.request.user
+            ).first()
+            if attendee:
+                context["reservations"] = {
+                    r.talk_id: r for r in list(attendee.sessionreservation_set.all())
+                }
+        return context

@@ -17,6 +17,7 @@ from talk.views import (
     TalkReservationConfirmed,
     TalkReservationWaiting,
     TalkVideoView,
+    LimitedTalkList,
 )
 
 urlpatterns = [
@@ -39,6 +40,11 @@ urlpatterns = [
         name="session_list_legacy",
     ),
     url(r"^(?P<event>[^/]+)/videos/$", TalkVideoView.as_view(), name="video_list"),
+    url(
+        r"^(?P<event>[^/]+)/talk/needing-reservation/$",
+        LimitedTalkList.as_view(),
+        name="limited_talk_reservation",
+    ),
     url(
         r"^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/$",
         TalkDetails.as_view(),

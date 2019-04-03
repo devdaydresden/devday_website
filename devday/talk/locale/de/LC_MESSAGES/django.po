@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-02 17:06+0000\n"
-"PO-Revision-Date: 2019-04-02 19:07+0200\n"
+"POT-Creation-Date: 2019-04-03 15:40+0000\n"
+"PO-Revision-Date: 2019-04-03 17:43+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -52,6 +52,7 @@ msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
 #: talk/forms.py:267 talk/templates/talk/talk_details.html:34
+#: talk/templates/talk/talk_limited_list_entry.html:35
 msgid "Reserve spot"
 msgstr "Platz reservieren"
 
@@ -357,6 +358,7 @@ msgstr ""
 
 #: talk/templates/talk/sessionreservation_confirm_cancel.html:12
 #: talk/templates/talk/talk_details.html:27
+#: talk/templates/talk/talk_limited_list_entry.html:26
 msgid "Cancel reservation"
 msgstr "Reservierung stornieren"
 
@@ -405,14 +407,14 @@ msgstr ""
 "Wir haben eine E-Mail mit einem Bestätigungslink an deine E-Mailadresse "
 "gesendet."
 
-#: talk/templates/talk/sessionreservation_confirmation_sent.html:8
+#: talk/templates/talk/sessionreservation_confirmation_sent.html:9
 #, python-format
 msgid ""
 "You need to follow that link in the email to confirm your reservation for "
-"„%(title)s“."
+"„<a href=\"%(talk_details)s\">%(title)s</a>“."
 msgstr ""
-"Bitte folge dem Link in der E-Mail, um deine Reservierung für „%(title)s“ zu "
-"bestätigen."
+"Bitte folge dem Link in der E-Mail, um deine Reservierung für „<a href="
+"\"%(talk_details)s\">%(title)s</a>“ zu bestätigen."
 
 #: talk/templates/talk/sessionreservation_confirmed.html:3
 #, python-format
@@ -423,11 +425,14 @@ msgstr " Platzreservierung für „%(title)s“ bestätigt"
 msgid "Your spot is confirmed"
 msgstr "Deine Platzreservierung ist bestätigt"
 
-#: talk/templates/talk/sessionreservation_confirmed.html:7
+#: talk/templates/talk/sessionreservation_confirmed.html:8
 #, python-format
 msgid ""
-"You successfully confirmed the reservation of your spot for „%(title)s“."
-msgstr "Du hast deine Platzreservierung für „%(title)s“ erfolgreich bestätigt."
+"You successfully confirmed the reservation of your spot for „<a href="
+"\"%(talk_details)s\">%(title)s</a>“."
+msgstr ""
+"Du hast deine Platzreservierung für „<a href=\"%(talk_details)s\">%(title)s</"
+"a>“ erfolgreich bestätigt."
 
 #: talk/templates/talk/sessionreservation_create.html:3
 #, python-format
@@ -489,6 +494,7 @@ msgstr ""
 
 #: talk/templates/talk/sessionreservation_resend_confirmation.html:15
 #: talk/templates/talk/talk_details.html:30
+#: talk/templates/talk/talk_limited_list_entry.html:29
 msgid "Resend confirmation mail"
 msgstr "Bestätigungs-E-Mail erneut senden"
 
@@ -863,6 +869,24 @@ msgstr "Sessions ohne Zuordnung"
 #: talk/templates/talk/talk_grid_entry.html:9
 msgid "Needs reservation"
 msgstr "Platzreservierung erforderlich"
+
+#: talk/templates/talk/talk_limited_list.html:3
+msgid "Workshop / Excursion reservation"
+msgstr "Reservierung für Workshop / Exkursion"
+
+#: talk/templates/talk/talk_limited_list.html:8
+msgid "Reserve your spots"
+msgstr "Plätze reservieren"
+
+#: talk/templates/talk/talk_limited_list.html:13
+msgid "There are no workshops or excursions that need a reservation."
+msgstr ""
+"Es gibt keine Workshops oder Exkursionen, für die Plätze reserviert werden "
+"können."
+
+#: talk/templates/talk/talk_limited_list_entry.html:19
+msgid "Reservation"
+msgstr "Platzreservierung"
 
 #: talk/templates/talk/talk_list.html:8
 msgid "Archive: List of Talks at"

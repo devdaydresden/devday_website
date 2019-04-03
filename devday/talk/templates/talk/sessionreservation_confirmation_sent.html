@@ -5,6 +5,7 @@
     <h1>{% trans "Confirmation email sent" %}</h1>
     <p>
         {% trans "We sent an email with a confirmation link to your email address." %}
-        {% blocktrans with title=talk.title %}You need to follow that link in the email to confirm your reservation for „{{ title }}“.{% endblocktrans %}
+        {% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}
+        {% blocktrans with title=talk.title %}You need to follow that link in the email to confirm your reservation for „<a href="{{ talk_details }}">{{ title }}</a>“.{% endblocktrans %}
     </p>
 {% endblock %}

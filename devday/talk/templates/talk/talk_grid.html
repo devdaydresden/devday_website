@@ -31,14 +31,14 @@
                                             {% if talks|length == 1 %}
                                                 {% with talk=talks|first %}
                                                     <td colspan="{{ rooms|length }}"
-                                                        class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
+                                                        class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_grid_entry.html" %}</td>
                                                 {% endwith %}
                                             {% else %}
                                                 {% for room in rooms %}
                                                     {% for talk in talks %}
                                                         {% if talk.talkslot.room == room %}
                                                             <td class="track-{{ talk.track.name|slugify }}"
-                                                                data-label="{{ talk.talkslot.room }}">{% include "talk/talk_list_entry.html" %}</td>
+                                                                data-label="{{ talk.talkslot.room }}">{% include "talk/talk_grid_entry.html" %}</td>
                                                         {% endif %}
                                                     {% endfor %}
                                                 {% endfor %}

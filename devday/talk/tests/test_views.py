@@ -963,7 +963,7 @@ class TestTalkListView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("unscheduled", response.context)
         self.assertTemplateUsed(response, "talk/talk_grid.html")
-        self.assertTemplateUsed(response, "talk/talk_list_entry.html")
+        self.assertTemplateUsed(response, "talk/talk_grid_entry.html")
         self.assertIn(unscheduled_session, response.context["unscheduled"])
 
     def test_reservations_in_grid(self):

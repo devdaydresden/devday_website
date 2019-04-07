@@ -289,43 +289,116 @@ class TalkListView(ListView):
                 "talkslot__room",
             )
         )
-        if self.event == Event.objects.current_event():
-            return qs.order_by("talkslot__time__start_time", "talkslot__room__name")
         return qs.order_by("title")
 
     def get_context_data_for_grid(self, context, **kwargs):
-        talks = context.get("talk_list", [])
-        talks_by_time_and_room = {}
-        talks_by_room_and_time = {}
-        unscheduled = []
-        has_footage = (
-            Talk.objects.filter(event=self.event, track__isnull=False)
-            .filter(media__isnull=False)
-            .select_related("published_speaker", "media")
-            .count()
-            > 0
+        all_talks = context.get("talk_list", [])
+        time_slots = list(
+            TimeSlot.objects.filter(event=self.event).order_by(
+                "block", "start_time", "end_time"
+            )
         )
-        have_scheduled = False
-        for talk in talks:
+        talk_slots = list(
+            TalkSlot.objects.filter(talk__event=self.event)
+            .select_related(
+                "talk", "room", "time", "talk__event", "talk__published_speaker"
+            )
+            .order_by("time__start_time")
+        )
+
+        rooms = list(Room.objects.for_event(self.event))
+
+        blocks = {}
+
+        # assign time slots to blocks
+        for time_slot in time_slots:
+            block = blocks.setdefault(
+                time_slot.block, {"time_slots": [], "rooms": set()}
+            )
+            time_talk_slots = [
+                (talk_slot.room_id, talk_slot.talk)
+                for talk_slot in talk_slots
+                if talk_slot.time_id == time_slot.id
+            ]
+            block["time_slots"].append((time_slot, time_talk_slots, []))
+            block["rooms"] |= {
+                talk_slot_tuple[0] for talk_slot_tuple in time_talk_slots
+            }
+
+        # sort talks into ordered rooms
+        for block in blocks.values():
+            block["rooms"] = [room for room in rooms if room.id in block["rooms"]]
+            grouped_talks = {}
+            for time_slot, time_talk_slots, overlaps in block["time_slots"]:
+                grouped_talks.setdefault(
+                    time_slot, {"room_talks": {}, "attributes": {}}
+                )
+                for room_id, talk in time_talk_slots:
+                    room_talks = grouped_talks[time_slot]["room_talks"]
+                    for room in block["rooms"]:
+                        if room.id == room_id:
+                            room_talks.setdefault(room, []).append(talk)
+
+            # calculate overlaps
+            time_slot_count = len(block["time_slots"])
+            for index1 in range(time_slot_count):
+                time_slot1, time_talk_slots1, overlaps1 = block["time_slots"][index1]
+                for index2 in range(time_slot_count):
+                    time_slot2, time_talk_slots2, overlaps2 = block["time_slots"][
+                        index2
+                    ]
+                    if (
+                        time_slot1 != time_slot2
+                        and time_slot1.start_time >= time_slot2.start_time
+                        and time_slot1.end_time <= time_slot2.end_time
+                    ):
+                        overlaps2.append(index1)
+                        overlaps1.append(index2)
+
+            schedule = []
+            scheduled_times = {}
+            row = 0
+
+            # calculate column and row spans
+            for time_slot, time_talk_slots, overlaps in block["time_slots"]:
+                attributes = grouped_talks[time_slot]["attributes"]
+                if len(overlaps) > 1:
+                    attributes["rowspan"] = len(overlaps)
+                elif len(overlaps) == 1:
+                    attributes["colspan"] = len(block["rooms"]) - 1
+                if time_slot.start_time not in scheduled_times:
+                    scheduled_times[time_slot.start_time] = row
+                    index = row
+                    row += 1
+                else:
+                    index = scheduled_times[time_slot.start_time]
+                if len(schedule) - 1 < index:
+                    schedule_row = {
+                        "time_slots": [[time_slot, attributes]],
+                        "room_talks": {},
+                    }
+                    schedule.append(schedule_row)
+                else:
+                    schedule[index]["time_slots"].append([time_slot, attributes])
+                for room in block["rooms"]:
+                    if room in grouped_talks[time_slot]["room_talks"]:
+                        schedule[index]["room_talks"].setdefault(room, []).extend(
+                            [
+                                time_slot,
+                                grouped_talks[time_slot]["room_talks"][room],
+                                attributes,
+                            ]
+                        )
+                block["schedule"] = schedule
+
+        unscheduled = []
+        for talk in all_talks:
             try:
-                # build dictionary grouped by time and room (md and lg display)
-                talks_by_time_and_room.setdefault(talk.talkslot.time, []).append(talk)
-                # build dictionary grouped by room and time (sm and xs display)
-                talks_by_room_and_time.setdefault(talk.talkslot.room, []).append(talk)
-                have_scheduled = True
+                talk.talkslot.time
             except TalkSlot.DoesNotExist:
                 unscheduled.append(talk)
         context.update(
-            {
-                "event": self.event,
-                "talks_by_time_and_room": talks_by_time_and_room,
-                "talks_by_room_and_time": talks_by_room_and_time,
-                "unscheduled": unscheduled,
-                "have_scheduled": have_scheduled,
-                "rooms": Room.objects.for_event(self.event),
-                "times": TimeSlot.objects.filter(event=self.event),
-                "has_footage": has_footage,
-            }
+            {"event": self.event, "unscheduled": unscheduled, "blocks": blocks}
         )
         if (
             self.request.user.is_authenticated

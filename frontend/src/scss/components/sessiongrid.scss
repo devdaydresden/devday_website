@@ -101,6 +101,10 @@ table.table.session {
                     vertical-align: middle;
                 }
 
+                &[rowspan] {
+                    background: $silver-gray !important;
+                }
+
                 .talk-entry {
                     color: $base;
 

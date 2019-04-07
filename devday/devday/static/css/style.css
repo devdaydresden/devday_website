@@ -1,5 +1,5 @@
 /**
- * Build on 2019-3-10
+ * Build on 2019-4-7
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -12912,6 +12912,8 @@ table.table.session {
   table.table.session tbody tr td.track-keynote, table.table.session tbody tr td.no-talk {
     text-align: center;
     vertical-align: middle; }
+  table.table.session tbody tr td[rowspan] {
+    background: #e9ecef !important; }
   table.table.session tbody tr td .talk-entry {
     color: #171034; }
     table.table.session tbody tr td .talk-entry span {

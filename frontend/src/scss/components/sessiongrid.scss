@@ -6,6 +6,7 @@ table.table.session {
     table-layout: fixed;
     font-size: 20px;
     line-height: 23px;
+    margin-bottom: 3rem;
 
     thead {
         th {
@@ -103,6 +104,20 @@ table.table.session {
 
                 &[rowspan] {
                     background: $silver-gray !important;
+
+                    ul {
+                        list-style: none;
+                        margin: 0.175rem -0.75rem 0;
+                        padding: 0;
+
+                        li {
+                            padding: 0.25rem 0.75rem;
+
+                            &:nth-child(even) {
+                                background: $gray-lighter;
+                            }
+                        }
+                    }
                 }
 
                 .talk-entry {
@@ -317,4 +332,8 @@ table.table.session {
             }
         }
     }
+}
+
+hr {
+    margin-bottom: 3rem;
 }

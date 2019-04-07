@@ -922,6 +922,13 @@ class TestInfoBeamerXMLView(TestCase):
             'infobeamer',
             kwargs={'event': Event.objects.current_event().slug}))
 
+    def test_404_if_no_timeslots_defined(self):
+        event = event_testutils.create_test_event(
+            published=True, sessions_published=True)
+        response = self.client.get("/{}/schedule.xml".format(event.slug))
+        self.assertEqual(response.resolver_match.url_name, "infobeamer")
+        self.assertEquals(response.status_code, 404)
+
 
 class TestTalkVideoView(TestCase):
     def setUp(self):

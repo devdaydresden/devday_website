@@ -376,8 +376,10 @@ class InfoBeamerXMLView(BaseListView):
     def get_context_data(self, **kwargs):
         context = super(InfoBeamerXMLView, self).get_context_data(**kwargs)
         event = get_object_or_404(Event, slug=self.kwargs.get('event'))
-        time_range = TimeSlot.objects.filter(event=event).aggregate(
-            Min('start_time'), Max('end_time'))
+        time_slots = TimeSlot.objects.filter(event=event)
+        if not time_slots.exists():
+            raise Http404()
+        time_range = time_slots.aggregate(Min('start_time'), Max('end_time'))
         context['min_time'] = time_range['start_time__min']
         context['max_time'] = time_range['end_time__max']
         talks = context.get('talk_list', [])
@@ -391,13 +393,13 @@ class InfoBeamerXMLView(BaseListView):
                 'event': event,
                 'talks_by_room_and_time': talks_by_room_and_time,
                 'rooms': event.room_set.all(),
-                'times': TimeSlot.objects.filter(event=event)
+                'times': time_slots
             }
         )
         return context
 
     def render_to_response(self, context, **response_kwargs):
-        event = context['event']
+        event = context.get('event')
         schedule_xml = ElementTree.Element('schedule')
         # TODO: use event argument and render proper event title
         ElementTree.SubElement(schedule_xml, 'version').text = event.title
@@ -408,8 +410,9 @@ class InfoBeamerXMLView(BaseListView):
             event.start_time, context)
         ElementTree.SubElement(conference, 'end').text = self.to_xml_date(
             event.end_time, context)
-        ElementTree.SubElement(conference,
-                               'days').text = '1'  # FIXME compute days
+        ElementTree.SubElement(
+            conference, 'days'
+        ).text = '1'  # FIXME compute days
         ElementTree.SubElement(conference, 'timeslot_duration').text = '00:15'
         day_xml = ElementTree.SubElement(
             schedule_xml, 'day', index='1',

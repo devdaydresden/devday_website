@@ -19,40 +19,67 @@
                             </thead>
                             <tbody>
                             {% for row in session_block.schedule %}
-                                <tr>
                                 {% with first_slot=row.time_slots.0.0 first_attributes=row.time_slots.0.1 %}
-                                    <th>{{ first_slot.start_time|time:"TIME_FORMAT" }} - {{ first_slot.end_time|time:"TIME_FORMAT" }}</th>
-                                    {% if row.room_talks|length_is:"0" %}
-                                        <td class="{% if first_slot.text_body %}no-talk{% else %}text-warning{% endif %}"
-                                            colspan="{% if "colspan" in first_attributes %}{{ first_attributes.colspan }}{% else %}{{ session_block.rooms|length }}{% endif %}">
-                                            {% if first_slot.text_body %}
-                                                {{ first_slot.text_body }}{% else %}
-                                                {% trans "Nothing scheduled here" %}{% endif %}
-                                        </td>
-                                    {% else %}
-                                        {% for talk_room, talk_assignment in row.room_talks.items %}
-                                            {% with time_slot=talk_assignment.0 talks=talk_assignment.1 %}
-                                            <td{% if "rowspan" in talk_assignment.2 %} rowspan="{{ talk_assignment.2.rowspan }}"{% endif %}>
-                                                {% if talks|length_is:"0" %}
-                                                    {% comment %}no session in room{% endcomment %}
-                                                {% elif talks|length_is:"1" %}
-                                                    {% with talk=talks|first %}
-                                                        {% include "talk/talk_grid_entry.html" %}
-                                                    {% endwith %}
-                                                {% else %}
+                                    <tr>
+                                        <td>{{ first_slot.start_time|time:"TIME_FORMAT" }}
+                                            - {{ first_slot.end_time|time:"TIME_FORMAT" }}</td>
+                                        {% if row.room_talks|length_is:"0" %}
+                                            <td class="{% if first_slot.text_body %}no-talk{% else %}text-warning{% endif %}"
+                                                colspan="
+
+                                                        {% if "colspan" in first_attributes %}{{ first_attributes.colspan }}{% else %}{{ session_block.rooms|length }}{% endif %}">
+                                                {% if first_slot.text_body %}
+                                                    {{ first_slot.text_body }}{% else %}
+                                                    {% trans "Nothing scheduled here" %}{% endif %}
+                                            </td>
+                                        {% else %}
+                                            {% for talk_room, talk_assignment in row.room_talks.items %}
+                                                {% with time_slot=talk_assignment.0 talks=talk_assignment.1 %}
+                                                    <td
+                                                            {% if "rowspan" in talk_assignment.2 %}
+                                                                rowspan="{{ talk_assignment.2.rowspan }}"{% endif %}
+                                                                class="{% if talks|length_is:"0" %}track-no-talk{% elif talks|length_is:"1" %}track-
+
+                                                                    {{ talks.0.track|slugify }}{% else %}track-{{ talks.0.track|slugify }} d-sm-none d-xs-none d-md-none d-lg-none d-xl-table-cell{% endif %}"
+                                                                data-label="{{ talk_room.name }}">
+                                                        {% if talks|length_is:"0" %}
+                                                            {% comment %}no session in room{% endcomment %}
+                                                        {% elif talks|length_is:"1" %}
+                                                            {% with talk=talks|first %}
+                                                                {% include "talk/talk_grid_entry.html" %}
+                                                            {% endwith %}
+                                                        {% else %}
+                                                            <h4>{{ time_slot.text_body }}</h4>
+                                                            <ul>
+                                                                {% for talk in talks %}
+                                                                    <li>{% include "talk/talk_grid_entry.html" %}</li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        {% endif %}
+                                                    </td>
+                                                {% endwith %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    {% for talk_room, talk_assignment in row.room_talks.items %}
+                                        {% with time_slot=talk_assignment.0 talks=talk_assignment.1 %}
+                                            {% if "rowspan" in talk_assignment.2 %}
+                                                <tr class="d-sm-block d-xs-block d-md-block d-lg-block d-xl-none">
+                                                <td>{{ time_slot.start_time|time:"TIME_FORMAT" }} - {{ time_slot.end_time|time:"TIME_FORMAT" }}</td>
+                                                <td colspan="{{ session_block.rooms|length|add:"-1" }}"></td>
+                                                <td rowspan="{{ talk_assignment.2.rowspan }}">
                                                     <h4>{{ time_slot.text_body }}</h4>
                                                     <ul>
                                                         {% for talk in talks %}
                                                         <li>{% include "talk/talk_grid_entry.html" %}</li>
                                                         {% endfor %}
                                                     </ul>
-                                                {% endif %}
                                                 </td>
-                                            {% endwith %}
-                                        {% endfor %}
-                                    {% endif %}
+                                                </tr>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endfor %}
                                 {% endwith %}
-                                </tr>
                             {% endfor %}
                             </tbody>
                         </table>
@@ -70,7 +97,9 @@
                                 -
                                 <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
                                 {% if talk.spots %}
-                                    <span class="talk-icons"><span class="fas fa-calendar-check" title="{% trans "Needs reservation" %}"></span></span>
+                                    <span class="talk-icons"><span
+                                            class="fas fa-calendar-check"
+                                            title="{% trans "Needs reservation" %}"></span></span>
                                 {% endif %}
                             </li>
                         {% endfor %}

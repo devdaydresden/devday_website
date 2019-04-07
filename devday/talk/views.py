@@ -301,7 +301,12 @@ class TalkListView(ListView):
         talk_slots = list(
             TalkSlot.objects.filter(talk__event=self.event)
             .select_related(
-                "talk", "room", "time", "talk__event", "talk__published_speaker"
+                "talk",
+                "room",
+                "time",
+                "talk__event",
+                "talk__published_speaker",
+                "talk__published_speaker__event",
             )
             .order_by("time__start_time")
         )

@@ -1,5 +1,5 @@
 /**
- * Build on 2019-3-10
+ * Build on 2019-4-7
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -12875,7 +12875,8 @@ table.table.session {
   width: 100%;
   table-layout: fixed;
   font-size: 20px;
-  line-height: 23px; }
+  line-height: 23px;
+  margin-bottom: 3rem; }
   table.table.session thead th {
     border: 0; }
     table.table.session thead th > span {
@@ -12912,6 +12913,16 @@ table.table.session {
   table.table.session tbody tr td.track-keynote, table.table.session tbody tr td.no-talk {
     text-align: center;
     vertical-align: middle; }
+  table.table.session tbody tr td[rowspan] {
+    background: #e9ecef !important; }
+    table.table.session tbody tr td[rowspan] ul {
+      list-style: none;
+      margin: 0.175rem -0.75rem 0;
+      padding: 0; }
+      table.table.session tbody tr td[rowspan] ul li {
+        padding: 0.25rem 0.75rem; }
+        table.table.session tbody tr td[rowspan] ul li:nth-child(even) {
+          background: rgba(0, 0, 0, 0.12); }
   table.table.session tbody tr td .talk-entry {
     color: #171034; }
     table.table.session tbody tr td .talk-entry span {
@@ -13023,6 +13034,9 @@ table.table.session {
     table.session tbody tr td:first-child {
       width: 100% !important;
       text-align: center; } }
+
+hr {
+  margin-bottom: 3rem; }
 
 .sponsor-deck {
   padding: 20px 0 0; }

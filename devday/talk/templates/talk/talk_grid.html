@@ -1,11 +1,12 @@
 {% extends "devday_site.html" %}
-{% load i18n %}
+{% load i18n cms_tags %}
 {% block title %}{{ block.super }} - {% trans "Schedule" %}{% endblock %}
 {% block content %}
     <div class="content-area">
         <div class="row">
             <div class="col-12 col-md-10 offset-md-1">
                 <h1>{% trans "Schedule" %} {{ event.title }}</h1>
+                {% static_placeholder "talk-grid-intro-text" %}
                 {% for session_block in blocks.values %}
                     <div>
                         <table class="table session">

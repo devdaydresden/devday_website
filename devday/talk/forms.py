@@ -259,17 +259,6 @@ class TalkAddReservationForm(forms.ModelForm):
         self.attendee = kwargs.pop("attendee")
         self.talk = kwargs.pop("talk")
         super().__init__(**kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.layout = Layout(
-            Div(
-                Div(
-                    Submit("submit", _("Reserve spot"), css_class="btn-default"),
-                    css_class="text-center",
-                ),
-                css_class="form_group",
-            )
-        )
 
     def save(self, commit=True):
         self.instance.attendee = self.attendee

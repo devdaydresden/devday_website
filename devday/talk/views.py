@@ -1066,6 +1066,7 @@ class TalkAddReservation(
         context.update(
             {
                 "talk": self.talk,
+                "event": self.talk.event,
                 "fully_booked": self.talk.sessionreservation_set.filter(
                     is_confirmed=True
                 ).count()

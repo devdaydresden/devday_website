@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Field
+from crispy_forms.layout import Layout, Submit
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
@@ -159,21 +159,6 @@ class TalkVoteFormTest(TestCase):
 
 
 class TalkAddReservationFormTest(TestCase):
-    def test_init_creates_form_helper(self):
-        attendee = mock.Mock()
-        talk = mock.Mock()
-        form = TalkAddReservationForm(attendee=attendee, talk=talk)
-        self.assertTrue(hasattr(form, "helper"))
-        self.assertIsInstance(form.helper, FormHelper)
-
-    def test_init_creates_layout(self):
-        attendee = mock.Mock()
-        talk = mock.Mock()
-        form = TalkAddReservationForm(attendee=attendee, talk=talk)
-        self.assertTrue(hasattr(form, "helper"))
-        self.assertTrue(hasattr(form.helper, "layout"))
-        self.assertIsInstance(form.helper.layout, Layout)
-
     def test_save_checks_availability_no_confirmations(self):
         event = Event.objects.current_event()
         speaker, _, _ = speaker_testutils.create_test_speaker()

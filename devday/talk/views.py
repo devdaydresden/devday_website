@@ -4,9 +4,6 @@ import xml.etree.ElementTree as ElementTree
 from datetime import date, timedelta
 from io import StringIO
 
-from attendee.forms import DevDayRegistrationForm
-from attendee.models import Attendee
-from attendee.views import StaffUserMixin
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model

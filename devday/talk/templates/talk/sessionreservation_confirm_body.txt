@@ -1,0 +1,27 @@
+{% load i18n %}{% url 'talk_confirm_reservation' event=event.slug confirmation_key=confirmation_key as confirmation_url %}{% blocktrans count days=expiration_days with event_title=event.title title=talk.title domain=site.domain %}Hello,
+
+you want to reserve a spot for „{{ title }}“!
+
+Follow the link below to confirm your reservation
+
+{{ scheme }}://{{ domain }}{{ confirmation_url }}
+
+The link is valid for one day.
+
+
+The Dev Day team
+{% plural %}Hello,
+
+you want to reserve a spot for „{{ title }}“!
+
+Follow the link below to confirm your reservation
+
+{{ scheme }}://{{ domain }}{{ confirmation_url }}
+
+The link is valid for {{ days }} days.
+
+
+The Dev Day team
+{% endblocktrans %}
+--
+https://www.devday.de/

@@ -1,0 +1,19 @@
+{% extends "devday_site.html" %}
+{% load i18n %}
+{% block title %}{{ block.super }} - {% trans "Workshop / Excursion reservation" %}{% endblock %}
+{% block content %}
+<div class="content-area">
+  <div class="row">
+    <div class="col-12 col-md-10 offset-md-1">
+      <h1>{% trans "Reserve your spots" %}</h1>
+      <div class="row">
+        {% for talk in talk_list %}
+            {% include "talk/talk_limited_list_entry.html" %}
+        {% empty %}
+            {% trans "There are no workshops or excursions that need a reservation." %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

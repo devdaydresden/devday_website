@@ -3,7 +3,7 @@
     <div class="card talk-card">
         <div class="card-header">
             <img src="/static/img/talk-header.jpg" alt="">
-            <h5 class="card-title"><a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a></h5>
+            <h5 class="card-title"><a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug %}">{{ talk.title }}</a></h5>
         </div>
         <div class="card-body">
             <div class="speaker-image">
@@ -16,12 +16,25 @@
             <h4 class="speaker-name"><a href="{% url 'public_speaker_profile' event=talk.published_speaker.event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a></h4>
             <p>{{ talk.abstract|truncatechars:140 }}</p>
 
-            <div class="media-list">
-                {% if talk.media.youtube %}<a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug %}" title="Video"><i class="fab fa-youtube" aria-hidden="true"></i></a>{% endif %}
-                {% if talk.media.slideshare %}<a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug %}" title="Slides"><i class="fab fa-slideshare" aria-hidden="true"></i></a>{% endif %}
-                {% if talk.media.codelink %}<a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug %}" title="Code"><i class="fas fa-file-code" aria-hidden="true"></i></a>{% endif %}
-            </div>
-
+            <h4 class="reservation-area">{% trans "Reservation" %}</h4>
+            <p>
+                {% if talk.id in reservations %}
+                    {% for talk_id, reservation in reservations.items %}
+                        {% if talk_id == talk.id %}
+                            {% if reservation.is_confirmed %}
+                                <span class="fas fa-calendar-times"></span>
+                                <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Cancel reservation" %}</a>
+                            {% else %}
+                                <span class="fas fa-send"></span>
+                                <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}">{% trans "Resend confirmation mail" %}</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <span class="fas fa-calendar-check"></span>
+                    <a href="{% url "talk_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Reserve spot" %}</a>
+                {% endif %}
+            </p>
         </div>
     </div>
 </div>

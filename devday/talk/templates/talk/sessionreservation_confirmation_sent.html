@@ -1,0 +1,11 @@
+{% extends "devday_site.html" %}
+{% load crispy_forms_tags static i18n %}
+{% block title %}{{ block.super }} // {% blocktrans with title=talk.title %}Confirmation email for „{{ title }}“ sent{% endblocktrans %}{% endblock %}
+{% block content_body %}
+    <h1>{% trans "Confirmation email sent" %}</h1>
+    <p>
+        {% trans "We sent an email with a confirmation link to your email address." %}
+        {% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}
+        {% blocktrans with title=talk.title %}You need to follow that link in the email to confirm your reservation for „<a href="{{ talk_details }}">{{ title }}</a>“.{% endblocktrans %}
+    </p>
+{% endblock %}

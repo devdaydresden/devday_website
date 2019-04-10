@@ -1,6 +1,8 @@
 {% load i18n %}
 <span class="talk-entry">
-    <span class="track">{% trans "Track" %} «{{ talk.track.name }}»</span>
+    {% if talk.spots %}
+        <a href="{% url "talk_reservation" event=talk.event.slug slug=talk.slug %}"><span class="talk-icons"><span class="fas fa-calendar-check"></span>{% trans "Needs reservation" %}</span></a>
+    {% endif %}
     <span class="title"><a
             href="{% url 'talk_details' event=talk.event.slug slug=talk.slug %}">{{ talk.title }}</a></span>
     <span class="speaker"><a

@@ -151,18 +151,16 @@ class AttendeeRegistrationView(RegistrationView):
     @atomic
     def register(self, form):
         if self.auth_level == "anonymous":
-            attendee = form.save(commit=False)
-            attendee.user.save()
-            attendee.user_id = attendee.user.id
+            user = form.save(commit=True)
             signals.user_registered.send(
-                sender=self.__class__, user=attendee.user, request=self.request
+                sender=self.__class__, user=user, request=self.request
             )
-            attendee.save()
-            self.send_activation_email(attendee.user)
+            self.send_activation_email(user)
+            return user
         else:
             attendee = form.save(commit=True)
             # TODO: send event registration confirmation mail with more info
-        return attendee.user
+            return attendee.user
 
 
 class DevDayUserRegistrationView(RegistrationView):
@@ -209,9 +207,11 @@ class DevDayUserActivationView(ActivationView):
 class AttendeeActivationView(ActivationView):
     event = None
 
-    def dispatch(self, request, *args, **kwargs):
+    def activate(self, *args, **kwargs):
         self.event = get_object_or_404(Event, slug=self.kwargs.get("event"))
-        return super().dispatch(request, *args, **kwargs)
+        user = super().activate(*args, **kwargs)
+        Attendee.objects.create(event=self.event, user=user)
+        return user
 
     def get_success_url(self, user=None):
         logout(self.request)

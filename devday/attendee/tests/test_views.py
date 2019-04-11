@@ -150,11 +150,7 @@ class AttendeeRegistrationViewTest(TestCase):
         self.assertIsInstance(user, DevDayUser)
         self.assertIsNone(user.contact_permission_date)
         self.assertFalse(user.is_active)
-        attendees = user.attendees
-        self.assertEqual(attendees.count(), 1)
-        attendee = attendees.first()
-        self.assertIsInstance(attendee, Attendee)
-        self.assertEqual(attendee.event, self.event)
+        self.assertFalse(user.attendees.exists())
         self.assertEqual(len(mail.outbox), 1)
 
     def test_register_permit_contact(self):
@@ -175,10 +171,7 @@ class AttendeeRegistrationViewTest(TestCase):
         self.assertIsNotNone(user.contact_permission_date)
         self.assertLessEqual(user.contact_permission_date, now)
         self.assertFalse(user.is_active)
-        attendees = user.attendees
-        self.assertEqual(attendees.count(), 1)
-        attendee = attendees.first()
-        self.assertIsInstance(attendee, Attendee)
+        self.assertFalse(user.attendees.exists())
         self.assertEqual(len(mail.outbox), 1)
 
     def test_get_anonymous(self):
@@ -374,11 +367,10 @@ class DevDayUserActivationViewTest(TestCase):
 class AttendeeActivationViewTest(TestCase):
     def setUp(self):
         self.event = event_testutils.create_test_event()
-        user, _ = attendee_testutils.create_test_user()
-        user.is_active = False
-        user.save()
-        Attendee.objects.create(user=user, event=self.event)
-        self.activation_key = DevDayUserRegistrationView().get_activation_key(user)
+        self.user, _ = attendee_testutils.create_test_user()
+        self.user.is_active = False
+        self.user.save()
+        self.activation_key = DevDayUserRegistrationView().get_activation_key(self.user)
         self.url = "/{}/attendee/activate/{}/".format(
             self.event.slug, self.activation_key
         )
@@ -390,6 +382,9 @@ class AttendeeActivationViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_get_success_url(self):
+        self.assertFalse(
+            Attendee.objects.filter(event=self.event, user=self.user).exists()
+        )
         response = self.client.get(self.url)
         self.assertRedirects(
             response,
@@ -397,6 +392,25 @@ class AttendeeActivationViewTest(TestCase):
                 self.event.slug
             ),
             fetch_redirect_response=False,
+        )
+        self.assertTrue(
+            Attendee.objects.filter(event=self.event, user=self.user).exists()
+        )
+
+    def test_get_success_url_twice(self):
+        self.assertFalse(
+            Attendee.objects.filter(event=self.event, user=self.user).exists()
+        )
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(
+            Attendee.objects.filter(event=self.event, user=self.user).exists()
+        )
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("activation_error", response.context)
+        self.assertEqual(
+            response.context["activation_error"]["code"], "already_activated"
         )
 
 
@@ -416,7 +430,7 @@ class AttendeeCancelViewTest(TestCase):
         self.client.login(username="test@example.org", password="test")
         r = self.client.get(self.url)
         self.assertRedirects(r, reverse("user_profile"))
-        self.assertEquals(
+        self.assertEqual(
             Attendee.objects.filter(user=self.user, event=self.event).count(),
             0,
             "User should not be an attendee for current event",
@@ -427,7 +441,7 @@ class AttendeeCancelViewTest(TestCase):
         self.client.login(username="test2@example.org", password="test")
         r = self.client.get(self.url)
         self.assertRedirects(r, reverse("user_profile"))
-        self.assertEquals(
+        self.assertEqual(
             Attendee.objects.filter(user=self.user, event=self.event).count(),
             0,
             "User should not be an attendee for current event",
@@ -437,15 +451,15 @@ class AttendeeCancelViewTest(TestCase):
 class AttendeeDeleteViewTest(TestCase):
     def test_requires_login(self):
         r = self.client.get("/accounts/delete/")
-        self.assertEquals(r.status_code, 302)
+        self.assertEqual(r.status_code, 302)
         self.assertRedirects(r, "/accounts/login/?next=/accounts/delete/")
 
     def test_delete_keeps_speaker(self):
         speaker, user, password = speaker_testutils.create_test_speaker()
         self.client.login(username=user.email, password=password)
         r = self.client.post("/accounts/delete/")
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(r.url, "/")
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(r.url, "/")
 
         with self.assertRaises(DevDayUser.DoesNotExist):
             user.refresh_from_db()
@@ -462,8 +476,8 @@ class AttendeeDeleteViewTest(TestCase):
         self.client.login(username=user.email, password=password)
         email = user.email
         r = self.client.post("/accounts/delete/")
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(r.url, "/")
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(r.url, "/")
 
         with self.assertRaises(DevDayUser.DoesNotExist):
             user.refresh_from_db()
@@ -481,8 +495,8 @@ class AttendeeDeleteViewTest(TestCase):
 
         self.client.login(username=user.email, password=password)
         r = self.client.post("/accounts/delete/")
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(r.url, "/")
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(r.url, "/")
 
         with self.assertRaises(Attendee.DoesNotExist):
             attendee.refresh_from_db()
@@ -504,7 +518,7 @@ class LoginOrRegisterViewTest(TestCase):
 
     def test_anonymous(self):
         response = self.client.get(self.url)
-        self.assertEquals(
+        self.assertEqual(
             response.status_code, 200, "should retrieve data from {}".format(self.url)
         )
 
@@ -541,8 +555,8 @@ class CSVViewTest(TestCase):
     def get_anonymous(self, rev):
         url = reverse(rev)
         r = self.client.get(url)
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(
             r.url,
             "/accounts/login/?next={}".format(url),
             "should redirect to login page",
@@ -552,9 +566,7 @@ class CSVViewTest(TestCase):
         url = reverse(rev)
         self.login()
         r = self.client.get(url)
-        self.assertEquals(
-            r.status_code, 200, "should retrieve data from {}".format(url)
-        )
+        self.assertEqual(r.status_code, 200, "should retrieve data from {}".format(url))
         return r
 
     def test_get_attendees_anonymous(self):
@@ -655,8 +667,8 @@ class CheckInAttendeeViewTest(TestCase):
 
     def test_get_anonymous(self):
         r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(
             r.url,
             "/accounts/login/?next={}".format(self.url),
             "should redirect to login page",
@@ -665,12 +677,12 @@ class CheckInAttendeeViewTest(TestCase):
     def test_get_staff(self):
         self.login()
         r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 200, "should retrieve form")
+        self.assertEqual(r.status_code, 200, "should retrieve form")
 
     def test_post_empty(self):
         self.login()
         r = self.client.post(self.url, data={})
-        self.assertEquals(r.status_code, 200, "should not redirect")
+        self.assertEqual(r.status_code, 200, "should not redirect")
         # FIXME attendee never changes over here, but does in the view
         # self.assertIsNone(self.attendee.checked_in,
         #                   'attendee should not be checked in')
@@ -678,10 +690,10 @@ class CheckInAttendeeViewTest(TestCase):
     def test_post_checkin_code(self):
         self.login()
         r = self.client.post(self.url, data={"attendee": self.attendee.checkin_code})
-        self.assertEquals(r.status_code, 302, "should redirect to self")
-        self.assertEquals(r.url, self.url, "should redirect to self")
+        self.assertEqual(r.status_code, 302, "should redirect to self")
+        self.assertEqual(r.url, self.url, "should redirect to self")
         r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 200, "should retrieve form")
+        self.assertEqual(r.status_code, 200, "should retrieve form")
         # FIXME attendee never changes over here, but does in the view
         # self.assertIsNotNone(self.attendee.checked_in,
         #                      'attendee should be checked in')
@@ -689,10 +701,10 @@ class CheckInAttendeeViewTest(TestCase):
     def test_post_email(self):
         self.login()
         r = self.client.post(self.url, data={"attendee": self.attendee.user.email})
-        self.assertEquals(r.status_code, 302, "should redirect to self")
-        self.assertEquals(r.url, self.url, "should redirect to self")
+        self.assertEqual(r.status_code, 302, "should redirect to self")
+        self.assertEqual(r.url, self.url, "should redirect to self")
         r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 200, "should retrieve form")
+        self.assertEqual(r.status_code, 200, "should retrieve form")
         # FIXME attendee never changes over here, but does in the view
         # self.assertIsNotNone(self.attendee.checked_in,
         #                      'attendee should be checked in')
@@ -739,8 +751,8 @@ class CheckInAttendeeViewUrlTest(TestCase):
     def test_get_anonymous(self):
         url = self._get_url_for_attendee(self.attendee)
         r = self.client.get(url)
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(
             r.url,
             "/accounts/login/?next={}".format(quote(quote(url))),
             "should redirect to login page",
@@ -750,15 +762,15 @@ class CheckInAttendeeViewUrlTest(TestCase):
         url = self._get_url(12345678, "somestring")
         self.login()
         r = self.client.get(url)
-        self.assertEquals(r.status_code, 200, "should retrieve form")
-        self.assertEquals(self._get_code(r), "invalid", "code should be invalid")
+        self.assertEqual(r.status_code, 200, "should retrieve form")
+        self.assertEqual(self._get_code(r), "invalid", "code should be invalid")
 
     def test_get_valid(self):
         url = self._get_url_for_attendee(self.attendee)
         self.login()
         r = self.client.get(url)
-        self.assertEquals(r.status_code, 200, "should retrieve form")
-        self.assertEquals(self._get_code(r), "OK", "should get checked in")
+        self.assertEqual(r.status_code, 200, "should retrieve form")
+        self.assertEqual(self._get_code(r), "OK", "should get checked in")
 
     def test_get_checked_in(self):
         url = self._get_url_for_attendee(self.attendee)
@@ -766,8 +778,8 @@ class CheckInAttendeeViewUrlTest(TestCase):
         self.attendee.save()
         self.login()
         r = self.client.get(url)
-        self.assertEquals(r.status_code, 200, "should retrieve form")
-        self.assertEquals(
+        self.assertEqual(r.status_code, 200, "should retrieve form")
+        self.assertEqual(
             self._get_code(r), "already", "atteendee should be checked in already"
         )
 
@@ -775,17 +787,15 @@ class CheckInAttendeeViewUrlTest(TestCase):
         url = self._get_url(12345678, Attendee.objects.get_verification(12345678))
         self.login()
         r = self.client.get(url)
-        self.assertEquals(r.status_code, 200, "should retrieve form")
-        self.assertEquals(
-            self._get_code(r), "notfound", "atteendee should not be found"
-        )
+        self.assertEqual(r.status_code, 200, "should retrieve form")
+        self.assertEqual(self._get_code(r), "notfound", "atteendee should not be found")
 
     def test_get_otherevent(self):
         url = self._get_url_for_attendee(self.other_attendee)
         self.login()
         r = self.client.get(url)
-        self.assertEquals(r.status_code, 200, "should retrieve form")
-        self.assertEquals(
+        self.assertEqual(r.status_code, 200, "should retrieve form")
+        self.assertEqual(
             self._get_code(r), "wrongevent", "code should be for wrong event"
         )
 
@@ -813,8 +823,8 @@ class CheckInAttendeeViewQRCodeTest(TestCase):
 
     def test_get_anonymous(self):
         r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(
             r.url,
             "/accounts/login/?next={}".format(quote(quote(self.url))),
             "should redirect to login page",
@@ -823,8 +833,8 @@ class CheckInAttendeeViewQRCodeTest(TestCase):
     def test_get_qrcode_no_current_event(self):
         self.login()
         r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 200, "should retrieve form")
-        self.assertEquals(
+        self.assertEqual(r.status_code, 200, "should retrieve form")
+        self.assertEqual(
             self.get_code(r),
             "notregistered",
             "attendee should not be registered for current event",
@@ -834,8 +844,8 @@ class CheckInAttendeeViewQRCodeTest(TestCase):
         attendee = Attendee.objects.create(user=self.user, event=self.event)
         self.login()
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200, "should retrieve form")
-        self.assertEquals(
+        self.assertEqual(response.status_code, 200, "should retrieve form")
+        self.assertEqual(
             self.get_code(response),
             "OK",
             (
@@ -851,8 +861,8 @@ class CheckInAttendeeViewQRCodeTest(TestCase):
         )
         self.login()
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200, "should retrieve form")
-        self.assertEquals(
+        self.assertEqual(response.status_code, 200, "should retrieve form")
+        self.assertEqual(
             self.get_code(response), "already", "attendee should be already checked in"
         )
         self.assertNotContains(response, attendee.get_checkin_url(self.event))

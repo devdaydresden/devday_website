@@ -33,7 +33,7 @@ from talk.models import (
     TalkMedia,
     Track,
     Vote,
-)
+    TimeSlot, TalkSlot)
 
 # noinspection PyUnresolvedReferences
 from talk.tests import talk_testutils
@@ -984,6 +984,35 @@ class TestTalkListView(TestCase):
         self.assertTemplateUsed(response, "talk/talk_grid.html")
         self.assertEqual(len(response.context["reservations"].keys()), 1)
         self.assertEqual(response.context["reservations"][talk], reservation)
+
+    def test_grid_with_overlapping_time_slots(self):
+        other_slots = list(self.event.timeslot_set.order_by("start_time")[1:3])
+        start_time = other_slots[0].start_time
+        end_time = other_slots[-1].end_time
+        time_slot = TimeSlot.objects.create(
+            event=self.event, start_time=start_time, end_time=end_time,
+            text_body="Test slot")
+        room = list(self.event.room_set.order_by("priority"))[-1]
+
+        test_speaker, _, _ = speaker_testutils.create_test_speaker(
+            "parallel@example.org", "Parallel Talk Speaker"
+        )
+        test_talk = talk_testutils.create_test_talk(
+            test_speaker, self.event, title="Test 1"
+        )
+        test_talk2 = talk_testutils.create_test_talk(
+            test_speaker, self.event, title="Test 2"
+        )
+        track = Track.objects.create(event=self.event, name="Test Track")
+        test_talk.publish(track)
+        test_talk2.publish(track)
+        TalkSlot.objects.create(room=room, time=time_slot, talk=test_talk)
+        TalkSlot.objects.create(room=room, time=time_slot, talk=test_talk2)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("blocks", response.context)
+        self.assertTemplateUsed(response, "talk/talk_grid.html")
+        self.assertTemplateUsed(response, "talk/talk_grid_entry.html")
 
 
 class TestInfoBeamerXMLView(TestCase):

@@ -184,6 +184,7 @@ class TimeSlot(TimeStampedModel):
     end_time = models.DateTimeField(default=timezone.now)
     text_body = models.TextField(blank=True, default="")
     event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
+    block = models.PositiveSmallIntegerField(verbose_name=_("Block"), default=0)
 
     class Meta:
         verbose_name = _("Time slot")
@@ -202,7 +203,8 @@ class TalkSlot(TimeStampedModel):
     time = models.ForeignKey(TimeSlot)
 
     class Meta:
-        unique_together = (("room", "time"),)
+        verbose_name = _("Talk slot")
+        verbose_name_plural = _("Talk slots")
 
     def __str__(self):
         return "{} {}".format(self.room, self.time)

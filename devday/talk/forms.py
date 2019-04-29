@@ -18,6 +18,8 @@ from talk.models import (
     TimeSlot,
     Room,
     AttendeeVote,
+    AttendeeFeedback,
+    AttendeeEventFeedback,
 )
 
 User = get_user_model()
@@ -270,3 +272,15 @@ class TalkAddReservationForm(forms.ModelForm):
         ):
             self.instance.is_waiting = True
         return super().save(commit)
+
+
+class AttendeeTalkFeedbackForm(forms.ModelForm):
+    class Meta:
+        model = AttendeeFeedback
+        fields = ["score", "comment"]
+
+
+class AttendeeEventFeedbackForm(forms.ModelForm):
+    class Meta:
+        model = AttendeeEventFeedback
+        fields = ["overall_score", "organisation_score", "session_score", "comment"]

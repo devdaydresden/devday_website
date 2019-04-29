@@ -293,7 +293,7 @@ class AttendeeFeedback(TimeStampedModel):
         null=True,
         blank=True,
         limit_choices_to={"event__published": True},
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
     )
     talk = models.ForeignKey(
         Talk,
@@ -320,5 +320,48 @@ class AttendeeFeedback(TimeStampedModel):
             self.talk.title,
             self.talk.published_speaker,
             self.score,
+            self.comment,
+        )
+
+
+class AttendeeEventFeedback(TimeStampedModel):
+    attendee = models.ForeignKey(
+        Attendee,
+        verbose_name=_("Attendee"),
+        null=True,
+        blank=True,
+        limit_choices_to={"event__published": True},
+        on_delete=models.SET_NULL,
+    )
+    event = models.ForeignKey(
+        Event,
+        verbose_name=_("Event"),
+        null=False,
+        limit_choices_to={"published": True},
+        on_delete=models.CASCADE,
+    )
+    overall_score = models.PositiveSmallIntegerField(verbose_name=_("Event score"))
+    organisation_score = models.PositiveSmallIntegerField(
+        verbose_name=_("Organisation score")
+    )
+    session_score = models.PositiveSmallIntegerField(verbose_name=_("Session score"))
+    comment = models.TextField(verbose_name=_("Comment"), blank=True)
+
+    class Meta:
+        verbose_name = pgettext_lazy(
+            "attendee event feedback singular form", "Attendee event feedback"
+        )
+        verbose_name_plural = pgettext_lazy(
+            "attendee event feedback plural form", "Attendee event feedback"
+        )
+        unique_together = ["attendee", "event"]
+
+    def __str__(self):
+        return "{} gave feedback for {}: scores=event {}, organisation {}, sessions {}, comment={}".format(
+            self.attendee,
+            self.event.title,
+            self.overall_score,
+            self.organisation_score,
+            self.session_score,
             self.comment,
         )

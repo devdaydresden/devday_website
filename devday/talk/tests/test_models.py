@@ -21,6 +21,7 @@ from talk.models import (
     AttendeeVote,
     AttendeeFeedback,
     SessionReservation,
+    AttendeeEventFeedback,
 )
 
 User = get_user_model()
@@ -271,4 +272,27 @@ class SessionReservationTest(TestCase):
                 self.reservation.attendee.user.get_username(),
                 str(self.reservation.talk_id),
             ],
+        )
+
+
+class AttendeeEventFeedbackTest(TestCase):
+    def setUp(self):
+        self.event = create_test_event()
+        self.test_user, _ = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(user=self.test_user, event=self.event)
+
+    def test_str(self):
+        feedback = AttendeeEventFeedback.objects.create(
+            attendee=self.attendee,
+            event=self.event,
+            overall_score=5,
+            organisation_score=4,
+            session_score=5,
+            comment="Rocked again",
+        )
+        self.assertEqual(
+            "{}".format(feedback),
+            "{} gave feedback for {}: scores=event {}, organisation {}, sessions {}, comment={}".format(
+                self.attendee, self.event.title, 5, 4, 5, "Rocked again"
+            ),
         )

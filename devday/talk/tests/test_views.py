@@ -315,6 +315,7 @@ class TestTalkDetails(TestCase):
         self.assertNotIn("reservation", response.context)
         self.assertNotIn("feedback_form", response.context)
 
+
 class TestCommitteeTalkDetails(TestCase):
     def setUp(self):
         speaker, _, _ = speaker_testutils.create_test_speaker()

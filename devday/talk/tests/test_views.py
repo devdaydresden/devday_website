@@ -1,17 +1,18 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 from unittest import mock
 from xml.etree import ElementTree
 
 from django.conf import settings
 from django.http import QueryDict
+from django.utils import timezone
 
 from attendee.models import Attendee
 from attendee.tests import attendee_testutils
 from devday.utils.devdata import DevData
 from django.contrib.auth.models import Group
 from django.core import mail, signing
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from event.models import Event
@@ -23,6 +24,7 @@ from talk.forms import (
     TalkCommentForm,
     TalkSpeakerCommentForm,
     TalkAddReservationForm,
+    AttendeeTalkFeedbackForm,
 )
 from talk.models import (
     AttendeeVote,
@@ -33,7 +35,10 @@ from talk.models import (
     TalkMedia,
     Track,
     Vote,
-    TimeSlot, TalkSlot)
+    TimeSlot,
+    TalkSlot,
+    Room,
+)
 
 # noinspection PyUnresolvedReferences
 from talk.tests import talk_testutils
@@ -280,7 +285,35 @@ class TestTalkDetails(TestCase):
         response = self.client.get(self.url)
         self.assertIn("reservation", response.context)
         self.assertIsNone(response.context["reservation"])
+        self.assertNotIn("feedback_form", response.context)
 
+    @override_settings(TALK_FEEDBACK_ALLOWED_MINUTES=30)
+    def test_talk_feedback_form_for_current_talk(self):
+        user, password = attendee_testutils.create_test_user()
+        Attendee.objects.create(user=user, event=self.event)
+        now = timezone.now()
+        time_slot = TimeSlot.objects.create(
+            start_time=now + timedelta(minutes=-31),
+            end_time=now + timedelta(minutes=29),
+            event=self.event,
+        )
+        room = Room.objects.create(name="Test room", event=self.event)
+        TalkSlot.objects.create(talk=self.talk, room=room, time=time_slot)
+        self.talk.refresh_from_db()
+
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertIn("feedback_form", response.context)
+        self.assertIsInstance(
+            response.context["feedback_form"], AttendeeTalkFeedbackForm
+        )
+
+    def test_with_no_attendee(self):
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertNotIn("reservation", response.context)
+        self.assertNotIn("feedback_form", response.context)
 
 class TestCommitteeTalkDetails(TestCase):
     def setUp(self):
@@ -990,8 +1023,11 @@ class TestTalkListView(TestCase):
         start_time = other_slots[0].start_time
         end_time = other_slots[-1].end_time
         time_slot = TimeSlot.objects.create(
-            event=self.event, start_time=start_time, end_time=end_time,
-            text_body="Test slot")
+            event=self.event,
+            start_time=start_time,
+            end_time=end_time,
+            text_body="Test slot",
+        )
         room = list(self.event.room_set.order_by("priority"))[-1]
 
         test_speaker, _, _ = speaker_testutils.create_test_speaker(
@@ -1026,7 +1062,8 @@ class TestInfoBeamerXMLView(TestCase):
 
     def test_404_if_no_timeslots_defined(self):
         event = event_testutils.create_test_event(
-            published=True, sessions_published=True)
+            published=True, sessions_published=True
+        )
         response = self.client.get("/{}/schedule.xml".format(event.slug))
         self.assertEqual(response.resolver_match.url_name, "infobeamer")
         self.assertEquals(response.status_code, 404)

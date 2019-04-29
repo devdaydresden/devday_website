@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django_registration.forms import RegistrationFormUniqueEmail
 
-from attendee.models import DevDayUser, Attendee
+from attendee.models import DevDayUser, Attendee, AttendeeEventFeedback
 from devday.forms import AuthenticationForm
 
 User = get_user_model()
@@ -382,3 +382,9 @@ class CheckInAttendeeForm(forms.Form):
             raise ValidationError(_("{} is already checked in!".format(attendee.user)))
 
         return attendee
+
+
+class AttendeeEventFeedbackForm(forms.ModelForm):
+    class Meta:
+        model = AttendeeEventFeedback
+        fields = ["overall_score", "organisation_score", "session_score", "comment"]

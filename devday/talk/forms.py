@@ -1,3 +1,4 @@
+from attendee.models import Attendee
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, Layout, Submit
 from django import forms
@@ -5,21 +6,18 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
-
-from attendee.models import Attendee
 from event.models import Event
 from talk.models import (
-    Talk,
-    TalkFormat,
-    TalkComment,
-    Vote,
+    AttendeeFeedback,
+    AttendeeVote,
+    Room,
     SessionReservation,
+    Talk,
+    TalkComment,
+    TalkFormat,
     TalkSlot,
     TimeSlot,
-    Room,
-    AttendeeVote,
-    AttendeeFeedback,
-    AttendeeEventFeedback,
+    Vote,
 )
 
 User = get_user_model()
@@ -278,9 +276,3 @@ class AttendeeTalkFeedbackForm(forms.ModelForm):
     class Meta:
         model = AttendeeFeedback
         fields = ["score", "comment"]
-
-
-class AttendeeEventFeedbackForm(forms.ModelForm):
-    class Meta:
-        model = AttendeeEventFeedback
-        fields = ["overall_score", "organisation_score", "session_score", "comment"]

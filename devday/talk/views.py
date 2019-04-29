@@ -1314,3 +1314,9 @@ class LimitedTalkList(ListView):
                     r.talk_id: r for r in list(attendee.sessionreservation_set.all())
                 }
         return context
+
+
+class AttendeeTalkFeedback(LoginRequiredMixin, BaseFormView):
+    model = Talk
+    http_method_names = ["post"]
+    form_class = AttendeeTalkFeedbackForm

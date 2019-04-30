@@ -56,7 +56,7 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
-        help_text=_(("Designates whether the user can log into the admin" " site.")),
+        help_text=_(("Designates whether the user can log into the admin site.")),
     )
     is_active = models.BooleanField(
         _("active"),
@@ -197,7 +197,7 @@ class Attendee(models.Model):
             kwargs={
                 "id": self.id,
                 "verification": self.get_verification(),
-                "event": event,
+                "event": event.slug,
             },
         )
 

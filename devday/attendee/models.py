@@ -187,7 +187,7 @@ class Attendee(models.Model):
         return reverse(
             'attendee_checkin_url',
             kwargs={'id': self.id, 'verification': self.get_verification(),
-                    'event': event})
+                    'event': event.slug})
 
     def check_in(self):
         if self.checked_in:

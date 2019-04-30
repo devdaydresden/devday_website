@@ -75,7 +75,7 @@
     {% endblock content_block_2 %}
 
     {% block content_block_3 %}
-    <div class="stripe c-gray{% if not sponsoring_open %} visible-to-editor-only{% endif %}">
+    <div class="stripe c-gray">
         <div class="container">
             <div class="row ">
                 <div class="col-12 col-lg-9 order-2 order-lg-1">
@@ -85,7 +85,7 @@
                 <div class="col-12 col-lg-3  order-1 order-lg-2 col-center col-base">
                     {% if sponsoring_open or has_change_permissions %}
                     {% page_url 'sponsoring' as sponsoring_page %}
-                    <div class="content-center">
+                    <div class="content-center{% if not sponsoring_open %} visible-to-editor-only{% endif %}">
                         {% if request.path != sponsoring_page %}
                         <p>Wollen Sie Sponsoringpartner werden? Schauen Sie sich unsere Sponsoring Optionen an.</p>
                         <a href="{{ sponsoring_page }}" class="btn btn-outline btn-call-action m-t-1">Jetzt Sponsor werden</a>

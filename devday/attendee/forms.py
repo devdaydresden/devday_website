@@ -1,8 +1,8 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Layout, Field, Submit, Hidden, HTML
+from crispy_forms.layout import HTML, Div, Field, Hidden, Layout, Submit
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django.urls import reverse, reverse_lazy
@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django_registration.forms import RegistrationFormUniqueEmail
 
-from attendee.models import DevDayUser, Attendee, AttendeeEventFeedback
+from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser
 from devday.forms import AuthenticationForm
 
 User = get_user_model()
@@ -388,3 +388,55 @@ class AttendeeEventFeedbackForm(forms.ModelForm):
     class Meta:
         model = AttendeeEventFeedback
         fields = ["overall_score", "organisation_score", "session_score", "comment"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["overall_score"].label = _("How much did you like the Event?")
+        self.fields["organisation_score"].label = _(
+            "How well has the event been organised?"
+        )
+        self.fields["session_score"].label = _(
+            "How much did the sessions fulfill your expectations?"
+        )
+        self.fields["comment"].label = _(
+            "Please tell us what you liked specifically and what should be different next time."
+        )
+
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.html5_required = True
+        self.helper.layout = Layout(
+            Div(
+                Field(
+                    "overall_score",
+                    css_class="rating-loading",
+                    data_size="xs",
+                    wrapper_class="col-12 col-md-6",
+                ),
+                Field(
+                    "organisation_score",
+                    css_class="rating-loading",
+                    data_size="xs",
+                    wrapper_class="col-12 col-md-6",
+                ),
+                Field(
+                    "session_score",
+                    css_class="rating-loading",
+                    data_size="xs",
+                    wrapper_class="col-12 col-md-6",
+                ),
+                css_class="form-row",
+            ),
+            Div(Field("comment", wrapper_class="col-12"), css_class="form-row"),
+            Div(
+                Submit("submit", _("Submit your feedback")),
+                css_class="col-12 text-center",
+            ),
+        )
+
+    def save(self, commit=True):
+        if self.instance.event_id is None:
+            self.instance.event_id = self.initial["event"].id
+        if self.instance.attendee_id is None:
+            self.instance.attendee_id = self.initial["attendee"].id
+        return super().save(commit)

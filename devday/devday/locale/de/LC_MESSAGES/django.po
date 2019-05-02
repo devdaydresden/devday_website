@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-03 15:40+0000\n"
-"PO-Revision-Date: 2019-04-03 17:43+0200\n"
+"POT-Creation-Date: 2019-05-02 15:20+0000\n"
+"PO-Revision-Date: 2019-05-02 17:20+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -200,6 +200,10 @@ msgstr "Öffne"
 msgid "my site"
 msgstr "meine Seite"
 
+#: devday/templates/base.html:82
+msgid "Thanks to our sponsors"
+msgstr "Danke an unsere Sponsoren"
+
 #: devday/templates/devday/sendemail.html:34
 msgid "Please correct the error below."
 msgstr "Bitte den unten aufgeführten Fehler korrigieren."
@@ -235,6 +239,14 @@ msgstr "Jetzt anmelden - Sei dabei!"
 #: devday/templates/devday_index.html:44
 msgid "Submit session now"
 msgstr "Jetzt eine Session einreichen"
+
+#: devday/templates/devday_index.html:49
+msgid "Please give us feedback!"
+msgstr "Bitte gib uns Feedback!"
+
+#: devday/templates/devday_index.html:51
+msgid "Give feedback"
+msgstr "Feedback geben"
 
 #: devday/templates/django_file_form/upload_template.html:13
 msgid "Cancel"

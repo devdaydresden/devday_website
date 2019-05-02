@@ -1,15 +1,6 @@
 import csv
 from io import StringIO
 
-from attendee.forms import (
-    AttendeeProfileForm,
-    AttendeeRegistrationForm,
-    CheckInAttendeeForm,
-    DevDayUserRegistrationForm,
-    EventRegistrationForm,
-    RegistrationAuthenticationForm,
-)
-from attendee.signals import attendence_cancelled
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
@@ -23,17 +14,28 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, TemplateView, UpdateView, View
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, ModelFormMixin
 from django.views.generic.list import BaseListView
 from django_registration import signals
 from django_registration.backends.activation.views import (
     ActivationView,
     RegistrationView,
 )
-from event.models import Event
-from talk.models import Attendee, Talk, SessionReservation
 
-from .models import DevDayUser
+from attendee.forms import (
+    AttendeeEventFeedbackForm,
+    AttendeeProfileForm,
+    AttendeeRegistrationForm,
+    CheckInAttendeeForm,
+    DevDayUserRegistrationForm,
+    EventRegistrationForm,
+    RegistrationAuthenticationForm,
+)
+from attendee.signals import attendence_cancelled
+from event.models import Event
+from talk.models import Attendee, SessionReservation, Talk
+
+from .models import AttendeeEventFeedback, DevDayUser
 
 User = get_user_model()
 
@@ -511,3 +513,41 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
             }
         )
         return context
+
+
+class AttendeeEventFeedbackView(LoginRequiredMixin, ModelFormMixin, FormView):
+    form_class = AttendeeEventFeedbackForm
+    slug_url_kwarg = "event"
+    template_name = "attendee/event_feedback.html"
+
+    event = None
+    attendee = None
+    object = None
+
+    def _fill_event_and_attendee(self, request, **kwargs):
+        self.event = get_object_or_404(Event, slug=kwargs[self.slug_url_kwarg])
+        self.attendee = get_object_or_404(Attendee, event=self.event, user=request.user)
+        self.object = AttendeeEventFeedback.objects.filter(
+            event=self.event, attendee=self.attendee
+        ).first()
+
+    def get(self, request, *args, **kwargs):
+        self._fill_event_and_attendee(request, **kwargs)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self._fill_event_and_attendee(request, **kwargs)
+        return super().post(request, *args, **kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial.update({"event": self.event, "attendee": self.attendee})
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"event": self.event, "attendee": self.attendee})
+        return context
+
+    def get_success_url(self):
+        return reverse("pages-root")

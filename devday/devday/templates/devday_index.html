@@ -43,6 +43,13 @@
           href="{% url 'submit_session' event=current_event.slug %}">{% trans "Submit session now" %}</a></p>
   </div>
 {% endif %}
+{% if event_feedback_open or has_change_permissions %}
+  <div class="{% if not event_feedback_open %}visible-to-editor-only{% endif %}">
+      {% placeholder "action-event-feedback-intro" or %}<h4>{% trans "Please give us feedback!" %}</h4>{% endplaceholder %}
+    <p><a class="btn btn-outline btn-call-action m-t-1"
+          href="{% url "attendee_event_feedback" event=current_event.slug %}">{% trans "Give feedback" %}</a></p>
+  </div>
+{% endif %}
 {% endblock %}
 
 {% if twitter_feed %}

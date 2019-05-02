@@ -5,16 +5,17 @@ from crispy_forms.layout import Layout
 from django.test import TestCase
 
 from attendee.forms import (
+    AttendeeEventFeedbackForm,
+    AttendeeProfileForm,
     AttendeeRegistrationForm,
     CheckInAttendeeForm,
     DevDayRegistrationForm,
     DevDayUserCreationForm,
-    RegistrationAuthenticationForm,
     DevDayUserRegistrationForm,
     EventRegistrationForm,
-    AttendeeProfileForm,
+    RegistrationAuthenticationForm,
 )
-from attendee.models import Attendee, DevDayUser
+from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser
 from attendee.tests import attendee_testutils
 from event.models import Event
 from event.tests import event_testutils
@@ -210,3 +211,82 @@ class CheckInAttendeeFormTest(TestCase):
         self.assertFalse(
             form.is_valid(), "should be invalid because attendee is already checked in"
         )
+
+
+class AttendeeEventFeedbackFormTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event("Test event")
+        user, _ = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(user=user, event=self.event)
+
+    def test_form_has_helper(self):
+        form = AttendeeEventFeedbackForm(
+            initial={"event": self.event, "attendee": self.attendee}
+        )
+        self.assertTrue(hasattr(form, "helper"))
+        self.assertIsInstance(form.helper, FormHelper)
+        self.assertTrue(form.helper.html5_required)
+
+    def test_form_has_layout(self):
+        form = AttendeeEventFeedbackForm(
+            initial={"event": self.event, "attendee": self.attendee}
+        )
+        self.assertTrue(hasattr(form, "helper"))
+        self.assertTrue(hasattr(form.helper, "layout"))
+        self.assertIsInstance(form.helper.layout, Layout)
+
+    def test_save_creates_new_feedback_if_missing(self):
+        self.assertFalse(
+            AttendeeEventFeedback.objects.filter(
+                attendee=self.attendee, event=self.event
+            ).exists()
+        )
+        form = AttendeeEventFeedbackForm(
+            initial={"event": self.event, "attendee": self.attendee},
+            instance=AttendeeEventFeedback.objects.filter(
+                attendee=self.attendee, event=self.event
+            ).first(),
+            data={
+                "overall_score": "3",
+                "session_score": "5",
+                "organisation_score": "4",
+            },
+        )
+        form.save()
+        self.assertTrue(
+            AttendeeEventFeedback.objects.filter(
+                attendee=self.attendee, event=self.event
+            ).exists()
+        )
+
+    def test_save_updates_feedback_if_exists(self):
+        AttendeeEventFeedback.objects.create(
+            attendee=self.attendee,
+            event=self.event,
+            overall_score=5,
+            session_score=3,
+            organisation_score=1,
+        )
+        form = AttendeeEventFeedbackForm(
+            initial={"event": self.event, "attendee": self.attendee},
+            instance=AttendeeEventFeedback.objects.filter(
+                attendee=self.attendee, event=self.event
+            ).first(),
+            data={
+                "overall_score": "3",
+                "session_score": "5",
+                "organisation_score": "4",
+            },
+        )
+        form.save()
+        self.assertTrue(
+            AttendeeEventFeedback.objects.filter(
+                attendee=self.attendee, event=self.event
+            ).exists()
+        )
+        feedback = AttendeeEventFeedback.objects.get(
+            attendee=self.attendee, event=self.event
+        )
+        self.assertEquals(feedback.overall_score, 3)
+        self.assertEquals(feedback.organisation_score, 4)
+        self.assertEquals(feedback.session_score, 5)

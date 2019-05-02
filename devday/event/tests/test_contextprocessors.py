@@ -26,3 +26,7 @@ class TestCurrentEventContextProcessor(TestCase):
     def test_sessions_published_in_context(self):
         context = current_event_contextprocessor(None)
         self.assertIn("sessions_published", context)
+
+    def test_event_feedback_open_in_context(self):
+        context = current_event_contextprocessor(None)
+        self.assertIn("event_feedback_open", context)

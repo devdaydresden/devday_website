@@ -1,5 +1,5 @@
 {% extends "devday_site.html" %}
-{% load i18n cms_tags crispy_forms_tags %}
+{% load i18n cms_tags crispy_forms_tags sekizai_tags %}
 {% block title %}{% trans "Attendee profile" %}{% endblock %}
 {% block content_body %}
     <div class="row">
@@ -17,47 +17,90 @@
         {% endif %}
         <div class="offset-lg-2 col-lg-8 col-12">
             <h3>{%  trans "Events" %}</h3>
-            {% if events %}
+            {% if attendees %}
                 <p>{% blocktrans %}You are registered for these events{% endblocktrans %}</p>
                 <div class="table-responsive">
                     <table class="table">
-                        {% for event in events %}
+                        {% for attendee in attendees %}
+                            {% with event=attendee.event reservations=attendee.reservations.all %}
                             <tr>
                                 <td>{{ event.title }}</td>
                                 <td>{{ event.description }}
-                                    {% if event.id in reservations %}
-                                        <p><strong>{% trans "Workshops / Sessions" %}:</strong>
+                                    {% if reservations %}
+                                        <p><strong>{% trans "Workshops / Sessions" %}:</strong></p>
                                         <ul class="reservations">
-                                        {% for r_event_id, r_reservations in reservations.items %}
-                                            {% if event.id == r_event_id %}
-                                                {% for reservation in r_reservations %}
-                                                    {% with talk=reservation.talk %}
-                                                        {% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}
-                                                        <a href="{{ talk_details }}">{{ talk.title }}</a>
-                                                        {% if event.id == event_id %}
-                                                            {% if reservation.is_confirmed or reservation.is_waiting %}
-                                                                <span class="fas fa-calendar-times"></span>
-                                                                <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Cancel reservation" %}</a>
-                                                            {% else %}
-                                                                <span class="fas fa-send"></span>
-                                                                <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}">{% trans "Resend confirmation mail" %}</a>
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    {% endwith %}
-                                                {% endfor %}
-                                            {% endif %}
+                                        {% for reservation in reservations %}
+                                            {% with talk=reservation.talk %}
+                                                {% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}
+                                                <a href="{{ talk_details }}">{{ talk.title }}</a>
+                                                {% if event.id == current_event.id %}
+                                                    {% if reservation.is_confirmed or reservation.is_waiting %}
+                                                        <span class="fas fa-calendar-times"></span>
+                                                            <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Cancel reservation" %}</a>
+                                                    {% else %}
+                                                        <span class="fas fa-send"></span>
+                                                            <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}">{% trans "Resend confirmation mail" %}</a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endwith %}
                                         {% endfor %}
                                         </ul>
-                                        </p>
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if event.id == event_id and not user.get_speaker %}
-                                        <p><a class="btn btn-primary float-left float-sm-right"
-                                              href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a>
-                                        </p>
-                                    {% endif %}</td>
+                                    {% if event.id == current_event.id %}
+                                        <div class="form-check-inline">
+                                            <input class="form-check-input" type="checkbox" {% if attendee.rafle %}checked{% endif %} id="raffle-checkbox" data-toggle-url="{% url "attendee_toggle_raffle" event=event.slug %}">
+                                            <label class="form-check-label">{% trans "Take part in the raffle" %}</label>
+                                        </div>
+                                        {% if not user.get_speaker %}
+                                        <div class="btn-group float-left float-sm-right">
+                                            <a class="btn btn-primary"
+                                                  href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a>
+                                        </div>
+                                        {% endif %}
+                                        {% addtoblock "js" %}
+                                            <script type="text/javascript">
+                                            function getCookie(name) {
+                                            var cookieValue = null;
+                                            if (document.cookie && document.cookie !== '') {
+                                                var cookies = document.cookie.split(';');
+                                                for (var i = 0; i < cookies.length; i++) {
+                                                    var cookie = jQuery.trim(cookies[i]);
+                                                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                return cookieValue;
+                                            }
+                                            $(document).ready(function() {
+                                                $("#raffle-checkbox").bind("change", function() {
+                                                    let eventUrl = $(this).data("toggle-url");
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url: eventUrl,
+                                                        data: {},
+                                                        headers: {
+                                                            "X-CSRFToken": getCookie("csrftoken")
+                                                        },
+                                                        success: function (data) {
+                                                            $('#raffle-checkbox').checked = data["raffle"];
+                                                        },
+                                                        error: function(jqXHR, textStatus, errorThrown) {
+                                                            alert(textStatus);
+                                                        },
+                                                        dataType: "json"
+                                                    });
+                                                });
+                                            })
+                                            </script>
+                                        {% endaddtoblock %}
+                                    {% endif %}
+                                </td>
                             </tr>
+                            {% endwith %}
                         {% endfor %}
                     </table>
                 </div>

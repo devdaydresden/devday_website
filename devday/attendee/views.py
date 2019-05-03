@@ -8,9 +8,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import IntegrityError
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.db.transaction import atomic
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, TemplateView, UpdateView, View
@@ -91,16 +91,22 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView)
 
     def get_context_data(self, **kwargs):
         context = super(DevDayUserProfileView, self).get_context_data(**kwargs)
-        context["events"] = self.request.user.get_events().order_by("id")
+        attendees = (
+            Attendee.objects.filter(event__published=True, user_id=self.request.user.id)
+            .select_related("user", "event")
+            .prefetch_related(
+                Prefetch(
+                    "sessionreservation_set",
+                    queryset=SessionReservation.objects.order_by("talk__title"),
+                    to_attr="reservations",
+                ),
+                "reservations__talk",
+                "reservations__talk__event",
+            )
+            .order_by("event__start_time")
+        )
+        context["attendees"] = attendees
         context["current_event"] = Event.objects.current_event()
-        context["event_id"] = Event.objects.current_event_id()
-        reservations = {}
-        for reservation in SessionReservation.objects.filter(
-            attendee__user_id=self.request.user.id
-        ).order_by("talk__event", "talk__title"):
-            reservations.setdefault(reservation.talk.event_id, [])
-            reservations[reservation.talk.event_id].append(reservation)
-        context["reservations"] = reservations
         self.attendee_qrcode_context(context)
         return context
 
@@ -237,6 +243,18 @@ class AttendeeCancelView(LoginRequiredMixin, View):
             )
             attendee.delete()
         return HttpResponseRedirect(reverse("user_profile"))
+
+
+class AttendeeToggleRaffleView(LoginRequiredMixin, View):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        attendee = get_object_or_404(
+            Attendee, user=request.user, event__slug=kwargs["event"]
+        )
+        attendee.raffle = not attendee.raffle
+        attendee.save()
+        return JsonResponse({"raffle": attendee.raffle})
 
 
 class AttendeeRegisterSuccessView(LoginRequiredMixin, TemplateView):

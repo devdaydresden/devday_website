@@ -6,6 +6,7 @@ from attendee.views import (
     AttendeeEventFeedbackView,
     AttendeeRegisterSuccessView,
     AttendeeRegistrationView,
+    AttendeeToggleRaffleView,
     CheckInAttendeeQRView,
     CheckInAttendeeUrlView,
     CheckInAttendeeView,
@@ -48,6 +49,11 @@ urlpatterns = [
         r"^(?P<event>[^/]+)/attendee/register/success/$",
         AttendeeRegisterSuccessView.as_view(),
         name="attendee_register_success",
+    ),
+    url(
+        r"^(?P<event>[^/]+)/attendee/toggle-raffle/$",
+        AttendeeToggleRaffleView.as_view(),
+        name="attendee_toggle_raffle",
     ),
     url(
         r"^(?P<event>[^/]+)/feedback/$",

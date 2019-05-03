@@ -3,6 +3,7 @@ from hashlib import sha1
 from random import SystemRandom
 
 import luhn
+
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
@@ -12,7 +13,8 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import pgettext_lazy, ugettext_lazy as _
+from django.utils.translation import pgettext_lazy
+from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
 from event.models import Event
@@ -167,6 +169,9 @@ class Attendee(models.Model):
     )
     source = models.TextField(
         _("source"), help_text=_("How have you become aware of this event?"), blank=True
+    )
+    raffle = models.BooleanField(
+        _("raffle"), help_text=_("Take part in the raffle"), default=False
     )
 
     objects = AttendeeManager()

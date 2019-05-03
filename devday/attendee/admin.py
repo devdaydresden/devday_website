@@ -8,9 +8,9 @@ from .models import Attendee, AttendeeEventFeedback, DevDayUser
 
 @admin.register(Attendee)
 class AttendeeAdmin(admin.ModelAdmin):
-    list_display = ("user", "event")
-    fields = ("user", "source", "event", "checkin_code", "checked_in")
-    list_filter = ("event",)
+    list_display = ("user", "event", "raffle")
+    fields = ("user", "source", "event", "checkin_code", "checked_in", "raffle")
+    list_filter = ("event", "raffle")
     search_fields = ("user__email",)
     ordering = ("event__title", "user__email")
 

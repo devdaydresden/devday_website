@@ -112,12 +112,6 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
         """
         return self.attendees.filter(event=event).first()
 
-    def get_events(self):
-        """
-        Return all events based on the attendee records of this user.
-        """
-        return Event.objects.filter(attendee__user=self)
-
     def __str__(self):
         return self.email
 

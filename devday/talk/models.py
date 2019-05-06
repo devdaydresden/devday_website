@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 from attendee.models import Attendee
 from django.conf import settings
@@ -107,6 +108,17 @@ class Talk(models.Model):
     @property
     def is_limited(self):
         return self.spots > 0
+
+    @property
+    def is_feedback_allowed(self):
+        return (
+            TalkSlot.objects.filter(talk=self).exists()
+            and (
+                self.talkslot.time.start_time
+                + timedelta(minutes=settings.TALK_FEEDBACK_ALLOWED_MINUTES)
+            )
+            <= timezone.now()
+        )
 
 
 class TalkMedia(models.Model):
@@ -293,7 +305,7 @@ class AttendeeFeedback(TimeStampedModel):
         null=True,
         blank=True,
         limit_choices_to={"event__published": True},
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
     )
     talk = models.ForeignKey(
         Talk,

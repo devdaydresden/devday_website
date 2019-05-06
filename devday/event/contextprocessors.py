@@ -9,4 +9,5 @@ def current_event_contextprocessor(request):
             "talk_submission_open": current_event.submission_open,
             "attendee_registration_open": current_event.registration_open,
             "sessions_published": current_event.sessions_published,
+            "event_feedback_open": current_event.feedback_open,
         }

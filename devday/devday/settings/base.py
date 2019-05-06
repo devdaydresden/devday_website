@@ -260,6 +260,10 @@ CONFIRMATION_SALT = get_vault_variable("confirmation_salt")
 TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT = 960
 TALK_PUBLIC_SPEAKER_IMAGE_WIDTH = 636
 TALK_THUMBNAIL_HEIGHT = 320
+
+# Feedback for talks is allowed when that many minutes passed since the talk started
+TALK_FEEDBACK_ALLOWED_MINUTES = 30
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

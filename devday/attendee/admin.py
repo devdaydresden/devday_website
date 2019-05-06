@@ -3,14 +3,14 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
 from .forms import AttendeeInlineForm, DevDayUserChangeForm, DevDayUserCreationForm
-from .models import Attendee, DevDayUser
+from .models import Attendee, AttendeeEventFeedback, DevDayUser
 
 
 @admin.register(Attendee)
 class AttendeeAdmin(admin.ModelAdmin):
-    list_display = ("user", "event")
-    fields = ("user", "source", "event", "checkin_code", "checked_in")
-    list_filter = ("event",)
+    list_display = ("user", "event", "raffle")
+    fields = ("user", "source", "event", "checkin_code", "checked_in", "raffle")
+    list_filter = ("event", "raffle")
     search_fields = ("user__email",)
     ordering = ("event__title", "user__email")
 
@@ -56,3 +56,27 @@ class DevDayUserAdmin(UserAdmin):
     add_form = DevDayUserCreationForm
     form = DevDayUserChangeForm
     inlines = (AttendeeInline,)
+
+
+@admin.register(AttendeeEventFeedback)
+class AttendeeEventFeedbackAdmin(admin.ModelAdmin):
+    list_display = ("attendee_name", "event_title")
+    ordering = ("event__title", "attendee__user__email")
+    list_filter = ("event",)
+    readonly_fields = ("attendee", "event")
+    list_select_related = ("event", "attendee", "attendee__user")
+
+    def attendee_name(self, obj):
+        return obj.attendee.user.email
+
+    def event_title(self, obj):
+        return obj.event.title
+
+    queryset_prefetch_fields = {"attendee": (Attendee, ("user", "event"))}
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("event", "attendee", "attendee__user", "attendee__event")
+        )

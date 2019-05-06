@@ -14,7 +14,7 @@ from attendee.forms import (
     DevDayUserRegistrationForm,
     EventRegistrationForm,
 )
-from attendee.models import Attendee, DevDayUser
+from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser
 from attendee.tests import attendee_testutils
 from attendee.views import AttendeeRegistrationView, DevDayUserRegistrationView
 from event.models import Event
@@ -54,14 +54,12 @@ class AttendeeProfileViewTest(TestCase):
 
     def test_attendance(self):
         user, password = attendee_testutils.create_test_user()
-        Attendee.objects.create(user=user, event=self.event)
+        attendee = Attendee.objects.create(user=user, event=self.event)
         self.client.login(username=user.email, password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("events", response.context)
-        self.assertIn(self.event, response.context["events"])
-        self.assertIn("reservations", response.context)
-        self.assertEqual(len(response.context["reservations"]), 0)
+        self.assertIn("attendees", response.context)
+        self.assertIn(attendee, response.context["attendees"])
 
     def test_allow_contact(self):
         user, password = attendee_testutils.create_test_user()
@@ -111,11 +109,10 @@ class AttendeeProfileViewTest(TestCase):
         self.client.login(username=user.email, password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("events", response.context)
-        self.assertIn(self.event, response.context["events"])
-        self.assertIn("reservations", response.context)
-        self.assertIn(self.event.id, response.context["reservations"])
-        self.assertIn(reservation, response.context["reservations"][self.event.id])
+        self.assertIn("attendees", response.context)
+        self.assertIn(attendee, response.context["attendees"])
+        self.assertEqual(len(response.context["attendees"][0].sessionreservation_set.all()), 1)
+        self.assertIn(reservation, response.context["attendees"][0].sessionreservation_set.all())
 
 
 class AttendeeRegistrationViewTest(TestCase):
@@ -866,3 +863,154 @@ class CheckInAttendeeViewQRCodeTest(TestCase):
             self.get_code(response), "already", "attendee should be already checked in"
         )
         self.assertNotContains(response, attendee.get_checkin_url(self.event))
+
+
+class AttendeeEventFeedbackViewTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
+        self.user, self.password = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(event=self.event, user=self.user)
+        self.url = "/{}/feedback/".format(self.event.slug)
+
+    def test_anonymous_access_denied(self):
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+    def test_needs_attendee(self):
+        user, password = attendee_testutils.create_test_user("nonattendee@example.org")
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 404)
+
+    def test_context_has_event_and_attendee(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context["event"], self.event)
+        self.assertEquals(response.context["attendee"], self.attendee)
+
+    def test_template(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, "attendee/event_feedback.html")
+
+    def test_form_has_fresh_feedback_instance_for_fresh_request(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn("form", response.context)
+        self.assertIsNone(response.context["form"].instance.id)
+
+    def test_post_redirects_to_index_page(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.post(
+            self.url,
+            data={
+                "overall_score": "5",
+                "organisation_score": "4",
+                "session_score": "5",
+                "comment": "Nice try",
+            },
+        )
+        self.assertRedirects(response, "/")
+
+    def test_post_submits_feedback(self):
+        self.assertFalse(
+            AttendeeEventFeedback.objects.filter(
+                attendee=self.attendee, event=self.event
+            ).exists()
+        )
+        self.client.login(username=self.user.get_username(), password=self.password)
+        self.client.post(
+            self.url,
+            data={
+                "overall_score": "5",
+                "organisation_score": "4",
+                "session_score": "5",
+                "comment": "Nice try",
+            },
+        )
+        feedback = AttendeeEventFeedback.objects.get(
+            attendee=self.attendee, event=self.event
+        )
+        self.assertEquals(feedback.overall_score, 5)
+        self.assertEquals(feedback.organisation_score, 4)
+        self.assertEquals(feedback.session_score, 5)
+        self.assertEquals(feedback.comment, "Nice try")
+
+    def test_existing_feedback_is_loaded(self):
+        feedback = AttendeeEventFeedback.objects.create(
+            attendee=self.attendee,
+            event=self.event,
+            overall_score=1,
+            organisation_score=1,
+            session_score=1,
+            comment="This was bad",
+        )
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context["form"].instance, feedback)
+
+    def test_existing_feedback_is_updated(self):
+        feedback = AttendeeEventFeedback.objects.create(
+            attendee=self.attendee,
+            event=self.event,
+            overall_score=1,
+            organisation_score=1,
+            session_score=1,
+            comment="This was bad",
+        )
+        self.client.login(username=self.user.get_username(), password=self.password)
+        self.client.post(
+            self.url,
+            data={
+                "overall_score": "5",
+                "organisation_score": "4",
+                "session_score": "5",
+                "comment": "Rather good, actually",
+            },
+        )
+        feedback_after = AttendeeEventFeedback.objects.get(
+            attendee=self.attendee, event=self.event
+        )
+        self.assertEquals(feedback_after.id, feedback.id)
+        self.assertEquals(feedback_after.overall_score, 5)
+        self.assertEquals(feedback_after.organisation_score, 4)
+        self.assertEquals(feedback_after.session_score, 5)
+        self.assertEquals(feedback_after.comment, "Rather good, actually")
+
+
+class AttendeeToggleRaffleViewTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event(slug="test")
+        self.user, self.password = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(user=self.user, event=self.event)
+        self.url = "/{}/attendee/toggle-raffle/".format(self.event.slug)
+
+    def test_anonymous_access_denied(self):
+        response = self.client.post(self.url, data={})
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+    def test_needs_attendee(self):
+        user, password = attendee_testutils.create_test_user("nonattendee@example.org")
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.post(self.url, data={})
+        self.assertEquals(response.status_code, 404)
+
+    def test_post_only(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 405)
+
+    def test_post_toggles_raffle_flag(self):
+        self.assertFalse(self.attendee.raffle)
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.post(self.url, data={})
+        self.assertEquals(response.json()["raffle"], True)
+        self.attendee.refresh_from_db()
+        self.assertTrue(self.attendee.raffle)
+        response = self.client.post(self.url, data={})
+        self.assertEquals(response.json()["raffle"], False)
+        self.attendee.refresh_from_db()
+        self.assertFalse(self.attendee.raffle)

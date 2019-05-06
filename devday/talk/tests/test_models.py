@@ -1,8 +1,11 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import signing
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.test import TestCase, override_settings
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 
 from attendee.models import Attendee
@@ -114,6 +117,65 @@ class TalkTest(TestCase):
             title="Test", abstract="Test abstract", event=self.event, spots=10
         )
         self.assertTrue(talk.is_limited)
+
+    def test_is_feedback_allowed_unpublished(self):
+        talk = Talk.objects.create(
+            title="Test", abstract="Test abstract", event=self.event
+        )
+        self.assertFalse(talk.is_feedback_allowed)
+
+    def test_is_feedback_allowed_no_talkslot(self):
+        talk = Talk.objects.create(
+            title="Test",
+            abstract="Test abstract",
+            event=self.event,
+            draft_speaker=self.speaker,
+        )
+        track = Track.objects.create(name="Test track", event=self.event)
+        talk.publish(track)
+        self.assertFalse(talk.is_feedback_allowed)
+
+    @override_settings(TALK_FEEDBACK_ALLOWED_MINUTES=30)
+    def test_is_feedback_allowed_future_talk(self):
+        talk = Talk.objects.create(
+            title="Test",
+            abstract="Test abstract",
+            event=self.event,
+            draft_speaker=self.speaker,
+        )
+        track = Track.objects.create(name="Test track", event=self.event)
+        talk.publish(track)
+        now = timezone.now()
+        time_slot = TimeSlot.objects.create(
+            start_time=now + timedelta(hours=1),
+            end_time=now + timedelta(hours=2),
+            event=self.event,
+        )
+        room = Room.objects.create(name="Test room", event=self.event)
+        TalkSlot.objects.create(talk=talk, room=room, time=time_slot)
+        talk.refresh_from_db()
+        self.assertFalse(talk.is_feedback_allowed)
+
+    @override_settings(TALK_FEEDBACK_ALLOWED_MINUTES=30)
+    def test_is_feedback_allowed_current_talk(self):
+        talk = Talk.objects.create(
+            title="Test",
+            abstract="Test abstract",
+            event=self.event,
+            draft_speaker=self.speaker,
+        )
+        track = Track.objects.create(name="Test track", event=self.event)
+        talk.publish(track)
+        now = timezone.now()
+        time_slot = TimeSlot.objects.create(
+            start_time=now + timedelta(minutes=-31),
+            end_time=now + timedelta(minutes=29),
+            event=self.event,
+        )
+        room = Room.objects.create(name="Test room", event=self.event)
+        TalkSlot.objects.create(talk=talk, room=room, time=time_slot)
+        talk.refresh_from_db()
+        self.assertTrue(talk.is_feedback_allowed)
 
 
 class VoteTest(TestCase):

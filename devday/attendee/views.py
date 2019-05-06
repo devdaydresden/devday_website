@@ -1,7 +1,29 @@
 import csv
 from io import StringIO
 
+from django.contrib.auth import get_user_model, logout
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.views import LoginView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.db import IntegrityError
+from django.db.models import Prefetch, Q
+from django.db.transaction import atomic
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import DeleteView, TemplateView, UpdateView, View
+from django.views.generic.edit import FormView, ModelFormMixin
+from django.views.generic.list import BaseListView
+from django_registration import signals
+from django_registration.backends.activation.views import (
+    ActivationView,
+    RegistrationView,
+)
+
 from attendee.forms import (
+    AttendeeEventFeedbackForm,
     AttendeeProfileForm,
     AttendeeRegistrationForm,
     CheckInAttendeeForm,
@@ -10,30 +32,10 @@ from attendee.forms import (
     RegistrationAuthenticationForm,
 )
 from attendee.signals import attendence_cancelled
-from django.contrib.auth import get_user_model, logout
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView
-from django.contrib.messages.views import SuccessMessageMixin
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.db import IntegrityError
-from django.db.models import Q
-from django.db.transaction import atomic
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
-from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DeleteView, TemplateView, UpdateView, View
-from django.views.generic.edit import FormView
-from django.views.generic.list import BaseListView
-from django_registration import signals
-from django_registration.backends.activation.views import (
-    ActivationView,
-    RegistrationView,
-)
 from event.models import Event
-from talk.models import Attendee, Talk, SessionReservation
+from talk.models import Attendee, SessionReservation, Talk
 
-from .models import DevDayUser
+from .models import AttendeeEventFeedback, DevDayUser
 
 User = get_user_model()
 
@@ -89,16 +91,22 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView)
 
     def get_context_data(self, **kwargs):
         context = super(DevDayUserProfileView, self).get_context_data(**kwargs)
-        context["events"] = self.request.user.get_events().order_by("id")
+        attendees = (
+            Attendee.objects.filter(event__published=True, user_id=self.request.user.id)
+            .select_related("user", "event")
+            .prefetch_related(
+                Prefetch(
+                    "sessionreservation_set",
+                    queryset=SessionReservation.objects.order_by("talk__title"),
+                    to_attr="reservations",
+                ),
+                "reservations__talk",
+                "reservations__talk__event",
+            )
+            .order_by("event__start_time")
+        )
+        context["attendees"] = attendees
         context["current_event"] = Event.objects.current_event()
-        context["event_id"] = Event.objects.current_event_id()
-        reservations = {}
-        for reservation in SessionReservation.objects.filter(
-            attendee__user_id=self.request.user.id
-        ).order_by("talk__event", "talk__title"):
-            reservations.setdefault(reservation.talk.event_id, [])
-            reservations[reservation.talk.event_id].append(reservation)
-        context["reservations"] = reservations
         self.attendee_qrcode_context(context)
         return context
 
@@ -235,6 +243,18 @@ class AttendeeCancelView(LoginRequiredMixin, View):
             )
             attendee.delete()
         return HttpResponseRedirect(reverse("user_profile"))
+
+
+class AttendeeToggleRaffleView(LoginRequiredMixin, View):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        attendee = get_object_or_404(
+            Attendee, user=request.user, event__slug=kwargs["event"]
+        )
+        attendee.raffle = not attendee.raffle
+        attendee.save()
+        return JsonResponse({"raffle": attendee.raffle})
 
 
 class AttendeeRegisterSuccessView(LoginRequiredMixin, TemplateView):
@@ -511,3 +531,41 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
             }
         )
         return context
+
+
+class AttendeeEventFeedbackView(LoginRequiredMixin, ModelFormMixin, FormView):
+    form_class = AttendeeEventFeedbackForm
+    slug_url_kwarg = "event"
+    template_name = "attendee/event_feedback.html"
+
+    event = None
+    attendee = None
+    object = None
+
+    def _fill_event_and_attendee(self, request, **kwargs):
+        self.event = get_object_or_404(Event, slug=kwargs[self.slug_url_kwarg])
+        self.attendee = get_object_or_404(Attendee, event=self.event, user=request.user)
+        self.object = AttendeeEventFeedback.objects.filter(
+            event=self.event, attendee=self.attendee
+        ).first()
+
+    def get(self, request, *args, **kwargs):
+        self._fill_event_and_attendee(request, **kwargs)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self._fill_event_and_attendee(request, **kwargs)
+        return super().post(request, *args, **kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial.update({"event": self.event, "attendee": self.attendee})
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"event": self.event, "attendee": self.attendee})
+        return context
+
+    def get_success_url(self):
+        return reverse("pages-root")

@@ -56,6 +56,7 @@ from talk.forms import (
     TalkCommentForm,
     TalkSpeakerCommentForm,
     TalkVoteForm,
+    AttendeeTalkFeedbackForm,
 )
 from talk.models import (
     AttendeeVote,
@@ -66,6 +67,7 @@ from talk.models import (
     TalkSlot,
     TimeSlot,
     Vote,
+    AttendeeFeedback,
 )
 from talk.reservation import get_reservation_email_context
 
@@ -199,15 +201,23 @@ class TalkDetails(DetailView):
                 "current": self.event == Event.objects.current_event(),
             }
         )
-        if (
-            self.request.user.is_authenticated
-            and Attendee.objects.filter(
+        if self.request.user.is_authenticated:
+            attendee = Attendee.objects.filter(
                 event=self.event, user=self.request.user
-            ).exists()
-        ):
-            context["reservation"] = SessionReservation.objects.filter(
-                talk=context["talk"], attendee__user=self.request.user
             ).first()
+            if attendee is not None:
+                talk = context["talk"]
+                context["reservation"] = SessionReservation.objects.filter(
+                    talk=talk, attendee=attendee
+                ).first()
+                if talk.is_feedback_allowed or self.request.user.is_staff:
+                    existing_feedback = AttendeeFeedback.objects.filter(
+                        talk=talk, attendee=attendee
+                    ).first()
+                    context["feedback_form"] = AttendeeTalkFeedbackForm(
+                        instance=existing_feedback,
+                        initial={"attendee": attendee, "talk": talk},
+                    )
         return context
 
 
@@ -1304,3 +1314,9 @@ class LimitedTalkList(ListView):
                     r.talk_id: r for r in list(attendee.sessionreservation_set.all())
                 }
         return context
+
+
+class AttendeeTalkFeedback(LoginRequiredMixin, BaseFormView):
+    model = Talk
+    http_method_names = ["post"]
+    form_class = AttendeeTalkFeedbackForm

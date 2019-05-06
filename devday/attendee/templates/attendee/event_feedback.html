@@ -1,0 +1,54 @@
+{% extends "devday_site.html" %}
+{% load cms_tags i18n crispy_forms_tags sekizai_tags static %}
+{% block title %}{{ block.super }} // {% blocktrans %}Feedback for {{ event }}{% endblocktrans %}{% endblock %}
+{% block content_body %}
+    <div class="row">
+        <div class="col-12 col-md-10 offset-md-1">
+            <h1>{% blocktrans %}Your feedback for {{ event }}{% endblocktrans %}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-10 offset-md-1 content-area">
+            {% static_placeholder "event-feedback-intro" %}
+        </div>
+        <div class="col-12 col-md-10 offset-md-1 content-area">
+            {% crispy form %}
+        </div>
+    </div>
+    {% addtoblock "js" %}
+        <script src="{% static "js/star-rating.js" %}"
+                type="text/javascript"></script>
+        <script type="text/javascript">
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            $(document).ready(function() {
+                $('.rating-loading').rating({
+                    theme: 'krajee-svg',
+                    filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                    emptyStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                    showCaption: false,
+                    step: 1,
+                });
+            });
+        </script>
+    {% endaddtoblock %}
+    {% addtoblock "css" %}
+        <link rel="stylesheet"
+              href="{% static "css/star-rating.css" %}">
+        <link rel="stylesheet"
+              href="{% static "css/theme-krajee-svg.css" %}">
+    {% endaddtoblock %}
+{% endblock %}

@@ -9,15 +9,17 @@ from django.utils.timezone import now
 from attendee.models import Attendee
 from attendee.tests import attendee_testutils
 from event.models import Event
+from event.tests import event_testutils
 from speaker.tests import speaker_testutils
 from talk.forms import (
+    AttendeeTalkFeedbackForm,
     CreateTalkForm,
     EditTalkForm,
+    TalkAddReservationForm,
     TalkCommentForm,
     TalkForm,
     TalkSpeakerCommentForm,
     TalkVoteForm,
-    TalkAddReservationForm,
 )
 from talk.models import Talk, TalkFormat, Track
 
@@ -212,3 +214,61 @@ class TalkAddReservationFormTest(TestCase):
         reservation2 = form.save()
         self.assertTrue(reservation2.is_waiting)
         self.assertFalse(reservation2.is_confirmed)
+
+
+class TestAttendeeTalkFeedbackForm(TestCase):
+    def setUp(self):
+        event = event_testutils.create_test_event()
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.talk = Talk.objects.create(
+            draft_speaker=speaker, event=event, title="Test Talk"
+        )
+        track = Track.objects.create(name="Test Track")
+        self.talk.publish(track)
+        user, _ = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(event=event, user=user)
+
+    def test_fields(self):
+        form = AttendeeTalkFeedbackForm(
+            instance=mock.MagicMock(), talk=self.talk, attendee=self.attendee
+        )
+        self.assertListEqual(["score", "comment"], list(form.fields))
+
+    def test_init_creates_form_helper(self):
+        form = AttendeeTalkFeedbackForm(
+            instance=mock.MagicMock(), talk=self.talk, attendee=self.attendee
+        )
+        self.assertIsInstance(form.helper, FormHelper)
+        self.assertEquals(
+            form.helper.form_action,
+            "/{}/talk/{}/feedback/".format(self.talk.event.slug, self.talk.slug),
+        )
+
+    def test_init_creates_layout(self):
+        form = AttendeeTalkFeedbackForm(
+            instance=mock.MagicMock(), talk=self.talk, attendee=self.attendee
+        )
+        self.assertIsInstance(form.helper.layout, Layout)
+        layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
+        self.assertListEqual(["score", "comment"], layout_fields)
+        self.assertEquals(
+            len(form.helper.layout.get_layout_objects(Submit, greedy=True)), 1
+        )
+
+    def test_score_is_restricted_to_range(self):
+        form = AttendeeTalkFeedbackForm(
+            instance=mock.MagicMock(),
+            data={"score": "10"},
+            talk=self.talk,
+            attendee=self.attendee,
+        )
+        form.full_clean()
+        self.assertEquals(form.cleaned_data["score"], 5)
+        form = AttendeeTalkFeedbackForm(
+            instance=mock.MagicMock(),
+            data={"score": "3"},
+            talk=self.talk,
+            attendee=self.attendee,
+        )
+        form.full_clean()
+        self.assertEquals(form.cleaned_data["score"], 3)

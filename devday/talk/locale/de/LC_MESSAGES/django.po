@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-29 14:10+0000\n"
-"PO-Revision-Date: 2019-04-29 16:11+0200\n"
+"POT-Creation-Date: 2019-05-06 15:46+0000\n"
+"PO-Revision-Date: 2019-05-06 17:49+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -19,37 +19,41 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:109
+#: talk/admin.py:113
 #, python-format
 msgid "One Session has been published."
 msgid_plural "%(count)d sessions have been published."
 msgstr[0] "One Session has been published."
 msgstr[1] "%(count)d Sessions wurden veröffentlicht."
 
-#: talk/admin.py:123
+#: talk/admin.py:127
 msgid "Publish selected sessions"
 msgstr "Ausgewählte Sessions veröffentlichen"
 
-#: talk/admin.py:152
+#: talk/admin.py:156
 msgid "Talk slot created successfully"
 msgstr "Talk-Slot erfolgreich angelegt"
 
-#: talk/admin.py:179 talk/models.py:36 talk/models.py:71 talk/models.py:178
+#: talk/admin.py:183 talk/models.py:36 talk/models.py:71 talk/models.py:178
 #: talk/models.py:198
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: talk/forms.py:81
+#: talk/forms.py:82
 msgid "Submit"
 msgstr "Session einreichen"
 
-#: talk/forms.py:105
+#: talk/forms.py:106
 msgid "Update session"
 msgstr "Session aktualisieren"
 
-#: talk/forms.py:133 talk/forms.py:156
+#: talk/forms.py:134 talk/forms.py:157
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
+
+#: talk/forms.py:310
+msgid "Submit your feedback"
+msgstr "Feedback abschicken"
 
 #: talk/models.py:21
 msgid "XS"
@@ -131,7 +135,7 @@ msgstr "Session"
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:87 talk/tests/test_models.py:106
+#: talk/models.py:87 talk/tests/test_models.py:105
 msgid "A draft speaker or a published speaker is required."
 msgstr "Ein Sprecher (Entwurf) oder Sprecher (öffentlich) ist erforderlich."
 
@@ -361,7 +365,7 @@ msgid ""
 "Please click on the button below to cancel your reservation for „%(title)s“."
 msgstr ""
 "Bitte klicke auf den Button unten, um deine Reservierung für „%(title)s“ zu "
-"stornieren"
+"stornieren."
 
 #: talk/templates/talk/sessionreservation_confirm_cancel.html:12
 #: talk/templates/talk/talk_details.html:27
@@ -426,7 +430,7 @@ msgstr ""
 #: talk/templates/talk/sessionreservation_confirmed.html:3
 #, python-format
 msgid "Spot for „%(title)s“ confirmed"
-msgstr " Platzreservierung für „%(title)s“ bestätigt"
+msgstr "Platzreservierung für „%(title)s“ bestätigt"
 
 #: talk/templates/talk/sessionreservation_confirmed.html:5
 msgid "Your spot is confirmed"
@@ -834,6 +838,10 @@ msgstr "Folien"
 msgid "Example code"
 msgstr "Beispielcode"
 
+#: talk/templates/talk/talk_details.html:77
+msgid "Your feedback for this session"
+msgstr "Dein Feedback für diese Session"
+
 #: talk/templates/talk/talk_form.html:3
 msgid "Submit session"
 msgstr "Session einreichen"
@@ -955,18 +963,18 @@ msgstr "Es wurden noch keine Sessions veröffentlicht."
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
-#: talk/views.py:1184
+#: talk/views.py:1185
 msgid "This confirmation key has expired."
 msgstr "Der Bestätigungslink ist abgelaufen."
 
-#: talk/views.py:1185
+#: talk/views.py:1186
 msgid "The confirmation key you provided is invalid."
 msgstr "Der Bestätigungslink ist ungültig."
 
-#: talk/views.py:1186
+#: talk/views.py:1187
 msgid "The talk is overbooked."
 msgstr "Die Session ist überbucht."
 
-#: talk/views.py:1187
+#: talk/views.py:1188
 msgid "You can confirm your own reservations only."
 msgstr "Du kannst nur deine eigenen Reservierungen bestätigen."

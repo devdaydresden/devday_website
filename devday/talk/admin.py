@@ -5,26 +5,30 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _, ngettext_lazy
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 from formtools.wizard.views import SessionWizardView
 
+from attendee.models import Attendee
 from event.models import Event
-from speaker.models import Speaker, PublishedSpeaker
+from speaker.models import PublishedSpeaker, Speaker
 from talk.forms import (
+    AddTalkSlotFormStep1,
+    AddTalkSlotFormStep2,
     SessionReservationForm,
     TalkSlotForm,
-    AddTalkSlotFormStep2,
-    AddTalkSlotFormStep1,
 )
+
 from .models import (
+    AttendeeFeedback,
     Room,
+    SessionReservation,
     Talk,
     TalkFormat,
     TalkMedia,
     TalkSlot,
     TimeSlot,
     Track,
-    SessionReservation,
 )
 
 
@@ -223,3 +227,48 @@ class SessionReservationAdmin(admin.ModelAdmin):
 
     def talk_title(self, obj):
         return obj.talk.title
+
+
+@admin.register(AttendeeFeedback)
+class AttendeeFeedbackAdmin(admin.ModelAdmin):
+    list_display = ("attendee_name", "talk_speaker", "talk_title", "score")
+    list_select_related = (
+        "attendee__user",
+        "talk",
+        "talk__event",
+        "talk__published_speaker",
+        "talk__published_speaker__event",
+    )
+    readonly_fields = ("attendee", "talk")
+
+    ordering = ("talk__title", "attendee__user__email")
+    list_filter = ("talk__event",)
+
+    def attendee_name(self, obj):
+        return obj.attendee.user.email
+
+    def talk_speaker(self, obj):
+        return obj.talk.published_speaker.name
+
+    def talk_title(self, obj):
+        return obj.talk.title
+
+    queryset_prefetch_fields = {
+        "attendee": (Attendee, ("user", "event")),
+        "talk": (Talk, ("title", "event")),
+        "talk__published_speaker": (PublishedSpeaker, ("name", "event")),
+    }
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related(
+                "talk",
+                "talk__published_speaker",
+                "talk__published_speaker__event",
+                "attendee",
+                "attendee__user",
+                "attendee__event",
+            )
+        )

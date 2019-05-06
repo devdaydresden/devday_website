@@ -38,6 +38,7 @@ from django.views.generic.edit import (
     CreateView,
     DeleteView,
     FormView,
+    ModelFormMixin,
     UpdateView,
 )
 from django.views.generic.list import BaseListView
@@ -49,6 +50,7 @@ from event.models import Event
 from speaker.models import Speaker
 from talk import signals
 from talk.forms import (
+    AttendeeTalkFeedbackForm,
     AttendeeTalkVoteForm,
     CreateTalkForm,
     EditTalkForm,
@@ -56,9 +58,9 @@ from talk.forms import (
     TalkCommentForm,
     TalkSpeakerCommentForm,
     TalkVoteForm,
-    AttendeeTalkFeedbackForm,
 )
 from talk.models import (
+    AttendeeFeedback,
     AttendeeVote,
     Room,
     SessionReservation,
@@ -67,7 +69,6 @@ from talk.models import (
     TalkSlot,
     TimeSlot,
     Vote,
-    AttendeeFeedback,
 )
 from talk.reservation import get_reservation_email_context
 
@@ -194,11 +195,12 @@ class TalkDetails(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(TalkDetails, self).get_context_data(**kwargs)
+        current = self.event == Event.objects.current_event()
         context.update(
             {
                 "speaker": context["talk"].published_speaker,
                 "event": self.event,
-                "current": self.event == Event.objects.current_event(),
+                "current": current,
             }
         )
         if self.request.user.is_authenticated:
@@ -215,8 +217,7 @@ class TalkDetails(DetailView):
                         talk=talk, attendee=attendee
                     ).first()
                     context["feedback_form"] = AttendeeTalkFeedbackForm(
-                        instance=existing_feedback,
-                        initial={"attendee": attendee, "talk": talk},
+                        instance=existing_feedback, attendee=attendee, talk=talk
                     )
         return context
 
@@ -1316,7 +1317,37 @@ class LimitedTalkList(ListView):
         return context
 
 
-class AttendeeTalkFeedback(LoginRequiredMixin, BaseFormView):
-    model = Talk
+class AttendeeTalkFeedback(LoginRequiredMixin, ModelFormMixin, BaseFormView):
+    model = AttendeeFeedback
     http_method_names = ["post"]
     form_class = AttendeeTalkFeedbackForm
+
+    talk = None
+    attendee = None
+    object = None
+
+    def _fill_talk_and_attendee(self, request, **kwargs):
+        event = get_object_or_404(Event, slug=kwargs["event"])
+        self.attendee = get_object_or_404(Attendee, event=event, user=request.user)
+        self.talk = get_object_or_404(Talk, event=event, slug=kwargs["slug"])
+        self.object = AttendeeFeedback.objects.filter(
+            talk=self.talk, attendee=self.attendee
+        ).first()
+
+    def post(self, request, *args, **kwargs):
+        self._fill_talk_and_attendee(request, **kwargs)
+        if not (self.talk.is_feedback_allowed or self.request.user.is_staff):
+            return JsonResponse({"errors": "not allowed"}, status=400)
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return JsonResponse({"success": True})
+
+    def form_invalid(self, form):
+        return JsonResponse({"errors": form.errors}, status=400)
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs.update({"attendee": self.attendee, "talk": self.talk})
+        return form_kwargs

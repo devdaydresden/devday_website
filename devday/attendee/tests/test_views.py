@@ -2,6 +2,7 @@ import re
 from urllib.parse import quote
 
 from bs4 import BeautifulSoup
+
 from django.core import mail
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpRequest
@@ -111,8 +112,12 @@ class AttendeeProfileViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("attendees", response.context)
         self.assertIn(attendee, response.context["attendees"])
-        self.assertEqual(len(response.context["attendees"][0].sessionreservation_set.all()), 1)
-        self.assertIn(reservation, response.context["attendees"][0].sessionreservation_set.all())
+        self.assertEqual(
+            len(response.context["attendees"][0].sessionreservation_set.all()), 1
+        )
+        self.assertIn(
+            reservation, response.context["attendees"][0].sessionreservation_set.all()
+        )
 
 
 class AttendeeRegistrationViewTest(TestCase):
@@ -219,6 +224,13 @@ class AttendeeRegistrationViewTest(TestCase):
         response = self.client.post(self.url)
 
         self.assertRedirects(response, self.register_existing_url)
+
+    def test_with_closed_registration(self):
+        self.event.registration_open = False
+        self.event.save()
+
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/register/closed/")
 
 
 class DevDayRegistrationViewTest(TestCase):
@@ -410,11 +422,17 @@ class AttendeeActivationViewTest(TestCase):
             response.context["activation_error"]["code"], "already_activated"
         )
 
+    def test_with_registration_closed(self):
+        self.event.registration_open = False
+        self.event.save()
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/register/closed/")
+
 
 class AttendeeCancelViewTest(TestCase):
     def setUp(self):
         self.event = Event.objects.current_event()
-        self.url = reverse("attendee_cancel", kwargs={"event": self.event.id})
+        self.url = reverse("attendee_cancel", kwargs={"event": self.event.slug})
         self.login_url = reverse("auth_login")
         self.user = DevDayUser.objects.create_user("test@example.org", "test")
         self.attendee = Attendee.objects.create(user=self.user, event=self.event)
@@ -437,7 +455,7 @@ class AttendeeCancelViewTest(TestCase):
         self.user = DevDayUser.objects.create_user("test2@example.org", "test")
         self.client.login(username="test2@example.org", password="test")
         r = self.client.get(self.url)
-        self.assertRedirects(r, reverse("user_profile"))
+        self.assertRedirects(r, "/accounts/register/closed/")
         self.assertEqual(
             Attendee.objects.filter(user=self.user, event=self.event).count(),
             0,
@@ -510,6 +528,8 @@ class AttendeeDeleteViewTest(TestCase):
 class LoginOrRegisterViewTest(TestCase):
     def setUp(self):
         self.event = Event.objects.current_event()
+        self.event.registration_open = True
+        self.event.save()
         self.user = DevDayUser.objects.create_user("test@example.org", "test")
         self.url = "/{}/attendee/join/".format(self.event.slug)
 
@@ -880,7 +900,7 @@ class AttendeeEventFeedbackViewTest(TestCase):
         user, password = attendee_testutils.create_test_user("nonattendee@example.org")
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 404)
+        self.assertRedirects(response, "/{}/attendee/register/".format(self.event.slug))
 
     def test_context_has_event_and_attendee(self):
         self.client.login(username=self.user.get_username(), password=self.password)
@@ -996,7 +1016,7 @@ class AttendeeToggleRaffleViewTest(TestCase):
         user, password = attendee_testutils.create_test_user("nonattendee@example.org")
         self.client.login(username=user.get_username(), password=password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 404)
+        self.assertRedirects(response, "/{}/attendee/register/".format(self.event.slug))
 
     def test_post_only(self):
         self.client.login(username=self.user.get_username(), password=self.password)

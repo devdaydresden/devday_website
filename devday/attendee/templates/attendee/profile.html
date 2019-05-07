@@ -56,7 +56,7 @@
                                         {% if not user.get_speaker %}
                                         <div class="btn-group float-left float-sm-right">
                                             <a class="btn btn-primary"
-                                                  href="{% url "attendee_cancel" event=event.id %}">{% trans "Cancel Registration" %}</a>
+                                                  href="{% url "attendee_cancel" event=event.slug %}">{% trans "Cancel Registration" %}</a>
                                         </div>
                                         {% endif %}
                                         {% addtoblock "js" %}

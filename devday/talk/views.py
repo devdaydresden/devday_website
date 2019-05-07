@@ -7,11 +7,7 @@ from io import StringIO
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import (
-    AccessMixin,
-    LoginRequiredMixin,
-    PermissionRequiredMixin,
-)
+from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core import signing
 from django.core.exceptions import ObjectDoesNotExist
@@ -45,7 +41,7 @@ from django.views.generic.list import BaseListView
 
 from attendee.forms import DevDayRegistrationForm
 from attendee.models import Attendee
-from attendee.views import StaffUserMixin
+from attendee.views import AttendeeRequiredMixin, StaffUserMixin
 from event.models import Event
 from speaker.models import Speaker
 from talk import signals
@@ -913,13 +909,13 @@ class EventSessionSummaryView(StaffUserMixin, BaseListView):
             output.close()
 
 
-class AttendeeVotingView(LoginRequiredMixin, ListView):
+class AttendeeVotingView(AttendeeRequiredMixin, ListView):
     model = Talk
     template_name_suffix = "_voting"
 
     def get(self, request, *args, **kwargs):
-        self.event = get_object_or_404(Event, slug=kwargs["event"], voting_open=True)
-        self.attendee = get_object_or_404(Attendee, user=request.user, event=self.event)
+        if not self.event.voting_open:
+            raise Http404()
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -949,13 +945,15 @@ class AttendeeVotingView(LoginRequiredMixin, ListView):
         return context
 
 
-class AttendeeTalkVote(LoginRequiredMixin, BaseFormView):
+class AttendeeTalkVote(AttendeeRequiredMixin, BaseFormView):
     model = Talk
     http_method_names = ["post"]
     form_class = AttendeeTalkVoteForm
+    talk = None
 
     def post(self, request, *args, **kwargs):
-        self.event = get_object_or_404(Event, slug=kwargs["event"], voting_open=True)
+        if not self.event.voting_open:
+            raise Http404()
         if "talk-id" not in self.request.POST:
             return HttpResponseBadRequest()
         self.talk = get_object_or_404(
@@ -964,7 +962,6 @@ class AttendeeTalkVote(LoginRequiredMixin, BaseFormView):
             event=self.event,
             track__isnull=False,
         )
-        self.attendee = get_object_or_404(Attendee, user=request.user, event=self.event)
         return super().post(request, *args, **kwargs)
 
     def form_invalid(self, form):
@@ -979,20 +976,23 @@ class AttendeeTalkVote(LoginRequiredMixin, BaseFormView):
         return JsonResponse({"message": "ok"})
 
 
-class AttendeeTalkClearVote(LoginRequiredMixin, View):
+class AttendeeTalkClearVote(AttendeeRequiredMixin, View):
     model = Talk
     http_method_names = ["post"]
 
     @atomic
     def post(self, request, *args, **kwargs):
-        event = get_object_or_404(Event, slug=kwargs["event"], voting_open=True)
+        if not self.event.voting_open:
+            raise Http404()
         if "talk-id" not in self.request.POST:
             return HttpResponseBadRequest()
         talk = get_object_or_404(
-            Talk, id=request.POST.get("talk-id", -1), event=event, track__isnull=False
+            Talk,
+            id=request.POST.get("talk-id", -1),
+            event=self.event,
+            track__isnull=False,
         )
-        attendee = get_object_or_404(Attendee, user=request.user, event=event)
-        talk.attendeevote_set.filter(attendee=attendee).delete()
+        talk.attendeevote_set.filter(attendee=self.attendee).delete()
         return JsonResponse({"message": "vote deleted"})
 
 
@@ -1036,7 +1036,7 @@ class ReservationConfirmationViewMixin(object):
 
 
 class TalkAddReservation(
-    LoginRequiredMixin, ReservationConfirmationViewMixin, CreateView
+    AttendeeRequiredMixin, ReservationConfirmationViewMixin, CreateView
 ):
     model = SessionReservation
     template_name_suffix = "_create"
@@ -1048,14 +1048,14 @@ class TalkAddReservation(
         ).first()
 
     def get(self, request, *args, **kwargs):
-        self.get_talk_and_attendee(request, **kwargs)
+        self.get_talk_and_attendee(**kwargs)
         reservation = self.check_reservation()
         if reservation:
             return redirect(self.get_success_url(reservation=reservation))
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.get_talk_and_attendee(request, **kwargs)
+        self.get_talk_and_attendee(**kwargs)
         reservation = self.check_reservation()
         if reservation:
             return redirect(self.get_success_url(reservation=reservation))
@@ -1066,12 +1066,9 @@ class TalkAddReservation(
         kwargs.update({"attendee": self.attendee, "talk": self.talk})
         return kwargs
 
-    def get_talk_and_attendee(self, request, **kwargs):
+    def get_talk_and_attendee(self, **kwargs):
         self.talk = get_object_or_404(
-            Talk, event__slug=kwargs["event"], slug=kwargs["slug"], spots__gt=0
-        )
-        self.attendee = get_object_or_404(
-            Attendee, event__slug=kwargs["event"], user=request.user
+            Talk, event=self.event, slug=kwargs["slug"], spots__gt=0
         )
 
     def get_context_data(self, **kwargs):
@@ -1096,19 +1093,17 @@ class TalkAddReservation(
 
 
 class TalkResendReservationConfirmation(
-    LoginRequiredMixin, ReservationConfirmationViewMixin, UpdateView
+    AttendeeRequiredMixin, ReservationConfirmationViewMixin, UpdateView
 ):
     model = SessionReservation
     fields = []
     success_url = "talk_confirmation_sent"
     template_name_suffix = "_resend_confirmation"
+    object = None
 
     def get_talk_and_attendee(self, request, **kwargs):
         self.talk = get_object_or_404(
             Talk, event__slug=kwargs["event"], slug=kwargs["slug"]
-        )
-        self.attendee = get_object_or_404(
-            Attendee, event__slug=kwargs["event"], user=request.user
         )
 
     def get_object(self, queryset=None):
@@ -1134,33 +1129,34 @@ class TalkResendReservationConfirmation(
         return HttpResponseRedirect(self.get_success_url())
 
 
-class TalkReservationConfirmationSent(LoginRequiredMixin, TemplateView):
+class TalkReservationConfirmationSent(AttendeeRequiredMixin, TemplateView):
     template_name = "talk/sessionreservation_confirmation_sent.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(
-            {"talk": Talk.objects.get(slug=kwargs["slug"], event__slug=kwargs["event"])}
+            {"talk": Talk.objects.get(slug=kwargs["slug"], event=self.event)}
         )
         return context
 
 
-class TalkCancelReservation(LoginRequiredMixin, DeleteView):
+class TalkCancelReservation(AttendeeRequiredMixin, DeleteView):
     model = SessionReservation
     template_name_suffix = "_confirm_cancel"
+    object = None
 
     def get_object(self, queryset=None):
         return get_object_or_404(
             SessionReservation,
             attendee__user=self.request.user,
-            talk__event__slug=self.kwargs["event"],
+            talk__event=self.event,
             talk__slug=self.kwargs["slug"],
         )
 
     def get_success_url(self):
         return reverse(
             "talk_details",
-            kwargs={"event": self.kwargs["event"], "slug": self.kwargs["slug"]},
+            kwargs={"event": self.event.slug, "slug": self.kwargs["slug"]},
         )
 
     def delete(self, request, *args, **kwargs):
@@ -1181,14 +1177,13 @@ class ConfirmationError(Exception):
         self.params = params
 
 
-class TalkConfirmReservation(LoginRequiredMixin, TemplateView):
+class TalkConfirmReservation(AttendeeRequiredMixin, TemplateView):
     EXPIRED_MESSAGE = _("This confirmation key has expired.")
     INVALID_KEY_MESSAGE = _("The confirmation key you provided is invalid.")
     OVERBOOKED = _("The talk is overbooked.")
     WRONG_USER = _("You can confirm your own reservations only.")
     template_name = "talk/sessionreservation_confirm_failed.html"
 
-    event = None
     reservation = None
 
     def get_success_url(self, reservation=None):
@@ -1238,7 +1233,6 @@ class TalkConfirmReservation(LoginRequiredMixin, TemplateView):
             )
 
     def get(self, request, *args, **kwargs):
-        self.event = get_object_or_404(Event, slug=kwargs["event"], published=True)
         extra_context = {}
         try:
             reservation = self.confirm_reservation(*args, **kwargs)
@@ -1263,30 +1257,24 @@ class TalkConfirmReservation(LoginRequiredMixin, TemplateView):
         return context
 
 
-class TalkReservationConfirmed(LoginRequiredMixin, TemplateView):
+class TalkReservationConfirmed(AttendeeRequiredMixin, TemplateView):
     template_name = "talk/sessionreservation_confirmed.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(
-            {
-                "event": get_object_or_404(Event, slug=kwargs["event"]),
-                "talk": get_object_or_404(Talk, slug=kwargs["slug"]),
-            }
+            {"event": self.event, "talk": get_object_or_404(Talk, slug=kwargs["slug"])}
         )
         return context
 
 
-class TalkReservationWaiting(LoginRequiredMixin, TemplateView):
+class TalkReservationWaiting(AttendeeRequiredMixin, TemplateView):
     template_name = "talk/sessionreservation_waiting.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(
-            {
-                "event": get_object_or_404(Event, slug=kwargs["event"]),
-                "talk": get_object_or_404(Talk, slug=kwargs["slug"]),
-            }
+            {"event": self.event, "talk": get_object_or_404(Talk, slug=kwargs["slug"])}
         )
         return context
 
@@ -1317,25 +1305,22 @@ class LimitedTalkList(ListView):
         return context
 
 
-class AttendeeTalkFeedback(LoginRequiredMixin, ModelFormMixin, BaseFormView):
+class AttendeeTalkFeedback(AttendeeRequiredMixin, ModelFormMixin, BaseFormView):
     model = AttendeeFeedback
     http_method_names = ["post"]
     form_class = AttendeeTalkFeedbackForm
 
     talk = None
-    attendee = None
     object = None
 
-    def _fill_talk_and_attendee(self, request, **kwargs):
-        event = get_object_or_404(Event, slug=kwargs["event"])
-        self.attendee = get_object_or_404(Attendee, event=event, user=request.user)
-        self.talk = get_object_or_404(Talk, event=event, slug=kwargs["slug"])
+    def _fill_talk_and_attendee(self, **kwargs):
+        self.talk = get_object_or_404(Talk, event=self.event, slug=kwargs["slug"])
         self.object = AttendeeFeedback.objects.filter(
             talk=self.talk, attendee=self.attendee
         ).first()
 
     def post(self, request, *args, **kwargs):
-        self._fill_talk_and_attendee(request, **kwargs)
+        self._fill_talk_and_attendee(**kwargs)
         if not (self.talk.is_feedback_allowed or self.request.user.is_staff):
             return JsonResponse({"errors": "not allowed"}, status=400)
         return super().post(request, *args, **kwargs)

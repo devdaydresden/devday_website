@@ -1265,6 +1265,13 @@ class TestAttendeeVotingView(TestCase):
         self.assertFalse(hasattr(response_talk, "vote_count"))
         self.assertEqual(response_talk.score, 4)
 
+    def test_voting_closed_disables_view(self):
+        self.event.voting_open = False
+        self.event.save()
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 404)
+
 
 class TestAttendeeTalkVote(TestCase):
     def setUp(self):
@@ -1325,6 +1332,15 @@ class TestAttendeeTalkVote(TestCase):
         vote.refresh_from_db()
         self.assertEquals(vote.score, 3)
 
+    def test_voting_closed_disables_view(self):
+        self.event.voting_open = False
+        self.event.save()
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.post(
+            self.url, data={"talk-id": self.talk.id, "score": 3}
+        )
+        self.assertEqual(response.status_code, 404)
+
 
 class TestAttendeeTalkClearVote(TestCase):
     def setUp(self):
@@ -1370,6 +1386,14 @@ class TestAttendeeTalkClearVote(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertJSONEqual(response.content, {"message": "vote deleted"})
 
+    def test_voting_closed_disables_view(self):
+        self.event.voting_open = False
+        self.event.save()
+        self.talk.attendeevote_set.create(attendee=self.attendee, score=4)
+        self.client.login(username=self.user.email, password=self.password)
+        response = self.client.post(self.url, data={"talk-id": self.talk.id})
+        self.assertEqual(response.status_code, 404)
+
 
 class TestTalkAddReservation(TestCase):
     def setUp(self):
@@ -1395,7 +1419,7 @@ class TestTalkAddReservation(TestCase):
         user, password = attendee_testutils.create_test_user("test2@example.org")
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 404)
+        self.assertRedirects(response, "/{}/attendee/register/".format(self.event.slug))
 
     def test_get_redirects_for_existing_reservation(self):
         SessionReservation.objects.create(attendee=self.attendee, talk=self.talk)
@@ -1463,7 +1487,7 @@ class TestTalkAddReservation(TestCase):
         user, password = attendee_testutils.create_test_user("test2@example.org")
         self.client.login(username=user.get_username(), password=password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 404)
+        self.assertRedirects(response, "/{}/attendee/register/".format(self.event.slug))
 
     def test_post_redirects_for_existing_reservation(self):
         SessionReservation.objects.create(attendee=self.attendee, talk=self.talk)
@@ -1543,7 +1567,7 @@ class TestTalkResendReservationConfirmation(TestCase):
         user, password = attendee_testutils.create_test_user("test2@example.org")
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 404)
+        self.assertRedirects(response, "/{}/attendee/register/".format(self.event.slug))
 
     def test_get_needs_reservation(self):
         self.client.login(username=self.user.get_username(), password=self.password)
@@ -1583,7 +1607,7 @@ class TestTalkResendReservationConfirmation(TestCase):
         user, password = attendee_testutils.create_test_user("test2@example.org")
         self.client.login(username=user.get_username(), password=password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 404)
+        self.assertRedirects(response, "/{}/attendee/register/".format(self.event.slug))
 
     def test_post_needs_reservation(self):
         self.client.login(username=self.user.get_username(), password=self.password)
@@ -1649,7 +1673,7 @@ class TestTalkCancelReservation(TestCase):
         user, password = attendee_testutils.create_test_user("test2@example.org")
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 404)
+        self.assertRedirects(response, "/{}/attendee/register/".format(self.event.slug))
 
     def test_get_needs_reservation(self):
         self.client.login(username=self.user.get_username(), password=self.password)
@@ -1671,7 +1695,7 @@ class TestTalkCancelReservation(TestCase):
         user, password = attendee_testutils.create_test_user("test2@example.org")
         self.client.login(username=user.get_username(), password=password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 404)
+        self.assertRedirects(response, "/{}/attendee/register/".format(self.event.slug))
 
     def test_post_needs_reservation(self):
         self.client.login(username=self.user.get_username(), password=self.password)
@@ -1809,6 +1833,7 @@ class TestTalkReservationConfirmed(TestCase):
         self.talk.publish(track)
 
         self.user, self.password = attendee_testutils.create_test_user()
+        Attendee.objects.create(event=self.event, user=self.user)
         self.url = "/{}/talk/{}/reservation-confirmed/".format(
             self.event.slug, self.talk.slug
         )
@@ -1839,6 +1864,7 @@ class TestTalkReservationWaiting(TestCase):
         self.talk.publish(track)
 
         self.user, self.password = attendee_testutils.create_test_user()
+        Attendee.objects.create(event=self.event, user=self.user)
         self.url = "/{}/talk/{}/reservation-waiting/".format(
             self.event.slug, self.talk.slug
         )
@@ -1967,7 +1993,7 @@ class TestAttendeeTalkFeedback(TestCase):
         user, password = attendee_testutils.create_test_user("nonattendee@example.org")
         self.client.login(username=user.get_username(), password=password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 404)
+        self.assertRedirects(response, "/{}/attendee/register/".format(self.event.slug))
 
     def test_post_only(self):
         self.client.login(username=self.user.get_username(), password=self.password)

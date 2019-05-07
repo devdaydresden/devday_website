@@ -36,3 +36,4 @@ vault-*.json
 dev-env
 .python-version
 .env
+tags

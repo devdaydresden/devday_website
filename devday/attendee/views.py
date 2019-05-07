@@ -2,7 +2,11 @@ import csv
 from io import StringIO
 
 from django.contrib.auth import get_user_model, logout
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import (
+    AccessMixin,
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+)
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
@@ -73,6 +77,34 @@ class AttendeeQRCodeMixIn(object):
             )
 
 
+class AttendeeRequiredMixin(AccessMixin):
+    """
+    CBV mixin which verifies that the current user is an attendee for the specific event
+    """
+
+    event_slug_url_kwarg = "event"
+
+    event = None
+    attendee = None
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        self.event = get_object_or_404(
+            Event, slug=kwargs[self.event_slug_url_kwarg], published=True
+        )
+        self.attendee = Attendee.objects.filter(
+            event=self.event, user=request.user
+        ).first()
+        if self.attendee is None:
+            if self.event.registration_open:
+                return redirect("attendee_registration", event=self.event.slug)
+            else:
+                return redirect("django_registration_disallowed")
+        # noinspection PyUnresolvedReferences
+        return super().dispatch(request, *args, **kwargs)
+
+
 class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView):
     model = User
     template_name = "attendee/profile.html"
@@ -124,6 +156,9 @@ class AttendeeRegistrationView(RegistrationView):
     def dispatch(self, *args, **kwargs):
         user = self.request.user
         self.event = get_object_or_404(Event, slug=self.kwargs.get("event"))
+        if not self.event.registration_open:
+            return redirect("django_registration_disallowed")
+
         if user.is_anonymous:
             self.auth_level = "anonymous"
         elif user.get_attendee(event=self.event):
@@ -215,8 +250,13 @@ class DevDayUserActivationView(ActivationView):
 class AttendeeActivationView(ActivationView):
     event = None
 
-    def activate(self, *args, **kwargs):
+    def get(self, *args, **kwargs):
         self.event = get_object_or_404(Event, slug=self.kwargs.get("event"))
+        if not self.event.registration_open:
+            return redirect("django_registration_disallowed")
+        return super().get(*args, **kwargs)
+
+    def activate(self, *args, **kwargs):
         user = super().activate(*args, **kwargs)
         Attendee.objects.create(event=self.event, user=user)
         return user
@@ -231,39 +271,28 @@ class AttendeeActivationView(ActivationView):
         )
 
 
-class AttendeeCancelView(LoginRequiredMixin, View):
+class AttendeeCancelView(AttendeeRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         # remove attendee for user, event tuple
-        attendee = Attendee.objects.filter(
-            user=request.user, event_id=kwargs["event"]
-        ).first()
-        if attendee:
-            attendence_cancelled.send(
-                self.__class__, attendee=attendee, request=request
-            )
-            attendee.delete()
+        attendence_cancelled.send(
+            self.__class__, attendee=self.attendee, request=request
+        )
+        self.attendee.delete()
         return HttpResponseRedirect(reverse("user_profile"))
 
 
-class AttendeeToggleRaffleView(LoginRequiredMixin, View):
+class AttendeeToggleRaffleView(AttendeeRequiredMixin, View):
     http_method_names = ["post"]
 
     def post(self, request, *args, **kwargs):
-        attendee = get_object_or_404(
-            Attendee, user=request.user, event__slug=kwargs["event"]
-        )
-        attendee.raffle = not attendee.raffle
-        attendee.save()
-        return JsonResponse({"raffle": attendee.raffle})
+        self.attendee.raffle = not self.attendee.raffle
+        self.attendee.save()
+        return JsonResponse({"raffle": self.attendee.raffle})
 
 
-class AttendeeRegisterSuccessView(LoginRequiredMixin, TemplateView):
+class AttendeeRegisterSuccessView(AttendeeRequiredMixin, TemplateView):
     template_name = "attendee/attendee_register_success.html"
     event = None
-
-    def dispatch(self, request, *args, **kwargs):
-        self.event = get_object_or_404(Event, slug=self.kwargs.get("event"))
-        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -533,28 +562,24 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
         return context
 
 
-class AttendeeEventFeedbackView(LoginRequiredMixin, ModelFormMixin, FormView):
+class AttendeeEventFeedbackView(AttendeeRequiredMixin, ModelFormMixin, FormView):
     form_class = AttendeeEventFeedbackForm
     slug_url_kwarg = "event"
     template_name = "attendee/event_feedback.html"
 
-    event = None
-    attendee = None
     object = None
 
-    def _fill_event_and_attendee(self, request, **kwargs):
-        self.event = get_object_or_404(Event, slug=kwargs[self.slug_url_kwarg])
-        self.attendee = get_object_or_404(Attendee, event=self.event, user=request.user)
+    def _fill_object(self):
         self.object = AttendeeEventFeedback.objects.filter(
             event=self.event, attendee=self.attendee
         ).first()
 
     def get(self, request, *args, **kwargs):
-        self._fill_event_and_attendee(request, **kwargs)
+        self._fill_object()
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self._fill_event_and_attendee(request, **kwargs)
+        self._fill_object()
         return super().post(request, *args, **kwargs)
 
     def get_initial(self):

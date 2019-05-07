@@ -1,11 +1,12 @@
-from attendee.models import Attendee
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Field, Layout, Submit
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
+
+from attendee.models import Attendee
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Div, Field, Layout, Submit
 from event.models import Event
 from talk.models import (
     AttendeeFeedback,
@@ -276,3 +277,47 @@ class AttendeeTalkFeedbackForm(forms.ModelForm):
     class Meta:
         model = AttendeeFeedback
         fields = ["score", "comment"]
+
+    talk = None
+    attendee = None
+
+    def __init__(self, *args, **kwargs):
+        self.talk = kwargs.pop("talk")
+        self.attendee = kwargs.pop("attendee")
+        super().__init__(*args, **kwargs)
+        self.fields["comment"].widget.attrs["rows"] = 2
+
+        self.helper = FormHelper()
+        self.helper.html5_required = True
+        self.helper.form_id = "talk-feedback-form"
+        self.helper.form_method = "post"
+        self.helper.form_action = reverse(
+            "talk_feedback",
+            kwargs={"event": self.talk.event.slug, "slug": self.talk.slug},
+        )
+        self.helper.layout = Layout(
+            Div(
+                Field(
+                    "score",
+                    css_class="rating-loading",
+                    data_size="xs",
+                    wrapper_class="col-12",
+                ),
+                css_class="form-row",
+            ),
+            Div(Field("comment", wrapper_class="col-12"), css_class="form-row"),
+            Div(
+                Submit("submit", _("Submit your feedback")),
+                css_class="col-12 text-center",
+            ),
+        )
+
+    def clean_score(self):
+        return max(0, min(self.cleaned_data["score"], 5))
+
+    def save(self, commit=True):
+        if self.instance.talk_id is None:
+            self.instance.talk_id = self.talk.id
+        if self.instance.attendee_id is None:
+            self.instance.attendee_id = self.attendee.id
+        return super().save(commit)

@@ -1,10 +1,13 @@
 from django.conf.urls import url
 from django.views.generic import RedirectView
+
 from talk.views import (
     AttendeeTalkClearVote,
+    AttendeeTalkFeedback,
     AttendeeTalkVote,
     AttendeeVotingView,
     InfoBeamerXMLView,
+    LimitedTalkList,
     RedirectVideoView,
     TalkAddReservation,
     TalkCancelReservation,
@@ -17,7 +20,6 @@ from talk.views import (
     TalkReservationConfirmed,
     TalkReservationWaiting,
     TalkVideoView,
-    LimitedTalkList,
 )
 
 urlpatterns = [
@@ -49,6 +51,11 @@ urlpatterns = [
         r"^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/$",
         TalkDetails.as_view(),
         name="talk_details",
+    ),
+    url(
+        r"^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/feedback/$",
+        AttendeeTalkFeedback.as_view(),
+        name="talk_feedback",
     ),
     url(
         r"^(?P<event>[^/]+)/talk/(?P<slug>[^/]+)/reservation/$",

@@ -1,46 +1,45 @@
-from datetime import datetime, timedelta
 import time
+from datetime import datetime, timedelta
 from unittest import mock
 from xml.etree import ElementTree
 
 from django.conf import settings
+from django.contrib.auth.models import Group
+from django.core import mail, signing
 from django.http import QueryDict
+from django.test import TestCase, override_settings
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import ugettext as _
 
 from attendee.models import Attendee
 from attendee.tests import attendee_testutils
 from devday.utils.devdata import DevData
-from django.contrib.auth.models import Group
-from django.core import mail, signing
-from django.test import TestCase, override_settings
-from django.urls import reverse
-from django.utils.translation import ugettext as _
 from event.models import Event
 from event.tests import event_testutils
 from speaker.tests import speaker_testutils
 from talk import COMMITTEE_GROUP
 from talk.forms import (
+    AttendeeTalkFeedbackForm,
     EditTalkForm,
+    TalkAddReservationForm,
     TalkCommentForm,
     TalkSpeakerCommentForm,
-    TalkAddReservationForm,
-    AttendeeTalkFeedbackForm,
 )
 from talk.models import (
+    AttendeeFeedback,
     AttendeeVote,
+    Room,
     SessionReservation,
     Talk,
     TalkComment,
     TalkFormat,
     TalkMedia,
+    TalkSlot,
+    TimeSlot,
     Track,
     Vote,
-    TimeSlot,
-    TalkSlot,
-    Room,
 )
-
-# noinspection PyUnresolvedReferences
 from talk.tests import talk_testutils
 
 
@@ -290,7 +289,7 @@ class TestTalkDetails(TestCase):
     @override_settings(TALK_FEEDBACK_ALLOWED_MINUTES=30)
     def test_talk_feedback_form_for_current_talk(self):
         user, password = attendee_testutils.create_test_user()
-        Attendee.objects.create(user=user, event=self.event)
+        attendee = Attendee.objects.create(user=user, event=self.event)
         now = timezone.now()
         time_slot = TimeSlot.objects.create(
             start_time=now + timedelta(minutes=-31),
@@ -304,9 +303,10 @@ class TestTalkDetails(TestCase):
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
         self.assertIn("feedback_form", response.context)
-        self.assertIsInstance(
-            response.context["feedback_form"], AttendeeTalkFeedbackForm
-        )
+        feedback_form = response.context["feedback_form"]
+        self.assertIsInstance(feedback_form, AttendeeTalkFeedbackForm)
+        self.assertEquals(feedback_form.attendee, attendee)
+        self.assertEquals(feedback_form.talk, self.talk)
 
     def test_with_no_attendee(self):
         user, password = attendee_testutils.create_test_user()
@@ -1934,3 +1934,109 @@ class TestLimitedTalkList(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("reservations", response.context)
         self.assertEqual(len(response.context["reservations"]), 0)
+
+
+@override_settings(TALK_FEEDBACK_ALLOWED_MINUTES=30)
+class TestAttendeeTalkFeedback(TestCase):
+    def setUp(self):
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.event = event_testutils.create_test_event()
+        self.talk = Talk.objects.create(
+            draft_speaker=speaker, event=self.event, title="Test Talk"
+        )
+        track = Track.objects.create(name="Test Track")
+        self.talk.publish(track)
+        self.url = "/{}/talk/{}/feedback/".format(self.event.slug, self.talk.slug)
+        self.user, self.password = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(user=self.user, event=self.event)
+        now = timezone.now()
+        time_slot = TimeSlot.objects.create(
+            start_time=now + timedelta(minutes=-31),
+            end_time=now + timedelta(minutes=29),
+            event=self.event,
+        )
+        room = Room.objects.create(name="Test room", event=self.event)
+        TalkSlot.objects.create(talk=self.talk, room=room, time=time_slot)
+        self.talk.refresh_from_db()
+
+    def test_anonymous_access_denied(self):
+        response = self.client.post(self.url, data={})
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+    def test_needs_attendee(self):
+        user, password = attendee_testutils.create_test_user("nonattendee@example.org")
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.post(self.url, data={})
+        self.assertEquals(response.status_code, 404)
+
+    def test_post_only(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 405)
+
+    def test_post_creates_attendee_feedback(self):
+        self.assertFalse(
+            AttendeeFeedback.objects.filter(
+                attendee=self.attendee, talk=self.talk
+            ).exists()
+        )
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.post(
+            self.url, data={"score": "5", "comment": "Wonderful"}
+        )
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.json()["success"], True)
+        feedback = AttendeeFeedback.objects.get(attendee=self.attendee, talk=self.talk)
+        self.assertEquals(feedback.score, 5)
+        self.assertEquals(feedback.comment, "Wonderful")
+
+    def test_post_updates_existing_attendee_feedback(self):
+        AttendeeFeedback.objects.create(
+            attendee=self.attendee, talk=self.talk, score="3", comment="Mee"
+        )
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.post(
+            self.url, data={"score": "5", "comment": "Wonderful"}
+        )
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.json()["success"], True)
+        feedback = AttendeeFeedback.objects.get(attendee=self.attendee, talk=self.talk)
+        self.assertEquals(feedback.score, 5)
+        self.assertEquals(feedback.comment, "Wonderful")
+
+    def test_post_for_future_talk_error_response(self):
+        self.talk.talkslot.time.start_time = timezone.now() + timedelta(minutes=1)
+        self.talk.talkslot.time.save()
+        self.assertFalse(
+            AttendeeFeedback.objects.filter(
+                attendee=self.attendee, talk=self.talk
+            ).exists()
+        )
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.post(
+            self.url, data={"score": "5", "comment": "Wonderful"}
+        )
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(response.json()["errors"], "not allowed")
+        self.assertFalse(
+            AttendeeFeedback.objects.filter(
+                attendee=self.attendee, talk=self.talk
+            ).exists()
+        )
+
+    def test_post_with_missing_data_error_response(self):
+        self.assertFalse(
+            AttendeeFeedback.objects.filter(
+                attendee=self.attendee, talk=self.talk
+            ).exists()
+        )
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.post(self.url, data={})
+        self.assertEquals(response.status_code, 400)
+        response_json = response.json()
+        self.assertIn("errors", response_json)
+        self.assertFalse(
+            AttendeeFeedback.objects.filter(
+                attendee=self.attendee, talk=self.talk
+            ).exists()
+        )

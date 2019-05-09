@@ -13,7 +13,7 @@ from django.core import signing
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Avg, Count, F, Max, Min, Prefetch, Subquery, Sum
+from django.db.models import Avg, Count, Max, Min, Prefetch, Sum
 from django.db.transaction import atomic
 from django.http import (
     Http404,

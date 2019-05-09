@@ -1929,7 +1929,7 @@ class TestLimitedTalkList(TestCase):
 
     def test_get_empty_reservations_if_attendee_without_reservations(self):
         user, password = attendee_testutils.create_test_user()
-        attendee = Attendee.objects.create(event=self.event, user=user)
+        Attendee.objects.create(event=self.event, user=user)
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
@@ -1962,6 +1962,20 @@ class TestLimitedTalkList(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("reservations", response.context)
         self.assertEqual(len(response.context["reservations"]), 0)
+
+    def test_confirmed_reservations_available_in_context(self):
+        user, _ = attendee_testutils.create_test_user(email="test2@example.org")
+        attendee = Attendee.objects.create(user=user, event=self.event)
+        reservation = SessionReservation.objects.create(
+            attendee=attendee, talk=self.talk1, is_confirmed=True
+        )
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(self.talk1, response.context["talk_list"])
+        for talk in response.context["talk_list"]:
+            self.assertTrue(hasattr(talk, "confirmed_reservations"))
+            if talk.id == self.talk1.id:
+                self.assertIn(reservation, talk.confirmed_reservations)
 
 
 @override_settings(TALK_FEEDBACK_ALLOWED_MINUTES=30)

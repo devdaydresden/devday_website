@@ -13,7 +13,7 @@ from django.core import signing
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Avg, Count, Max, Min, Sum
+from django.db.models import Avg, Count, Max, Min, Prefetch, Sum
 from django.db.transaction import atomic
 from django.http import (
     Http404,
@@ -1243,9 +1243,13 @@ class TalkConfirmReservation(AttendeeRequiredMixin, TemplateView):
             }
         else:
             signals.session_reservation_confirmed.send(
-                sender=self.__class__, reservation=self.reservation, request=self.request
+                sender=self.__class__,
+                reservation=self.reservation,
+                request=self.request,
             )
-            return HttpResponseRedirect(force_text(self.get_success_url(self.reservation)))
+            return HttpResponseRedirect(
+                force_text(self.get_success_url(self.reservation))
+            )
         context_data = self.get_context_data()
         context_data.update(extra_context)
         return self.render_to_response(context_data)
@@ -1283,10 +1287,16 @@ class LimitedTalkList(ListView):
     template_name_suffix = "_limited_list"
 
     def get_queryset(self):
+        confirmed_reservations = Prefetch(
+            "sessionreservation_set",
+            to_attr="confirmed_reservations",
+            queryset=SessionReservation.objects.filter(is_confirmed=True),
+        )
         return (
             Talk.objects.filter(
                 event__slug=self.kwargs.get("event"), track__isnull=False, spots__gt=0
             )
+            .prefetch_related(confirmed_reservations)
             .order_by("title")
             .select_related("published_speaker")
         )

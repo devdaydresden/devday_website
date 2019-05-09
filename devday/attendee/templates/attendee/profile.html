@@ -22,29 +22,33 @@
                 <div class="table-responsive">
                     <table class="table">
                         {% for attendee in attendees %}
-                            {% with event=attendee.event reservations=attendee.reservations.all %}
+                            {% with event=attendee.event reservations=attendee.sessionreservation_set.all %}
                             <tr>
                                 <td>{{ event.title }}</td>
                                 <td>{{ event.description }}
-                                    {% if reservations %}
-                                        <p><strong>{% trans "Workshops / Sessions" %}:</strong></p>
-                                        <ul class="reservations">
+                                    {% if event.id == current_event.id and reservations %}
+                                        <h5>{% trans "Workshops / Sessions" %}:</h5>
+                                        <div class="list-group list-group-flush">
                                         {% for reservation in reservations %}
                                             {% with talk=reservation.talk %}
-                                                {% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}
-                                                <a href="{{ talk_details }}">{{ talk.title }}</a>
-                                                {% if event.id == current_event.id %}
-                                                    {% if reservation.is_confirmed or reservation.is_waiting %}
-                                                        <span class="fas fa-calendar-times"></span>
-                                                            <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Cancel reservation" %}</a>
-                                                    {% else %}
-                                                        <span class="fas fa-send"></span>
-                                                            <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}">{% trans "Resend confirmation mail" %}</a>
-                                                    {% endif %}
+                                            <div class="list-group-item">
+                                                <p><a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}">{{ talk.title }}</a></p>
+                                                <p>
+                                                {% if reservation.is_confirmed %}
+                                                    <span class="fas fa-check-circle text-success" title="{% trans "You are a confirmed attendee of this session" %}" aria-label="{% trans "You are a confirmed attendee of this session" %}"></span>
+                                                    <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span class="fas fa-calendar-times"></span> {% trans "Cancel reservation" %}</a>
+                                                {% elif reservation.is_waiting %}
+                                                    <span class="fas fa-question-circle text-danger" title="{% trans "You are on a waiting list for this session" %}" aria-label="{% trans "You are on a waiting list for this session" %}"></span>
+                                                    <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span class="fas fa-calendar-times"></span> {% trans "Remove from waiting list" %}</a>
+                                                {% else %}
+                                                    <span class="fas fa-question-circle text-warning" title="{% trans "You have not confirmed your reservation for this session" %}" aria-label="{% trans "You have not confirmed your reservation for this session" %}"></span>
+                                                    <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}"><span class="fas fa-send"></span> {% trans "Resend confirmation mail" %}</a>
                                                 {% endif %}
+                                                </p>
+                                            </div>
                                             {% endwith %}
                                         {% endfor %}
-                                        </ul>
+                                        </div>
                                     {% endif %}
                                 </td>
                                 <td>

@@ -1193,21 +1193,20 @@ class TalkConfirmReservation(AttendeeRequiredMixin, TemplateView):
         )
 
     def confirm_reservation(self, *args, **kwargs):
-        reservation = self.validate_key(kwargs.get("confirmation_key"))
-        if reservation.attendee.user != self.request.user:
+        self.reservation = self.validate_key(kwargs.get("confirmation_key"))
+        if self.reservation.attendee.user != self.request.user:
             raise ConfirmationError(self.WRONG_USER, code="wrong_user")
         if (
-            reservation.talk.spots
+            self.reservation.talk.spots
             <= SessionReservation.objects.filter(
-                is_confirmed=True, talk_id=reservation.talk_id
+                is_confirmed=True, talk_id=self.reservation.talk_id
             ).count()
         ):
-            reservation.is_waiting = True
-            reservation.save()
+            self.reservation.is_waiting = True
+            self.reservation.save()
             raise ConfirmationError(self.OVERBOOKED, code="overbooked")
-        reservation.is_confirmed = True
-        reservation.save()
-        return reservation
+        self.reservation.is_confirmed = True
+        self.reservation.save()
 
     def validate_key(self, confirmation_key):
         try:
@@ -1235,7 +1234,7 @@ class TalkConfirmReservation(AttendeeRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         extra_context = {}
         try:
-            reservation = self.confirm_reservation(*args, **kwargs)
+            self.confirm_reservation(*args, **kwargs)
         except ConfirmationError as e:
             extra_context["confirmation_error"] = {
                 "message": e.message,
@@ -1244,9 +1243,9 @@ class TalkConfirmReservation(AttendeeRequiredMixin, TemplateView):
             }
         else:
             signals.session_reservation_confirmed.send(
-                sender=self.__class__, reservation=reservation, request=self.request
+                sender=self.__class__, reservation=self.reservation, request=self.request
             )
-            return HttpResponseRedirect(force_text(self.get_success_url(reservation)))
+            return HttpResponseRedirect(force_text(self.get_success_url(self.reservation)))
         context_data = self.get_context_data()
         context_data.update(extra_context)
         return self.render_to_response(context_data)

@@ -1,15 +1,27 @@
 {% extends "devday_site.html" %}
 {% load crispy_forms_tags static i18n %}
-{% block title %}{{ block.super }} // {% blocktrans with title=sessionreservation.talk.title %}Cancel reservation for „{{ title }}“{% endblocktrans %}{% endblock %}
+{% block title %}{{ block.super }} // {% spaceless %}
+    {% with title=sessionreservation.talk.title %}
+        {% if sessionreservation.is_waiting %}
+            {% blocktrans %}Waiting list removal for „{{ title }}“{%endblocktrans %}
+        {% else %}
+            {% blocktrans %}Cancel reservation for „{{ title }}“{% endblocktrans %}
+        {% endif %}
+    {% endwith %}{% endspaceless %}{% endblock %}
 {% block content_body %}
     {% with title=sessionreservation.talk.title %}
-        <h1>{% trans "Cancel your reservation" %}</h1>
-        <p>{% blocktrans %}Please click on the button below to cancel your reservation for „{{ title }}“.{% endblocktrans %}</p>
+        {% if sessionreservation.is_waiting %}
+            <h1>{% trans "Remove yourself from the waiting list" %}</h1>
+            <p>{% blocktrans %}Please click on the button below to remove yourself from the waiting list for „{{ title }}“.{% endblocktrans %}</p>
+        {% else %}
+            <h1>{% trans "Cancel your reservation" %}</h1>
+            <p>{% blocktrans %}Please click on the button below to cancel your reservation for „{{ title }}“.{% endblocktrans %}</p>
+        {% endif %}
     {% endwith %}
     <form method="post">
         {% csrf_token %}
         <div class="form-row">
-            <button class="btn btn-warning" type="submit">{% trans "Cancel reservation" %}</button>
+            <button class="btn btn-warning" type="submit">{% if sessionreservation.is_waiting %}{% trans "Remove me from the waiting list"%}{% else %}{% trans "Cancel reservation" %}{% endif %}</button>
         </div>
     </form>
 {% endblock %}

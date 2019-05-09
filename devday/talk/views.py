@@ -13,7 +13,7 @@ from django.core import signing
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Avg, Count, Max, Min, Sum
+from django.db.models import Avg, Count, Max, Min, Sum, F, Subquery, Prefetch
 from django.db.transaction import atomic
 from django.http import (
     Http404,
@@ -1283,13 +1283,14 @@ class LimitedTalkList(ListView):
     template_name_suffix = "_limited_list"
 
     def get_queryset(self):
-        return (
-            Talk.objects.filter(
-                event__slug=self.kwargs.get("event"), track__isnull=False, spots__gt=0
-            )
-            .order_by("title")
-            .select_related("published_speaker")
+        confirmed_reservations = Prefetch(
+            'sessionreservation_set',
+            to_attr='confirmed_reservations',
+            queryset=SessionReservation.objects.filter(is_confirmed=True)
         )
+        return Talk.objects.filter(
+            event__slug=self.kwargs.get("event"), track__isnull=False, spots__gt=0
+        ).prefetch_related(confirmed_reservations).order_by("title").select_related("published_speaker")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

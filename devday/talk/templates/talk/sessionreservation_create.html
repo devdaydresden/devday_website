@@ -35,7 +35,7 @@
                 {% endif %}
                 <form method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-outline btn-call-action m-0">{% trans "Reserve spot" %}</button>
+                    <button type="submit" class="btn btn-outline btn-call-action m-0">{% if fully_booked %}{% trans "Get on the waiting list" %}{% else %}{% trans "Reserve spot" %}{% endif %}</button>
                 </form>
             </div>
         </div>

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-06 15:46+0000\n"
-"PO-Revision-Date: 2019-05-06 17:49+0200\n"
+"POT-Creation-Date: 2019-05-09 12:49+0000\n"
+"PO-Revision-Date: 2019-05-09 14:51+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -350,16 +350,34 @@ msgstr[1] ""
 "\n"
 "Das Dev Day Team\n"
 
-#: talk/templates/talk/sessionreservation_confirm_cancel.html:3
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:6
+#, python-format
+msgid "Waiting list removal for „%(title)s“"
+msgstr "Wartelistenentfernung für „%(title)s“"
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:8
 #, python-format
 msgid "Cancel reservation for „%(title)s“"
 msgstr "Reservierung für „%(title)s“ stornieren"
 
-#: talk/templates/talk/sessionreservation_confirm_cancel.html:6
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:14
+msgid "Remove yourself from the waiting list"
+msgstr "Von der Warteliste nehmen"
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:15
+#, python-format
+msgid ""
+"Please click on the button below to remove yourself from the waiting list "
+"for „%(title)s“."
+msgstr ""
+"Bitte klicke auf den Button unten, um dich aus der Warteliste für "
+"„%(title)s“ entfernen zu lassen."
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:17
 msgid "Cancel your reservation"
 msgstr "Deine Reservierung stornieren"
 
-#: talk/templates/talk/sessionreservation_confirm_cancel.html:7
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:18
 #, python-format
 msgid ""
 "Please click on the button below to cancel your reservation for „%(title)s“."
@@ -367,9 +385,13 @@ msgstr ""
 "Bitte klicke auf den Button unten, um deine Reservierung für „%(title)s“ zu "
 "stornieren."
 
-#: talk/templates/talk/sessionreservation_confirm_cancel.html:12
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:24
+msgid "Remove me from the waiting list"
+msgstr "Aus der Warteliste entfernen"
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:24
 #: talk/templates/talk/talk_details.html:27
-#: talk/templates/talk/talk_limited_list_entry.html:26
+#: talk/templates/talk/talk_limited_list_entry.html:28
 msgid "Cancel reservation"
 msgstr "Reservierung stornieren"
 
@@ -477,8 +499,13 @@ msgstr ""
 "reservieren."
 
 #: talk/templates/talk/sessionreservation_create.html:38
+#: talk/templates/talk/talk_limited_list_entry.html:40
+msgid "Get on the waiting list"
+msgstr "Auf die Warteliste setzen"
+
+#: talk/templates/talk/sessionreservation_create.html:38
 #: talk/templates/talk/talk_details.html:34
-#: talk/templates/talk/talk_limited_list_entry.html:35
+#: talk/templates/talk/talk_limited_list_entry.html:40
 msgid "Reserve spot"
 msgstr "Platz reservieren"
 
@@ -511,7 +538,7 @@ msgstr ""
 
 #: talk/templates/talk/sessionreservation_resend_confirmation.html:15
 #: talk/templates/talk/talk_details.html:30
-#: talk/templates/talk/talk_limited_list_entry.html:29
+#: talk/templates/talk/talk_limited_list_entry.html:34
 msgid "Resend confirmation mail"
 msgstr "Bestätigungs-E-Mail erneut senden"
 
@@ -889,8 +916,16 @@ msgstr ""
 "können."
 
 #: talk/templates/talk/talk_limited_list_entry.html:19
+msgid "Fully booked"
+msgstr "Session ist ausgebucht"
+
+#: talk/templates/talk/talk_limited_list_entry.html:21
 msgid "Reservation"
 msgstr "Platzreservierung"
+
+#: talk/templates/talk/talk_limited_list_entry.html:31
+msgid "Remove from waiting list"
+msgstr "Aus der Warteliste entfernen"
 
 #: talk/templates/talk/talk_list.html:8
 msgid "Archive: List of Talks at"
@@ -963,18 +998,18 @@ msgstr "Es wurden noch keine Sessions veröffentlicht."
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
-#: talk/views.py:1185
+#: talk/views.py:1181
 msgid "This confirmation key has expired."
 msgstr "Der Bestätigungslink ist abgelaufen."
 
-#: talk/views.py:1186
+#: talk/views.py:1182
 msgid "The confirmation key you provided is invalid."
 msgstr "Der Bestätigungslink ist ungültig."
 
-#: talk/views.py:1187
+#: talk/views.py:1183
 msgid "The talk is overbooked."
 msgstr "Die Session ist überbucht."
 
-#: talk/views.py:1188
+#: talk/views.py:1184
 msgid "You can confirm your own reservations only."
 msgstr "Du kannst nur deine eigenen Reservierungen bestätigen."

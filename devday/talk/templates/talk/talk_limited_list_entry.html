@@ -6,6 +6,7 @@
             <h5 class="card-title"><a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug %}">{{ talk.title }}</a></h5>
         </div>
         <div class="card-body">
+        {% with confirmed_count=talk.confirmed_reservations|length %}
             <div class="speaker-image">
                 {% if talk.published_speaker.thumbnail %}
                     <img src="{{ talk.published_speaker.thumbnail.url }}">
@@ -15,6 +16,7 @@
             </div>
             <h4 class="speaker-name"><a href="{% url 'public_speaker_profile' event=talk.published_speaker.event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a></h4>
             <p>{{ talk.abstract|truncatechars:140 }}</p>
+            <p class="text-warning">{% if confirmed_count >= talk.spots %}<strong>{% trans "Fully booked" %}</strong>{% endif %}</p>
 
             <h4 class="reservation-area">{% trans "Reservation" %}</h4>
             <p>
@@ -24,6 +26,9 @@
                             {% if reservation.is_confirmed %}
                                 <span class="fas fa-calendar-times"></span>
                                 <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Cancel reservation" %}</a>
+                            {% elif reservation.is_waiting %}
+                                <span class="fas fa-calendar-times"></span>
+                                <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Remove from waiting list" %}</a>
                             {% else %}
                                 <span class="fas fa-send"></span>
                                 <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}">{% trans "Resend confirmation mail" %}</a>
@@ -32,9 +37,10 @@
                     {% endfor %}
                 {% else %}
                     <span class="fas fa-calendar-check"></span>
-                    <a href="{% url "talk_reservation" event=talk.event.slug slug=talk.slug %}">{% trans "Reserve spot" %}</a>
+                    <a href="{% url "talk_reservation" event=talk.event.slug slug=talk.slug %}">{% if confirmed_count >= talk.spots %}{% trans "Get on the waiting list" %}{% else %}{% trans "Reserve spot" %}{% endif %}</a>
                 {% endif %}
             </p>
+        {% endwith %}
         </div>
     </div>
 </div>

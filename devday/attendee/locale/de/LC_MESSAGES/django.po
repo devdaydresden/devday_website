@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-06 15:46+0000\n"
-"PO-Revision-Date: 2019-05-06 17:51+0200\n"
+"POT-Creation-Date: 2019-05-09 13:25+0000\n"
+"PO-Revision-Date: 2019-05-09 15:27+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -214,7 +214,7 @@ msgstr "Wie bist du auf den Dev Day aufmerksam geworden?"
 msgid "raffle"
 msgstr "Verlosung"
 
-#: attendee/models.py:168 attendee/templates/attendee/profile.html:54
+#: attendee/models.py:168 attendee/templates/attendee/profile.html:58
 msgid "Take part in the raffle"
 msgstr "An der Verlosung teilnehmen"
 
@@ -469,19 +469,35 @@ msgstr "Du bist angemeldet für diese Veranstaltungen"
 msgid "Workshops / Sessions"
 msgstr "Workshops / Sessions"
 
+#: attendee/templates/attendee/profile.html:38
+msgid "You are a confirmed attendee of this session"
+msgstr "Deine Teilnahme an dieser Session ist bestätigt"
+
 #: attendee/templates/attendee/profile.html:39
 msgid "Cancel reservation"
 msgstr "Anmeldung stornieren"
 
+#: attendee/templates/attendee/profile.html:41
+msgid "You are on a waiting list for this session"
+msgstr "Du bist auf der Warteliste für diese Session"
+
 #: attendee/templates/attendee/profile.html:42
+msgid "Remove from waiting list"
+msgstr "Von der Warteliste entfernen"
+
+#: attendee/templates/attendee/profile.html:44
+msgid "You have not confirmed your reservation for this session"
+msgstr "Du hast deine Reservierung für diese Session noch nicht bestätigt"
+
+#: attendee/templates/attendee/profile.html:45
 msgid "Resend confirmation mail"
 msgstr "Bestätigungs-E-Mail erneut senden"
 
-#: attendee/templates/attendee/profile.html:59
+#: attendee/templates/attendee/profile.html:63
 msgid "Cancel Registration"
 msgstr "Anmeldung stornieren"
 
-#: attendee/templates/attendee/profile.html:108
+#: attendee/templates/attendee/profile.html:112
 msgid "You are not currently registered to participate in any event."
 msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."
 
@@ -489,55 +505,55 @@ msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."
 msgid "{} at {}"
 msgstr "{} für {}"
 
-#: attendee/views.py:52
+#: attendee/views.py:56
 msgid "You are already checked in."
 msgstr "Du hast bereits eingecheckt."
 
-#: attendee/views.py:70
+#: attendee/views.py:74
 msgid "You are not registered for the current event."
 msgstr "Du bist nicht für die aktuelle Veranstaltung angemeldet."
 
-#: attendee/views.py:438
+#: attendee/views.py:467
 #, python-brace-format
 msgid "<{email}> has been checked in successfully to {event}!"
 msgstr "<{email}> wurde erfolgreich für {event} eingecheckt!"
 
-#: attendee/views.py:485
+#: attendee/views.py:514
 msgid "Invalid verification URL"
 msgstr "Ungültige Verifizierungs-URL"
 
-#: attendee/views.py:486
+#: attendee/views.py:515
 msgid "Try again scanning the QR code."
 msgstr "Den QR-Code nochmal scannen."
 
-#: attendee/views.py:496
+#: attendee/views.py:525
 msgid "Attendee not found"
 msgstr "Teilnehmer nicht gefunden"
 
-#: attendee/views.py:497
+#: attendee/views.py:526
 msgid "The attendee is (no longer) registered."
 msgstr "Der Teilnehmer ist (nicht mehr) registriert."
 
-#: attendee/views.py:505
+#: attendee/views.py:534
 msgid "Code is for the wrong event"
 msgstr "Der Code ist für die falsche Veranstaltung"
 
-#: attendee/views.py:506
+#: attendee/views.py:535
 msgid "This checkin code is for another event."
 msgstr "Der Checkin-Code ist für eine andere Veranstaltung."
 
-#: attendee/views.py:517
+#: attendee/views.py:546
 msgid "Already checked in"
 msgstr "Bereits eingecheckt"
 
-#: attendee/views.py:518
+#: attendee/views.py:547
 msgid "Attendee {} has checked in at {}."
 msgstr "Teilnehmer {} hat bereits um {} eingecheckt."
 
-#: attendee/views.py:527
+#: attendee/views.py:556
 msgid "Welcome!"
 msgstr "Willkommen!"
 
-#: attendee/views.py:528
+#: attendee/views.py:557
 msgid "Attendee {} was successfully checked in."
 msgstr "Teilnehmer {} wurde erfolgreich eingecheckt."

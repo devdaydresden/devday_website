@@ -1802,6 +1802,8 @@ class TestTalkConfirmReservation(TestCase):
         self.assertTemplateUsed(response, "talk/sessionreservation_confirm_failed.html")
         self.assertIn("confirmation_error", response.context)
         self.assertEqual(response.context["confirmation_error"]["code"], "overbooked")
+        self.assertIn("reservation", response.context)
+        self.assertEquals(response.context["reservation"], self.reservation)
         self.reservation.refresh_from_db()
         self.assertTrue(self.reservation.is_waiting)
         self.assertFalse(self.reservation.is_confirmed)

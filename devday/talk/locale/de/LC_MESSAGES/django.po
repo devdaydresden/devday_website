@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-09 12:49+0000\n"
-"PO-Revision-Date: 2019-05-09 14:51+0200\n"
+"POT-Creation-Date: 2019-05-09 15:19+0000\n"
+"PO-Revision-Date: 2019-05-09 17:19+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -19,22 +19,33 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:113
+#: talk/admin.py:114
 #, python-format
 msgid "One Session has been published."
 msgid_plural "%(count)d sessions have been published."
 msgstr[0] "One Session has been published."
 msgstr[1] "%(count)d Sessions wurden veröffentlicht."
 
-#: talk/admin.py:127
+#: talk/admin.py:128
 msgid "Publish selected sessions"
 msgstr "Ausgewählte Sessions veröffentlichen"
 
-#: talk/admin.py:156
+#: talk/admin.py:158
+#, python-format
+msgid "A confirmation mail has been sent to %(attendees)s."
+msgid_plural "%(count)d confirmation mails have been sent to %(attendees)s."
+msgstr[0] "Eine Bestätigungs-E-Mail wurde an %(attendees)s gesendet."
+msgstr[1] "%(count)d Bestätigungs-E-Mails wurden an %(attendees)s gesendet."
+
+#: talk/admin.py:166
+msgid "Process waiting list for selected sessions"
+msgstr "Warteliste für ausgewählte Sessions verarbeiten"
+
+#: talk/admin.py:195
 msgid "Talk slot created successfully"
 msgstr "Talk-Slot erfolgreich angelegt"
 
-#: talk/admin.py:183 talk/models.py:36 talk/models.py:71 talk/models.py:178
+#: talk/admin.py:222 talk/models.py:36 talk/models.py:71 talk/models.py:178
 #: talk/models.py:198
 msgid "Event"
 msgstr "Veranstaltung"

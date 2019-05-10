@@ -18,6 +18,7 @@ from talk.forms import (
     SessionReservationForm,
     TalkSlotForm,
 )
+from talk.signals import send_reservation_confirmation_mail
 
 from .models import (
     AttendeeFeedback,
@@ -81,7 +82,7 @@ class TalkAdmin(PrefetchAdmin, admin.ModelAdmin):
     list_select_related = ["draft_speaker", "event", "track", "track__event"]
     filter_horizontal = ("talkformat",)
     prepopulated_fields = {"slug": ("title",)}
-    actions = ["publish_talks"]
+    actions = ["publish_talks", "process_waiting_list"]
 
     queryset_prefetch_fields = {
         "draft_speaker": (Speaker, ("user",)),
@@ -125,6 +126,46 @@ class TalkAdmin(PrefetchAdmin, admin.ModelAdmin):
         )
 
     publish_talks.short_description = _("Publish selected sessions")
+
+    def process_waiting_list(self, request, queryset):
+        mailcount = 0
+        attendees = set()
+        for talk in queryset.filter(
+            spots__gt=0, event_id=Event.objects.current_event_id()
+        ):
+            confirmed_reservations = SessionReservation.objects.filter(
+                talk=talk, is_confirmed=True
+            ).count()
+            if talk.spots > confirmed_reservations:
+                waiting_reservations = (
+                    SessionReservation.objects.filter(talk=talk, is_waiting=True)
+                    .select_related("attendee", "attendee__user")
+                    .order_by("created")
+                )
+                for reservation in waiting_reservations[
+                    : talk.spots - confirmed_reservations
+                ]:
+                    user = reservation.attendee.user
+                    reservation.is_waiting = False
+                    reservation.save()
+                    send_reservation_confirmation_mail(request, reservation, user)
+                    attendees.add(user.email)
+                    mailcount += 1
+        if mailcount > 0:
+            self.message_user(
+                request,
+                ngettext_lazy(
+                    "A confirmation mail has been sent to %(attendees)s.",
+                    "%(count)d confirmation mails have been sent to %(attendees)s.",
+                    mailcount,
+                )
+                % {"count": mailcount, "attendees": ", ".join(attendees)},
+            )
+        return HttpResponseRedirect(request.get_full_path())
+
+    process_waiting_list.short_description = _(
+        "Process waiting list for selected sessions"
+    )
 
 
 class AddTalkSlotView(SessionWizardView):
@@ -216,9 +257,9 @@ class TrackAdmin(admin.ModelAdmin):
 
 @admin.register(SessionReservation)
 class SessionReservationAdmin(admin.ModelAdmin):
-    list_display = ("email", "talk_title", "is_confirmed")
+    list_display = ("email", "talk_title", "is_confirmed", "is_waiting")
     list_select_related = ("attendee", "talk", "attendee__user")
-    list_filter = ("attendee__event", "is_confirmed")
+    list_filter = ("attendee__event", "is_confirmed", "is_waiting")
     ordering = ("talk__title", "attendee__user__email")
     form = SessionReservationForm
 

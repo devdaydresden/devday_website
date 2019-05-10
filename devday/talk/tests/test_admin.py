@@ -1,6 +1,10 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from attendee.models import Attendee
 from attendee.tests import attendee_testutils
@@ -111,6 +115,73 @@ class AdminTest(TestCase):
         talk = Talk.objects.get(pk=talk.pk)
         self.assertEquals(talk.track, tracks[0])
         self.assertIsNotNone(talk.published_speaker)
+
+    def test_talk_admin_process_waiting_list(self):
+        event = Event.objects.current_event()
+        attendees = []
+        for a in range(3):
+            user, _ = attendee_testutils.create_test_user(
+                "test{}@example.org".format(a)
+            )
+            attendees.append(Attendee.objects.create(event=event, user=user))
+        track = Track.objects.create(event=event, name="Test Track")
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+
+        talk = Talk.objects.create(
+            draft_speaker=speaker,
+            title="Test",
+            abstract="Test abstract",
+            remarks="Test remarks",
+            event=event,
+            spots=2,
+        )
+        talk.publish(track)
+        reservations = [
+            SessionReservation.objects.create(
+                attendee_id=attendees[0].id,
+                talk=talk,
+                is_confirmed=True,
+                is_waiting=False,
+                created=timezone.now() - timedelta(minutes=10),
+            ),
+            SessionReservation.objects.create(
+                attendee_id=attendees[1].id,
+                talk=talk,
+                is_confirmed=False,
+                is_waiting=True,
+                created=timezone.now() - timedelta(minutes=3),
+            ),
+            SessionReservation.objects.create(
+                attendee_id=attendees[2].id,
+                talk=talk,
+                is_confirmed=False,
+                is_waiting=True,
+                created=timezone.now() - timedelta(minutes=5),
+            ),
+        ]
+        response = self.client.post(
+            reverse("admin:talk_talk_changelist"),
+            {"action": "process_waiting_list", "_selected_action": [talk.pk]},
+        )
+        self.assertRedirects(response, reverse("admin:talk_talk_changelist"))
+        reservations[1].refresh_from_db()
+        self.assertTrue(reservations[1].is_waiting)
+        reservations[2].refresh_from_db()
+        self.assertFalse(reservations[2].is_waiting)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn(reservations[2].attendee.user.email, mail.outbox[0].recipients())
+        mail.outbox.clear()
+        reservations[2].is_confirmed = True
+        reservations[2].save()
+
+        response = self.client.post(
+            reverse("admin:talk_talk_changelist"),
+            {"action": "process_waiting_list", "_selected_action": [talk.pk]},
+        )
+        self.assertRedirects(response, reverse("admin:talk_talk_changelist"))
+        reservations[1].refresh_from_db()
+        self.assertTrue(reservations[1].is_waiting)
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_talkslot_admin_list(self):
         response = self.client.get(reverse("admin:talk_talkslot_changelist"))

@@ -19,7 +19,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, TemplateView, UpdateView, View
 from django.views.generic.edit import FormView, ModelFormMixin
-from django.views.generic.list import BaseListView
+from django.views.generic.list import BaseListView, ListView
 from django_registration import signals
 from django_registration.backends.activation.views import (
     ActivationView,
@@ -594,3 +594,21 @@ class AttendeeEventFeedbackView(AttendeeRequiredMixin, ModelFormMixin, FormView)
 
     def get_success_url(self):
         return reverse("pages-root")
+
+
+class RaffleView(StaffUserMixin, ListView):
+    model = Attendee
+    event = None
+    template_name = "attendee/attendee_raffle.html"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(raffle=True, event=self.event)
+
+    def get(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=kwargs["event"])
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["event"] = self.event
+        return context

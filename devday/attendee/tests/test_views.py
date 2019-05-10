@@ -1034,3 +1034,54 @@ class AttendeeToggleRaffleViewTest(TestCase):
         self.assertEquals(response.json()["raffle"], False)
         self.attendee.refresh_from_db()
         self.assertFalse(self.attendee.raffle)
+
+
+class TestRaffleView(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
+        self.url = "/{}/raffle/".format(self.event.slug)
+        self.user, self.password = attendee_testutils.create_test_user(
+            "staff@example.org", is_staff=True
+        )
+
+    def test_needs_staff(self):
+        # test anonymous get
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+        # test regular user
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+    def test_template(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "attendee/attendee_raffle.html")
+
+    def test_queryset(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        other_event = event_testutils.create_test_event(title="Other")
+        users = []
+        for i in range(5):
+            user, _ = attendee_testutils.create_test_user("test{}@example.org".format(i))
+            users.append(user)
+        attendees = [
+            Attendee.objects.create(user=users[0], event=other_event, raffle=True),
+            Attendee.objects.create(user=users[1], event=other_event, raffle=False),
+            Attendee.objects.create(user=users[2], event=self.event, raffle=True),
+            Attendee.objects.create(user=users[3], event=self.event, raffle=True),
+            Attendee.objects.create(user=users[4], event=self.event, raffle=False)
+        ]
+
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.context["attendee_list"]), 2)
+        self.assertIn(attendees[2], response.context["attendee_list"])
+        self.assertIn(attendees[3], response.context["attendee_list"])

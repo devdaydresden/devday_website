@@ -15,6 +15,7 @@ from attendee.views import (
     DevDayUserProfileView,
     DevDayUserRegistrationView,
     LoginOrRegisterAttendeeView,
+    RaffleView,
 )
 
 urlpatterns = [
@@ -80,6 +81,7 @@ urlpatterns = [
         CheckInAttendeeUrlView.as_view(),
         name="attendee_checkin_url",
     ),
+    url(r"^(?P<event>[^/]+)/raffle/$", RaffleView.as_view(), name="raffle"),
     url(r"^accounts/delete/$", DevDayUserDeleteView.as_view(), name="attendee_delete"),
     url(r"^accounts/profile/$", DevDayUserProfileView.as_view(), name="user_profile"),
 ]

@@ -1,0 +1,54 @@
+{% extends "devday_site.html" %}
+{% load i18n sekizai_tags %}
+{% block title %}{{ block.super }} // {% blocktrans with event=event.title %}Raffle for {{ event }}{% endblocktrans %}" %}{% endblock %}
+{% block content %}
+    <div class="content-area" id="raffle-area">
+        <div class="col-md-8 offset-md-2 col-12">
+            <h1>{% trans "Raffle" %} <small class="text-muted">{% blocktrans count counter=attendee_list|length %}with one attendee{% plural %}with {{ counter }} attendees{% endblocktrans %}</small></h1>
+            {% if attendee_list %}
+                <p><button id="raffle" aria-label="raffle" class="btn btn-primary btn-lg">{% trans "Next winner" %}</button></p>
+                <div id="winners" class="list-group"></div>
+            {% else %}
+                <p>{% trans "Nobody in the raffle" %}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% addtoblock "css" %}
+        <style type="text/css">
+        #raffle-area {
+            min-height:50em;
+        }
+        #winners div {
+            font-size:200%;
+        }
+        </style>
+    {% endaddtoblock %}
+    {% addtoblock "js" %}
+        <script type="text/javascript">
+        let attendees = [
+            {% for attendee in attendee_list|dictsort:"user.email" %}'{{ attendee.user.email|escapejs }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+        $(document).ready(function () {
+            let count = 1;
+
+            function raffleWinner(event) {
+                if (attendees.length === 0) {
+                    $('#raffle-area').append('<div class="col-md-8 offset-md-2 col-12 text-info">{% trans "No more attendees in the raffle" %}</div>')
+                    $(this).off("click").attr("disabled", "disabled");
+                    return;
+                }
+                let pos = ~~(Math.random()*attendees.length);
+                let winner = attendees.splice(pos, 1);
+
+                $('#winners').append(
+                    '<div class="list-group-item"><span class="badge badge-success">' + count + '</span> ' + winner + '</div>'
+                );
+                count++;
+            }
+
+            $('#raffle').click(raffleWinner);
+        });
+        </script>
+    {% endaddtoblock %}
+{% endblock %}

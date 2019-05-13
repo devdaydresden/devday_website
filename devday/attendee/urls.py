@@ -14,6 +14,7 @@ from attendee.views import (
     DevDayUserDeleteView,
     DevDayUserProfileView,
     DevDayUserRegistrationView,
+    FeedbackSummaryView,
     LoginOrRegisterAttendeeView,
     RaffleView,
 )
@@ -82,6 +83,11 @@ urlpatterns = [
         name="attendee_checkin_url",
     ),
     url(r"^(?P<event>[^/]+)/raffle/$", RaffleView.as_view(), name="raffle"),
+    url(
+        r"^(?P<event>[^/]+)/feedback-summary/$",
+        FeedbackSummaryView.as_view(),
+        name="event_feedback_summary",
+    ),
     url(r"^accounts/delete/$", DevDayUserDeleteView.as_view(), name="attendee_delete"),
     url(r"^accounts/profile/$", DevDayUserProfileView.as_view(), name="user_profile"),
 ]

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-10 11:32+0000\n"
-"PO-Revision-Date: 2019-05-10 13:33+0200\n"
+"POT-Creation-Date: 2019-05-13 08:53+0000\n"
+"PO-Revision-Date: 2019-05-10 15:00+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -125,15 +125,15 @@ msgstr "{} ist bereits eingecheckt!"
 msgid "How much did you like the Event?"
 msgstr "Wie gut hat Dir die Veranstaltung gefallen?"
 
-#: attendee/forms.py:396
+#: attendee/forms.py:396 attendee/templates/attendee/event_summary.html:10
 msgid "How well has the event been organised?"
 msgstr "Wie zufrieden warst Du mit der Organisation?"
 
-#: attendee/forms.py:399
+#: attendee/forms.py:399 attendee/templates/attendee/event_summary.html:12
 msgid "How much did the sessions fulfill your expectations?"
 msgstr "Inwieweit haben die Sessions Deine Erwartungen erfüllt?"
 
-#: attendee/forms.py:402
+#: attendee/forms.py:402 attendee/templates/attendee/event_summary.html:14
 msgid ""
 "Please tell us what you liked specifically and what should be different next "
 "time."
@@ -429,6 +429,7 @@ msgid "Back to your profile"
 msgstr "Zurück zu deinem Benutzerprofil"
 
 #: attendee/templates/attendee/event_feedback.html:3
+#: attendee/templates/attendee/event_summary.html:3
 #, python-format
 msgid "Feedback for %(event)s"
 msgstr "Feedback für %(event)s"
@@ -437,6 +438,17 @@ msgstr "Feedback für %(event)s"
 #, python-format
 msgid "Your feedback for %(event)s"
 msgstr "Dein Feedback zum %(event)s"
+
+#: attendee/templates/attendee/event_summary.html:7
+msgid "Feedback"
+msgstr "Feedback"
+
+#: attendee/templates/attendee/event_summary.html:8
+#, python-format
+msgid "from one attendee"
+msgid_plural "from %(counter)s attendees"
+msgstr[0] "eines Teilnehmers"
+msgstr[1] "von %(counter)s Teilnehmern"
 
 #: attendee/templates/attendee/login_or_register.html:18
 #, python-format

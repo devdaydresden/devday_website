@@ -1070,14 +1070,16 @@ class TestRaffleView(TestCase):
         other_event = event_testutils.create_test_event(title="Other")
         users = []
         for i in range(5):
-            user, _ = attendee_testutils.create_test_user("test{}@example.org".format(i))
+            user, _ = attendee_testutils.create_test_user(
+                "test{}@example.org".format(i)
+            )
             users.append(user)
         attendees = [
             Attendee.objects.create(user=users[0], event=other_event, raffle=True),
             Attendee.objects.create(user=users[1], event=other_event, raffle=False),
             Attendee.objects.create(user=users[2], event=self.event, raffle=True),
             Attendee.objects.create(user=users[3], event=self.event, raffle=True),
-            Attendee.objects.create(user=users[4], event=self.event, raffle=False)
+            Attendee.objects.create(user=users[4], event=self.event, raffle=False),
         ]
 
         response = self.client.get(self.url)
@@ -1085,3 +1087,109 @@ class TestRaffleView(TestCase):
         self.assertEquals(len(response.context["attendee_list"]), 2)
         self.assertIn(attendees[2], response.context["attendee_list"])
         self.assertIn(attendees[3], response.context["attendee_list"])
+
+
+class FeedbackSummaryViewTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
+        self.url = "/{}/feedback-summary/".format(self.event.slug)
+        self.user, self.password = attendee_testutils.create_test_user(
+            "staff@example.org", is_staff=True
+        )
+
+    def test_needs_staff(self):
+        # test anonymous get
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+        # test regular user
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+    def test_template(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "attendee/event_summary.html")
+
+    def test_context_without_feedback(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        context = response.context
+        self.assertIn("feedback", context)
+        feedback = context["feedback"]
+        self.assertEqual(feedback["comment__count"], 0)
+        self.assertIsNone(feedback["overall_score__avg"])
+        self.assertIsNone(feedback["organisation_score__avg"])
+        self.assertIsNone(feedback["session_score__avg"])
+        self.assertIn("overall_score_avg_percent", context)
+        self.assertEqual(context["overall_score_avg_percent"], 0)
+        self.assertIn("organisation_score_avg_percent", context)
+        self.assertEquals(context["organisation_score_avg_percent"], 0)
+        self.assertIn("session_score_avg_percent", context)
+        self.assertEquals(context["session_score_avg_percent"], 0)
+
+    def test_context_with_feedback(self):
+        users = []
+        for i in range(4):
+            user, _ = attendee_testutils.create_test_user(
+                "test{}@example.org".format(i)
+            )
+            users.append(user)
+
+        AttendeeEventFeedback.objects.create(
+            attendee=Attendee.objects.create(user=users[0], event=self.event),
+            event=self.event,
+            overall_score=5,
+            organisation_score=4,
+            session_score=5,
+            comment="",
+        ),
+        AttendeeEventFeedback.objects.create(
+            attendee=Attendee.objects.create(user=users[1], event=self.event),
+            event=self.event,
+            overall_score=4,
+            organisation_score=3,
+            session_score=4,
+            comment="",
+        ),
+        AttendeeEventFeedback.objects.create(
+            attendee=Attendee.objects.create(user=users[2], event=self.event),
+            event=self.event,
+            overall_score=5,
+            organisation_score=2,
+            session_score=2,
+            comment="",
+        ),
+        AttendeeEventFeedback.objects.create(
+            attendee=Attendee.objects.create(user=users[3], event=self.event),
+            event=self.event,
+            overall_score=4,
+            organisation_score=1,
+            session_score=3,
+            comment="",
+        ),
+
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        context = response.context
+        self.assertIn("feedback", context)
+        feedback = context["feedback"]
+        self.assertEquals(feedback["comment__count"], 4)
+        self.assertEquals(feedback["overall_score__avg"], 18 / 4)
+        self.assertEquals(feedback["organisation_score__avg"], 10 / 4)
+        self.assertEquals(feedback["session_score__avg"], 14 / 4)
+        self.assertIn("overall_score_avg_percent", context)
+        self.assertEquals(context["overall_score_avg_percent"], 90)
+        self.assertIn("organisation_score_avg_percent", context)
+        self.assertEquals(context["organisation_score_avg_percent"], 50)
+        self.assertIn("session_score_avg_percent", context)
+        self.assertEquals(context["session_score_avg_percent"], 70)

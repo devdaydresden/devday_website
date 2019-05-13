@@ -12,7 +12,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import IntegrityError
-from django.db.models import Prefetch, Q
+from django.db.models import Avg, Count, Prefetch, Q
 from django.db.transaction import atomic
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -611,4 +611,38 @@ class RaffleView(StaffUserMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context["event"] = self.event
+        return context
+
+
+class FeedbackSummaryView(StaffUserMixin, TemplateView):
+    template_name = "attendee/event_summary.html"
+    event = None
+
+    def get(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=kwargs["event"])
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        feedback = AttendeeEventFeedback.objects.filter(event=self.event)
+        aggregates = feedback.aggregate(
+            Avg("overall_score"),
+            Avg("organisation_score"),
+            Avg("session_score"),
+            Count("comment"),
+        )
+        context.update(
+            {
+                "feedback": aggregates,
+                "overall_score_avg_percent": int(
+                    100 * (aggregates["overall_score__avg"] or 0) / 5
+                ),
+                "organisation_score_avg_percent": int(
+                    100 * (aggregates["organisation_score__avg"] or 0) / 5
+                ),
+                "session_score_avg_percent": int(
+                    100 * (aggregates["session_score__avg"] or 0) / 5
+                ),
+            }
+        )
         return context

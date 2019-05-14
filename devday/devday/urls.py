@@ -7,6 +7,7 @@ from django.contrib.sitemaps.views import sitemap as sitemap_view
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve as serve_static
 
+from twitterfeed.views import TwitterwallView
 from devday.views import (SendEmailView, exception_test_view)
 
 admin.autodiscover()
@@ -22,6 +23,7 @@ urlpatterns = [
     url(r'^upload/', include('django_file_form.urls')),
     url(r'^session/', include('talk.urls')),
     url(r'^committee/', include('talk.urls_committee')),
+    url(r'^twitterwall/', TwitterwallView.as_view(), name="twitterwall"),
     url(r'^synthetic_server_error/$', exception_test_view),
     url(r'^', include('talk.urls_event')),
     url(r'^', include('speaker.urls')),

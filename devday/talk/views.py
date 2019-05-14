@@ -13,7 +13,7 @@ from django.core import signing
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Avg, Count, Max, Min, Prefetch, Sum
+from django.db.models import Avg, Count, Max, Min, Prefetch, Sum, F
 from django.db.transaction import atomic
 from django.http import (
     Http404,
@@ -184,9 +184,9 @@ class TalkDetails(DetailView):
     def get_queryset(self):
         return (
             super(TalkDetails, self)
-            .get_queryset()
-            .filter(event=self.event)
-            .prefetch_related("media", "published_speaker")
+                .get_queryset()
+                .filter(event=self.event)
+                .prefetch_related("media", "published_speaker")
         )
 
     def get_context_data(self, **kwargs):
@@ -231,15 +231,15 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
     def get_queryset(self):
         qs = (
             super(CommitteeTalkOverview, self)
-            .get_queryset()
-            .filter(event=Event.objects.current_event())
-            .annotate(
+                .get_queryset()
+                .filter(event=Event.objects.current_event())
+                .annotate(
                 average_score=Avg("vote__score"),
                 vote_sum=Sum("vote__score"),
                 vote_count=Count("vote__id"),
             )
-            .select_related("draft_speaker", "draft_speaker__user")
-            .order_by("title")
+                .select_related("draft_speaker", "draft_speaker__user")
+                .order_by("title")
         )
         sort_order = self.request.GET.get("sort_order", "title")
         sort_order = CommitteeTalkOverview.ORDER_MAP.get(sort_order, sort_order)
@@ -251,9 +251,9 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
         context = super(CommitteeTalkOverview, self).get_context_data(**kwargs)
         talk_list = context["talk_list"]
         for item in (
-            Talk.objects.values("id")
-            .annotate(comment_count=Count("talkcomment__id"))
-            .all()
+                Talk.objects.values("id")
+                        .annotate(comment_count=Count("talkcomment__id"))
+                        .all()
         ):
             for talk in talk_list:
                 if item["id"] == talk.id:
@@ -278,7 +278,7 @@ class TalkListView(ListView):
     def dispatch(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, slug=self.kwargs.get("event"))
         if (
-            self.event.published and self.event.sessions_published
+                self.event.published and self.event.sessions_published
         ) or request.user.is_staff:
             return super(TalkListView, self).dispatch(request, *args, **kwargs)
         raise Http404
@@ -286,9 +286,9 @@ class TalkListView(ListView):
     def get_queryset(self):
         qs = (
             super(TalkListView, self)
-            .get_queryset()
-            .filter(track__isnull=False, event=self.event)
-            .select_related(
+                .get_queryset()
+                .filter(track__isnull=False, event=self.event)
+                .select_related(
                 "track",
                 "published_speaker",
                 "event",
@@ -308,7 +308,7 @@ class TalkListView(ListView):
         )
         talk_slots = list(
             TalkSlot.objects.filter(talk__event=self.event)
-            .select_related(
+                .select_related(
                 "talk",
                 "room",
                 "time",
@@ -316,7 +316,7 @@ class TalkListView(ListView):
                 "talk__published_speaker",
                 "talk__published_speaker__event",
             )
-            .order_by("time__start_time")
+                .order_by("time__start_time")
         )
 
         rooms = list(Room.objects.for_event(self.event))
@@ -361,9 +361,9 @@ class TalkListView(ListView):
                         index2
                     ]
                     if (
-                        time_slot1 != time_slot2
-                        and time_slot1.start_time >= time_slot2.start_time
-                        and time_slot1.end_time <= time_slot2.end_time
+                            time_slot1 != time_slot2
+                            and time_slot1.start_time >= time_slot2.start_time
+                            and time_slot1.end_time <= time_slot2.end_time
                     ):
                         overlaps2.append(index1)
                         overlaps1.append(index2)
@@ -414,10 +414,10 @@ class TalkListView(ListView):
             {"event": self.event, "unscheduled": unscheduled, "blocks": blocks}
         )
         if (
-            self.request.user.is_authenticated
-            and Attendee.objects.filter(
-                event=self.event, user=self.request.user
-            ).exists()
+                self.request.user.is_authenticated
+                and Attendee.objects.filter(
+            event=self.event, user=self.request.user
+        ).exists()
         ):
             context["reservations"] = {
                 r.talk: r
@@ -456,10 +456,10 @@ class TalkListPreviewView(ListView):
     def get_queryset(self):
         return (
             super(TalkListPreviewView, self)
-            .get_queryset()
-            .filter(track__isnull=False, event=self.event)
-            .select_related("event", "track", "published_speaker")
-            .order_by("title")
+                .get_queryset()
+                .filter(track__isnull=False, event=self.event)
+                .select_related("event", "track", "published_speaker")
+                .order_by("title")
         )
 
     def get_context_data(self, **kwargs):
@@ -480,10 +480,10 @@ class TalkVideoView(ListView):
     def get_queryset(self):
         return (
             super(TalkVideoView, self)
-            .get_queryset()
-            .filter(event=self.event, track__isnull=False, media__isnull=False)
-            .select_related("published_speaker", "media")
-            .order_by("title")
+                .get_queryset()
+                .filter(event=self.event, track__isnull=False, media__isnull=False)
+                .select_related("published_speaker", "media")
+                .order_by("title")
         )
 
     def get_context_data(self, **kwargs):
@@ -531,16 +531,16 @@ class InfoBeamerXMLView(BaseListView):
         event = get_object_or_404(Event, slug=self.kwargs.get("event"))
         return (
             super(InfoBeamerXMLView, self)
-            .get_queryset()
-            .filter(track__isnull=False, event=event, talkslot__time__event=event)
-            .select_related(
+                .get_queryset()
+                .filter(track__isnull=False, event=event, talkslot__time__event=event)
+                .select_related(
                 "track",
                 "published_speaker",
                 "talkslot",
                 "talkslot__time",
                 "talkslot__room",
             )
-            .order_by("talkslot__time__start_time", "talkslot__room__name")
+                .order_by("talkslot__time__start_time", "talkslot__room__name")
         )
 
     def get_context_data(self, **kwargs):
@@ -632,9 +632,9 @@ class CommitteeTalkDetails(CommitteeRequiredMixin, DetailView):
     def get_queryset(self):
         return (
             super(CommitteeTalkDetails, self)
-            .get_queryset()
-            .select_related("draft_speaker", "draft_speaker__user")
-            .annotate(average_score=Avg("vote__score"))
+                .get_queryset()
+                .select_related("draft_speaker", "draft_speaker__user")
+                .annotate(average_score=Avg("vote__score"))
         )
 
     def get_context_data(self, **kwargs):
@@ -651,8 +651,8 @@ class CommitteeTalkDetails(CommitteeRequiredMixin, DetailView):
                 "user_vote": user_score,
                 "average_votes": talk.average_score,
                 "comments": talk.talkcomment_set.select_related("commenter")
-                .order_by("-modified")
-                .all(),
+                    .order_by("-modified")
+                    .all(),
             }
         )
         return context
@@ -754,8 +754,8 @@ class CommitteeTalkCommentDelete(CommitteeRequiredMixin, SingleObjectMixin, View
     def get_queryset(self):
         return (
             super(CommitteeTalkCommentDelete, self)
-            .get_queryset()
-            .filter(commenter=self.request.user)
+                .get_queryset()
+                .filter(commenter=self.request.user)
         )
 
     # noinspection PyUnusedLocal
@@ -775,9 +775,9 @@ class SpeakerTalkDetails(SpeakerRequiredMixin, UpdateView):
     def get_queryset(self):
         return (
             super(SpeakerTalkDetails, self)
-            .get_queryset()
-            .select_related("draft_speaker")
-            .filter(draft_speaker__user=self.request.user)
+                .get_queryset()
+                .select_related("draft_speaker")
+                .filter(draft_speaker__user=self.request.user)
         )
 
     def get_context_data(self, **kwargs):
@@ -821,8 +821,8 @@ class SubmitTalkSpeakerComment(SpeakerRequiredMixin, SingleObjectMixin, FormView
     def get_queryset(self):
         return (
             super(SubmitTalkSpeakerComment, self)
-            .get_queryset()
-            .filter(draft_speaker__user=self.request.user)
+                .get_queryset()
+                .filter(draft_speaker__user=self.request.user)
         )
 
 
@@ -833,8 +833,8 @@ class TalkSpeakerCommentDelete(SpeakerRequiredMixin, SingleObjectMixin, View):
     def get_queryset(self):
         return (
             super(TalkSpeakerCommentDelete, self)
-            .get_queryset()
-            .filter(commenter=self.request.user)
+                .get_queryset()
+                .filter(commenter=self.request.user)
         )
 
     # noinspection PyUnusedLocal
@@ -856,10 +856,10 @@ class EventSessionSummaryView(StaffUserMixin, BaseListView):
     def get_queryset(self):
         return (
             super()
-            .get_queryset()
-            .filter(event=Event.objects.current_event())
-            .select_related("draft_speaker")
-            .order_by("title")
+                .get_queryset()
+                .filter(event=Event.objects.current_event())
+                .select_related("draft_speaker")
+                .order_by("title")
         )
 
     def render_to_response(self, context):
@@ -921,10 +921,10 @@ class AttendeeVotingView(AttendeeRequiredMixin, ListView):
     def get_queryset(self):
         qs = (
             super()
-            .get_queryset()
-            .filter(track__isnull=False, event=self.event)
-            .select_related("track", "published_speaker")
-            .prefetch_related()
+                .get_queryset()
+                .filter(track__isnull=False, event=self.event)
+                .select_related("track", "published_speaker")
+                .prefetch_related()
         )
         if self.request.user.is_staff:
             qs = qs.annotate(
@@ -1080,7 +1080,7 @@ class TalkAddReservation(
                 "fully_booked": self.talk.sessionreservation_set.filter(
                     is_confirmed=True
                 ).count()
-                >= self.talk.spots,
+                                >= self.talk.spots,
             }
         )
         return context
@@ -1197,10 +1197,10 @@ class TalkConfirmReservation(AttendeeRequiredMixin, TemplateView):
         if self.reservation.attendee.user != self.request.user:
             raise ConfirmationError(self.WRONG_USER, code="wrong_user")
         if (
-            self.reservation.talk.spots
-            <= SessionReservation.objects.filter(
-                is_confirmed=True, talk_id=self.reservation.talk_id
-            ).count()
+                self.reservation.talk.spots
+                <= SessionReservation.objects.filter(
+            is_confirmed=True, talk_id=self.reservation.talk_id
+        ).count()
         ):
             self.reservation.is_waiting = True
             self.reservation.save()
@@ -1296,9 +1296,9 @@ class LimitedTalkList(ListView):
             Talk.objects.filter(
                 event__slug=self.kwargs.get("event"), track__isnull=False, spots__gt=0
             )
-            .prefetch_related(confirmed_reservations)
-            .order_by("title")
-            .select_related("published_speaker")
+                .prefetch_related(confirmed_reservations)
+                .order_by("title")
+                .select_related("published_speaker")
         )
 
     def get_context_data(self, **kwargs):
@@ -1345,3 +1345,27 @@ class AttendeeTalkFeedback(AttendeeRequiredMixin, ModelFormMixin, BaseFormView):
         form_kwargs = super().get_form_kwargs()
         form_kwargs.update({"attendee": self.attendee, "talk": self.talk})
         return form_kwargs
+
+
+class AttendeeTalkFeedbackSummary(StaffUserMixin, ListView):
+    model = Talk
+    template_name_suffix = "_feedback_summary"
+    event = None
+
+    def get(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=kwargs["event"])
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        talks = super().get_queryset().annotate(
+            feedback_count=Count("attendeefeedback"),
+            feedback_avg=Avg("attendeefeedback__score"),
+            feedback_percent=Avg("attendeefeedback__score") * 100 / 5
+        ).filter(
+            event=self.event, track__isnull=False, feedback_count__gte=1
+        ).order_by('-feedback_avg', '-feedback_count', 'title')
+        return talks[:5]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        return context

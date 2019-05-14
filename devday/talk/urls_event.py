@@ -20,7 +20,7 @@ from talk.views import (
     TalkReservationConfirmed,
     TalkReservationWaiting,
     TalkVideoView,
-)
+    AttendeeTalkFeedbackSummary)
 
 urlpatterns = [
     url(r"^schedule\.xml$", InfoBeamerXMLView.as_view()),
@@ -107,4 +107,9 @@ urlpatterns = [
         AttendeeTalkVote.as_view(),
         name="attendee_vote_change",
     ),
+    url(
+        r"^(?P<event>[^/]+)/session-feedback-summary/$",
+        AttendeeTalkFeedbackSummary.as_view(),
+        name="attendee_talk_feedback_summary",
+    )
 ]

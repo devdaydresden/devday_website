@@ -17,6 +17,7 @@ from attendee.tests import attendee_testutils
 from devday.utils.devdata import DevData
 from event.models import Event
 from event.tests import event_testutils
+from speaker.models import PublishedSpeaker
 from speaker.tests import speaker_testutils
 from talk import COMMITTEE_GROUP
 from talk.forms import (
@@ -42,8 +43,10 @@ from talk.models import (
 )
 from talk.tests import talk_testutils
 
-
 # noinspection PyUnresolvedReferences
+from talk.views import AttendeeTalkFeedback
+
+
 class LoginTestMixin(object):
     def login_user(self, email="test@example.org"):
         _, password = attendee_testutils.create_test_user(email)
@@ -2082,3 +2085,200 @@ class TestAttendeeTalkFeedback(TestCase):
                 attendee=self.attendee, talk=self.talk
             ).exists()
         )
+
+
+class TestTalkFeedbackSummaryView(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
+        self.url = "/{}/session-feedback-summary/".format(self.event.slug)
+        self.user, self.password = attendee_testutils.create_test_user(
+            "staff@example.org", is_staff=True
+        )
+        self.speakers = [
+            PublishedSpeaker.objects.create(
+                name="Speaker 1", event=self.event, video_permission=True,
+                email="testspeaker1@example.org",
+            ),
+            PublishedSpeaker.objects.create(
+                name="Speaker 2", event=self.event, video_permission=True,
+                email = "testspeaker2@example.org",
+            ),
+            PublishedSpeaker.objects.create(
+                name="Speaker 3", event=self.event, video_permission=True,
+                email = "testspeaker3@example.org",
+            ),
+            PublishedSpeaker.objects.create(
+                name="Speaker 4", event=self.event, video_permission=True,
+                email = "testspeaker4@example.org",
+            ),
+            PublishedSpeaker.objects.create(
+                name="Speaker 5", event=self.event, video_permission=True,
+                email = "testspeaker5@example.org",
+            ),
+            PublishedSpeaker.objects.create(
+                name="Speaker 6", event=self.event, video_permission=True,
+                email = "testspeaker6@example.org",
+            ),
+        ]
+        track = Track.objects.create(name="Test Track")
+        self.talks = [
+            Talk.objects.create(
+                published_speaker=self.speakers[0],
+                title="Talk topic 1",
+                abstract="Talk abstract 1",
+                event=self.event,
+                track=track,
+            ),
+            Talk.objects.create(
+                published_speaker=self.speakers[1],
+                title="Talk topic 2",
+                abstract="Talk abstract 2",
+                event=self.event,
+                track=track,
+            ),
+            Talk.objects.create(
+                published_speaker=self.speakers[2],
+                title="Talk topic 3",
+                abstract="Talk abstract 3",
+                event=self.event,
+                track=track,
+            ),
+            Talk.objects.create(
+                published_speaker=self.speakers[3],
+                title="Talk topic 4",
+                abstract="Talk abstract 4",
+                event=self.event,
+                track=track,
+            ),
+            Talk.objects.create(
+                published_speaker=self.speakers[4],
+                title="Talk topic 5",
+                abstract="Talk abstract 5",
+                event=self.event,
+                track=track,
+            ),
+            Talk.objects.create(
+                published_speaker=self.speakers[5],
+                title="Talk topic 6",
+                abstract="Talk abstract 6",
+                event=self.event,
+                track=track,
+            ),
+        ]
+
+    def test_needs_staff(self):
+        # test anonymous get
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+        # test regular user
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+    def test_template(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "talk/talk_feedback_summary.html")
+
+    def test_context_without_feedback(self):
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        context = response.context
+        self.assertIn("talk_list", context)
+        self.assertEqual(len(context["talk_list"]), 0)
+
+    def test_context_with_less_than_5_talks_with_feedback(self):
+        user1, _ = attendee_testutils.create_test_user("user1@example.org")
+        attendee1 = Attendee.objects.create(user=user1, event=self.event)
+        user2, _ = attendee_testutils.create_test_user("user2@example.org")
+        attendee2 = Attendee.objects.create(user=user2, event=self.event)
+
+        AttendeeFeedback.objects.create(
+            attendee=attendee1, talk=self.talks[0], score=5, comment="Nice"
+        )
+        AttendeeFeedback.objects.create(
+            attendee=attendee2, talk=self.talks[0], score=3, comment="Me"
+        )
+        AttendeeFeedback.objects.create(
+            attendee=attendee1, talk=self.talks[1], score=5, comment="Marvelous"
+        )
+
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        context = response.context
+        self.assertIn("talk_list", context)
+        self.assertEqual(len(context["talk_list"]), 2)
+        talk_list = context["talk_list"]
+        self.assertEquals(talk_list[0], self.talks[1])
+        self.assertEquals(talk_list[1], self.talks[0])
+        self.assertEquals(talk_list[0].feedback_avg, 5.0)
+        self.assertEquals(talk_list[1].feedback_avg, 4.0)
+        self.assertEquals(talk_list[0].feedback_percent, 100)
+        self.assertEquals(talk_list[1].feedback_percent, 80)
+        self.assertEquals(talk_list[0].feedback_count, 1)
+        self.assertEquals(talk_list[1].feedback_count, 2)
+
+    def test_context_with_more_than_5_talks_with_feedback(self):
+        user1, _ = attendee_testutils.create_test_user("user1@example.org")
+        attendee1 = Attendee.objects.create(user=user1, event=self.event)
+        user2, _ = attendee_testutils.create_test_user("user2@example.org")
+        attendee2 = Attendee.objects.create(user=user2, event=self.event)
+
+        AttendeeFeedback.objects.create(
+            attendee=attendee1, talk=self.talks[0], score=5, comment="Nice"
+        )
+        AttendeeFeedback.objects.create(
+            attendee=attendee2, talk=self.talks[0], score=3, comment="Me"
+        )
+        AttendeeFeedback.objects.create(
+            attendee=attendee1, talk=self.talks[1], score=5, comment="Marvelous"
+        )
+        AttendeeFeedback.objects.create(
+            attendee=attendee1, talk=self.talks[2], score=3, comment="Marvelous"
+        )
+        AttendeeFeedback.objects.create(
+            attendee=attendee2, talk=self.talks[3], score=3, comment="Marvelous"
+        )
+        AttendeeFeedback.objects.create(
+            attendee=attendee1, talk=self.talks[4], score=2, comment="Marvelous"
+        )
+        AttendeeFeedback.objects.create(
+            attendee=attendee2, talk=self.talks[5], score=1, comment="Marvelous"
+        )
+
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+        context = response.context
+        self.assertIn("talk_list", context)
+        self.assertEqual(len(context["talk_list"]), 5)
+        talk_list = context["talk_list"]
+        self.assertEquals(talk_list[0], self.talks[1])
+        self.assertEquals(talk_list[1], self.talks[0])
+        self.assertEquals(talk_list[2], self.talks[2])
+        self.assertEquals(talk_list[3], self.talks[3])
+        self.assertEquals(talk_list[4], self.talks[4])
+        self.assertEquals(talk_list[0].feedback_avg, 5)
+        self.assertEquals(talk_list[1].feedback_avg, 4)
+        self.assertEquals(talk_list[2].feedback_avg, 3)
+        self.assertEquals(talk_list[3].feedback_avg, 3)
+        self.assertEquals(talk_list[4].feedback_avg, 2)
+        self.assertEquals(talk_list[0].feedback_percent, 100)
+        self.assertEquals(talk_list[1].feedback_percent, 80)
+        self.assertEquals(talk_list[2].feedback_percent, 60)
+        self.assertEquals(talk_list[3].feedback_percent, 60)
+        self.assertEquals(talk_list[4].feedback_percent, 40)
+        self.assertEquals(talk_list[0].feedback_count, 1)
+        self.assertEquals(talk_list[1].feedback_count, 2)
+        self.assertEquals(talk_list[2].feedback_count, 1)
+        self.assertEquals(talk_list[3].feedback_count, 1)
+        self.assertEquals(talk_list[4].feedback_count, 1)

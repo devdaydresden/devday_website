@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-02 15:20+0000\n"
-"PO-Revision-Date: 2019-05-02 17:20+0200\n"
+"POT-Creation-Date: 2019-05-14 15:02+0000\n"
+"PO-Revision-Date: 2019-05-14 17:03+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -75,15 +75,15 @@ msgstr "Abmelden"
 msgid "Send Email"
 msgstr "Email senden"
 
-#: devday/cms_toolbars.py:20
+#: devday/cms_toolbars.py:17
 msgid "Reports as CSV"
 msgstr "CSV-Reports"
 
-#: devday/cms_toolbars.py:22 devday/templates/admin/inc/branding.html:19
+#: devday/cms_toolbars.py:20 devday/templates/admin/inc/branding.html:19
 msgid "Inactive users"
 msgstr "Inaktive Benutzer"
 
-#: devday/cms_toolbars.py:24 devday/templates/admin/inc/branding.html:20
+#: devday/cms_toolbars.py:23 devday/templates/admin/inc/branding.html:20
 msgid "Users we may contact"
 msgstr "Benutzer, die kontaktiert werden dürfen"
 
@@ -91,9 +91,25 @@ msgstr "Benutzer, die kontaktiert werden dürfen"
 msgid "Current event attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
-#: devday/cms_toolbars.py:29
+#: devday/cms_toolbars.py:30
 msgid "Current event session summary"
 msgstr "Sessionzusammenfassung für aktuelles Event"
+
+#: devday/cms_toolbars.py:37
+msgid "Actions used on stage during event"
+msgstr "Aktionen während des Events"
+
+#: devday/cms_toolbars.py:40
+msgid "Raffle"
+msgstr "Verlosung"
+
+#: devday/cms_toolbars.py:44
+msgid "Event feedback"
+msgstr "Feedback zur Veranstaltung"
+
+#: devday/cms_toolbars.py:49
+msgid "Session feedback"
+msgstr "Feedback zu den Sessions"
 
 #: devday/extras.py:29 devday/tests/test_extras.py:65
 msgid "Unsupported image file format {}"

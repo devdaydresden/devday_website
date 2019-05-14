@@ -26,7 +26,7 @@
     {% addtoblock "js" %}
         <script type="text/javascript">
         let attendees = [
-            {% for attendee in attendee_list|dictsort:"user.email" %}'{{ attendee.user.email|escapejs }}'{% if not forloop.last %},{% endif %}
+            {% for attendee in attendee_list|dictsort:"checkin_code" %}'{{ attendee.checkin_code|escapejs }}'{% if not forloop.last %},{% endif %}
             {% endfor %}
         ];
         $(document).ready(function () {
@@ -34,7 +34,7 @@
 
             function raffleWinner(event) {
                 if (attendees.length === 0) {
-                    $('#raffle-area').append('<div class="col-md-8 offset-md-2 col-12 text-info">{% trans "No more attendees in the raffle" %}</div>')
+                    $('#raffle-area').append('<div class="col-md-8 offset-md-2 col-12 text-info">{% trans "No more attendees in the raffle" %}</div>');
                     $(this).off("click").attr("disabled", "disabled");
                     return;
                 }
@@ -42,7 +42,7 @@
                 let winner = attendees.splice(pos, 1);
 
                 $('#winners').append(
-                    '<div class="list-group-item"><span class="badge badge-success">' + count + '</span> ' + winner + '</div>'
+                    `<div class="list-group-item"><span class="badge badge-success">${count}</span> <span id="winner${count}">${winner}</span></div>`
                 );
                 count++;
             }

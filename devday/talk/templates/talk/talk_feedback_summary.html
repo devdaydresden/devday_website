@@ -1,0 +1,20 @@
+{% extends "devday_site.html" %}
+{% load i18n sekizai_tags %}
+{% block title %}{{ block.super }} - {% trans "Feedback summary" %}{% endblock %}
+{% block content %}
+    <div class="content-area">
+        <div class="row">
+            <div class="col-12 col-md-10 offset-md-1">
+                <h1>{% trans "Feedback summary - top 5 sessions" %} {{ event.title }}</h1>
+                {% if talk_list %}
+                    {% for talk in talk_list %}
+                        <h2>{{ talk.title }} - {{ talk.published_speaker.name }}</h2>
+                        <div class="bg-gradient-primary my-4 p-2 text-center text-white" style="width:{{ talk.feedback_percent|floatformat:"0" }}%"><strong>{{ talk.feedback_avg|floatformat:"1" }} ({% blocktrans count counter=talk.feedback_count %}1 Vote{% plural %}{{ counter }} Votes{% endblocktrans %})</strong></div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-warning alert-warning">{% trans "No session feedback found" %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

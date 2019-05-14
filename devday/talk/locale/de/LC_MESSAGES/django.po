@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-09 15:19+0000\n"
-"PO-Revision-Date: 2019-05-09 17:19+0200\n"
+"POT-Creation-Date: 2019-05-14 13:52+0000\n"
+"PO-Revision-Date: 2019-05-14 15:53+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -37,15 +37,15 @@ msgid_plural "%(count)d confirmation mails have been sent to %(attendees)s."
 msgstr[0] "Eine Bestätigungs-E-Mail wurde an %(attendees)s gesendet."
 msgstr[1] "%(count)d Bestätigungs-E-Mails wurden an %(attendees)s gesendet."
 
-#: talk/admin.py:166
+#: talk/admin.py:167
 msgid "Process waiting list for selected sessions"
 msgstr "Warteliste für ausgewählte Sessions verarbeiten"
 
-#: talk/admin.py:195
+#: talk/admin.py:197
 msgid "Talk slot created successfully"
 msgstr "Talk-Slot erfolgreich angelegt"
 
-#: talk/admin.py:222 talk/models.py:36 talk/models.py:71 talk/models.py:178
+#: talk/admin.py:224 talk/models.py:36 talk/models.py:71 talk/models.py:178
 #: talk/models.py:198
 msgid "Event"
 msgstr "Veranstaltung"
@@ -880,6 +880,25 @@ msgstr "Beispielcode"
 msgid "Your feedback for this session"
 msgstr "Dein Feedback für diese Session"
 
+#: talk/templates/talk/talk_feedback_summary.html:3
+msgid "Feedback summary"
+msgstr "Feedback-Zusammenfassung"
+
+#: talk/templates/talk/talk_feedback_summary.html:8
+msgid "Feedback summary - top 5 sessions"
+msgstr "Feedback-Zusammenfassung - Top 5 Sessions"
+
+#: talk/templates/talk/talk_feedback_summary.html:12
+#, python-format
+msgid "1 Vote"
+msgid_plural "%(counter)s Votes"
+msgstr[0] "Eine Bewertung"
+msgstr[1] "%(counter)s Bewertungen"
+
+#: talk/templates/talk/talk_feedback_summary.html:15
+msgid "No session feedback found"
+msgstr "Kein Session-Feedback vorhanden"
+
 #: talk/templates/talk/talk_form.html:3
 msgid "Submit session"
 msgstr "Session einreichen"
@@ -1004,8 +1023,8 @@ msgstr "Durchschnitt: %(average)s (Stimmen: %(count)s)"
 msgid "There are no sessions published yet."
 msgstr "Es wurden noch keine Sessions veröffentlicht."
 
-#: talk/tests/test_views.py:432 talk/tests/test_views.py:512
-#: talk/tests/test_views.py:775
+#: talk/tests/test_views.py:435 talk/tests/test_views.py:515
+#: talk/tests/test_views.py:778
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 

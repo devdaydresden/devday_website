@@ -58,6 +58,17 @@ Save the generated `vault-YYYYMMDD-HHMMSS+TZ.json` (file name is written at the
 top of the `init_unseal_fill_vault.sh` output. Keep the generated
 `postgresql_password` as you will need it later.
 
+# Unseal existing Vault
+
+If you are updating the application and Vault has restarted and was sealed, you can unseal it again by running:
+
+```
+pushd docker/vault
+./init_unseal_fill_vault.sh vault-timestamp.json
+```
+
+Replace `vault-timestamp.json` with the correct filename.
+
 # Start and initialize the database container
 
 ```

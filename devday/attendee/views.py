@@ -17,7 +17,7 @@ from django.db.transaction import atomic
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DeleteView, TemplateView, UpdateView, View
+from django.views.generic import DeleteView, DetailView, TemplateView, UpdateView, View
 from django.views.generic.edit import FormView, ModelFormMixin
 from django.views.generic.list import BaseListView, ListView
 from django_registration import signals
@@ -465,11 +465,11 @@ def get_reservation_list(attendee):
     msg = ""
     reservations = attendee.sessionreservation_set.filter(is_confirmed=True)
     if len(reservations) > 0:
-        msg += "<h4>{}</h4><ul>".format(
-            _("Attendee has confirmed place for"))
+        msg += "<h4>{}</h4><ul>".format(_("Attendee has confirmed place for"))
         for res in reservations:
             msg += "<li>{} <b>{}</b></li>".format(
-                res.talk.talkformat.first().name, res.talk.title)
+                res.talk.talkformat.first().name, res.talk.title
+            )
         msg += "</ul>"
     else:
         msg += "<p>{}</p>".format(_("Attendee has no reservations."))
@@ -496,7 +496,7 @@ class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
         attendee.check_in()
         attendee.save()
         context = self.get_form_kwargs()
-        context['form'] = form
+        context["form"] = form
         context["checkin_message"] = self.get_success_message(form.cleaned_data)
         context["checkin_reservations"] = get_reservation_list(attendee)
         return self.render_to_response(context)
@@ -504,7 +504,7 @@ class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
 
     def form_invalid(self, form):
         context = self.get_form_kwargs()
-        context['form'] = form
+        context["form"] = form
         if "attendee" in form.data:
             attendee = Attendee.objects.get_by_checkin_code_or_email(
                 form.data["attendee"], context["event"]
@@ -574,10 +574,12 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
                 {
                     "checkin_code": "already",
                     "checkin_result": _("Already checked in"),
-                    "checkin_message": _("Attendee <b>{}</b> has checked in at {}.").format(
+                    "checkin_message": _(
+                        "Attendee <b>{}</b> has checked in at {}."
+                    ).format(
                         attendee.user, attendee.checked_in.strftime("%H:%M %d.%m.%y")
                     ),
-                    "checkin_reservations": get_reservation_list(attendee)
+                    "checkin_reservations": get_reservation_list(attendee),
                 }
             )
             return context
@@ -585,12 +587,40 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
             {
                 "checkin_code": "OK",
                 "checkin_result": _("Welcome!"),
-                "checkin_message": _("Attendee <b>{}</b> was successfully checked in.").format(
-                    attendee.user
-                ),
-                "checkin_reservations": get_reservation_list(attendee)
+                "checkin_message": _(
+                    "Attendee <b>{}</b> was successfully checked in."
+                ).format(attendee.user),
+                "checkin_reservations": get_reservation_list(attendee),
             }
         )
+        return context
+
+
+class CheckInAttendeeSummaryView(StaffUserMixin, DetailView):
+    model = Event
+    template_name_suffix = "attendee_checkin_summary"
+    slug_url_kwarg = "event"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        event = context["event"]
+        attendees_for_event = Attendee.objects.filter(event=event)
+        context["attendees_registered"] = attendees_for_event.count()
+        context["attendees_checked_in"] = attendees_for_event.filter(
+            checked_in__isnull=False
+        ).count()
+        limited_sessions = Talk.objects.filter(event=event, spots__gt=0)
+        for talk in limited_sessions:
+            talk_reservations = SessionReservation.objects.filter(
+                is_confirmed=True, talk=talk
+            )
+            setattr(talk, "attendees_registered", talk_reservations.count())
+            setattr(
+                talk,
+                "attendees_checked_in",
+                talk_reservations.filter(attendee__checked_in__isnull=False).count(),
+            )
+        context["limited_sessions"] = limited_sessions
         return context
 
 

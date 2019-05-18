@@ -8,6 +8,7 @@ from attendee.views import (
     AttendeeRegistrationView,
     AttendeeToggleRaffleView,
     CheckInAttendeeQRView,
+    CheckInAttendeeSummaryView,
     CheckInAttendeeUrlView,
     CheckInAttendeeView,
     DevDayUserActivationView,
@@ -81,6 +82,11 @@ urlpatterns = [
         r"^(?P<event>[^/]+)/ac/(?P<id>[^/]+)/(?P<verification>[^/]+)/$",
         CheckInAttendeeUrlView.as_view(),
         name="attendee_checkin_url",
+    ),
+    url(
+        r"^(?P<event>[^/]+)/checkin-summary/$",
+        CheckInAttendeeSummaryView.as_view(),
+        name="attendee_checkin_summary",
     ),
     url(r"^(?P<event>[^/]+)/raffle/$", RaffleView.as_view(), name="raffle"),
     url(

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-18 12:08+0000\n"
-"PO-Revision-Date: 2019-05-10 15:00+0200\n"
+"POT-Creation-Date: 2019-05-18 21:13+0000\n"
+"PO-Revision-Date: 2019-05-18 23:15+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -31,9 +31,13 @@ msgstr "Wichtige Termine"
 msgid "Attendee management"
 msgstr "Teilnehmerverwaltung"
 
-#: attendee/cms_toolbars.py:16
+#: attendee/cms_toolbars.py:17
 msgid "Check in"
 msgstr "Einchecken"
+
+#: attendee/cms_toolbars.py:21
+msgid "Check in summary"
+msgstr "Check-In-Zusammenfassung"
 
 #: attendee/forms.py:21 attendee/forms.py:79
 msgid "Contact for other events"
@@ -223,6 +227,7 @@ msgid "Attendee"
 msgstr "Teilnehmer"
 
 #: attendee/models.py:175
+#: attendee/templates/event/eventattendee_checkin_summary.html:8
 msgid "Attendees"
 msgstr "Teilnehmer"
 
@@ -541,6 +546,20 @@ msgstr "Anmeldung stornieren"
 msgid "You are not currently registered to participate in any event."
 msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."
 
+#: attendee/templates/event/eventattendee_checkin_summary.html:3
+#: attendee/templates/event/eventattendee_checkin_summary.html:7
+#, python-format
+msgid "Checkin summary for %(event)s"
+msgstr "Check-In-Zusammenfassung für %(event)s"
+
+#: attendee/templates/event/eventattendee_checkin_summary.html:10
+msgid "Sessions with limited attendees"
+msgstr "Sessions mit begrenzter Teilnehmerzahl"
+
+#: attendee/templates/event/eventattendee_checkin_summary.html:17
+msgid "No sessions with limited attendees."
+msgstr "Keine Sessions mit begrenzter Teilnehmerzahl vorhanden."
+
 #: attendee/tests/test_models.py:104
 msgid "{} at {}"
 msgstr "{} für {}"
@@ -553,21 +572,18 @@ msgstr "Du hast bereits eingecheckt."
 msgid "You are not registered for the current event."
 msgstr "Du bist nicht für die aktuelle Veranstaltung angemeldet."
 
-#: attendee/views.py:469
+#: attendee/views.py:468
 msgid "Attendee has confirmed place for"
 msgstr "Teilnehmer hat reservierten Platz für"
 
 #: attendee/views.py:475
-#, fuzzy
-#| msgid "Attendee registration successful"
 msgid "Attendee has no reservations."
-msgstr "Teilnehmeranmeldung erfolgreich"
+msgstr "Teilnehmer hat keine Reservierungen."
 
 #: attendee/views.py:482
-#, fuzzy, python-brace-format
-#| msgid "<{email}> has been checked in successfully to {event}!"
+#, python-brace-format
 msgid "<b>{email}</b> has been checked in successfully to {event}!"
-msgstr "<{email}> wurde erfolgreich für {event} eingecheckt!"
+msgstr "<b>{email}</b> wurde erfolgreich für {event} eingecheckt!"
 
 #: attendee/views.py:544
 msgid "Invalid verification URL"
@@ -597,14 +613,14 @@ msgstr "Der Checkin-Code ist für eine andere Veranstaltung."
 msgid "Already checked in"
 msgstr "Bereits eingecheckt"
 
-#: attendee/views.py:577
+#: attendee/views.py:578
 msgid "Attendee <b>{}</b> has checked in at {}."
 msgstr "Teilnehmer <b>{}</b> hat bereits um {} eingecheckt."
 
-#: attendee/views.py:587
+#: attendee/views.py:589
 msgid "Welcome!"
 msgstr "Willkommen!"
 
-#: attendee/views.py:588
+#: attendee/views.py:591
 msgid "Attendee <b>{}</b> was successfully checked in."
 msgstr "Teilnehmer <b>{}</b> wurde erfolgreich eingecheckt."

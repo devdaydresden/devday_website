@@ -303,7 +303,7 @@ msgstr "Anmeldung bestätigen"
 #: attendee/templates/attendee/attendee_raffle.html:3
 #, python-format
 msgid "Raffle for %(event)s"
-msgstr "Feedback für %(event)s"
+msgstr "Verlosung für %(event)s"
 
 #: attendee/templates/attendee/attendee_raffle.html:7
 msgid "Raffle"

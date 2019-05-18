@@ -707,8 +707,7 @@ class CheckInAttendeeViewTest(TestCase):
     def test_post_checkin_code(self):
         self.login()
         r = self.client.post(self.url, data={"attendee": self.attendee.checkin_code})
-        self.assertEqual(r.status_code, 302, "should redirect to self")
-        self.assertEqual(r.url, self.url, "should redirect to self")
+        self.assertEqual(r.status_code, 200, "should show result page")
         r = self.client.get(self.url)
         self.assertEqual(r.status_code, 200, "should retrieve form")
         # FIXME attendee never changes over here, but does in the view
@@ -718,8 +717,7 @@ class CheckInAttendeeViewTest(TestCase):
     def test_post_email(self):
         self.login()
         r = self.client.post(self.url, data={"attendee": self.attendee.user.email})
-        self.assertEqual(r.status_code, 302, "should redirect to self")
-        self.assertEqual(r.url, self.url, "should redirect to self")
+        self.assertEqual(r.status_code, 200, "should show result page")
         r = self.client.get(self.url)
         self.assertEqual(r.status_code, 200, "should retrieve form")
         # FIXME attendee never changes over here, but does in the view

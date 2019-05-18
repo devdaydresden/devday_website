@@ -461,10 +461,25 @@ class DevDayUserDeleteView(LoginRequiredMixin, DeleteView):
         return reverse("pages-root")
 
 
+def get_reservation_list(attendee):
+    msg = ""
+    reservations = attendee.sessionreservation_set.filter(is_confirmed=True)
+    if len(reservations) > 0:
+        msg += "<h4>{}</h4><ul>".format(
+            _("Attendee has confirmed place for"))
+        for res in reservations:
+            msg += "<li>{} <b>{}</b></li>".format(
+                res.talk.talkformat.first().name, res.talk.title)
+        msg += "</ul>"
+    else:
+        msg += "<p>{}</p>".format(_("Attendee has no reservations."))
+    return msg
+
+
 class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
     template_name = "attendee/checkin.html"
     form_class = CheckInAttendeeForm
-    success_message = _("<{email}> has been checked in successfully to {event}!")
+    success_message = _("<b>{email}</b> has been checked in successfully to {event}!")
 
     def get_form_kwargs(self):
         context = super(CheckInAttendeeView, self).get_form_kwargs()
@@ -480,7 +495,22 @@ class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
         attendee = form.cleaned_data["attendee"]
         attendee.check_in()
         attendee.save()
-        return super().form_valid(form)
+        context = self.get_form_kwargs()
+        context['form'] = form
+        context["checkin_message"] = self.get_success_message(form.cleaned_data)
+        context["checkin_reservations"] = get_reservation_list(attendee)
+        return self.render_to_response(context)
+        # return super().form_valid(form)
+
+    def form_invalid(self, form):
+        context = self.get_form_kwargs()
+        context['form'] = form
+        if "attendee" in form.data:
+            attendee = Attendee.objects.get_by_checkin_code_or_email(
+                form.data["attendee"], context["event"]
+            )
+            context["checkin_reservations"] = get_reservation_list(attendee)
+        return self.render_to_response(context)
 
     def get_success_message(self, cleaned_data):
         attendee = cleaned_data["attendee"]
@@ -544,9 +574,10 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
                 {
                     "checkin_code": "already",
                     "checkin_result": _("Already checked in"),
-                    "checkin_message": _("Attendee {} has checked in at {}.").format(
+                    "checkin_message": _("Attendee <b>{}</b> has checked in at {}.").format(
                         attendee.user, attendee.checked_in.strftime("%H:%M %d.%m.%y")
                     ),
+                    "checkin_reservations": get_reservation_list(attendee)
                 }
             )
             return context
@@ -554,9 +585,10 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
             {
                 "checkin_code": "OK",
                 "checkin_result": _("Welcome!"),
-                "checkin_message": _("Attendee {} was successfully checked in.").format(
+                "checkin_message": _("Attendee <b>{}</b> was successfully checked in.").format(
                     attendee.user
                 ),
+                "checkin_reservations": get_reservation_list(attendee)
             }
         )
         return context

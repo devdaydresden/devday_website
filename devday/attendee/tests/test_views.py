@@ -22,7 +22,7 @@ from event.models import Event
 from event.tests import event_testutils
 from speaker.models import PublishedSpeaker
 from speaker.tests import speaker_testutils
-from talk.models import SessionReservation, Track
+from talk.models import SessionReservation, Talk, Track
 from talk.tests import talk_testutils
 
 ADMIN_EMAIL = "admin@example.org"
@@ -1191,3 +1191,117 @@ class FeedbackSummaryViewTest(TestCase):
         self.assertEquals(context["organisation_score_avg_percent"], 50)
         self.assertIn("session_score_avg_percent", context)
         self.assertEquals(context["session_score_avg_percent"], 70)
+
+
+class CheckInAttendeeSummaryViewTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event()
+        self.url = "/{}/checkin-summary/".format(self.event.slug)
+        self.user, self.password = attendee_testutils.create_test_user(
+            "staff@example.org", is_staff=True
+        )
+
+    def test_needs_staff(self):
+        # test anonymous get
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+        # test regular user
+        user, password = attendee_testutils.create_test_user()
+        self.client.login(username=user.get_username(), password=password)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+    def test_context_data(self):
+        # create speakers
+        speaker1, _, _ = speaker_testutils.create_test_speaker(
+            "speaker1@example.org", "Test Speaker 1"
+        )
+        speaker2, _, _ = speaker_testutils.create_test_speaker(
+            "speaker2@example.org", "Test Speaker 2"
+        )
+        speaker3, _, _ = speaker_testutils.create_test_speaker(
+            "speaker3@example.org", "Test Speaker 3"
+        )
+
+        # create_and_publish_talks
+        talk1 = Talk.objects.create(
+            draft_speaker=speaker1,
+            title="Talk 1",
+            abstract="Talk 1 unlimited",
+            event=self.event,
+        )
+        talk2 = Talk.objects.create(
+            draft_speaker=speaker2,
+            title="Talk 2",
+            spots=10,
+            abstract="Talk 2 limited to 10",
+            event=self.event,
+        )
+        talk3 = Talk.objects.create(
+            draft_speaker=speaker3,
+            title="Talk 3",
+            spots=5,
+            abstract="Talk 3 limited to 10",
+            event=self.event,
+        )
+        track = Track.objects.create(event=self.event, name="Track for event")
+        talk1.publish(track=track)
+        talk2.publish(track=track)
+        talk3.publish(track=track)
+
+        # create attendees
+        attendees = []
+        for i in range(10):
+            user, _ = attendee_testutils.create_test_user(
+                email="test{}@example.org".format(i)
+            )
+            attendees.append(Attendee.objects.create(event=self.event, user=user))
+        SessionReservation.objects.create(
+            attendee=attendees[0], talk=talk2, is_confirmed=True
+        )
+        SessionReservation.objects.create(
+            attendee=attendees[1], talk=talk2, is_confirmed=True
+        )
+        SessionReservation.objects.create(
+            attendee=attendees[2], talk=talk2, is_confirmed=False
+        )
+        SessionReservation.objects.create(
+            attendee=attendees[3], talk=talk3, is_confirmed=True
+        )
+        SessionReservation.objects.create(
+            attendee=attendees[4], talk=talk3, is_confirmed=True
+        )
+        SessionReservation.objects.create(
+            attendee=attendees[5], talk=talk3, is_confirmed=False
+        )
+        for i in (1, 2, 4, 5, 8, 9):
+            attendees[i].check_in()
+            attendees[i].save()
+
+        # check rendered context
+        self.client.login(username=self.user.get_username(), password=self.password)
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+        self.assertIn("attendees_registered", response.context)
+        self.assertEquals(response.context["attendees_registered"], 10)
+        self.assertIn("attendees_checked_in", response.context)
+        self.assertEquals(response.context["attendees_checked_in"], 6)
+        self.assertIn("limited_sessions", response.context)
+        self.assertEquals(len(response.context["limited_sessions"]), 2)
+        limited_sessions = response.context["limited_sessions"]
+        self.assertIn(talk2, limited_sessions)
+        self.assertIn(talk3, limited_sessions)
+        self.assertTrue(hasattr(limited_sessions[0], "attendees_registered"))
+        self.assertTrue(hasattr(limited_sessions[0], "attendees_checked_in"))
+        self.assertEqual(limited_sessions[0].attendees_registered, 2)
+        self.assertEqual(limited_sessions[0].attendees_checked_in, 1)
+        self.assertTrue(hasattr(limited_sessions[1], "attendees_registered"))
+        self.assertTrue(hasattr(limited_sessions[1], "attendees_checked_in"))
+        self.assertEqual(limited_sessions[1].attendees_registered, 2)
+        self.assertEqual(limited_sessions[1].attendees_checked_in, 1)

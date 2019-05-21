@@ -110,3 +110,13 @@ class EventTest(TestCase):
         )
         event.save()
         self.assertEqual(event.slug, "other")
+
+    def test_is_started(self):
+        now = timezone.now()
+        event = Event(
+            title="Test",
+            description="Test Event",
+            start_time=now - timedelta(hours=1),
+            end_time=now + timedelta(hours=1)
+        )
+        self.assertTrue(event.is_started())

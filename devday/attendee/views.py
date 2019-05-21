@@ -54,6 +54,7 @@ class AttendeeQRCodeMixIn(object):
                 context.update(
                     {
                         "message": _("You are already checked in."),
+                        "checkin_code": attendee.checkin_code,
                         "message_code": "already",
                     }
                 )

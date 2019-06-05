@@ -99,6 +99,9 @@ class Event(models.Model):
     def has_ended(self):
         return self.end_time < timezone.now()
 
+    def is_raffle_available(self):
+        return not self.has_ended()
+
     def get_absolute_url(self):
         return reverse("session_list", kwargs={"event": self.slug})
 

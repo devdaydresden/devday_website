@@ -1400,8 +1400,13 @@ class TestAttendeeTalkClearVote(TestCase):
 
 class TestTalkAddReservation(TestCase):
     def setUp(self):
+        now = timezone.now()
         self.event = event_testutils.create_test_event(
-            "test event", published=True, sessions_published=True
+            "test event",
+            published=True,
+            sessions_published=True,
+            start_time=now + timedelta(hours=1),
+            end_time=now + timedelta(hours=2),
         )
         speaker, _, _ = speaker_testutils.create_test_speaker()
         self.talk = talk_testutils.create_test_talk(
@@ -1889,8 +1894,13 @@ class TestTalkReservationWaiting(TestCase):
 
 class TestLimitedTalkList(TestCase):
     def setUp(self):
+        now = timezone.now()
         self.event = event_testutils.create_test_event(
-            "test event", published=True, sessions_published=True
+            "test event",
+            published=True,
+            sessions_published=True,
+            start_time=now + timedelta(hours=1),
+            end_time=now + timedelta(hours=2),
         )
         speaker1, _, _ = speaker_testutils.create_test_speaker()
         speaker2, _, _ = speaker_testutils.create_test_speaker(
@@ -2096,28 +2106,40 @@ class TestTalkFeedbackSummaryView(TestCase):
         )
         self.speakers = [
             PublishedSpeaker.objects.create(
-                name="Speaker 1", event=self.event, video_permission=True,
+                name="Speaker 1",
+                event=self.event,
+                video_permission=True,
                 email="testspeaker1@example.org",
             ),
             PublishedSpeaker.objects.create(
-                name="Speaker 2", event=self.event, video_permission=True,
-                email = "testspeaker2@example.org",
+                name="Speaker 2",
+                event=self.event,
+                video_permission=True,
+                email="testspeaker2@example.org",
             ),
             PublishedSpeaker.objects.create(
-                name="Speaker 3", event=self.event, video_permission=True,
-                email = "testspeaker3@example.org",
+                name="Speaker 3",
+                event=self.event,
+                video_permission=True,
+                email="testspeaker3@example.org",
             ),
             PublishedSpeaker.objects.create(
-                name="Speaker 4", event=self.event, video_permission=True,
-                email = "testspeaker4@example.org",
+                name="Speaker 4",
+                event=self.event,
+                video_permission=True,
+                email="testspeaker4@example.org",
             ),
             PublishedSpeaker.objects.create(
-                name="Speaker 5", event=self.event, video_permission=True,
-                email = "testspeaker5@example.org",
+                name="Speaker 5",
+                event=self.event,
+                video_permission=True,
+                email="testspeaker5@example.org",
             ),
             PublishedSpeaker.objects.create(
-                name="Speaker 6", event=self.event, video_permission=True,
-                email = "testspeaker6@example.org",
+                name="Speaker 6",
+                event=self.event,
+                video_permission=True,
+                email="testspeaker6@example.org",
             ),
         ]
         track = Track.objects.create(name="Test Track")

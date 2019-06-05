@@ -45,6 +45,12 @@ class Track(TimeStampedModel):
         return "{} ({})".format(self.name, self.event)
 
 
+class ReservableTalkManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            event__start_time__gt=timezone.now(), spots__gt=0)
+
+
 @python_2_unicode_compatible
 class Talk(models.Model):
     draft_speaker = models.ForeignKey(
@@ -74,6 +80,9 @@ class Talk(models.Model):
         verbose_name=_("Spots"),
         help_text=_("Maximum number of attendees for this talk"),
     )
+
+    objects = models.Manager()
+    reservable = ReservableTalkManager()
 
     class Meta:
         verbose_name = _("Session")
@@ -108,6 +117,10 @@ class Talk(models.Model):
     @property
     def is_limited(self):
         return self.spots > 0
+
+    @property
+    def is_reservation_available(self):
+        return self.is_limited and not self.event.is_started()
 
     @property
     def is_feedback_allowed(self):

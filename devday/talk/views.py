@@ -1068,7 +1068,7 @@ class TalkAddReservation(
 
     def get_talk_and_attendee(self, **kwargs):
         self.talk = get_object_or_404(
-            Talk, event=self.event, slug=kwargs["slug"], spots__gt=0
+            Talk, event=self.event, event__start_time__gt=timezone.now(), slug=kwargs["slug"], spots__gt=0
         )
 
     def get_context_data(self, **kwargs):
@@ -1293,8 +1293,8 @@ class LimitedTalkList(ListView):
             queryset=SessionReservation.objects.filter(is_confirmed=True),
         )
         return (
-            Talk.objects.filter(
-                event__slug=self.kwargs.get("event"), track__isnull=False, spots__gt=0
+            Talk.reservable.filter(
+                event__slug=self.kwargs.get("event"), track__isnull=False
             )
                 .prefetch_related(confirmed_reservations)
                 .order_by("title")

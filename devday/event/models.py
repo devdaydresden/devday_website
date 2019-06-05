@@ -93,6 +93,12 @@ class Event(models.Model):
     def is_started(self):
         return self.start_time < timezone.now()
 
+    def is_running(self):
+        return self.start_time < timezone.now() < self.end_time
+
+    def has_ended(self):
+        return self.end_time < timezone.now()
+
     def get_absolute_url(self):
         return reverse("session_list", kwargs={"event": self.slug})
 

@@ -1,0 +1,18 @@
+{% extends "devday_site.html" %}
+{% load i18n sekizai_tags %}
+{% block title %}{{ block.super }} // {% blocktrans with event=event.title %}Feedback for {{ event }}{% endblocktrans %}" %}{% endblock %}
+{% block content %}
+    <div class="content-area" id="raffle-area">
+        <div class="col-md-8 offset-md-2 col-12">
+            <h1>{% trans "Feedback" %}
+                <small class="text-muted">{% blocktrans count counter=feedback.comment__count %}from one attendee{% plural %}from {{ counter }} attendees{% endblocktrans %}</small>
+            </h1>
+            <h2>{% trans "How well has the event been organised?" %}</h2>
+            <div class="bg-gradient-primary my-4 p-2 text-white font-weight-bold" style="width:{{ overall_score_avg_percent }}%">{{ feedback.overall_score__avg|default_if_none:"-" }}</div>
+            <h2>{% trans "How much did the sessions fulfill your expectations?" %}</h2>
+            <div class="bg-gradient-primary my-4 p-2 text-white font-weight-bold" style="width:{{ organisation_score_avg_percent }}%">{{ feedback.organisation_score__avg|default_if_none:"-" }}</div>
+            <h2>{% trans "Please tell us what you liked specifically and what should be different next time." %}</h2>
+            <div class="bg-gradient-primary my-4 p-2 text-white font-weight-bold" style="width:{{ session_score_avg_percent }}%">{{ feedback.session_score__avg|default_if_none:"-" }}</div>
+        </div>
+    </div>
+{% endblock %}

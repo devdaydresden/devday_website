@@ -18,7 +18,7 @@ docker_compose_up() {
   # fill vault with content
   http_proxy= \
       curl -X POST -H "X-Vault-Token: devday_root" --fail \
-      --data '{"data": {"postgresql_password": "devday", "secret_key": "s3cr3t"}}' \
+      --data '{"data": {"postgresql_password": "devday", "secret_key": "s3cr3t", "confirmation_salt": "s4lt3d-stuff"}}' \
       http://localhost:8200/v1/secret/data/devday
   http_proxy= \
       curl -X PUT -H "X-Vault-Token: devday_root" --fail \

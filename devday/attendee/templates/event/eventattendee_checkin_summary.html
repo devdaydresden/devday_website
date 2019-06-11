@@ -1,0 +1,21 @@
+{% extends "devday_site.html" %}
+{% load i18n sekizai_tags %}
+{% block title %}{{ block.super }} // {% blocktrans with event=event.title %}Checkin summary for {{ event }}{% endblocktrans %}{% endblock %}
+{% block content %}
+    <div class="content-area" id="raffle-area">
+        <div class="col-md-8 offset-md-2 col-12">
+            <h1>{% blocktrans with event=event.title %}Checkin summary for {{ event }}{% endblocktrans %}</h1>
+            <h2>{% trans "Attendees" %}</h2>
+            <p style="font-size:300%">{{ attendees_checked_in }} / {{ attendees_registered }}</p>
+            <h2>{% trans "Sessions with limited attendees" %}</h2>
+            {% if limited_sessions %}
+                {% for limited_session in limited_sessions %}
+                    <h3>{{ limited_session.title }}</h3>
+                    <p style="font-size:300%">{{ limited_session.attendees_checked_in }} / {{ limited_session.attendees_registered }}</p>
+                {% endfor %}
+            {% else %}
+            <p>{% trans "No sessions with limited attendees." %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

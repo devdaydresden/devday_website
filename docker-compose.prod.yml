@@ -57,8 +57,10 @@ services:
     volumes:
       - "devday_media:/usr/local/apache2/htdocs/media"
       - "devday_static:/usr/local/apache2/htdocs/static"
+      - "devday_twitterwall:/usr/local/apache2/htdocs/twitterwall"
 
 volumes:
   vaultlogs:
   vaultfile:
   devday_logs:
+  devday_twitterwall:

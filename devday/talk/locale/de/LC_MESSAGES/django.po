@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-25 13:46+0000\n"
-"PO-Revision-Date: 2019-02-25 14:49+0100\n"
+"POT-Creation-Date: 2019-05-14 13:52+0000\n"
+"PO-Revision-Date: 2019-05-14 15:53+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -19,194 +19,272 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:64
+#: talk/admin.py:114
 #, python-format
 msgid "One Session has been published."
 msgid_plural "%(count)d sessions have been published."
 msgstr[0] "One Session has been published."
 msgstr[1] "%(count)d Sessions wurden veröffentlicht."
 
-#: talk/admin.py:75
+#: talk/admin.py:128
 msgid "Publish selected sessions"
 msgstr "Ausgewählte Sessions veröffentlichen"
 
-#: talk/admin.py:130 talk/models.py:33 talk/models.py:62 talk/models.py:144
-#: talk/models.py:164
+#: talk/admin.py:158
+#, python-format
+msgid "A confirmation mail has been sent to %(attendees)s."
+msgid_plural "%(count)d confirmation mails have been sent to %(attendees)s."
+msgstr[0] "Eine Bestätigungs-E-Mail wurde an %(attendees)s gesendet."
+msgstr[1] "%(count)d Bestätigungs-E-Mails wurden an %(attendees)s gesendet."
+
+#: talk/admin.py:167
+msgid "Process waiting list for selected sessions"
+msgstr "Warteliste für ausgewählte Sessions verarbeiten"
+
+#: talk/admin.py:197
+msgid "Talk slot created successfully"
+msgstr "Talk-Slot erfolgreich angelegt"
+
+#: talk/admin.py:224 talk/models.py:36 talk/models.py:71 talk/models.py:178
+#: talk/models.py:198
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: talk/forms.py:66
+#: talk/forms.py:82
 msgid "Submit"
 msgstr "Session einreichen"
 
-#: talk/forms.py:91
+#: talk/forms.py:106
 msgid "Update session"
 msgstr "Session aktualisieren"
 
-#: talk/forms.py:120 talk/forms.py:146
+#: talk/forms.py:134 talk/forms.py:157
 msgid "Add comment"
 msgstr "Kommentar hinzufügen"
 
-#: talk/models.py:18
+#: talk/forms.py:310
+msgid "Submit your feedback"
+msgstr "Feedback abschicken"
+
+#: talk/models.py:21
 msgid "XS"
 msgstr "XS"
 
-#: talk/models.py:19
+#: talk/models.py:22
 msgid "S"
 msgstr "S"
 
-#: talk/models.py:20
+#: talk/models.py:23
 msgid "M"
 msgstr "M"
 
-#: talk/models.py:21
+#: talk/models.py:24
 msgid "L"
 msgstr "L"
 
-#: talk/models.py:22
+#: talk/models.py:25
 msgid "XL"
 msgstr "XL"
 
-#: talk/models.py:23
+#: talk/models.py:26
 msgid "XXL"
 msgstr "XXL"
 
-#: talk/models.py:24
+#: talk/models.py:27
 msgid "XXXL"
 msgstr "XXXL"
 
-#: talk/models.py:36 talk/templates/talk/talk_grid_entry.html:3
+#: talk/models.py:39
 msgid "Track"
 msgstr "Track"
 
-#: talk/models.py:37
+#: talk/models.py:40
 msgid "Tracks"
 msgstr "Tracks"
 
-#: talk/models.py:48
+#: talk/models.py:52
 msgid "Speaker (draft)"
 msgstr "Sprecher (Entwurf)"
 
-#: talk/models.py:51
+#: talk/models.py:59
 msgid "Speaker (public)"
 msgstr "Sprecher (öffentlich)"
 
-#: talk/models.py:54 talk/templates/talk/talk_committee_overview.html:40
+#: talk/models.py:65 talk/templates/talk/talk_committee_overview.html:40
 msgid "Session title"
 msgstr "Sessionname"
 
-#: talk/models.py:55
+#: talk/models.py:66
 msgid "Slug"
 msgstr "Slug"
 
-#: talk/models.py:56 talk/templates/talk/talk_committee_details.html:50
+#: talk/models.py:67 talk/templates/talk/talk_committee_details.html:50
 msgid "Abstract"
 msgstr "Kurzbeschreibung"
 
-#: talk/models.py:57 talk/templates/talk/talk_committee_details.html:52
+#: talk/models.py:68 talk/templates/talk/talk_committee_details.html:52
 msgid "Remarks"
 msgstr "Anmerkungen"
 
-#: talk/models.py:60 talk/templates/talk/talk_committee_details.html:54
+#: talk/models.py:70 talk/templates/talk/talk_committee_details.html:54
 msgid "Talk Formats"
 msgstr "Session-Formate"
 
-#: talk/models.py:65
-msgid "Session"
-msgstr "Session"
-
-#: talk/models.py:66
-msgid "Sessions"
-msgstr "Sessions"
-
-#: talk/models.py:73 talk/tests/test_models.py:74
-msgid "A draft speaker or a published speaker is required."
-msgstr "Ein Sprecher (Entwurf) oder Sprecher (öffentlich) ist erforderlich."
-
-#: talk/models.py:96
-msgid "Youtube video id"
-msgstr "Youtube-Video-ID"
-
-#: talk/models.py:98
-msgid "Slideshare id"
-msgstr "Slideshare-ID"
-
-#: talk/models.py:100
-msgid "Source code"
-msgstr "Quellcode"
-
-#: talk/models.py:121
-msgid "Comment"
-msgstr "Kommentar"
-
-#: talk/models.py:123
-msgid "Visible for Speaker"
-msgstr "Sichtbar für den Sprecher"
-
-#: talk/models.py:125
-msgid "Indicates whether the comment is visible to the speaker."
-msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
-
-#: talk/models.py:141 talk/templates/talk/speaker_details.html:11
-msgid "Name"
-msgstr "Name"
-
-#: talk/models.py:143
-msgid "Priority"
-msgstr "Priorität"
-
-#: talk/models.py:149
-msgid "Room"
-msgstr "Raum"
-
-#: talk/models.py:150
-msgid "Rooms"
-msgstr "Räume"
-
-#: talk/models.py:167
-msgid "Time slot"
-msgstr "Zeitslot"
-
-#: talk/models.py:168
-msgid "Time slots"
-msgstr "Zeitslots"
-
-#: talk/models.py:182
+#: talk/models.py:74
 msgid "Spots"
 msgstr "Plätze"
 
-#: talk/models.py:183
+#: talk/models.py:75
 msgid "Maximum number of attendees for this talk"
 msgstr "Maximale Anzahl von Teilnehmern für diese Session"
 
+#: talk/models.py:79 talk/templates/talk/talk_voting.html:24
+msgid "Session"
+msgstr "Session"
+
+#: talk/models.py:80
+msgid "Sessions"
+msgstr "Sessions"
+
+#: talk/models.py:87 talk/tests/test_models.py:105
+msgid "A draft speaker or a published speaker is required."
+msgstr "Ein Sprecher (Entwurf) oder Sprecher (öffentlich) ist erforderlich."
+
+#: talk/models.py:127
+msgid "Youtube video id"
+msgstr "Youtube-Video-ID"
+
+#: talk/models.py:130
+msgid "Slideshare id"
+msgstr "Slideshare-ID"
+
+#: talk/models.py:133
+msgid "Source code"
+msgstr "Quellcode"
+
+#: talk/models.py:156 talk/models.py:318
+msgid "Comment"
+msgstr "Kommentar"
+
+#: talk/models.py:158
+msgid "Visible for Speaker"
+msgstr "Sichtbar für den Sprecher"
+
+#: talk/models.py:160
+msgid "Indicates whether the comment is visible to the speaker."
+msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
+
+#: talk/models.py:176 talk/templates/talk/speaker_details.html:11
+msgid "Name"
+msgstr "Name"
+
+#: talk/models.py:177
+msgid "Priority"
+msgstr "Priorität"
+
+#: talk/models.py:183
+msgid "Room"
+msgstr "Raum"
+
+#: talk/models.py:184
+msgid "Rooms"
+msgstr "Räume"
+
 #: talk/models.py:199
+msgid "Block"
+msgstr "Block"
+
+#: talk/models.py:202
+msgid "Time slot"
+msgstr "Zeitslot"
+
+#: talk/models.py:203
+msgid "Time slots"
+msgstr "Zeitslots"
+
+#: talk/models.py:218
+msgid "Talk slot"
+msgstr "Session-Slot"
+
+#: talk/models.py:219
+msgid "Talk slots"
+msgstr "Session-Slots"
+
+#: talk/models.py:228
 msgid "Duration"
 msgstr "Länge"
 
-#: talk/models.py:198 talk/models.py:199
+#: talk/models.py:233 talk/models.py:234
 msgid "Talk Format"
 msgstr "Session-Format"
 
-#: talk/models.py:214
+#: talk/models.py:244 talk/models.py:274 talk/models.py:304
 msgid "Attendee"
 msgstr "Teilnehmer"
 
-#: talk/models.py:218 talk/templates/talk/talk_committee_details.html:3
+#: talk/models.py:251 talk/models.py:281 talk/models.py:312
+#: talk/templates/talk/talk_committee_details.html:3
 #: talk/templates/talk/talk_details.html:3
 msgid "Talk"
 msgstr "Session"
 
-#: talk/models.py:222
+#: talk/models.py:256
 msgid "Confirmed"
 msgstr "Bestätigt"
 
-#: talk/models.py:225
+#: talk/models.py:257
+msgid "On waiting list"
+msgstr "Auf der Warteliste"
+
+#: talk/models.py:260
 msgid "Session reservation"
 msgstr "Platzreservierung"
 
-#: talk/models.py:226
+#: talk/models.py:261
 msgid "Session reservations"
 msgstr "Platzreservierungen"
+
+#: talk/models.py:291
+msgid "Attendee vote"
+msgstr "Teilnehmerabstimmung"
+
+#: talk/models.py:292
+msgid "Attendee votes"
+msgstr "Teilnehmerabstimmungen"
+
+#: talk/models.py:322
+msgctxt "attendee feedback singular form"
+msgid "Attendee feedback"
+msgstr "Teilnehmerfeedback"
+
+#: talk/models.py:325
+msgctxt "attendee feedback plural form"
+msgid "Attendee feedback"
+msgstr "Teilnehmerfeedback"
+
+#: talk/templates/talk/admin/publish_talks.html:8
+msgid ""
+"You are about to publish the following items. Please select a track for each "
+"item."
+msgstr ""
+"Du bist dabei die folgenden Sessions zu veröffentlichen. Bitte wähle einen "
+"Track für jede Session aus."
+
+#: talk/templates/talk/admin/publish_talks.html:35
+msgid "Publish talks"
+msgstr "Sessions veröffentlichen"
+
+#: talk/templates/talk/admin/talkslot_add_form.html:24
+msgid "first step"
+msgstr "Anfang"
+
+#: talk/templates/talk/admin/talkslot_add_form.html:26
+msgid "prev step"
+msgstr "Ende"
+
+#: talk/templates/talk/admin/talkslot_add_form.html:28
+msgid "submit"
+msgstr "Absenden"
 
 #: talk/templates/talk/prepare_submit_session.html:11
 msgid "You already have an account"
@@ -227,6 +305,271 @@ msgstr "Du hast noch kein Benutzerkonto?"
 #: talk/templates/talk/prepare_submit_session.html:21
 msgid "Register as speaker"
 msgstr "Als Sprecher registrieren"
+
+#: talk/templates/talk/sessionreservation_confirm_body.txt:1
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"you want to reserve a spot for „%(title)s“!\n"
+"\n"
+"Follow the link below to confirm your reservation\n"
+"\n"
+"%(scheme)s://%(domain)s%(confirmation_url)s\n"
+"\n"
+"The link is valid for one day.\n"
+"\n"
+"\n"
+"The Dev Day team\n"
+msgid_plural ""
+"Hello,\n"
+"\n"
+"you want to reserve a spot for „%(title)s“!\n"
+"\n"
+"Follow the link below to confirm your reservation\n"
+"\n"
+"%(scheme)s://%(domain)s%(confirmation_url)s\n"
+"\n"
+"The link is valid for %(days)s days.\n"
+"\n"
+"\n"
+"The Dev Day team\n"
+msgstr[0] ""
+"Hallo,\n"
+"\n"
+"du möchtest einen Platz für „%(title)s“ reservieren!\n"
+"\n"
+"Bitte folge dem unten stehenden Link, um deine Reservierung zu bestätigen\n"
+"\n"
+"%(scheme)s://%(domain)s%(confirmation_url)s\n"
+"\n"
+"Der Link ist für einen Tag gültig.\n"
+"\n"
+"\n"
+"Das Dev Day Team\n"
+msgstr[1] ""
+"Hallo,\n"
+"\n"
+"du möchtest einen Platz für „%(title)s“ reservieren!\n"
+"\n"
+"Bitte folge dem unten stehenden Link, um deine Reservierung zu bestätigen\n"
+"\n"
+"%(scheme)s://%(domain)s%(confirmation_url)s\n"
+"\n"
+"Der Link ist für %(days)s Tage gültig.\n"
+"\n"
+"\n"
+"Das Dev Day Team\n"
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:6
+#, python-format
+msgid "Waiting list removal for „%(title)s“"
+msgstr "Wartelistenentfernung für „%(title)s“"
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:8
+#, python-format
+msgid "Cancel reservation for „%(title)s“"
+msgstr "Reservierung für „%(title)s“ stornieren"
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:14
+msgid "Remove yourself from the waiting list"
+msgstr "Von der Warteliste nehmen"
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:15
+#, python-format
+msgid ""
+"Please click on the button below to remove yourself from the waiting list "
+"for „%(title)s“."
+msgstr ""
+"Bitte klicke auf den Button unten, um dich aus der Warteliste für "
+"„%(title)s“ entfernen zu lassen."
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:17
+msgid "Cancel your reservation"
+msgstr "Deine Reservierung stornieren"
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:18
+#, python-format
+msgid ""
+"Please click on the button below to cancel your reservation for „%(title)s“."
+msgstr ""
+"Bitte klicke auf den Button unten, um deine Reservierung für „%(title)s“ zu "
+"stornieren."
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:24
+msgid "Remove me from the waiting list"
+msgstr "Aus der Warteliste entfernen"
+
+#: talk/templates/talk/sessionreservation_confirm_cancel.html:24
+#: talk/templates/talk/talk_details.html:27
+#: talk/templates/talk/talk_limited_list_entry.html:28
+msgid "Cancel reservation"
+msgstr "Reservierung stornieren"
+
+#: talk/templates/talk/sessionreservation_confirm_failed.html:3
+#: talk/templates/talk/sessionreservation_confirm_failed.html:11
+msgid "Confirmation failed"
+msgstr "Bestätigung fehlgeschlagen"
+
+#: talk/templates/talk/sessionreservation_confirm_failed.html:6
+msgid "Your spot could not be confirmed"
+msgstr "Deine Platzreservierung konnte nicht bestätigt werden"
+
+#: talk/templates/talk/sessionreservation_confirm_failed.html:7
+#, python-format
+msgid "We could not reserve your spot for „%(title)s“."
+msgstr "Wir konnten deinen Platz für „%(title)s“ nicht reservieren."
+
+#: talk/templates/talk/sessionreservation_confirm_failed.html:9
+#: talk/templates/talk/sessionreservation_create.html:27
+msgid "You will get notified if another attendees' reservation is withdrawn."
+msgstr ""
+"Du wirst benachrichtigt, wenn die Reservierung eines anderen Teilnehmers "
+"zurückgezogen wird."
+
+#: talk/templates/talk/sessionreservation_confirm_failed.html:12
+msgid "We could not process your confirmation link."
+msgstr "Wir konnten deinen Bestätigungslink nicht verarbeiten."
+
+#: talk/templates/talk/sessionreservation_confirm_subject.txt:1
+#, python-format
+msgid "Confirm your reservation for „%(title)s“"
+msgstr "Bestätige deine Reservierung für „%(title)s“"
+
+#: talk/templates/talk/sessionreservation_confirmation_sent.html:3
+#, python-format
+msgid "Confirmation email for „%(title)s“ sent"
+msgstr "Bestätigungs-E-Mail für „%(title)s“ wurde gesendet"
+
+#: talk/templates/talk/sessionreservation_confirmation_sent.html:5
+msgid "Confirmation email sent"
+msgstr "Bestätigungs-E-Mail wurde gesendet"
+
+#: talk/templates/talk/sessionreservation_confirmation_sent.html:7
+msgid "We sent an email with a confirmation link to your email address."
+msgstr ""
+"Wir haben eine E-Mail mit einem Bestätigungslink an deine E-Mailadresse "
+"gesendet."
+
+#: talk/templates/talk/sessionreservation_confirmation_sent.html:9
+#, python-format
+msgid ""
+"You need to follow that link in the email to confirm your reservation for "
+"„<a href=\"%(talk_details)s\">%(title)s</a>“."
+msgstr ""
+"Bitte folge dem Link in der E-Mail, um deine Reservierung für „<a href="
+"\"%(talk_details)s\">%(title)s</a>“ zu bestätigen."
+
+#: talk/templates/talk/sessionreservation_confirmed.html:3
+#, python-format
+msgid "Spot for „%(title)s“ confirmed"
+msgstr "Platzreservierung für „%(title)s“ bestätigt"
+
+#: talk/templates/talk/sessionreservation_confirmed.html:5
+msgid "Your spot is confirmed"
+msgstr "Deine Platzreservierung ist bestätigt"
+
+#: talk/templates/talk/sessionreservation_confirmed.html:8
+#, python-format
+msgid ""
+"You successfully confirmed the reservation of your spot for „<a href="
+"\"%(talk_details)s\">%(title)s</a>“."
+msgstr ""
+"Du hast deine Platzreservierung für „<a href=\"%(talk_details)s\">%(title)s</"
+"a>“ erfolgreich bestätigt."
+
+#: talk/templates/talk/sessionreservation_create.html:3
+#, python-format
+msgid "Reserve spot for „%(title)s“"
+msgstr "Platz für „%(title)s“ reservieren"
+
+#: talk/templates/talk/sessionreservation_create.html:23
+msgid "Session is fully booked"
+msgstr "Session ist ausgebucht"
+
+#: talk/templates/talk/sessionreservation_create.html:25
+#, python-format
+msgid "The session „%(title)s“ is fully booked."
+msgstr "Die Session „%(title)s“ ist ausgebucht."
+
+#: talk/templates/talk/sessionreservation_create.html:26
+msgid "Click the button below to get on the waiting list."
+msgstr ""
+"Klicke auf den unten stehenden Button, um auf der Warteliste eingetragen zu "
+"werden."
+
+#: talk/templates/talk/sessionreservation_create.html:32
+#, python-format
+msgid "Reserve your spot for „%(title)s“"
+msgstr "Reserviere deinen Platz für „%(title)s“"
+
+#: talk/templates/talk/sessionreservation_create.html:33
+msgid "Click the button below to reserve your spot for the session."
+msgstr ""
+"Klicke auf den unten stehenden Button, um deinen Platz für die Session zu "
+"reservieren."
+
+#: talk/templates/talk/sessionreservation_create.html:38
+#: talk/templates/talk/talk_limited_list_entry.html:40
+msgid "Get on the waiting list"
+msgstr "Auf die Warteliste setzen"
+
+#: talk/templates/talk/sessionreservation_create.html:38
+#: talk/templates/talk/talk_details.html:34
+#: talk/templates/talk/talk_limited_list_entry.html:40
+msgid "Reserve spot"
+msgstr "Platz reservieren"
+
+#: talk/templates/talk/sessionreservation_resend_confirmation.html:4
+#, python-format
+msgid "Resend reservation mail for „%(title)s“"
+msgstr "Bestätigungs-E-Mail für „%(title)s“ erneut senden"
+
+#: talk/templates/talk/sessionreservation_resend_confirmation.html:7
+msgid "Resend the reservation mail"
+msgstr "Bestätigungs-E-Mail erneut senden"
+
+#: talk/templates/talk/sessionreservation_resend_confirmation.html:9
+#, python-format
+msgid ""
+"You reserved a spot in „%(title)s“ but have not confirmed your reservation "
+"yet."
+msgstr ""
+"Du hast einen Platz für „%(title)s“ angefragt aber deine Reservierung noch "
+"nicht bestätigt."
+
+#: talk/templates/talk/sessionreservation_resend_confirmation.html:10
+msgid ""
+"If you have not received the email with the confirmation link you can resend "
+"it by clicking on the button below."
+msgstr ""
+"Wenn du die E-Mail mit dem Bestätigungslink noch nicht erhalten hast, kannst "
+"du dir mit einem Klick auf den unten stehenden Button einen neuen "
+"Bestätigungslink zusenden lassen."
+
+#: talk/templates/talk/sessionreservation_resend_confirmation.html:15
+#: talk/templates/talk/talk_details.html:30
+#: talk/templates/talk/talk_limited_list_entry.html:34
+msgid "Resend confirmation mail"
+msgstr "Bestätigungs-E-Mail erneut senden"
+
+#: talk/templates/talk/sessionreservation_waiting.html:3
+#: talk/templates/talk/sessionreservation_waiting.html:5
+#, python-format
+msgid "Waiting list for „%(title)s“"
+msgstr "Warteliste für „%(title)s“"
+
+#: talk/templates/talk/sessionreservation_waiting.html:7
+msgid "The session is fully booked."
+msgstr "Die Session ist ausgebucht."
+
+#: talk/templates/talk/sessionreservation_waiting.html:8
+msgid ""
+"You are now placed on the waiting list for this session and will be notified "
+"if a spot becomes available."
+msgstr ""
+"Du stehst jetzt auf der Warteliste für diese Session und wirst "
+"benachrichtigt, wenn ein Platz frei wird."
 
 #: talk/templates/talk/speaker_activation_email.txt:1
 #, python-format
@@ -444,10 +787,13 @@ msgstr "durchschnittliche Bewertung"
 
 #: talk/templates/talk/talk_committee_details.html:65
 #: talk/templates/talk/talk_committee_overview.html:59
+#: talk/templates/talk/talk_voting.html:54
 msgid "No votes yet"
 msgstr "Noch keine Bewertungen"
 
 #: talk/templates/talk/talk_committee_details.html:67
+#: talk/templates/talk/talk_voting.html:26
+#: talk/templates/talk/talk_voting.html:43
 msgid "Your vote"
 msgstr "Deine Bewertung"
 
@@ -456,6 +802,7 @@ msgid "your vote"
 msgstr "deine Bewertung"
 
 #: talk/templates/talk/talk_committee_details.html:88
+#: talk/templates/talk/talk_voting.html:103
 msgid "Delete"
 msgstr "Löschen"
 
@@ -516,18 +863,41 @@ msgstr[1] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimmen)"
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
-#: talk/templates/talk/talk_details.html:19
+#: talk/templates/talk/talk_details.html:42
 msgid "Video"
 msgstr "Video"
 
-#: talk/templates/talk/talk_details.html:28
+#: talk/templates/talk/talk_details.html:55
 msgid "Slide deck"
 msgstr "Folien"
 
-#: talk/templates/talk/talk_details.html:38
+#: talk/templates/talk/talk_details.html:69
 #: talk/templates/talk/talk_videos.html:41
 msgid "Example code"
 msgstr "Beispielcode"
+
+#: talk/templates/talk/talk_details.html:77
+msgid "Your feedback for this session"
+msgstr "Dein Feedback für diese Session"
+
+#: talk/templates/talk/talk_feedback_summary.html:3
+msgid "Feedback summary"
+msgstr "Feedback-Zusammenfassung"
+
+#: talk/templates/talk/talk_feedback_summary.html:8
+msgid "Feedback summary - top 5 sessions"
+msgstr "Feedback-Zusammenfassung - Top 5 Sessions"
+
+#: talk/templates/talk/talk_feedback_summary.html:12
+#, python-format
+msgid "1 Vote"
+msgid_plural "%(counter)s Votes"
+msgstr[0] "Eine Bewertung"
+msgstr[1] "%(counter)s Bewertungen"
+
+#: talk/templates/talk/talk_feedback_summary.html:15
+msgid "No session feedback found"
+msgstr "Kein Session-Feedback vorhanden"
 
 #: talk/templates/talk/talk_form.html:3
 msgid "Submit session"
@@ -538,44 +908,58 @@ msgstr "Session einreichen"
 msgid "Submit a session for %(event_title)s"
 msgstr "Eine Session für %(event_title)s einreichen"
 
-#: talk/templates/talk/talk_grid.html:3 talk/templates/talk/talk_grid.html:13
+#: talk/templates/talk/talk_grid.html:3 talk/templates/talk/talk_grid.html:8
 #: talk/templates/talk/talk_list.html:3
 #: talk/templates/talk/talk_list_preview.html:3
 msgid "Schedule"
 msgstr "Sessionplan"
 
-#: talk/templates/talk/talk_grid.html:9
-msgid "Videos, Slides and Code"
-msgstr "Videos, Folien und Beispielcode"
-
-#: talk/templates/talk/talk_grid.html:11
-#, python-format
-msgid ""
-"See <a href=\"%(video_url)s\">videos, slides and example code</a> from this "
-"event."
-msgstr ""
-"Wir haben <a href=\"%(video_url)s\">Videos, Folien und Beispielcode</a> zu "
-"dieser Veranstaltung veröffentlich."
-
-#: talk/templates/talk/talk_grid.html:19
+#: talk/templates/talk/talk_grid.html:15
 msgid "Time"
 msgstr "Zeit"
 
-#: talk/templates/talk/talk_grid.html:50
+#: talk/templates/talk/talk_grid.html:34
 msgid "Nothing scheduled here"
 msgstr "Hier ist noch nichts geplant"
 
-#: talk/templates/talk/talk_grid.html:58
-msgid "no schedule defined yet"
-msgstr "Es wurde noch kein Sessionplan definiert"
-
-#: talk/templates/talk/talk_grid.html:61
+#: talk/templates/talk/talk_grid.html:94
 msgid "Unscheduled talks"
 msgstr "Sessions ohne Zuordnung"
 
+#: talk/templates/talk/talk_grid.html:102
+#: talk/templates/talk/talk_grid_entry.html:4
+msgid "Needs reservation"
+msgstr "Platzreservierung erforderlich"
+
+#: talk/templates/talk/talk_limited_list.html:3
+msgid "Workshop / Excursion reservation"
+msgstr "Reservierung für Workshop / Exkursion"
+
+#: talk/templates/talk/talk_limited_list.html:8
+msgid "Reserve your spots"
+msgstr "Plätze reservieren"
+
+#: talk/templates/talk/talk_limited_list.html:13
+msgid "There are no workshops or excursions that need a reservation."
+msgstr ""
+"Es gibt keine Workshops oder Exkursionen, für die Plätze reserviert werden "
+"können."
+
+#: talk/templates/talk/talk_limited_list_entry.html:19
+msgid "Fully booked"
+msgstr "Session ist ausgebucht"
+
+#: talk/templates/talk/talk_limited_list_entry.html:21
+msgid "Reservation"
+msgstr "Platzreservierung"
+
+#: talk/templates/talk/talk_limited_list_entry.html:31
+msgid "Remove from waiting list"
+msgstr "Aus der Warteliste entfernen"
+
 #: talk/templates/talk/talk_list.html:8
 msgid "Archive: List of Talks at"
-msgstr "Archiv: Liste der Vorträge vom "
+msgstr "Archiv: Liste der Vorträge vom"
 
 #: talk/templates/talk/talk_list_preview.html:7
 msgid "Schedule Preview"
@@ -609,7 +993,53 @@ msgstr "Keine Videos, Folien oder Beispielcode gefunden."
 msgid "Videos and Slides for %(event)s have not been published yet."
 msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."
 
-#: talk/tests/test_views.py:353 talk/tests/test_views.py:435
-#: talk/tests/test_views.py:690
+#: talk/templates/talk/talk_voting.html:4
+msgid "Schedule preview and voting"
+msgstr "Sessionvorschau und Abstimmung"
+
+#: talk/templates/talk/talk_voting.html:14
+msgid "Vote for your favourite sessions"
+msgstr "Stimme für deine bevorzugten Sessions"
+
+#: talk/templates/talk/talk_voting.html:15
+msgid ""
+"You may vote for your favourite sessions. We will use the voting results to "
+"plan the room assignments."
+msgstr ""
+"Hier kannst du für die Sessions abstimmen, die dich am meisten "
+"interessieren. Wir werden die Abstimmungsergebnisse  bei der Raumzuordnung "
+"für die Sessions zu berücksichtigen."
+
+#: talk/templates/talk/talk_voting.html:29
+msgid "Results"
+msgstr "Ergebnisse"
+
+#: talk/templates/talk/talk_voting.html:54
+#, python-format
+msgid "Average: %(average)s (Votes: %(count)s)"
+msgstr "Durchschnitt: %(average)s (Stimmen: %(count)s)"
+
+#: talk/templates/talk/talk_voting.html:65
+msgid "There are no sessions published yet."
+msgstr "Es wurden noch keine Sessions veröffentlicht."
+
+#: talk/tests/test_views.py:435 talk/tests/test_views.py:515
+#: talk/tests/test_views.py:778
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
+
+#: talk/views.py:1181
+msgid "This confirmation key has expired."
+msgstr "Der Bestätigungslink ist abgelaufen."
+
+#: talk/views.py:1182
+msgid "The confirmation key you provided is invalid."
+msgstr "Der Bestätigungslink ist ungültig."
+
+#: talk/views.py:1183
+msgid "The talk is overbooked."
+msgstr "Die Session ist überbucht."
+
+#: talk/views.py:1184
+msgid "You can confirm your own reservations only."
+msgstr "Du kannst nur deine eigenen Reservierungen bestätigen."

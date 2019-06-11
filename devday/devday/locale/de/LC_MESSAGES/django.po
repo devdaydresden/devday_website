@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-25 13:46+0000\n"
-"PO-Revision-Date: 2019-02-25 14:51+0100\n"
+"POT-Creation-Date: 2019-05-14 15:02+0000\n"
+"PO-Revision-Date: 2019-05-14 17:03+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -23,47 +23,51 @@ msgstr ""
 msgid "DevDay"
 msgstr "DevDay"
 
-#: devday/cms_menus.py:39
+#: devday/cms_menus.py:40
 msgid "Register now for {}"
 msgstr "Jetzt anmelden für {}"
 
-#: devday/cms_menus.py:45
+#: devday/cms_menus.py:46
 msgid "Submit session for {}"
 msgstr "Session einreichen für {}"
 
-#: devday/cms_menus.py:51
+#: devday/cms_menus.py:52
+msgid "Vote for your favourite sessions"
+msgstr "Stimme für deine bevorzugten Sessions"
+
+#: devday/cms_menus.py:57
 msgid "Sessions"
 msgstr "Sessions"
 
-#: devday/cms_menus.py:55
+#: devday/cms_menus.py:61
 msgid "Archive"
 msgstr "Archiv"
 
-#: devday/cms_menus.py:67
+#: devday/cms_menus.py:73
 msgid "Login"
 msgstr "Login"
 
-#: devday/cms_menus.py:72
+#: devday/cms_menus.py:78
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/cms_menus.py:79
+#: devday/cms_menus.py:85
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: devday/cms_menus.py:83
+#: devday/cms_menus.py:89
 msgid "Checkin QR Code"
 msgstr "QR-Code für Checkin"
 
-#: devday/cms_menus.py:89
+#: devday/cms_menus.py:95
 msgid "Speaker Profile"
 msgstr "Sprecher-Profil"
 
-#: devday/cms_menus.py:95
+#: devday/cms_menus.py:101
 msgid "Program Committee"
 msgstr "Programmkomittee"
 
-#: devday/cms_menus.py:99
+#: devday/cms_menus.py:105
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -71,15 +75,15 @@ msgstr "Abmelden"
 msgid "Send Email"
 msgstr "Email senden"
 
-#: devday/cms_toolbars.py:20
+#: devday/cms_toolbars.py:17
 msgid "Reports as CSV"
 msgstr "CSV-Reports"
 
-#: devday/cms_toolbars.py:22 devday/templates/admin/inc/branding.html:19
+#: devday/cms_toolbars.py:20 devday/templates/admin/inc/branding.html:19
 msgid "Inactive users"
 msgstr "Inaktive Benutzer"
 
-#: devday/cms_toolbars.py:24 devday/templates/admin/inc/branding.html:20
+#: devday/cms_toolbars.py:23 devday/templates/admin/inc/branding.html:20
 msgid "Users we may contact"
 msgstr "Benutzer, die kontaktiert werden dürfen"
 
@@ -87,9 +91,25 @@ msgstr "Benutzer, die kontaktiert werden dürfen"
 msgid "Current event attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
-#: devday/cms_toolbars.py:29
+#: devday/cms_toolbars.py:30
 msgid "Current event session summary"
 msgstr "Sessionzusammenfassung für aktuelles Event"
+
+#: devday/cms_toolbars.py:37
+msgid "Actions used on stage during event"
+msgstr "Aktionen während des Events"
+
+#: devday/cms_toolbars.py:40
+msgid "Raffle"
+msgstr "Verlosung"
+
+#: devday/cms_toolbars.py:44
+msgid "Event feedback"
+msgstr "Feedback zur Veranstaltung"
+
+#: devday/cms_toolbars.py:49
+msgid "Session feedback"
+msgstr "Feedback zu den Sessions"
 
 #: devday/extras.py:29 devday/tests/test_extras.py:65
 msgid "Unsupported image file format {}"
@@ -127,37 +147,41 @@ msgstr "Test-Email an mich selbst senden"
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
-#: devday/settings/base.py:126 devday/settings/base.py:214
+#: devday/settings/base.py:125 devday/settings/base.py:219
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:142
+#: devday/settings/base.py:141
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:143
+#: devday/settings/base.py:142
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:144
+#: devday/settings/base.py:143
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:145
+#: devday/settings/base.py:144
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/settings/base.py:150
+#: devday/settings/base.py:149
 msgid "Dev Day Page"
 msgstr "Dev-Day-Seite"
 
-#: devday/settings/base.py:151
+#: devday/settings/base.py:150
 msgid "Dev Day Page with Call to Action area"
 msgstr "Dev-Day-Seite mit Call-to-Action-Bereich"
 
-#: devday/settings/base.py:152
+#: devday/settings/base.py:151
 msgid "Dev Day Home Page"
 msgstr "Dev-Day-Homepage"
+
+#: devday/settings/base.py:154
+msgid "Page with all static placeholders not for menu"
+msgstr "Seite mit allen statischen Platzhaltern, nicht im Menü verlinken"
 
 #: devday/templates/400.html:3 devday/templates/400.html:10
 msgid "Bad Request"
@@ -192,6 +216,10 @@ msgstr "Öffne"
 msgid "my site"
 msgstr "meine Seite"
 
+#: devday/templates/base.html:82
+msgid "Thanks to our sponsors"
+msgstr "Danke an unsere Sponsoren"
+
 #: devday/templates/devday/sendemail.html:34
 msgid "Please correct the error below."
 msgstr "Bitte den unten aufgeführten Fehler korrigieren."
@@ -213,12 +241,28 @@ msgid "This static placeholder has not been filled yet."
 msgstr "Dieser Static Placeholder wurde noch nicht ausgefüllt."
 
 #: devday/templates/devday_index.html:25
+msgid "Reserve your spot in one of the workshops or the excursion."
+msgstr "Reserviere deinen Platz für einen der Workshops oder die Exkursion."
+
+#: devday/templates/devday_index.html:28
+msgid "Register spots"
+msgstr "Plätze reservieren"
+
+#: devday/templates/devday_index.html:37
 msgid "Sign up now - Be part of it!"
 msgstr "Jetzt anmelden - Sei dabei!"
 
-#: devday/templates/devday_index.html:32
+#: devday/templates/devday_index.html:44
 msgid "Submit session now"
 msgstr "Jetzt eine Session einreichen"
+
+#: devday/templates/devday_index.html:49
+msgid "Please give us feedback!"
+msgstr "Bitte gib uns Feedback!"
+
+#: devday/templates/devday_index.html:51
+msgid "Give feedback"
+msgstr "Feedback geben"
 
 #: devday/templates/django_file_form/upload_template.html:13
 msgid "Cancel"
@@ -453,34 +497,6 @@ msgstr ""
 #: devday/templates/django_registration/registration_form.html:3
 msgid "Register for Dev Day"
 msgstr "Für den Dev Day registrieren"
-
-#: devday/templates/talk/admin/publish_talks.html:8
-msgid ""
-"You are about to publish the following items. Please select a track for each "
-"item."
-msgstr ""
-"Du bist dabei die folgenden Einträge zu veröffentlichen. Bitte wähle einen "
-"Track für jeden Eintrag."
-
-#: devday/templates/talk/admin/publish_talks.html:35
-msgid "Publish talks"
-msgstr "Sessions veröffentlichen"
-
-#: devday/templates/talk/admin/talkslot_add_done.html:5
-msgid "Talk slot created successfully"
-msgstr "Talk-Slot erfolgreich angelegt"
-
-#: devday/templates/talk/admin/talkslot_add_form.html:24
-msgid "first step"
-msgstr "erster Schritt"
-
-#: devday/templates/talk/admin/talkslot_add_form.html:26
-msgid "prev step"
-msgstr "vorheriger Schritt"
-
-#: devday/templates/talk/admin/talkslot_add_form.html:28
-msgid "submit"
-msgstr "Abschicken"
 
 #: devday/utils/html_mail.py:51
 msgid "Dev Day Attendees {}"

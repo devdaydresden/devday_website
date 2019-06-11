@@ -1,0 +1,67 @@
+{% extends "devday_site.html" %}
+{% load i18n sekizai_tags %}
+{% block title %}{{ block.super }} // {% blocktrans with event=event.title %}Raffle for {{ event }}{% endblocktrans %}{% endblock %}
+{% block content %}
+    <div class="content-area" id="raffle-area">
+        <div class="col-md-8 offset-md-2 col-12">
+            <h1>{% trans "Raffle" %} <small class="text-muted">{% blocktrans count counter=attendee_list|length %}with one attendee{% plural %}with {{ counter }} attendees{% endblocktrans %}</small></h1>
+            {% if attendee_list %}
+                <p><button id="raffle" aria-label="raffle" class="btn btn-primary btn-lg">{% trans "Next winner" %}</button></p>
+                <div id="winners" class="list-group"></div>
+            {% else %}
+                <p>{% trans "Nobody in the raffle" %}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% addtoblock "css" %}
+        <style type="text/css">
+        #raffle-area {
+            min-height:50em;
+        }
+        #winners div {
+            font-size:200%;
+        }
+        </style>
+    {% endaddtoblock %}
+    {% addtoblock "js" %}
+        <script type="text/javascript">
+        let attendees = [
+            {% for attendee in attendee_list|dictsort:"checkin_code" %}'{{ attendee.checkin_code|escapejs }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+        $(document).ready(function () {
+            let count = 1;
+
+            function raffleWinner(event) {
+                if (attendees.length === 0) {
+                    $('#raffle-area').append('<div class="col-md-8 offset-md-2 col-12 text-info">{% trans "No more attendees in the raffle" %}</div>');
+                    $(this).off("click").attr("disabled", "disabled");
+                    return;
+                }
+                let pos = ~~(Math.random()*attendees.length);
+                let winner = attendees.splice(pos, 1)[0];
+
+                let q = jQuery.map(winner.split(''), function (letter) {
+                    return $('<span style="font-size:200%">' + letter + '</span>');
+                });
+
+                $('#winners').append(
+                    `<div class="list-group-item" style="line-height:200%"><span class="badge badge-success align-top">${count}</span> <span id="winner${count}"></span></div>`
+                );
+
+                let checkinCodeSpan = $(`#winner${count}`);
+                let c = 0;
+                let i = setInterval(function () {
+                    q[c].appendTo(checkinCodeSpan).hide().fadeIn(100).animate({'font-size':'180%'}, 50, function (){});
+                    c += 1;
+                    if (c >= q.length) clearInterval(i);
+                }, 1000);
+
+                count++;
+            }
+
+            $('#raffle').click(raffleWinner);
+        });
+        </script>
+    {% endaddtoblock %}
+{% endblock %}

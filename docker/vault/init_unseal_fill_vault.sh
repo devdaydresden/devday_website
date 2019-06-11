@@ -89,9 +89,10 @@ if ${CURL} --silent --fail -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/se
   echo "${VAULT_API_URL}/secret/data/devday exists, doing nothing."
 else
   ${CURL} --silent --fail -X POST -H "X-Vault-Token: ${ROOT_TOKEN}" \
-    --data "$(printf '{"data": {"postgresql_password": "%s", "secret_key": "%s"}}' \
+    --data "$(printf '{"data": {"postgresql_password": "%s", "secret_key": "%s", "confirmation_salt": "%s"}}' \
     $(openssl rand -base64 30) \
-    $(openssl rand -base64 64))" \
+    $(openssl rand -base64 64) \
+    $(openssl rand -base64 30))" \
     ${VAULT_API_URL}/secret/data/devday >/dev/null
   ${CURL} --silent --fail -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/secret/data/devday | python -m json.tool
 fi

@@ -8,7 +8,7 @@ from .event_testutils import unpublish_all_events
 class TestCurrentEventContextProcessor(TestCase):
     def test_current_event_in_context(self):
         context = current_event_contextprocessor(None)
-        self.assertIn('current_event', context)
+        self.assertIn("current_event", context)
 
     def test_current_event_not_in_context(self):
         unpublish_all_events()
@@ -17,8 +17,16 @@ class TestCurrentEventContextProcessor(TestCase):
 
     def test_talk_submission_open_in_context(self):
         context = current_event_contextprocessor(None)
-        self.assertIn('talk_submission_open', context)
+        self.assertIn("talk_submission_open", context)
 
     def test_attendee_registration_in_context(self):
         context = current_event_contextprocessor(None)
-        self.assertIn('attendee_registration_open', context)
+        self.assertIn("attendee_registration_open", context)
+
+    def test_sessions_published_in_context(self):
+        context = current_event_contextprocessor(None)
+        self.assertIn("sessions_published", context)
+
+    def test_event_feedback_open_in_context(self):
+        context = current_event_contextprocessor(None)
+        self.assertIn("event_feedback_open", context)

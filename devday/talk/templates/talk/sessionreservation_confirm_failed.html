@@ -1,0 +1,16 @@
+{% extends "devday_site.html" %}
+{% load crispy_forms_tags static i18n %}
+{% block title %}{{ block.super }} // {% trans "Confirmation failed" %}{% endblock %}
+{% block content_body %}
+    {% if reservation %}
+        <h1>{% trans "Your spot could not be confirmed" %}</h1>
+        <p>{% blocktrans with title=reservation.talk.title %}We could not reserve your spot for „{{ title }}“.{% endblocktrans %}</p>
+        <p>{{ message }}</p>
+        <p>{% trans "You will get notified if another attendees' reservation is withdrawn." %}</p>
+    {% else %}
+        <h1>{% trans "Confirmation failed" %}</h1>
+        <p>{% trans "We could not process your confirmation link." %}</p>
+        <p>{{ message }}</p>
+        <p>{{ code }}</p>
+    {% endif %}
+{% endblock %}

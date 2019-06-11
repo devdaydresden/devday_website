@@ -60,7 +60,7 @@ RUN apk --no-cache add \
     zlib-dev \
   && pip install pipenv
 
-RUN pipenv install --system --deploy --ignore-pipfile --dev
+RUN pipenv install --system --deploy --ignore-pipfile --dev --verbose
 
 EXPOSE 8000
 

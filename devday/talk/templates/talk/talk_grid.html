@@ -1,71 +1,110 @@
 {% extends "devday_site.html" %}
-{% load i18n %}
+{% load i18n cms_tags %}
 {% block title %}{{ block.super }} - {% trans "Schedule" %}{% endblock %}
 {% block content %}
-  <div class="content-area">
-   <div class="row">
-       <div class="col-12 col-md-10 offset-md-1">
-         {% if has_footage %}
-            <h1>{% trans "Videos, Slides and Code" %}</h1>
-            {% url "video_list" event=event.slug as video_url %}
-            <p>{% blocktrans %}See <a href="{{ video_url }}">videos, slides and example code</a> from this event.{% endblocktrans %}</p>
-            {% endif %}
-            <h1>{% trans "Schedule" %} {{ event.title }}</h1>
-            {% if talk_list %}
-            <div class="">
-                <table class="table session">
-                    <thead>
-                    <tr>
-                    <th>{% trans "Time" %}</th>
-                    {% for room in rooms %}
-                        <th><span>{{ room.name }}</span></th>
-                    {% endfor %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for timeslot in times %}
-                    <tr>
-                        <td>{{ timeslot.name }}</td>
-                        {% for talk_time, talks in talks_by_time_and_room.items %}
-                        {% if talk_time == timeslot %}
-                            {% if talks|length == 1 %}
-                            {% with talk=talks|first %}
-                                <td colspan="{{ rooms|length }}"
-                                    class="track-{{ talk.track.name|slugify }}">{% include "talk/talk_list_entry.html" %}</td>
-                            {% endwith %}
-                            {% else %}
-                            {% for room in rooms %}
-                                {% for talk in talks %}
-                                {% if talk.talkslot.room == room %}
-                                    <td class="track-{{ talk.track.name|slugify }}" data-label="{{talk.talkslot.room}}">{% include "talk/talk_list_entry.html" %}</td>
-                                {% endif %}
+    <div class="content-area">
+        <div class="row">
+            <div class="col-12 col-md-10 offset-md-1">
+                <h1>{% trans "Schedule" %} {{ event.title }}</h1>
+                {% static_placeholder "talk-grid-intro-text" %}
+                {% for session_block in blocks.values %}
+                    <div>
+                        <table class="table session">
+                            <thead>
+                            <tr>
+                                <th>{% trans "Time" %}</th>
+                                {% for room in session_block.rooms %}
+                                    <th><span>{{ room.name }}</span></th>
                                 {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for row in session_block.schedule %}
+                                {% with first_slot=row.time_slots.0.0 first_attributes=row.time_slots.0.1 %}
+                                    <tr>
+                                        <td>{{ first_slot.start_time|time:"TIME_FORMAT" }}
+                                            - {{ first_slot.end_time|time:"TIME_FORMAT" }}</td>
+                                        {% if row.room_talks|length_is:"0" %}
+                                            <td class="{% if first_slot.text_body %}no-talk{% else %}text-warning{% endif %}"
+                                                colspan="
+
+                                                        {% if "colspan" in first_attributes %}{{ first_attributes.colspan }}{% else %}{{ session_block.rooms|length }}{% endif %}">
+                                                {% if first_slot.text_body %}
+                                                    {{ first_slot.text_body }}{% else %}
+                                                    {% trans "Nothing scheduled here" %}{% endif %}
+                                            </td>
+                                        {% else %}
+                                            {% for talk_room, talk_assignment in row.room_talks.items %}
+                                                {% with time_slot=talk_assignment.0 talks=talk_assignment.1 %}
+                                                    <td
+                                                            {% if "rowspan" in talk_assignment.2 %}
+                                                                rowspan="{{ talk_assignment.2.rowspan }}"{% endif %}
+                                                                class="{% if talks|length_is:"0" %}track-no-talk{% elif talks|length_is:"1" %}track-
+
+                                                                    {{ talks.0.track|slugify }}{% else %}track-{{ talks.0.track|slugify }} d-sm-none d-xs-none d-md-none d-lg-none d-xl-table-cell{% endif %}"
+                                                                data-label="{{ talk_room.name }}">
+                                                        {% if talks|length_is:"0" %}
+                                                            {% comment %}no session in room{% endcomment %}
+                                                        {% elif talks|length_is:"1" %}
+                                                            {% with talk=talks|first %}
+                                                                {% include "talk/talk_grid_entry.html" %}
+                                                            {% endwith %}
+                                                        {% else %}
+                                                            <h4>{{ time_slot.text_body }}</h4>
+                                                            <ul>
+                                                                {% for talk in talks %}
+                                                                    <li>{% include "talk/talk_grid_entry.html" %}</li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        {% endif %}
+                                                    </td>
+                                                {% endwith %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    {% for talk_room, talk_assignment in row.room_talks.items %}
+                                        {% with time_slot=talk_assignment.0 talks=talk_assignment.1 %}
+                                            {% if "rowspan" in talk_assignment.2 %}
+                                                <tr class="d-sm-block d-xs-block d-md-block d-lg-block d-xl-none">
+                                                <td>{{ time_slot.start_time|time:"TIME_FORMAT" }} - {{ time_slot.end_time|time:"TIME_FORMAT" }}</td>
+                                                <td colspan="{{ session_block.rooms|length|add:"-1" }}"></td>
+                                                <td rowspan="{{ talk_assignment.2.rowspan }}">
+                                                    <h4>{{ time_slot.text_body }}</h4>
+                                                    <ul>
+                                                        {% for talk in talks %}
+                                                        <li>{% include "talk/talk_grid_entry.html" %}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                {% endwith %}
                             {% endfor %}
-                            {% endif %}
-                        {% endif %}
-                        {% endfor %}
-                        {% if timeslot not in talks_by_time_and_room %}
-                        <td class="{% if timeslot.text_body %}no-talk{% else %}text-warning{% endif %}"
-                            colspan="{{ rooms|length }}">{% if timeslot.text_body %}{{ timeslot.text_body }}{% else %}
-                            {% trans "Nothing scheduled here" %}{% endif %}</td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <p>{% trans "no schedule defined yet" %}</p>
-            {% endif %}
-            {% if unscheduled %}
-            <h2>{% trans "Unscheduled talks" %}</h2>
-            <ul>
-                {% for talk in unscheduled %}
-                <li class="track-{{ talk.track.name|slugify }}">{{ talk }}</li>
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if not forloop.last %}
+                        <hr>
+                    {% endif %}
                 {% endfor %}
-            </ul>
-            {% endif %}
-       </div>
-   </div>
-  </div>
+                {% if unscheduled %}
+                    <h2>{% trans "Unscheduled talks" %}</h2>
+                    <ul>
+                        {% for talk in unscheduled %}
+                            <li class="track-{{ talk.track.name|slugify }}">
+                                <a href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a>
+                                -
+                                <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
+                                {% if talk.spots %}
+                                    <a href="{% url "talk_reservation" event=talk.event.slug slug=talk.slug %}" class="btn btn-primary"><span class="talk-icons"><span class="fas fa-calendar-check float-left mt-1 mr-1"></span>{% trans "Needs reservation" %}</span></a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

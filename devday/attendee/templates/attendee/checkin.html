@@ -7,6 +7,12 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-12 col-md-10 offset-md-1 content-area">
+          <p>{{ checkin_message | safe }}</p>
+          {{ checkin_reservations | safe }}
+        </div>
+    </div>
+    <div class="row">
       <div class="col-12 col-md-10 offset-md-1 content-area">
             {% crispy form %}
         </div>

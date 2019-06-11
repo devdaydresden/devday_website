@@ -6,7 +6,7 @@ from .models import Event
 class EventAdmin(admin.ModelAdmin):
     model = Event
     list_display = ('title', 'registration_count', 'start_time', 'published',
-                    'registration_open', 'submission_open',
+                    'registration_open', 'submission_open', 'voting_open',
                     'sessions_published')
     prepopulated_fields = {'slug': ("title",)}
     filter_horizontal = ('talkformat', )

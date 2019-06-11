@@ -1,0 +1,43 @@
+{% extends "devday.html" %}
+{% load cms_tags crispy_forms_tags static i18n %}
+{% block title %}{{ block.super }} // {% blocktrans with title=talk.title %}Reserve spot for „{{ title }}“{% endblocktrans %}{% endblock %}
+{% block content_box_1 %}
+    {% url "public_speaker_profile" event=talk.event.slug slug=talk.published_speaker.slug as speaker_profile_url %}
+    <div class="row talk-details">
+        <div class="col-12">
+            <div class="talk-title">
+            <span class="year">{{ talk.event }}</span>
+            <h1 class="talk-name">{{ talk.title }}</h1>
+            </div>
+            <p><a href="{{ speaker_profile_url }}">{{ talk.published_speaker.name }}</a></p>
+            <p>{{ talk.abstract|linebreaksbr }}</p>
+        </div>
+    </div>
+{% endblock content_box_1 %}
+{% block content_box_2 %}
+    <div class="row">
+        <div class="col-12">
+            <div class="text-centered">
+                {% if fully_booked %}
+                    {% static_placeholder "session-reservation-intro-fully-booked" or %}
+                        <h1>{% trans "Session is fully booked" %}</h1>
+                        <p>
+                            {% blocktrans with title=talk.title %}The session „{{ title }}“ is fully booked.{% endblocktrans %}
+                            {% trans "Click the button below to get on the waiting list." %}
+                            {% trans "You will get notified if another attendees' reservation is withdrawn." %}
+                        </p>
+                    {% endstatic_placeholder %}
+                {% else %}
+                    {% static_placeholder "session-reservation-intro-free-slots" or %}
+                        <h1>{% blocktrans with title=talk.title %}Reserve your spot for „{{ title }}“{% endblocktrans %}</h1>
+                        <p>{% trans "Click the button below to reserve your spot for the session." %}</p>
+                    {% endstatic_placeholder %}
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline btn-call-action m-0">{% if fully_booked %}{% trans "Get on the waiting list" %}{% else %}{% trans "Reserve spot" %}{% endif %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content_box_2 %}

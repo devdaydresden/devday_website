@@ -1,0 +1,138 @@
+{% extends "devday_site.html" %}
+{% load i18n l10n sekizai_tags static cms_tags %}
+{% block title %}{{ block.super }} -
+    {% trans "Schedule preview and voting" %}{% endblock %}
+{% comment %}
+Template for attendee talk voting
+{% endcomment %}
+{% block content %}
+    <div class="content-area">
+        {% if talk_list %}
+            <div class="row">
+                <div class="col-12">
+                    {% static_placeholder "talk-voting-intro-text" or %}
+                        <h1>{% trans "Vote for your favourite sessions" %}</h1>
+                        <p>{% trans "You may vote for your favourite sessions. We will use the voting results to plan the room assignments." %}</p>
+                    {% endstatic_placeholder %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{% trans "Session" %}</th>
+                            {% if not event.sessions_published %}
+                                <th>{% trans "Your vote" %}</th>
+                            {% endif %}
+                            {% if user.is_staff %}
+                                <th>{% trans "Results" %}</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for talk in talk_list %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a>
+                                    -
+                                    <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
+                                </td>
+                                {% if not event.sessions_published %}
+                                    <td><input
+                                            title="{% trans "Your vote" %}"
+                                            id="talk-vote-{{ talk.pk }}-id"
+                                            name="talk-vote-{{ talk.pk }}"
+                                            type="number"
+                                            class="rating-loading"
+                                            data-size="xs"
+                                            data-talk-id="{{ talk.pk }}"
+                                            value="{{ talk.score|unlocalize }}">
+                                    </td>
+                                {% endif %}
+                                {% if user.is_staff %}
+                                    <td>{% if talk.vote_count %}{% blocktrans with count=talk.vote_count average=talk.vote_average|floatformat:"2" %}Average: {{ average }} (Votes: {{ count }}){% endblocktrans %}{% else %}{% trans "No votes yet" %}{% endif %}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col-12">
+                    {% trans "There are no sessions published yet." %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% addtoblock "js" %}
+        <script src="{% static "js/star-rating.js" %}"
+                type="text/javascript"></script>
+        <script type="text/javascript">
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        </script>
+    {% endaddtoblock %}
+    {% addtoblock "css" %}
+        <link rel="stylesheet"
+              href="{% static "css/star-rating.css" %}">
+        <link rel="stylesheet"
+              href="{% static "css/theme-krajee-svg.css" %}">
+    {% endaddtoblock %}
+    {% addtoblock "js" %}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.rating-loading').rating({
+                    theme: 'krajee-svg',
+                    filledStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                    emptyStar: '<span class="krajee-icon krajee-icon-star"></span>',
+                    clearButton: '<a class="btn">{% trans "Delete" %}</span>',
+                    showCaption: false,
+                    step: 1,
+                }).on('rating.clear', function (event) {
+                    $.ajax(
+                        "{% url 'attendee_vote_clear' event=event.slug %}",
+                        {
+                            data: {
+                                "score": null,
+                                "talk-id": $(event.target).data('talk-id')
+                            },
+                            headers: {
+                                "X-CSRFToken": getCookie('csrftoken')
+                            },
+                            method: 'POST'
+                        }
+                    );
+                }).on('rating.change', function (event, value, caption) {
+                    $.ajax(
+                        "{% url "attendee_vote_change" event=event.slug %}",
+                        {
+                            data: {
+                                "score": value,
+                                "talk-id": $(event.target).data('talk-id')
+                            },
+                            headers: {
+                                "X-CSRFToken": getCookie('csrftoken')
+                            },
+                            method: 'POST'
+                        }
+                    )
+                });
+            });
+        </script>
+    {% endaddtoblock %}
+{% endblock %}

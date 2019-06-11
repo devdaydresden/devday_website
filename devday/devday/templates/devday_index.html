@@ -11,10 +11,22 @@
 {% block content_box_1 %}{% placeholder "eventinfo" or %}Edit eventinfo{% endplaceholder %}{% endblock %}
 
 {% block content_box_2 %}
-{% if not attendee_registration_open and not talk_submission_open or has_change_permissions %}
+{% if not attendee_registration_open and not talk_submission_open and not sessions_published or has_change_permissions %}
 {% comment %}Keep until content from the audience placeholder has been migrated{% endcomment %}
+    <div class="{% if attendee_registration_open or talk_submission_open or sessions_published %}visible-to-editor-only{% endif %}">
 {% placeholder "audience" %}
 {% placeholder "save_the_date" or %}Edit save_the_date{% endplaceholder %}
+    </div>
+{% endif %}
+{% if sessions_published or has_change_permissions %}
+    {% if reservable_sessions or has_change_permissions %}
+        <div class="{% if not reservable_sessions %}visible-to-editor-only{% endif %}">
+        {% placeholder "reserve_spot" or %}{% trans "Reserve your spot in one of the workshops or the excursion." %}{% endplaceholder %}
+        <p><a class="btn btn-outline btn-call-action m-t-1"
+              href="{% url 'limited_talk_reservation' event=current_event.slug %}"
+              role="button">{% trans "Register spots" %}</a></p>
+        </div>
+    {% endif %}
 {% endif %}
 {% if attendee_registration_open or has_change_permissions %}
   <div class="{% if not attendee_registration_open %}visible-to-editor-only{% endif %}">
@@ -29,6 +41,13 @@
     {% placeholder "cfp_open" or %}Edit cfp_open{% endplaceholder %}
     <p><a class="btn btn-outline btn-call-action m-t-1"
           href="{% url 'submit_session' event=current_event.slug %}">{% trans "Submit session now" %}</a></p>
+  </div>
+{% endif %}
+{% if event_feedback_open or has_change_permissions %}
+  <div class="{% if not event_feedback_open %}visible-to-editor-only{% endif %}">
+      {% placeholder "action-event-feedback-intro" or %}<h4>{% trans "Please give us feedback!" %}</h4>{% endplaceholder %}
+    <p><a class="btn btn-outline btn-call-action m-t-1"
+          href="{% url "attendee_event_feedback" event=current_event.slug %}">{% trans "Give feedback" %}</a></p>
   </div>
 {% endif %}
 {% endblock %}

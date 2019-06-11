@@ -149,31 +149,3 @@ class SendEmailView(StaffUserMixin, SuccessMessageMixin, FormView):
             messages.success(self.request, self.success_message)
             msg.send()
             return self.render_to_response(self.get_context_data(form=form))
-
-
-class StaticPlaceholderView(StaffUserMixin, TemplateView):
-    template_name = 'devday/staticplaceholders.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['placeholders'] = [
-            'checkin-instructions',
-            'checkin-result',
-            'create-talk-introtext',
-            'gdpr_teaser',
-            'login-intro',
-            'register-attendee-introtext',
-            'register-intro',
-            'register-intro-anonymous',
-            'register-intro-introtext-authenticated',
-            'register-success',
-            'speaker-register',
-            'speaker_registered',
-            'sponsoring-intro-text',
-            'sponsoring-request-thanks',
-            'sponsors',
-            'submit-session-introtext',
-            'talk_submission_closed',
-            'talk_submitted',
-        ]
-        return context

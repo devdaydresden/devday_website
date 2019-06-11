@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 @apphook_pool.register
 class DevDayApphook(CMSApp):
-    name = _('DevDay')
+    name = _("DevDay")
 
     def get_urls(self, page=None, language=None, **kwargs):
-        return ['devday.maintainance_urls']
+        return []

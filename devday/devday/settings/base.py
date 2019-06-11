@@ -144,6 +144,11 @@ DJANGOCMS_STYLE_CHOICES = (
     ("col-md-12", gettext("col-md-12")),
 )
 DJANGOCMS_PICTURE_RESPONSIVE_IMAGES = False
+DJANGOCMS_PICTURE_TEMPLATES = (
+    ('carousel', _('Image in carousel')),
+    ('carousel_first', _('First image in carousel')),
+    ('gallery', _('Image in galery')),
+)
 
 CMS_TEMPLATES = (
     ("devday_no_cta.html", _("Dev Day Page")),

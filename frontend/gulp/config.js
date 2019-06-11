@@ -83,6 +83,7 @@ module.exports = {
             srcDir + '/js/components/image-modal.js',
             srcDir + '/js/components/collapse.js',
             srcDir + '/js/components/navbar.js',
+            srcDir + '/js/components/gallery.js',
             srcDir + '/js/components/qrcodelinks.js',
             srcDir + '/js/core/devday-registry.js',
         ],

@@ -23967,6 +23967,35 @@ var Navbar = function ($element, args) {
 
 
 
+/**
+ *
+ * @param  {[Object]} $element The Element the function fires to
+ * @param  {[type]} args     Arguments
+ */
+var Gallery = function ($element, args) {
+
+    'use strict';
+
+    var that = this;
+
+    /**
+     * jQuery and controll Vars
+     */
+    that.$baseElement = $element || $('[data-ui-gallery]');
+    that.$element = that.$baseElement;
+
+    /**
+     * Init of the whole function
+     */
+    that.initGallery = function () {
+        console.log('gallery')
+        baguetteBox.run('[data-ui-gallery]');
+    };
+
+
+    that.initGallery();
+};
+
 $(document).ready(function() {
   $('.qrcode').each(function(i,elem) {
     var qrcode = new QRCode($(elem).attr('data-src'));

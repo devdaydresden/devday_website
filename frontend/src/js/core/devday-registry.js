@@ -35,6 +35,7 @@ var devdayUIRegistry = function () {
         that.navbarCollapse = new ClassInstanceManager('.navbar-collapse', 'navbarCollapse');
         that.navbar = new ClassInstanceManager('[data-ui-navbar]', 'Navbar');
         that.imageModal = new ClassInstanceManager('[data-ui-image-modal]', 'ImageModal');
+        that.gallery = new ClassInstanceManager('[data-ui-gallery]', 'Gallery');
     };
 
     that.addInstances = function ($container) {

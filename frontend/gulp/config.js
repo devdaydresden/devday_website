@@ -44,12 +44,8 @@ module.exports = {
         dest: assets + '/css',
         options: {
             autoprefixer: {
-                browsers: [
-                    'last 2 versions',
-                    'safari 8',
-                    'ie 10',
-                    'ios 9',
-                    'android 4'
+                overrideBrowserslist: [
+                    'last 2 versions'
                 ],
                 cascade: true
             }
@@ -77,6 +73,7 @@ module.exports = {
             nodemodules + '/popper.js/dist/umd/popper-utils.js',
             nodemodules + '/bootstrap/dist/js/bootstrap.js',
             nodemodules + '/truncate.js/dist/truncate.js',
+            nodemodules + '/baguettebox.js/dist/baguetteBox.js',
             nodemodules + '/qrcode-svg/lib/qrcode.js',
             nodemodules + '/cropperjs/dist/cropper.js',
             srcDir + '/js/core/class-instance-manager.js',

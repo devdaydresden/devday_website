@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import TestCase
+from django.utils import timezone
 
 from attendee.models import Attendee
 from attendee.tests import attendee_testutils
@@ -65,6 +68,8 @@ class TestReservationContextProcessor(TestCase):
 
     def test_reservable_sessions_true_if_talks_with_spots(self):
         self.event.sessions_published = True
+        self.event.start_time = timezone.now() + timedelta(hours=1)
+        self.event.end_time = timezone.now() + timedelta(hours=2)
         self.event.save()
         speaker, _, _ = speaker_testutils.create_test_speaker()
         talk = talk_testutils.create_test_talk(

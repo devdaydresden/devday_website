@@ -19,7 +19,7 @@
             {% endif %}
             <p>{{ talk.abstract|linebreaksbr }}</p>
             {% if current %}
-                {% if talk.spots %}
+                {% if talk.is_reservation_available %}
                     <p><span class="talk-actions">
                         {% if reservation %}
                             {% if reservation.is_confirmed %}

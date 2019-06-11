@@ -120,3 +120,51 @@ class EventTest(TestCase):
             end_time=now + timedelta(hours=1)
         )
         self.assertTrue(event.is_started())
+
+    def test_is_running(self):
+        now = timezone.now()
+        event = Event(
+            title="Test running",
+            description="Test Event running",
+            start_time=now - timedelta(hours=1),
+            end_time=now + timedelta(hours=1)
+        )
+        self.assertTrue(event.is_running())
+        event = Event(
+            title="Test future",
+            description="Test Event not running yet",
+            start_time=now + timedelta(hours=1),
+            end_time=now + timedelta(hours=2)
+        )
+        self.assertFalse(event.is_running())
+        event = Event(
+            title="Test past",
+            description="Test Event not running anymore",
+            start_time=now - timedelta(hours=2),
+            end_time=now - timedelta(hours=1)
+        )
+        self.assertFalse(event.is_running())
+
+    def test_has_ended(self):
+        now = timezone.now()
+        event = Event(
+            title="Test running",
+            description="Test Event running",
+            start_time=now - timedelta(hours=1),
+            end_time=now + timedelta(hours=1)
+        )
+        self.assertFalse(event.has_ended())
+        event = Event(
+            title="Test future",
+            description="Test Event in the future",
+            start_time=now + timedelta(hours=1),
+            end_time=now + timedelta(hours=2)
+        )
+        self.assertFalse(event.has_ended())
+        event = Event(
+            title="Test past",
+            description="Test Event that has ended",
+            start_time=now - timedelta(hours=2),
+            end_time=now - timedelta(hours=1),
+        )
+        self.assertTrue(event.has_ended())

@@ -32,19 +32,23 @@
                                         {% for reservation in reservations %}
                                             {% with talk=reservation.talk %}
                                             <div class="list-group-item">
-                                                <p><a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}">{{ talk.title }}</a></p>
-                                                <p>
-                                                {% if reservation.is_confirmed %}
-                                                    <span class="fas fa-check-circle text-success" title="{% trans "You are a confirmed attendee of this session" %}" aria-label="{% trans "You are a confirmed attendee of this session" %}"></span>
-                                                    <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span class="fas fa-calendar-times"></span> {% trans "Cancel reservation" %}</a>
-                                                {% elif reservation.is_waiting %}
-                                                    <span class="fas fa-question-circle text-danger" title="{% trans "You are on a waiting list for this session" %}" aria-label="{% trans "You are on a waiting list for this session" %}"></span>
-                                                    <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span class="fas fa-calendar-times"></span> {% trans "Remove from waiting list" %}</a>
-                                                {% else %}
-                                                    <span class="fas fa-question-circle text-warning" title="{% trans "You have not confirmed your reservation for this session" %}" aria-label="{% trans "You have not confirmed your reservation for this session" %}"></span>
-                                                    <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}"><span class="fas fa-send"></span> {% trans "Resend confirmation mail" %}</a>
+                                                {% if talk.is_reservation_available %}
+                                                    <p><a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}">{{ talk.title }}</a></p>
+                                                    <p>
+                                                    {% if reservation.is_confirmed %}
+                                                        <span class="fas fa-check-circle text-success" title="{% trans "You are a confirmed attendee of this session" %}" aria-label="{% trans "You are a confirmed attendee of this session" %}"></span>
+                                                        <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span class="fas fa-calendar-times"></span> {% trans "Cancel reservation" %}</a>
+                                                    {% elif reservation.is_waiting %}
+                                                        <span class="fas fa-question-circle text-danger" title="{% trans "You are on a waiting list for this session" %}" aria-label="{% trans "You are on a waiting list for this session" %}"></span>
+                                                        <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span class="fas fa-calendar-times"></span> {% trans "Remove from waiting list" %}</a>
+                                                    {% else %}
+                                                        <span class="fas fa-question-circle text-warning" title="{% trans "You have not confirmed your reservation for this session" %}" aria-label="{% trans "You have not confirmed your reservation for this session" %}"></span>
+                                                        <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}"><span class="fas fa-send"></span> {% trans "Resend confirmation mail" %}</a>
+                                                    {% endif %}
+                                                    </p>
+                                                {% elif reservation.is_confirmed %}
+                                                    <p><a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}">{{ talk.title }}</a></p>
                                                 {% endif %}
-                                                </p>
                                             </div>
                                             {% endwith %}
                                         {% endfor %}
@@ -52,7 +56,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if event.id == current_event.id %}
+                                    {% if event.is_raffle_available %}
                                         <div class="form-check-inline">
                                             <input class="form-check-input" type="checkbox" {% if attendee.raffle %}checked{% endif %} id="raffle-checkbox" data-toggle-url="{% url "attendee_toggle_raffle" event=event.slug %}">
                                             <label class="form-check-label">{% trans "Take part in the raffle" %}</label>

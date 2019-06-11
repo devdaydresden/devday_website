@@ -15,7 +15,7 @@ def committee_member_context_processor(request):
 
 def reservation_context_processor(request):
     event = Event.objects.current_event()
-    if event.sessions_published:
+    if event.sessions_published and not event.is_started():
         return {
             "reservable_sessions": Talk.objects.filter(
                 event=event, track__isnull=False, spots__gt=0

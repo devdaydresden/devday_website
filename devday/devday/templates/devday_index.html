@@ -20,7 +20,7 @@
 {% endif %}
 {% if sessions_published or has_change_permissions %}
     {% if reservable_sessions or has_change_permissions %}
-        <div class="{% if not sessions_published %}visible-to-editor-only{% endif %}">
+        <div class="{% if not reservable_sessions %}visible-to-editor-only{% endif %}">
         {% placeholder "reserve_spot" or %}{% trans "Reserve your spot in one of the workshops or the excursion." %}{% endplaceholder %}
         <p><a class="btn btn-outline btn-call-action m-t-1"
               href="{% url 'limited_talk_reservation' event=current_event.slug %}"

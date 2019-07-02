@@ -227,7 +227,7 @@ LANGUAGES = (
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     "cms.middleware.utils.ApphookReloadMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

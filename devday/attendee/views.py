@@ -506,11 +506,6 @@ class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
     def form_invalid(self, form):
         context = self.get_form_kwargs()
         context["form"] = form
-        if "attendee" in form.data:
-            attendee = Attendee.objects.get_by_checkin_code_or_email(
-                form.data["attendee"], context["event"]
-            )
-            context["checkin_reservations"] = get_reservation_list(attendee)
         return self.render_to_response(context)
 
     def get_success_message(self, cleaned_data):

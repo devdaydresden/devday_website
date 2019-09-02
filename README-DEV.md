@@ -17,6 +17,23 @@ documentation links:
 - Gulp: https://github.com/gulpjs/gulp/tree/v3.9.1/docs
 - Docker/Docker-Compose: https://docs.docker.com/
 
+## Getting Started: Running for the first time
+
+```
+# ./run.sh devdata
+```
+
+This will create the required Docker containers, start the application and create some test data.
+
+After running this command you can go to http://localhost:8000 to browse the website or to http://localhost:8000/admin/ to get to the administration interface.
+
+You can use the following credentials to log in as administrator:
+
+```
+user: admin@devday.de
+password: admin
+``` 
+
 ## Running the development environment
 
 You can run a local development environment easily with Docker and Docker Compose.  Make sure you have current versions of both installed.

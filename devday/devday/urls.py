@@ -6,13 +6,20 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap as sitemap_view
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve as serve_static
+from rest_framework import routers
 
+from talk.api_views import SessionViewSet
 from twitterfeed.views import TwitterwallView
 from devday.views import (SendEmailView, exception_test_view)
 
 admin.autodiscover()
 
+router = routers.DefaultRouter()
+router.register(r"session", SessionViewSet)
+
 urlpatterns = [
+    url(r'^api/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/send_email/$', SendEmailView.as_view(), name='send_email'),
     url(r'^sitemap\.xml$', sitemap_view,
@@ -35,6 +42,7 @@ urlpatterns = [
 # This is only needed when using runserver.
 if settings.DEBUG:  # pragma: no cover
     import debug_toolbar
+
     urlpatterns = [
                       url(r'^__debug__/', include(debug_toolbar.urls)),
                       url(r'^media/(?P<path>.*)$', serve_static,

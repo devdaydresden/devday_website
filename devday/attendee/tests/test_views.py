@@ -726,6 +726,20 @@ class CheckInAttendeeViewTest(TestCase):
         # self.assertIsNotNone(self.attendee.checked_in,
         #                      'attendee should be checked in')
 
+    def _has_attendee_error(self, r):
+        s = BeautifulSoup(r.content, "lxml")
+        m = s.find(id="error_1_id_attendee")
+        if m:
+            return True
+        else:
+            return False
+
+    def test_post_none_existing_code_or_email(self):
+        self.login()
+        r = self.client.post(self.url, data={"attendee": "this is not an email address"})
+        self.assertEqual(r.status_code, 200, "should show result page")
+        self.assertTrue(self._has_attendee_error(r), "should show error")
+
 
 class CheckInAttendeeViewUrlTest(TestCase):
     @classmethod

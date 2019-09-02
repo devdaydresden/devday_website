@@ -13,7 +13,6 @@ pillow = "*"
 django-crispy-forms = "*"
 djangocms-admin-style = "*"
 djangocms-link = "*"
-djangocms-teaser = "*"
 djangocms-video = "*"
 djangocms-picture = "*"
 djangocms-style = "*"
@@ -45,4 +44,4 @@ mock = "*"
 pip = "==18.0"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

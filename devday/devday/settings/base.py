@@ -12,12 +12,13 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 Please keep this list of settings sorted alphabetically!
 
 """
-import os
 import mimetypes
-import requests
+import os
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
+
+import requests
 
 
 def gettext(s):
@@ -145,9 +146,9 @@ DJANGOCMS_STYLE_CHOICES = (
 )
 DJANGOCMS_PICTURE_RESPONSIVE_IMAGES = False
 DJANGOCMS_PICTURE_TEMPLATES = (
-    ('carousel', _('Image in carousel')),
-    ('carousel_first', _('First image in carousel')),
-    ('gallery', _('Image in galery')),
+    ("carousel", _("Image in carousel")),
+    ("carousel_first", _("First image in carousel")),
+    ("gallery", _("Image in galery")),
 )
 
 CMS_TEMPLATES = (
@@ -208,7 +209,6 @@ INSTALLED_APPS = [
     "djangocms_file",
     "djangocms_link",
     "djangocms_picture",
-    "djangocms_teaser",
     "djangocms_video",
     "crispy_forms",
     "django_file_form",
@@ -295,7 +295,6 @@ TEMPLATES = [
             "loaders": [
                 "django.template.loaders.filesystem.Loader",
                 "django.template.loaders.app_directories.Loader",
-                "django.template.loaders.eggs.Loader",
             ],
         },
     }

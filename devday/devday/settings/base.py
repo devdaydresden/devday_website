@@ -113,7 +113,9 @@ mimetypes.add_type("image/svg+xml", ".svg", True)
 # settings for django-django_registration
 # see: https://django-registration.readthedocs.io/en/2.1.1/index.html
 ACCOUNT_ACTIVATION_DAYS = 14
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "0.0.0.0"
+]
 AUTH_USER_MODEL = "attendee.DevDayUser"
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

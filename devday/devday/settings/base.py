@@ -55,6 +55,7 @@ def _fetch_from_vault():
         r = s.get(_VAULT_URL)
         r.raise_for_status()
         _VAULT_DATA = r.json()["data"]["data"]
+        s.close()
     return _VAULT_DATA
 
 

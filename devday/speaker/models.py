@@ -133,6 +133,7 @@ def create_public_image(portrait, public_image):
         temp_handle,
         save=False,
     )
+    temp_handle.close()
 
 
 def create_thumbnail(portrait, thumbnail):
@@ -159,6 +160,7 @@ def create_thumbnail(portrait, thumbnail):
         temp_handle,
         save=False,
     )
+    temp_handle.close()
 
 
 @receiver(models.signals.pre_save, sender=Speaker)

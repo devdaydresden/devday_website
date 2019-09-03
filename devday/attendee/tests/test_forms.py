@@ -287,6 +287,6 @@ class AttendeeEventFeedbackFormTest(TestCase):
         feedback = AttendeeEventFeedback.objects.get(
             attendee=self.attendee, event=self.event
         )
-        self.assertEquals(feedback.overall_score, 3)
-        self.assertEquals(feedback.organisation_score, 4)
-        self.assertEquals(feedback.session_score, 5)
+        self.assertEqual(feedback.overall_score, 3)
+        self.assertEqual(feedback.organisation_score, 4)
+        self.assertEqual(feedback.session_score, 5)

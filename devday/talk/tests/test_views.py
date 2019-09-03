@@ -308,8 +308,8 @@ class TestTalkDetails(TestCase):
         self.assertIn("feedback_form", response.context)
         feedback_form = response.context["feedback_form"]
         self.assertIsInstance(feedback_form, AttendeeTalkFeedbackForm)
-        self.assertEquals(feedback_form.attendee, attendee)
-        self.assertEquals(feedback_form.talk, self.talk)
+        self.assertEqual(feedback_form.attendee, attendee)
+        self.assertEqual(feedback_form.talk, self.talk)
 
     def test_with_no_attendee(self):
         user, password = attendee_testutils.create_test_user()
@@ -850,8 +850,8 @@ class TestTalkSpeakerCommentDelete(LoginTestMixin, TestCase):
 class TestRedirectVideoView(TestCase):
     def test_redirects_to_current_event_video_list(self):
         response = self.client.get("/videos/")
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
             response.url, "/{}/videos/".format(Event.objects.current_event().slug)
         )
 
@@ -894,7 +894,7 @@ class TestTalkListView(TestCase):
         event.published = False
         event.save()
         response = self.client.get("/{}/".format(event.slug))
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_talk_list_preview_view(self):
         response = self.client.get(
@@ -909,10 +909,10 @@ class TestTalkListView(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         root = ElementTree.fromstring(response.content)
-        self.assertEquals(root.tag, "schedule")
-        self.assertEquals(root.find("./conference/title").text, self.event.title)
-        self.assertEquals(len(root.findall("day/room")), 4)
-        self.assertEquals(len(root.findall("day/room/event")), 14)
+        self.assertEqual(root.tag, "schedule")
+        self.assertEqual(root.find("./conference/title").text, self.event.title)
+        self.assertEqual(len(root.findall("day/room")), 4)
+        self.assertEqual(len(root.findall("day/room/event")), 14)
 
     def test_infobeamer_xml_view_with_starttoday(self):
         response = self.client.get(
@@ -921,10 +921,10 @@ class TestTalkListView(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         root = ElementTree.fromstring(response.content)
-        self.assertEquals(root.tag, "schedule")
-        self.assertEquals(root.find("./conference/title").text, self.event.title)
-        self.assertEquals(len(root.findall("day/room")), 4)
-        self.assertEquals(len(root.findall("day/room/event")), 14)
+        self.assertEqual(root.tag, "schedule")
+        self.assertEqual(root.find("./conference/title").text, self.event.title)
+        self.assertEqual(len(root.findall("day/room")), 4)
+        self.assertEqual(len(root.findall("day/room/event")), 14)
         start_date = datetime.strptime(root.find("./conference/start").text, "%Y-%m-%d")
         start_time = root.find("./day").attrib["start"]
         talk_start_time = root.find("./day/room/event/date").text
@@ -937,7 +937,7 @@ class TestTalkListView(TestCase):
             talk_start_time[:-3] + talk_start_time[-2:], "%Y-%m-%dT%H:%M:%S%z"
         )
         today = datetime.today().date()
-        self.assertEquals(today, start_date.date())
+        self.assertEqual(today, start_date.date())
         self.assertEqual(today, start_time.date())
         self.assertEqual(today, talk_start_time.date())
 
@@ -955,8 +955,8 @@ class TestTalkListView(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         root = ElementTree.fromstring(response.content)
-        self.assertEquals(root.tag, "schedule")
-        self.assertEquals(len(root.findall("day/room/event")), 14)
+        self.assertEqual(root.tag, "schedule")
+        self.assertEqual(len(root.findall("day/room/event")), 14)
 
     def test_infobeamer_xml_view_skips_unused_room(self):
         self.event.room_set.create(name="Besenkammer")
@@ -965,13 +965,13 @@ class TestTalkListView(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         root = ElementTree.fromstring(response.content)
-        self.assertEquals(root.tag, "schedule")
-        self.assertEquals(len(root.findall("day/room")), 4)
+        self.assertEqual(root.tag, "schedule")
+        self.assertEqual(len(root.findall("day/room")), 4)
 
     def test_legacy_list_url(self):
         response = self.client.get(self.url[: -len("sessions/")] + "talk/")
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(response.url, self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.url)
 
     def test_talk_archive_list_view(self):
         event = Event.objects.all_but_current().first()
@@ -985,7 +985,7 @@ class TestTalkListView(TestCase):
         event.slug = "unpublished"
         event.save()
         response = self.client.get("/unpublished/sessions/")
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_talk_list_with_unscheduled(self):
         test_speaker, _, _ = speaker_testutils.create_test_speaker(
@@ -1058,8 +1058,8 @@ class TestTalkListView(TestCase):
 class TestInfoBeamerXMLView(TestCase):
     def test_unspecified_event_redirects_to_current(self):
         response = self.client.get("/schedule.xml")
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
             response.url,
             reverse("infobeamer", kwargs={"event": Event.objects.current_event().slug}),
         )
@@ -1070,7 +1070,7 @@ class TestInfoBeamerXMLView(TestCase):
         )
         response = self.client.get("/{}/schedule.xml".format(event.slug))
         self.assertEqual(response.resolver_match.url_name, "infobeamer")
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
 
 class TestTalkVideoView(TestCase):
@@ -1144,8 +1144,8 @@ class TestEventSessionSummaryView(TestCase):
 
     def test_get_session_summary_anonymous(self):
         r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(
             r.url,
             "/accounts/login/?next={}".format(self.url),
             "should redirect to login page",
@@ -1154,8 +1154,8 @@ class TestEventSessionSummaryView(TestCase):
     def test_get_session_summary_regular_user(self):
         self.client.login(username=self.user, password=self.user_password)
         r = self.client.get(self.url)
-        self.assertEquals(r.status_code, 302)
-        self.assertEquals(
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(
             r.url,
             "/accounts/login/?next={}".format(self.url),
             "should redirect to login page",
@@ -1164,7 +1164,7 @@ class TestEventSessionSummaryView(TestCase):
     def test_get_session_summary_staff(self):
         self.client.login(username=self.staff.email, password=self.staff_password)
         r = self.client.get(self.url)
-        self.assertEquals(
+        self.assertEqual(
             r.status_code, 200, "should retrieve data from {}".format(self.url)
         )
         self.assertIn(
@@ -1299,19 +1299,19 @@ class TestAttendeeTalkVote(TestCase):
     def test_voting_requires_post(self):
         self.client.login(username=self.user.email, password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_voting_requires_talk_id(self):
         self.client.login(username=self.user.email, password=self.password)
         response = self.client.post(self.url)
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_voting_requires_score(self):
         self.client.login(username=self.user.email, password=self.password)
         response = self.client.post(self.url, data={"talk-id": self.talk.id})
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertEquals(data["message"], "error")
+        self.assertEqual(data["message"], "error")
         self.assertIn("score", data["errors"])
 
     def test_voting_creates_attendee_vote(self):
@@ -1319,10 +1319,10 @@ class TestAttendeeTalkVote(TestCase):
         response = self.client.post(
             self.url, data={"talk-id": self.talk.id, "score": 3}
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {"message": "ok"})
         vote = self.attendee.attendeevote_set.get(talk=self.talk)
-        self.assertEquals(vote.score, 3)
+        self.assertEqual(vote.score, 3)
 
     def test_voting_updates_existing_vote(self):
         vote = self.talk.attendeevote_set.create(attendee=self.attendee, score=4)
@@ -1330,10 +1330,10 @@ class TestAttendeeTalkVote(TestCase):
         response = self.client.post(
             self.url, data={"talk-id": self.talk.id, "score": 3}
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {"message": "ok"})
         vote.refresh_from_db()
-        self.assertEquals(vote.score, 3)
+        self.assertEqual(vote.score, 3)
 
     def test_voting_closed_disables_view(self):
         self.event.voting_open = False
@@ -1368,25 +1368,25 @@ class TestAttendeeTalkClearVote(TestCase):
     def test_clear_voting_requires_post(self):
         self.client.login(username=self.user.email, password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_clear_voting_requires_talk_id(self):
         self.client.login(username=self.user.email, password=self.password)
         response = self.client.post(self.url)
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_clear_voting_removes_attendee_vote(self):
         vote = self.talk.attendeevote_set.create(attendee=self.attendee, score=4)
         self.client.login(username=self.user.email, password=self.password)
         response = self.client.post(self.url, data={"talk-id": self.talk.id})
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {"message": "vote deleted"})
         self.assertRaises(AttendeeVote.DoesNotExist, vote.refresh_from_db)
 
     def test_clear_voting_does_not_fail_with_no_existing_attendee_vote(self):
         self.client.login(username=self.user.email, password=self.password)
         response = self.client.post(self.url, data={"talk-id": self.talk.id})
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {"message": "vote deleted"})
 
     def test_voting_closed_disables_view(self):
@@ -1580,13 +1580,13 @@ class TestTalkResendReservationConfirmation(TestCase):
     def test_get_needs_reservation(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_get_renders_resend_confirmation_template(self):
         SessionReservation.objects.create(attendee=self.attendee, talk=self.talk)
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response, "talk/sessionreservation_resend_confirmation.html"
         )
@@ -1597,7 +1597,7 @@ class TestTalkResendReservationConfirmation(TestCase):
         )
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_get_returns_bad_request_if_reservation_is_waiting(self):
         SessionReservation.objects.create(
@@ -1605,7 +1605,7 @@ class TestTalkResendReservationConfirmation(TestCase):
         )
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_post_needs_login(self):
         response = self.client.post(self.url, data={})
@@ -1620,7 +1620,7 @@ class TestTalkResendReservationConfirmation(TestCase):
     def test_post_needs_reservation(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_post_returns_bad_request_if_reservation_is_confirmed(self):
         SessionReservation.objects.create(
@@ -1628,7 +1628,7 @@ class TestTalkResendReservationConfirmation(TestCase):
         )
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_post_returns_bad_request_if_reservation_is_waiting(self):
         SessionReservation.objects.create(
@@ -1636,7 +1636,7 @@ class TestTalkResendReservationConfirmation(TestCase):
         )
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_post_sends_confirmation_mail(self):
         reservation = SessionReservation.objects.create(
@@ -1686,13 +1686,13 @@ class TestTalkCancelReservation(TestCase):
     def test_get_needs_reservation(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_get_renders_cancel_reservation_template(self):
         SessionReservation.objects.create(attendee=self.attendee, talk=self.talk)
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "talk/sessionreservation_confirm_cancel.html")
 
     def test_post_needs_login(self):
@@ -1708,7 +1708,7 @@ class TestTalkCancelReservation(TestCase):
     def test_post_needs_reservation(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_post_deletes_reservation(self):
         SessionReservation.objects.create(attendee=self.attendee, talk=self.talk)
@@ -1811,7 +1811,7 @@ class TestTalkConfirmReservation(TestCase):
         self.assertIn("confirmation_error", response.context)
         self.assertEqual(response.context["confirmation_error"]["code"], "overbooked")
         self.assertIn("reservation", response.context)
-        self.assertEquals(response.context["reservation"], self.reservation)
+        self.assertEqual(response.context["reservation"], self.reservation)
         self.reservation.refresh_from_db()
         self.assertTrue(self.reservation.is_waiting)
         self.assertFalse(self.reservation.is_confirmed)
@@ -2027,7 +2027,7 @@ class TestAttendeeTalkFeedback(TestCase):
     def test_post_only(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_post_creates_attendee_feedback(self):
         self.assertFalse(
@@ -2039,11 +2039,11 @@ class TestAttendeeTalkFeedback(TestCase):
         response = self.client.post(
             self.url, data={"score": "5", "comment": "Wonderful"}
         )
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.json()["success"], True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["success"], True)
         feedback = AttendeeFeedback.objects.get(attendee=self.attendee, talk=self.talk)
-        self.assertEquals(feedback.score, 5)
-        self.assertEquals(feedback.comment, "Wonderful")
+        self.assertEqual(feedback.score, 5)
+        self.assertEqual(feedback.comment, "Wonderful")
 
     def test_post_updates_existing_attendee_feedback(self):
         AttendeeFeedback.objects.create(
@@ -2053,11 +2053,11 @@ class TestAttendeeTalkFeedback(TestCase):
         response = self.client.post(
             self.url, data={"score": "5", "comment": "Wonderful"}
         )
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.json()["success"], True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["success"], True)
         feedback = AttendeeFeedback.objects.get(attendee=self.attendee, talk=self.talk)
-        self.assertEquals(feedback.score, 5)
-        self.assertEquals(feedback.comment, "Wonderful")
+        self.assertEqual(feedback.score, 5)
+        self.assertEqual(feedback.comment, "Wonderful")
 
     def test_post_for_future_talk_error_response(self):
         self.talk.talkslot.time.start_time = timezone.now() + timedelta(minutes=1)
@@ -2071,8 +2071,8 @@ class TestAttendeeTalkFeedback(TestCase):
         response = self.client.post(
             self.url, data={"score": "5", "comment": "Wonderful"}
         )
-        self.assertEquals(response.status_code, 400)
-        self.assertEquals(response.json()["errors"], "not allowed")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["errors"], "not allowed")
         self.assertFalse(
             AttendeeFeedback.objects.filter(
                 attendee=self.attendee, talk=self.talk
@@ -2087,7 +2087,7 @@ class TestAttendeeTalkFeedback(TestCase):
         )
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
         response_json = response.json()
         self.assertIn("errors", response_json)
         self.assertFalse(
@@ -2201,18 +2201,18 @@ class TestTalkFeedbackSummaryView(TestCase):
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_template(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "talk/talk_feedback_summary.html")
 
     def test_context_without_feedback(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         context = response.context
         self.assertIn("talk_list", context)
         self.assertEqual(len(context["talk_list"]), 0)
@@ -2235,19 +2235,19 @@ class TestTalkFeedbackSummaryView(TestCase):
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         context = response.context
         self.assertIn("talk_list", context)
         self.assertEqual(len(context["talk_list"]), 2)
         talk_list = context["talk_list"]
-        self.assertEquals(talk_list[0], self.talks[1])
-        self.assertEquals(talk_list[1], self.talks[0])
-        self.assertEquals(talk_list[0].feedback_avg, 5.0)
-        self.assertEquals(talk_list[1].feedback_avg, 4.0)
-        self.assertEquals(talk_list[0].feedback_percent, 100)
-        self.assertEquals(talk_list[1].feedback_percent, 80)
-        self.assertEquals(talk_list[0].feedback_count, 1)
-        self.assertEquals(talk_list[1].feedback_count, 2)
+        self.assertEqual(talk_list[0], self.talks[1])
+        self.assertEqual(talk_list[1], self.talks[0])
+        self.assertEqual(talk_list[0].feedback_avg, 5.0)
+        self.assertEqual(talk_list[1].feedback_avg, 4.0)
+        self.assertEqual(talk_list[0].feedback_percent, 100)
+        self.assertEqual(talk_list[1].feedback_percent, 80)
+        self.assertEqual(talk_list[0].feedback_count, 1)
+        self.assertEqual(talk_list[1].feedback_count, 2)
 
     def test_context_with_more_than_5_talks_with_feedback(self):
         user1, _ = attendee_testutils.create_test_user("user1@example.org")
@@ -2279,28 +2279,28 @@ class TestTalkFeedbackSummaryView(TestCase):
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         context = response.context
         self.assertIn("talk_list", context)
         self.assertEqual(len(context["talk_list"]), 5)
         talk_list = context["talk_list"]
-        self.assertEquals(talk_list[0], self.talks[1])
-        self.assertEquals(talk_list[1], self.talks[0])
-        self.assertEquals(talk_list[2], self.talks[2])
-        self.assertEquals(talk_list[3], self.talks[3])
-        self.assertEquals(talk_list[4], self.talks[4])
-        self.assertEquals(talk_list[0].feedback_avg, 5)
-        self.assertEquals(talk_list[1].feedback_avg, 4)
-        self.assertEquals(talk_list[2].feedback_avg, 3)
-        self.assertEquals(talk_list[3].feedback_avg, 3)
-        self.assertEquals(talk_list[4].feedback_avg, 2)
-        self.assertEquals(talk_list[0].feedback_percent, 100)
-        self.assertEquals(talk_list[1].feedback_percent, 80)
-        self.assertEquals(talk_list[2].feedback_percent, 60)
-        self.assertEquals(talk_list[3].feedback_percent, 60)
-        self.assertEquals(talk_list[4].feedback_percent, 40)
-        self.assertEquals(talk_list[0].feedback_count, 1)
-        self.assertEquals(talk_list[1].feedback_count, 2)
-        self.assertEquals(talk_list[2].feedback_count, 1)
-        self.assertEquals(talk_list[3].feedback_count, 1)
-        self.assertEquals(talk_list[4].feedback_count, 1)
+        self.assertEqual(talk_list[0], self.talks[1])
+        self.assertEqual(talk_list[1], self.talks[0])
+        self.assertEqual(talk_list[2], self.talks[2])
+        self.assertEqual(talk_list[3], self.talks[3])
+        self.assertEqual(talk_list[4], self.talks[4])
+        self.assertEqual(talk_list[0].feedback_avg, 5)
+        self.assertEqual(talk_list[1].feedback_avg, 4)
+        self.assertEqual(talk_list[2].feedback_avg, 3)
+        self.assertEqual(talk_list[3].feedback_avg, 3)
+        self.assertEqual(talk_list[4].feedback_avg, 2)
+        self.assertEqual(talk_list[0].feedback_percent, 100)
+        self.assertEqual(talk_list[1].feedback_percent, 80)
+        self.assertEqual(talk_list[2].feedback_percent, 60)
+        self.assertEqual(talk_list[3].feedback_percent, 60)
+        self.assertEqual(talk_list[4].feedback_percent, 40)
+        self.assertEqual(talk_list[0].feedback_count, 1)
+        self.assertEqual(talk_list[1].feedback_count, 2)
+        self.assertEqual(talk_list[2].feedback_count, 1)
+        self.assertEqual(talk_list[3].feedback_count, 1)
+        self.assertEqual(talk_list[4].feedback_count, 1)

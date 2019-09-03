@@ -1,9 +1,9 @@
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.urls import reverse
 
 from attendee.models import Attendee
 from attendee.tests.attendee_testutils import create_test_user

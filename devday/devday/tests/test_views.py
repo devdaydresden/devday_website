@@ -3,8 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core import mail
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse_lazy
 from django.test import TestCase
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.timezone import datetime
 

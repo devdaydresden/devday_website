@@ -1,22 +1,21 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+from event.models import Event
 from menus.base import Menu, Modifier, NavigationNode
 from menus.menu_pool import menu_pool
-
 from talk import COMMITTEE_GROUP
-from event.models import Event
 
-
-CAN_CHECK_IN = 'can_check_in'
-CHILDREN = 'children'
-EVENT = 'event'
-IS_SPEAKER = 'is_speaker'
-IS_COMMITTEE_MEMBER = 'is_committee_member'
-SUBMISSION_OPEN = 'submission_open'
-VOTING_OPEN = 'voting_open'
-SESSIONS_PUBLISHED = 'sessions_published'
-USER_CAN_REGISTER = 'user_can_register'
+CAN_CHECK_IN = "can_check_in"
+CHILDREN = "children"
+EVENT = "event"
+IS_SPEAKER = "is_speaker"
+IS_COMMITTEE_MEMBER = "is_committee_member"
+SUBMISSION_OPEN = "submission_open"
+VOTING_OPEN = "voting_open"
+SESSIONS_PUBLISHED = "sessions_published"
+USER_CAN_REGISTER = "user_can_register"
 
 
 @menu_pool.register_menu
@@ -37,72 +36,92 @@ class DevDayMenu(Menu):
         if event:
             entries.append(
                 NavigationNode(
-                    _('Register now for {}').format(event.title),
-                    reverse('login_or_register_attendee',
-                            kwargs={'event': event.slug}),
-                    1, attr={USER_CAN_REGISTER: True}))
+                    _("Register now for {}").format(event.title),
+                    reverse("login_or_register_attendee", kwargs={"event": event.slug}),
+                    1,
+                    attr={USER_CAN_REGISTER: True},
+                )
+            )
             entries.append(
                 NavigationNode(
-                    _('Submit session for {}').format(event.title),
-                    reverse('create_session',
-                            kwargs={'event': event.slug}),
-                    2, attr={SUBMISSION_OPEN: True}))
+                    _("Submit session for {}").format(event.title),
+                    reverse("create_session", kwargs={"event": event.slug}),
+                    2,
+                    attr={SUBMISSION_OPEN: True},
+                )
+            )
             entries.append(
                 NavigationNode(
-                    _('Vote for your favourite sessions'),
-                    reverse('attendee_voting', kwargs={'event': event.slug}),
-                    3, attr={VOTING_OPEN: True, CAN_CHECK_IN: True}))
+                    _("Vote for your favourite sessions"),
+                    reverse("attendee_voting", kwargs={"event": event.slug}),
+                    3,
+                    attr={VOTING_OPEN: True, CAN_CHECK_IN: True},
+                )
+            )
             entries.append(
                 NavigationNode(
-                    _('Sessions'),
+                    _("Sessions"),
                     event.get_absolute_url(),
-                    4, attr={SESSIONS_PUBLISHED: True}))
+                    4,
+                    attr={SESSIONS_PUBLISHED: True},
+                )
+            )
 
-        archive = NavigationNode(_('Archive'), '#', 50, attr={CHILDREN: True})
-        events = Event.objects.filter(
-            end_time__lt=timezone.now()
-            ).exclude(id=Event.objects.current_event_id())
-        for e in events.order_by('start_time'):
+        archive = NavigationNode(_("Archive"), "#", 50, attr={CHILDREN: True})
+        events = Event.objects.filter(end_time__lt=timezone.now()).exclude(
+            id=Event.objects.current_event_id()
+        )
+        for e in events.order_by("start_time"):
             archive.children.append(
-                NavigationNode(e.title, e.get_absolute_url(),
-                               e.id, attr={EVENT: True}))
+                NavigationNode(e.title, e.get_absolute_url(), e.id, attr={EVENT: True})
+            )
         entries.append(archive)
 
         entries.append(
             NavigationNode(
-                _('Login'), reverse('auth_login'), 99,
-                attr={
-                    'visible_for_authenticated': False,
-                }))
+                _("Login"),
+                reverse("auth_login"),
+                99,
+                attr={"visible_for_authenticated": False},
+            )
+        )
         profile = NavigationNode(
-            _('Profile'), '#', 60,
-            attr={
-                'icon': 'fa-user',
-                'visible_for_anonymous': False,
-            })
+            _("Profile"),
+            "#",
+            60,
+            attr={"icon": "fa-user", "visible_for_anonymous": False},
+        )
         entries.append(profile)
         profile.children.append(
-            NavigationNode(_('Settings'), reverse('user_profile'), 1))
+            NavigationNode(_("Settings"), reverse("user_profile"), 1)
+        )
         if event:
             profile.children.append(
                 NavigationNode(
-                    _('Checkin QR Code'),
-                    reverse('attendee_checkin_qrcode',
-                            kwargs={'event': event.slug}),
-                    2, attr={CAN_CHECK_IN: True}))
+                    _("Checkin QR Code"),
+                    reverse("attendee_checkin_qrcode", kwargs={"event": event.slug}),
+                    2,
+                    attr={CAN_CHECK_IN: True},
+                )
+            )
         profile.children.append(
             NavigationNode(
-                _('Speaker Profile'),
-                reverse('user_speaker_profile'), 3,
-                attr={IS_SPEAKER: True}))
+                _("Speaker Profile"),
+                reverse("user_speaker_profile"),
+                3,
+                attr={IS_SPEAKER: True},
+            )
+        )
 
         profile.children.append(
             NavigationNode(
-                _('Program Committee'),
-                reverse('talk_overview'), 4,
-                attr={IS_COMMITTEE_MEMBER: True}))
-        profile.children.append(
-            NavigationNode(_('Logout'), reverse('auth_logout'), 5))
+                _("Program Committee"),
+                reverse("talk_overview"),
+                4,
+                attr={IS_COMMITTEE_MEMBER: True},
+            )
+        )
+        profile.children.append(NavigationNode(_("Logout"), reverse("auth_logout"), 5))
         return entries
 
 
@@ -115,30 +134,40 @@ class DevDayModifier(Modifier):
     """
 
     def user_can_register(self, request, event):
-        return (event and event.published
-                and event.registration_open
-                and (not request.user.is_authenticated
-                     or request.user.get_attendee(event) is None))
+        return (
+            event
+            and event.published
+            and event.registration_open
+            and (
+                not request.user.is_authenticated
+                or request.user.get_attendee(event) is None
+            )
+        )
 
     def user_can_check_in(self, request, event):
-        return (request.user.is_authenticated and event.published
-                and request.user.get_attendee(event) is not None)
+        return (
+            request.user.is_authenticated
+            and event.published
+            and request.user.get_attendee(event) is not None
+        )
 
     def user_is_committee_member(self, request):
-        return (request.user.is_authenticated
-                and request.user.groups.filter(name=COMMITTEE_GROUP).exists())
+        return (
+            request.user.is_authenticated
+            and request.user.groups.filter(name=COMMITTEE_GROUP).exists()
+        )
 
     def prune_nodes_with_events(self, nodes, request):
         for node in nodes[:]:
             if EVENT in node.attr:
                 e = Event.objects.get(id=node.id)
                 if not request.user.is_staff and (
-                        not e.published or not e.sessions_published):
+                    not e.published or not e.sessions_published
+                ):
                     nodes.remove(node)
 
     def prune_nodes(self, nodes, attr, fn):
-        affected_nodes = list(
-            filter(lambda n: attr in n.attr, nodes))
+        affected_nodes = list(filter(lambda n: attr in n.attr, nodes))
         if affected_nodes:
             b = fn()
             for n in affected_nodes:
@@ -146,21 +175,23 @@ class DevDayModifier(Modifier):
                     nodes.remove(n)
 
     def prune_all_nodes(self, nodes, request, event):
-        self.prune_nodes(nodes, CAN_CHECK_IN,
-                         lambda: self.user_can_check_in(request, event))
-        self.prune_nodes(nodes, IS_SPEAKER,
-                         lambda: hasattr(request.user, 'speaker'))
-        self.prune_nodes(nodes, IS_COMMITTEE_MEMBER,
-                         lambda: self.user_is_committee_member(request))
-        self.prune_nodes(nodes, USER_CAN_REGISTER,
-                         lambda: self.user_can_register(request, event))
-        self.prune_nodes(nodes, SUBMISSION_OPEN,
-                         lambda: event.submission_open)
-        self.prune_nodes(nodes, VOTING_OPEN,
-                         lambda: event.voting_open)
-        self.prune_nodes(nodes, SESSIONS_PUBLISHED,
-                         lambda: (request.user.is_staff
-                                  or event.sessions_published))
+        self.prune_nodes(
+            nodes, CAN_CHECK_IN, lambda: self.user_can_check_in(request, event)
+        )
+        self.prune_nodes(nodes, IS_SPEAKER, lambda: hasattr(request.user, "speaker"))
+        self.prune_nodes(
+            nodes, IS_COMMITTEE_MEMBER, lambda: self.user_is_committee_member(request)
+        )
+        self.prune_nodes(
+            nodes, USER_CAN_REGISTER, lambda: self.user_can_register(request, event)
+        )
+        self.prune_nodes(nodes, SUBMISSION_OPEN, lambda: event.submission_open)
+        self.prune_nodes(nodes, VOTING_OPEN, lambda: event.voting_open)
+        self.prune_nodes(
+            nodes,
+            SESSIONS_PUBLISHED,
+            lambda: (request.user.is_staff or event.sessions_published),
+        )
         self.prune_nodes_with_events(nodes, request)
         for node in nodes:
             if len(node.children):
@@ -177,7 +208,7 @@ class DevDayModifier(Modifier):
             ours = []
             others = []
             for n in nodes:
-                if n.namespace == 'DevDayMenu':
+                if n.namespace == "DevDayMenu":
                     ours.append(n)
                 else:
                     others.append(n)

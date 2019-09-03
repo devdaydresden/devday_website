@@ -590,7 +590,7 @@ class CSVViewTest(TestCase):
         self.get_anonymous("admin_csv_attendees")
 
     # FIXME: repair test. Expectation that current event is in the future is wrong
-    #def test_get_attendees_staff(self):
+    # def test_get_attendees_staff(self):
     #    self.login()
     #    r = self.get_staff("admin_csv_attendees")
     #    self.assertIn(
@@ -629,7 +629,7 @@ class CSVViewTest(TestCase):
         self.get_anonymous("admin_csv_maycontact")
 
     # FIXME: repair test. Expectation that current event is in the future is wrong
-    #def test_get_maycontact_staff(self):
+    # def test_get_maycontact_staff(self):
     #    self.login()
     #
     #    self.user.contact_permission_date = timezone.now()
@@ -736,7 +736,9 @@ class CheckInAttendeeViewTest(TestCase):
 
     def test_post_none_existing_code_or_email(self):
         self.login()
-        r = self.client.post(self.url, data={"attendee": "this is not an email address"})
+        r = self.client.post(
+            self.url, data={"attendee": "this is not an email address"}
+        )
         self.assertEqual(r.status_code, 200, "should show result page")
         self.assertTrue(self._has_attendee_error(r), "should show error")
 
@@ -919,9 +921,9 @@ class AttendeeEventFeedbackViewTest(TestCase):
     def test_context_has_event_and_attendee(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.context["event"], self.event)
-        self.assertEquals(response.context["attendee"], self.attendee)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["event"], self.event)
+        self.assertEqual(response.context["attendee"], self.attendee)
 
     def test_template(self):
         self.client.login(username=self.user.get_username(), password=self.password)
@@ -931,7 +933,7 @@ class AttendeeEventFeedbackViewTest(TestCase):
     def test_form_has_fresh_feedback_instance_for_fresh_request(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIn("form", response.context)
         self.assertIsNone(response.context["form"].instance.id)
 
@@ -967,10 +969,10 @@ class AttendeeEventFeedbackViewTest(TestCase):
         feedback = AttendeeEventFeedback.objects.get(
             attendee=self.attendee, event=self.event
         )
-        self.assertEquals(feedback.overall_score, 5)
-        self.assertEquals(feedback.organisation_score, 4)
-        self.assertEquals(feedback.session_score, 5)
-        self.assertEquals(feedback.comment, "Nice try")
+        self.assertEqual(feedback.overall_score, 5)
+        self.assertEqual(feedback.organisation_score, 4)
+        self.assertEqual(feedback.session_score, 5)
+        self.assertEqual(feedback.comment, "Nice try")
 
     def test_existing_feedback_is_loaded(self):
         feedback = AttendeeEventFeedback.objects.create(
@@ -983,8 +985,8 @@ class AttendeeEventFeedbackViewTest(TestCase):
         )
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.context["form"].instance, feedback)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["form"].instance, feedback)
 
     def test_existing_feedback_is_updated(self):
         feedback = AttendeeEventFeedback.objects.create(
@@ -1008,11 +1010,11 @@ class AttendeeEventFeedbackViewTest(TestCase):
         feedback_after = AttendeeEventFeedback.objects.get(
             attendee=self.attendee, event=self.event
         )
-        self.assertEquals(feedback_after.id, feedback.id)
-        self.assertEquals(feedback_after.overall_score, 5)
-        self.assertEquals(feedback_after.organisation_score, 4)
-        self.assertEquals(feedback_after.session_score, 5)
-        self.assertEquals(feedback_after.comment, "Rather good, actually")
+        self.assertEqual(feedback_after.id, feedback.id)
+        self.assertEqual(feedback_after.overall_score, 5)
+        self.assertEqual(feedback_after.organisation_score, 4)
+        self.assertEqual(feedback_after.session_score, 5)
+        self.assertEqual(feedback_after.comment, "Rather good, actually")
 
 
 class AttendeeToggleRaffleViewTest(TestCase):
@@ -1035,17 +1037,17 @@ class AttendeeToggleRaffleViewTest(TestCase):
     def test_post_only(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_post_toggles_raffle_flag(self):
         self.assertFalse(self.attendee.raffle)
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.json()["raffle"], True)
+        self.assertEqual(response.json()["raffle"], True)
         self.attendee.refresh_from_db()
         self.assertTrue(self.attendee.raffle)
         response = self.client.post(self.url, data={})
-        self.assertEquals(response.json()["raffle"], False)
+        self.assertEqual(response.json()["raffle"], False)
         self.attendee.refresh_from_db()
         self.assertFalse(self.attendee.raffle)
 
@@ -1067,16 +1069,16 @@ class TestRaffleView(TestCase):
         user, password = attendee_testutils.create_test_user()
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_template(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "attendee/attendee_raffle.html")
 
     def test_queryset(self):
@@ -1097,8 +1099,8 @@ class TestRaffleView(TestCase):
         ]
 
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.context["attendee_list"]), 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["attendee_list"]), 2)
         self.assertIn(attendees[2], response.context["attendee_list"])
         self.assertIn(attendees[3], response.context["attendee_list"])
 
@@ -1120,22 +1122,22 @@ class FeedbackSummaryViewTest(TestCase):
         user, password = attendee_testutils.create_test_user()
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_template(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "attendee/event_summary.html")
 
     def test_context_without_feedback(self):
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         context = response.context
         self.assertIn("feedback", context)
         feedback = context["feedback"]
@@ -1146,9 +1148,9 @@ class FeedbackSummaryViewTest(TestCase):
         self.assertIn("overall_score_avg_percent", context)
         self.assertEqual(context["overall_score_avg_percent"], 0)
         self.assertIn("organisation_score_avg_percent", context)
-        self.assertEquals(context["organisation_score_avg_percent"], 0)
+        self.assertEqual(context["organisation_score_avg_percent"], 0)
         self.assertIn("session_score_avg_percent", context)
-        self.assertEquals(context["session_score_avg_percent"], 0)
+        self.assertEqual(context["session_score_avg_percent"], 0)
 
     def test_context_with_feedback(self):
         users = []
@@ -1193,20 +1195,20 @@ class FeedbackSummaryViewTest(TestCase):
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         context = response.context
         self.assertIn("feedback", context)
         feedback = context["feedback"]
-        self.assertEquals(feedback["comment__count"], 4)
-        self.assertEquals(feedback["overall_score__avg"], 18 / 4)
-        self.assertEquals(feedback["organisation_score__avg"], 10 / 4)
-        self.assertEquals(feedback["session_score__avg"], 14 / 4)
+        self.assertEqual(feedback["comment__count"], 4)
+        self.assertEqual(feedback["overall_score__avg"], 18 / 4)
+        self.assertEqual(feedback["organisation_score__avg"], 10 / 4)
+        self.assertEqual(feedback["session_score__avg"], 14 / 4)
         self.assertIn("overall_score_avg_percent", context)
-        self.assertEquals(context["overall_score_avg_percent"], 90)
+        self.assertEqual(context["overall_score_avg_percent"], 90)
         self.assertIn("organisation_score_avg_percent", context)
-        self.assertEquals(context["organisation_score_avg_percent"], 50)
+        self.assertEqual(context["organisation_score_avg_percent"], 50)
         self.assertIn("session_score_avg_percent", context)
-        self.assertEquals(context["session_score_avg_percent"], 70)
+        self.assertEqual(context["session_score_avg_percent"], 70)
 
 
 class CheckInAttendeeSummaryViewTest(TestCase):
@@ -1226,11 +1228,11 @@ class CheckInAttendeeSummaryViewTest(TestCase):
         user, password = attendee_testutils.create_test_user()
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_context_data(self):
         # create speakers
@@ -1302,14 +1304,14 @@ class CheckInAttendeeSummaryViewTest(TestCase):
         # check rendered context
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         self.assertIn("attendees_registered", response.context)
-        self.assertEquals(response.context["attendees_registered"], 10)
+        self.assertEqual(response.context["attendees_registered"], 10)
         self.assertIn("attendees_checked_in", response.context)
-        self.assertEquals(response.context["attendees_checked_in"], 6)
+        self.assertEqual(response.context["attendees_checked_in"], 6)
         self.assertIn("limited_sessions", response.context)
-        self.assertEquals(len(response.context["limited_sessions"]), 2)
+        self.assertEqual(len(response.context["limited_sessions"]), 2)
         limited_sessions = response.context["limited_sessions"]
         self.assertIn(talk2, limited_sessions)
         self.assertIn(talk3, limited_sessions)

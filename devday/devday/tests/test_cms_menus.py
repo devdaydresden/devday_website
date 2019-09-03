@@ -1,19 +1,18 @@
 from unittest.mock import patch
 
-from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.test.client import RequestFactory
-from menus.menu_pool import menu_pool
+from django.urls import reverse
 
 from attendee.models import Attendee
 from attendee.tests.attendee_testutils import create_test_user
 from devday import cms_menus
 from devday.utils.devdata import DevData
 from event.models import Event
+from menus.menu_pool import menu_pool
 
-
-CLASS_UNDER_TEST = 'DevDayMenu'
+CLASS_UNDER_TEST = "DevDayMenu"
 
 
 def filter_nodes_by_namespace(nodes, namespace):
@@ -24,9 +23,9 @@ def filter_nodes_by_namespace(nodes, namespace):
 
 
 def get_nodes(user=None):
-    request = RequestFactory().get('/')
+    request = RequestFactory().get("/")
     request.user = user if user else AnonymousUser()
-    with patch('menus.menu_pool.use_draft', return_value=False):
+    with patch("menus.menu_pool.use_draft", return_value=False):
         renderer = menu_pool.get_renderer(request)
     nodes = renderer.get_nodes()
     # There are other menu entries (CMSMenu etc.) and they would confuse these
@@ -49,16 +48,17 @@ class DevDayMenuTest(TestCase):
         self.assertIn(cms_menus.SUBMISSION_OPEN, entries[1].attr)
         self.assertIn(cms_menus.SESSIONS_PUBLISHED, entries[2].attr)
         self.assertIn(cms_menus.CHILDREN, entries[3].attr)
-        self.assertEquals(
-            len(entries[3].children), 2, 'Archive should have two children')
-        self.assertEquals(entries[4].url, reverse('auth_login'))
+        self.assertEqual(
+            len(entries[3].children), 2, "Archive should have two children"
+        )
+        self.assertEqual(entries[4].url, reverse("auth_login"))
 
     def test_no_current(self):
         for event in Event.objects.all():
             event.published = False
             event.save()
         entries = get_nodes()
-        self.assertEquals(len(entries), 1, 'should have one entry')
+        self.assertEqual(len(entries), 1, "should have one entry")
 
     def test_registration_off(self):
         self.event.registration_open = False
@@ -78,22 +78,21 @@ class DevDayMenuTest(TestCase):
 
     def test_logged_in(self):
         (user, _) = create_test_user()
-        Attendee.objects.filter(
-            user=user, event=self.event).delete()
+        Attendee.objects.filter(user=user, event=self.event).delete()
         entries = get_nodes(user=user)
-        self.assertEquals(entries[4].url, '#')
+        self.assertEqual(entries[4].url, "#")
         children = entries[4].children
-        self.assertEquals(children[0].url, reverse('user_profile'))
-        self.assertEquals(children[1].url, reverse('auth_logout'))
+        self.assertEqual(children[0].url, reverse("user_profile"))
+        self.assertEqual(children[1].url, reverse("auth_logout"))
 
         Attendee.objects.create(user=user, event=self.event)
         entries = get_nodes(user=user)
-        self.assertEquals(entries[3].url, '#')
+        self.assertEqual(entries[3].url, "#")
         children = entries[3].children
-        self.assertEquals(len(children), 3,
-                          'profile menu should have three entries')
-        self.assertEquals(children[0].url, reverse('user_profile'))
-        self.assertEquals(children[1].url,
-                          reverse('attendee_checkin_qrcode',
-                                  kwargs={'event': self.event.slug}))
-        self.assertEquals(children[2].url, reverse('auth_logout'))
+        self.assertEqual(len(children), 3, "profile menu should have three entries")
+        self.assertEqual(children[0].url, reverse("user_profile"))
+        self.assertEqual(
+            children[1].url,
+            reverse("attendee_checkin_qrcode", kwargs={"event": self.event.slug}),
+        )
+        self.assertEqual(children[2].url, reverse("auth_logout"))

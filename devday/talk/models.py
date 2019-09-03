@@ -1,7 +1,6 @@
 import logging
 from datetime import timedelta
 
-from attendee.models import Attendee
 from django.conf import settings
 from django.core import signing
 from django.core.exceptions import ValidationError
@@ -11,8 +10,10 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
-from event.models import Event
 from model_utils.models import TimeStampedModel
+
+from attendee.models import Attendee
+from event.models import Event
 from psqlextra.manager import PostgresManager
 from speaker import models as speaker_models
 from speaker.models import PublishedSpeaker
@@ -33,7 +34,9 @@ log = logging.getLogger(__name__)
 @python_2_unicode_compatible
 class Track(TimeStampedModel):
     name = models.CharField(max_length=100, blank=False)
-    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
+    event = models.ForeignKey(
+        Event, verbose_name=_("Event"), null=True, on_delete=models.CASCADE
+    )
 
     class Meta:
         verbose_name = _("Track")
@@ -47,8 +50,11 @@ class Track(TimeStampedModel):
 
 class ReservableTalkManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(
-            event__start_time__gt=timezone.now(), spots__gt=0)
+        return (
+            super()
+            .get_queryset()
+            .filter(event__start_time__gt=timezone.now(), spots__gt=0)
+        )
 
 
 @python_2_unicode_compatible
@@ -72,9 +78,15 @@ class Talk(models.Model):
     slug = models.SlugField(verbose_name=_("Slug"), max_length=255)
     abstract = models.TextField(verbose_name=_("Abstract"))
     remarks = models.TextField(verbose_name=_("Remarks"), blank=True)
-    track = models.ForeignKey(Track, null=True, blank=True)
+    track = models.ForeignKey(Track, null=True, blank=True, on_delete=models.CASCADE)
     talkformat = models.ManyToManyField("TalkFormat", verbose_name=_("Talk Formats"))
-    event = models.ForeignKey(Event, verbose_name=_("Event"), null=False, blank=False)
+    event = models.ForeignKey(
+        Event,
+        verbose_name=_("Event"),
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+    )
     spots = models.PositiveIntegerField(
         default=0,
         verbose_name=_("Spots"),
@@ -135,7 +147,7 @@ class Talk(models.Model):
 
 
 class TalkMedia(models.Model):
-    talk = models.OneToOneField(Talk, related_name="media")
+    talk = models.OneToOneField(Talk, related_name="media", on_delete=models.CASCADE)
     youtube = models.CharField(
         verbose_name=_("Youtube video id"), max_length=64, blank=True
     )
@@ -149,8 +161,8 @@ class TalkMedia(models.Model):
 
 @python_2_unicode_compatible
 class Vote(models.Model):
-    voter = models.ForeignKey(settings.AUTH_USER_MODEL)
-    talk = models.ForeignKey(Talk)
+    voter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    talk = models.ForeignKey(Talk, on_delete=models.CASCADE)
     score = models.PositiveSmallIntegerField()
 
     class Meta:
@@ -164,8 +176,8 @@ class Vote(models.Model):
 
 @python_2_unicode_compatible
 class TalkComment(TimeStampedModel):
-    commenter = models.ForeignKey(settings.AUTH_USER_MODEL)
-    talk = models.ForeignKey(Talk)
+    commenter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    talk = models.ForeignKey(Talk, on_delete=models.CASCADE)
     comment = models.TextField(verbose_name=_("Comment"))
     is_visible = models.BooleanField(
         verbose_name=_("Visible for Speaker"),
@@ -188,7 +200,9 @@ class RoomManager(models.Manager):
 class Room(TimeStampedModel):
     name = models.CharField(verbose_name=_("Name"), max_length=100, blank=False)
     priority = models.PositiveSmallIntegerField(verbose_name=_("Priority"), default=0)
-    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
+    event = models.ForeignKey(
+        Event, verbose_name=_("Event"), null=True, on_delete=models.CASCADE
+    )
 
     objects = RoomManager()
 
@@ -208,7 +222,9 @@ class TimeSlot(TimeStampedModel):
     start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(default=timezone.now)
     text_body = models.TextField(blank=True, default="")
-    event = models.ForeignKey(Event, verbose_name=_("Event"), null=True)
+    event = models.ForeignKey(
+        Event, verbose_name=_("Event"), null=True, on_delete=models.CASCADE
+    )
     block = models.PositiveSmallIntegerField(verbose_name=_("Block"), default=0)
 
     class Meta:
@@ -223,9 +239,9 @@ class TimeSlot(TimeStampedModel):
 
 @python_2_unicode_compatible
 class TalkSlot(TimeStampedModel):
-    talk = models.OneToOneField(Talk)
-    room = models.ForeignKey(Room)
-    time = models.ForeignKey(TimeSlot)
+    talk = models.OneToOneField(Talk, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    time = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _("Talk slot")

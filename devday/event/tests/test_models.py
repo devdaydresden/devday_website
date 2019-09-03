@@ -42,10 +42,10 @@ class EventManagerTest(TestCase):
                 email="user{}@exanple.com".format(i), password="foo"
             )
             Attendee.objects.create(user=user, event=event)
-        self.assertEquals(event.registration_count(), 10, "should have 10 attendees")
+        self.assertEqual(event.registration_count(), 10, "should have 10 attendees")
 
     def test_absolute_url(self):
-        self.assertEquals(
+        self.assertEqual(
             Event.objects.current_event().get_absolute_url(),
             "/devdata19/sessions/",
             "should have the right URI",
@@ -56,7 +56,7 @@ class EventManagerTest(TestCase):
         event.registration_open = True
         event.submission_open = True
         self.assertIsNotNone(event)
-        self.assertEquals(event.id, Event.objects.current_event_id())
+        self.assertEqual(event.id, Event.objects.current_event_id())
         self.assertTrue(Event.objects.current_submission_open())
         self.assertTrue(Event.objects.current_registration_open())
 
@@ -117,7 +117,7 @@ class EventTest(TestCase):
             title="Test",
             description="Test Event",
             start_time=now - timedelta(hours=1),
-            end_time=now + timedelta(hours=1)
+            end_time=now + timedelta(hours=1),
         )
         self.assertTrue(event.is_started())
 
@@ -127,21 +127,21 @@ class EventTest(TestCase):
             title="Test running",
             description="Test Event running",
             start_time=now - timedelta(hours=1),
-            end_time=now + timedelta(hours=1)
+            end_time=now + timedelta(hours=1),
         )
         self.assertTrue(event.is_running())
         event = Event(
             title="Test future",
             description="Test Event not running yet",
             start_time=now + timedelta(hours=1),
-            end_time=now + timedelta(hours=2)
+            end_time=now + timedelta(hours=2),
         )
         self.assertFalse(event.is_running())
         event = Event(
             title="Test past",
             description="Test Event not running anymore",
             start_time=now - timedelta(hours=2),
-            end_time=now - timedelta(hours=1)
+            end_time=now - timedelta(hours=1),
         )
         self.assertFalse(event.is_running())
 
@@ -151,14 +151,14 @@ class EventTest(TestCase):
             title="Test running",
             description="Test Event running",
             start_time=now - timedelta(hours=1),
-            end_time=now + timedelta(hours=1)
+            end_time=now + timedelta(hours=1),
         )
         self.assertFalse(event.has_ended())
         event = Event(
             title="Test future",
             description="Test Event in the future",
             start_time=now + timedelta(hours=1),
-            end_time=now + timedelta(hours=2)
+            end_time=now + timedelta(hours=2),
         )
         self.assertFalse(event.has_ended())
         event = Event(

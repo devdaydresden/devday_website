@@ -1,12 +1,11 @@
-from django.db.models import Q
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse_lazy
+from django.db.models import Q
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 
 from attendee.views import StaffUserMixin
@@ -26,85 +25,102 @@ def exception_test_view(request):
 
 class DevDayEmailRecipients:
     def get_form_choices(self):
-        return [(k, self.choices[k]['label']) for k in self.choices.keys()]
+        return [(k, self.choices[k]["label"]) for k in self.choices.keys()]
 
     def get_email_addresses(self, choice):
         if choice not in self.choices:
-            raise ValidationError(f'Unknown recipient selector {choice}')
-        return self.choices[choice]['q']()
+            raise ValidationError(f"Unknown recipient selector {choice}")
+        return self.choices[choice]["q"]()
 
     def get_choice_label(self, choice):
         if choice not in self.choices:
-            raise ValidationError(f'Unknown recipient selector {choice}')
-        return self.choices[choice]['label']
+            raise ValidationError(f"Unknown recipient selector {choice}")
+        return self.choices[choice]["label"]
 
     def choice_all_attendees(self):
-        users = User.objects.filter(
-            Q(contact_permission_date__isnull=False)
-            | Q(attendees__event=Event.objects.current_event())
-        ).filter(is_active=True).order_by('email').distinct()
+        users = (
+            User.objects.filter(
+                Q(contact_permission_date__isnull=False)
+                | Q(attendees__event=Event.objects.current_event())
+            )
+            .filter(is_active=True)
+            .order_by("email")
+            .distinct()
+        )
         return [u.email for u in users]
 
     def choice_past_attendees(self):
-        users = User.objects.filter(
-            contact_permission_date__isnull=False
-        ).exclude(
-            attendees__event=Event.objects.current_event()
-        ).filter(is_active=True).order_by('email').distinct()
+        users = (
+            User.objects.filter(contact_permission_date__isnull=False)
+            .exclude(attendees__event=Event.objects.current_event())
+            .filter(is_active=True)
+            .order_by("email")
+            .distinct()
+        )
         return [u.email for u in users]
 
     def choice_attendees(self):
         attendees = Attendee.objects.filter(
-            event_id=Event.objects.current_event_id(),
-            user__is_active=True
+            event_id=Event.objects.current_event_id(), user__is_active=True
         ).order_by("user__email")
         return [a.user.email for a in attendees]
 
     def choice_inactive_attendees(self):
         attendees = Attendee.objects.filter(
-            event_id=Event.objects.current_event_id(),
-            user__is_active=False
+            event_id=Event.objects.current_event_id(), user__is_active=False
         ).order_by("user__email")
         return [a.user.email for a in attendees]
 
     def choice_draft_speakers(self):
-        speakers = Speaker.objects.filter(
-            talk__event=Event.objects.current_event(),
-            user__is_active=True
-        ).order_by("user__email").distinct()
+        speakers = (
+            Speaker.objects.filter(
+                talk__event=Event.objects.current_event(), user__is_active=True
+            )
+            .order_by("user__email")
+            .distinct()
+        )
         return [s.user.email for s in speakers]
 
     def choice_published_speakers(self):
-        speakers = PublishedSpeaker.objects.filter(
-            talk__event=Event.objects.current_event(),
-            speaker__user__is_active=True
-        ).order_by("speaker__user__email").distinct()
+        speakers = (
+            PublishedSpeaker.objects.filter(
+                talk__event=Event.objects.current_event(), speaker__user__is_active=True
+            )
+            .order_by("speaker__user__email")
+            .distinct()
+        )
         return [s.speaker.user.email for s in speakers]
 
     def __init__(self):
         self.choices = {}
-        self.choices['users'] = {
-            'label': _('past and present attendees'),
-            'q': self.choice_all_attendees}
-        self.choices['past'] = {
-            'label': _('past attendees'),
-            'q': self.choice_past_attendees}
-        self.choices['attendees'] = {
-            'label': _('current attendees'),
-            'q': self.choice_attendees}
-        self.choices['inactive_attendees'] = {
-            'label': _('registered but inactive attendees'),
-            'q': self.choice_inactive_attendees}
-        self.choices['draft_speakers'] = {
-            'label': _('candidate speakers'),
-            'q': self.choice_draft_speakers}
-        self.choices['published_speakers'] = {
-            'label': _('accepted speakers'),
-            'q': self.choice_published_speakers}
+        self.choices["users"] = {
+            "label": _("past and present attendees"),
+            "q": self.choice_all_attendees,
+        }
+        self.choices["past"] = {
+            "label": _("past attendees"),
+            "q": self.choice_past_attendees,
+        }
+        self.choices["attendees"] = {
+            "label": _("current attendees"),
+            "q": self.choice_attendees,
+        }
+        self.choices["inactive_attendees"] = {
+            "label": _("registered but inactive attendees"),
+            "q": self.choice_inactive_attendees,
+        }
+        self.choices["draft_speakers"] = {
+            "label": _("candidate speakers"),
+            "q": self.choice_draft_speakers,
+        }
+        self.choices["published_speakers"] = {
+            "label": _("accepted speakers"),
+            "q": self.choice_published_speakers,
+        }
 
 
 class SendEmailView(StaffUserMixin, SuccessMessageMixin, FormView):
-    template_name = 'devday/sendemail.html'
+    template_name = "devday/sendemail.html"
     form_class = SendEmailForm
 
     def __init__(self, *args, **kwargs):
@@ -117,7 +133,7 @@ class SendEmailView(StaffUserMixin, SuccessMessageMixin, FormView):
 
     def get_form_kwargs(self):
         context = super().get_form_kwargs()
-        context['recipients'] = self.choices.get_form_choices()
+        context["recipients"] = self.choices.get_form_choices()
         return context
 
     def get_context_data(self, **kwargs):
@@ -125,26 +141,23 @@ class SendEmailView(StaffUserMixin, SuccessMessageMixin, FormView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('send_email')
+        return reverse_lazy("send_email")
 
     def form_valid(self, form):
-        msg = create_html_mail(form.cleaned_data['subject'],
-                               form.cleaned_data['body'])
-        recipients = form.cleaned_data['recipients']
-        if form.cleaned_data.get('sendreal'):
+        msg = create_html_mail(form.cleaned_data["subject"], form.cleaned_data["body"])
+        recipients = form.cleaned_data["recipients"]
+        if form.cleaned_data.get("sendreal"):
             msg.recipientlist = self.choices.get_email_addresses(recipients)
             msg.recipientlist += [settings.DEFAULT_FROM_EMAIL]
             self.success_message = _(
-                'Successfully sent message to {} {} recipients'
-            ).format(
-                len(msg.recipientlist),
-                self.choices.get_choice_label(recipients))
+                "Successfully sent message to {} {} recipients"
+            ).format(len(msg.recipientlist), self.choices.get_choice_label(recipients))
             msg.send()
             return super().form_valid(form)
         else:
             msg.recipientlist = (self.request.user.email,)
             self.success_message = _(
-                'Successfully sent message for {} to yourself'
+                "Successfully sent message for {} to yourself"
             ).format(self.choices.get_choice_label(recipients))
             messages.success(self.request, self.success_message)
             msg.send()

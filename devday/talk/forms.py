@@ -2,8 +2,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, Layout, Submit
 from django import forms
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.forms.utils import ErrorList
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from attendee.models import Attendee

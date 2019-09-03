@@ -10,12 +10,12 @@ from django.contrib.auth.mixins import (
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import IntegrityError
 from django.db.models import Avg, Count, Prefetch, Q
 from django.db.transaction import atomic
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView, TemplateView, UpdateView, View
 from django.views.generic.edit import FormView, ModelFormMixin

@@ -145,8 +145,12 @@ class Attendee(models.Model):
     the event.
     """
 
-    event = models.ForeignKey(Event, verbose_name=_("Event"), null=False)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="attendees")
+    event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, verbose_name=_("Event"), null=False
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="attendees"
+    )
 
     checkin_code = models.CharField(
         _("Check-In Code"),

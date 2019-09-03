@@ -138,13 +138,14 @@ CMS_LANGUAGES = {
     },
 }
 CMS_PLACEHOLDER_CONF = {}
-DJANGOCMS_STYLE_CHOICES = (
+DJANGOCMS_STYLE_CHOICES = ["row", "container", "col-xs-12", "col-md-12"]
+DJANGOCMS_STYLE_TEMPLATES = [
     # styles for bootstrap grid model
     ("row", gettext("row")),
     ("container", gettext("container")),
     ("col-xs-12", gettext("col-xs-12")),
     ("col-md-12", gettext("col-md-12")),
-)
+]
 DJANGOCMS_PICTURE_RESPONSIVE_IMAGES = False
 DJANGOCMS_PICTURE_TEMPLATES = (
     ("carousel", _("Image in carousel")),

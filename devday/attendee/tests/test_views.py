@@ -1069,7 +1069,7 @@ class TestRaffleView(TestCase):
         user, password = attendee_testutils.create_test_user()
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
@@ -1122,7 +1122,7 @@ class FeedbackSummaryViewTest(TestCase):
         user, password = attendee_testutils.create_test_user()
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)
@@ -1228,7 +1228,7 @@ class CheckInAttendeeSummaryViewTest(TestCase):
         user, password = attendee_testutils.create_test_user()
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)

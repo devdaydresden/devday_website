@@ -190,8 +190,7 @@ class TestTalkOverView(LoginTestMixin, TestCase):
     def test_needs_committee_permissions(self):
         self.login_user()
         response = self.client.get("/committee/talks/")
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/login/?next={}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
     def test_template(self):
         self.login_committee_member()
@@ -336,8 +335,7 @@ class TestCommitteeTalkDetails(TestCase):
         _, password = attendee_testutils.create_test_user(email)
         self.client.login(email=email, password=password)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/login/?next={0:s}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
     def test_template(self):
         committee_email = "committee@example.org"
@@ -407,8 +405,7 @@ class TestSubmitTalkComment(TestCase):
         _, password = attendee_testutils.create_test_user(email)
         self.client.login(email=email, password=password)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/login/?next={0:s}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
     def test_needs_post(self):
         committee_email = "committee@example.org"
@@ -498,8 +495,7 @@ class TestTalkVote(LoginTestMixin, TestCase):
         _, password = attendee_testutils.create_test_user(email)
         self.client.login(email=email, password=password)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/login/?next={0:s}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
     def test_needs_post(self):
         self.login_committee_member()
@@ -554,8 +550,7 @@ class TestTalkVoteClear(LoginTestMixin, TestCase):
     def test_needs_committee_permissions(self):
         self.login_user()
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/login/?next={0:s}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
     def test_needs_post(self):
         self.login_committee_member()
@@ -600,8 +595,7 @@ class TestTalkCommentDelete(LoginTestMixin, TestCase):
     def test_needs_committee_permissions(self):
         self.login_user()
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/login/?next={0:s}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
     def test_needs_post(self):
         self.client.login(email=self.user.email, password=self.password)
@@ -1154,12 +1148,7 @@ class TestEventSessionSummaryView(TestCase):
     def test_get_session_summary_regular_user(self):
         self.client.login(username=self.user, password=self.user_password)
         r = self.client.get(self.url)
-        self.assertEqual(r.status_code, 302)
-        self.assertEqual(
-            r.url,
-            "/accounts/login/?next={}".format(self.url),
-            "should redirect to login page",
-        )
+        self.assertEqual(r.status_code, 403)
 
     def test_get_session_summary_staff(self):
         self.client.login(username=self.staff.email, password=self.staff_password)
@@ -2197,7 +2186,7 @@ class TestTalkFeedbackSummaryView(TestCase):
         user, password = attendee_testutils.create_test_user()
         self.client.login(username=user.get_username(), password=password)
         response = self.client.get(self.url)
-        self.assertRedirects(response, "/accounts/login/?next={}".format(self.url))
+        self.assertEqual(response.status_code, 403)
 
         self.client.login(username=self.user.get_username(), password=self.password)
         response = self.client.get(self.url)

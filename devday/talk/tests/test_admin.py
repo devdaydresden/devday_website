@@ -54,7 +54,7 @@ class AdminTest(TestCase):
 
     def test_talk_admin_list(self):
         response = self.client.get(reverse("admin:talk_talk_changelist"))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(
             response.context["cl"].result_count > 10, "should list some talks"
         )
@@ -62,7 +62,7 @@ class AdminTest(TestCase):
     def test_talk_admin_change(self):
         talk = Talk.objects.filter(event=self.event).first()
         response = self.client.get(reverse("admin:talk_talk_change", args=(talk.id,)))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_talk_admin_publish(self):
         talks = Talk.objects.filter(event=self.event)
@@ -73,7 +73,7 @@ class AdminTest(TestCase):
                 "_selected_action": [str(talk.pk) for talk in talks],
             },
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "talk/admin/publish_talks.html")
 
     def test_talk_admin_publish_apply(self):
@@ -113,7 +113,7 @@ class AdminTest(TestCase):
         )
         self.assertRedirects(response, reverse("admin:talk_talk_changelist"))
         talk = Talk.objects.get(pk=talk.pk)
-        self.assertEquals(talk.track, tracks[0])
+        self.assertEqual(talk.track, tracks[0])
         self.assertIsNotNone(talk.published_speaker)
 
     def test_talk_admin_process_waiting_list(self):
@@ -185,8 +185,8 @@ class AdminTest(TestCase):
 
     def test_talkslot_admin_list(self):
         response = self.client.get(reverse("admin:talk_talkslot_changelist"))
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
             response.context["cl"].result_count, 14, "should list 14 talkslots"
         )
         self.assertTrue(response.is_rendered)
@@ -205,7 +205,7 @@ class AdminTest(TestCase):
         talk.publish(track)
 
         response = self.client.get(reverse("admin:talk_talkslot_add"))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIn("form", response.context)
         self.assertIsInstance(response.context["form"], AddTalkSlotFormStep1)
         self.assertTemplateUsed("talk/admin/talkslot_add_form.html")
@@ -218,7 +218,7 @@ class AdminTest(TestCase):
                 "submit": "Submit",
             },
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIn("form", response.context)
         self.assertIsInstance(response.context["form"], AddTalkSlotFormStep2)
         self.assertTemplateUsed("talk/admin/talkslot_add_form.html")
@@ -238,9 +238,9 @@ class AdminTest(TestCase):
         )
         self.assertRedirects(response, reverse("admin:talk_talkslot_changelist"))
         talk_slot = TalkSlot.objects.filter(talk=talk).get()
-        self.assertEquals(talk_slot.talk_id, talk.id)
-        self.assertEquals(talk_slot.room_id, room.id)
-        self.assertEquals(talk_slot.time_id, time_slot.id)
+        self.assertEqual(talk_slot.talk_id, talk.id)
+        self.assertEqual(talk_slot.room_id, room.id)
+        self.assertEqual(talk_slot.time_id, time_slot.id)
 
     def test_session_reservation_admin(self):
         speaker, _, _ = speaker_testutils.create_test_speaker()
@@ -261,8 +261,8 @@ class AdminTest(TestCase):
         SessionReservation.objects.create(attendee=attendee, talk=talk)
 
         response = self.client.get(reverse("admin:talk_sessionreservation_changelist"))
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
             response.context["cl"].result_count, 1, "should list 1 session registration"
         )
         self.assertTrue(response.is_rendered)
@@ -304,4 +304,4 @@ class AttendeeFeedbackAdminTest(TestCase):
         response = self.client.get(
             reverse("admin:talk_attendeefeedback_change", args=(self.feedback.id,))
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)

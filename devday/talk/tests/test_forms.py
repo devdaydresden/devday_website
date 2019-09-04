@@ -2,8 +2,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
 from django import forms
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.urls import reverse
 from django.utils.timezone import now
 
 from attendee.models import Attendee
@@ -239,7 +239,7 @@ class TestAttendeeTalkFeedbackForm(TestCase):
             instance=mock.MagicMock(), talk=self.talk, attendee=self.attendee
         )
         self.assertIsInstance(form.helper, FormHelper)
-        self.assertEquals(
+        self.assertEqual(
             form.helper.form_action,
             "/{}/talk/{}/feedback/".format(self.talk.event.slug, self.talk.slug),
         )
@@ -251,7 +251,7 @@ class TestAttendeeTalkFeedbackForm(TestCase):
         self.assertIsInstance(form.helper.layout, Layout)
         layout_fields = [name for [_, name] in form.helper.layout.get_field_names()]
         self.assertListEqual(["score", "comment"], layout_fields)
-        self.assertEquals(
+        self.assertEqual(
             len(form.helper.layout.get_layout_objects(Submit, greedy=True)), 1
         )
 
@@ -263,7 +263,7 @@ class TestAttendeeTalkFeedbackForm(TestCase):
             attendee=self.attendee,
         )
         form.full_clean()
-        self.assertEquals(form.cleaned_data["score"], 5)
+        self.assertEqual(form.cleaned_data["score"], 5)
         form = AttendeeTalkFeedbackForm(
             instance=mock.MagicMock(),
             data={"score": "3"},
@@ -271,4 +271,4 @@ class TestAttendeeTalkFeedbackForm(TestCase):
             attendee=self.attendee,
         )
         form.full_clean()
-        self.assertEquals(form.cleaned_data["score"], 3)
+        self.assertEqual(form.cleaned_data["score"], 3)

@@ -12,12 +12,13 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 Please keep this list of settings sorted alphabetically!
 
 """
-import os
 import mimetypes
-import requests
+import os
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
+
+import requests
 
 
 def gettext(s):
@@ -54,6 +55,7 @@ def _fetch_from_vault():
         r = s.get(_VAULT_URL)
         r.raise_for_status()
         _VAULT_DATA = r.json()["data"]["data"]
+        s.close()
     return _VAULT_DATA
 
 
@@ -136,18 +138,19 @@ CMS_LANGUAGES = {
     },
 }
 CMS_PLACEHOLDER_CONF = {}
-DJANGOCMS_STYLE_CHOICES = (
+DJANGOCMS_STYLE_CHOICES = ["row", "container", "col-xs-12", "col-md-12"]
+DJANGOCMS_STYLE_TEMPLATES = [
     # styles for bootstrap grid model
     ("row", gettext("row")),
     ("container", gettext("container")),
     ("col-xs-12", gettext("col-xs-12")),
     ("col-md-12", gettext("col-md-12")),
-)
+]
 DJANGOCMS_PICTURE_RESPONSIVE_IMAGES = False
 DJANGOCMS_PICTURE_TEMPLATES = (
-    ('carousel', _('Image in carousel')),
-    ('carousel_first', _('First image in carousel')),
-    ('gallery', _('Image in galery')),
+    ("carousel", _("Image in carousel")),
+    ("carousel_first", _("First image in carousel")),
+    ("gallery", _("Image in galery")),
 )
 
 CMS_TEMPLATES = (
@@ -209,7 +212,6 @@ INSTALLED_APPS = [
     "djangocms_file",
     "djangocms_link",
     "djangocms_picture",
-    "djangocms_teaser",
     "djangocms_video",
     "crispy_forms",
     "django_file_form",
@@ -248,13 +250,11 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-    ],
+    ]
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ]
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"]
 }
 
 ROOT_URLCONF = "devday.urls"
@@ -309,7 +309,6 @@ TEMPLATES = [
             "loaders": [
                 "django.template.loaders.filesystem.Loader",
                 "django.template.loaders.app_directories.Loader",
-                "django.template.loaders.eggs.Loader",
             ],
         },
     }

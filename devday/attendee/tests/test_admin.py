@@ -61,7 +61,7 @@ class DevDayUserAdmin(TestCase):
 
     def test_devdayuser_admin_add(self):
         response = self.client.get(reverse("admin:attendee_devdayuser_add"))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         form = response.context["adminform"].form
         self.assertIsInstance(form, DevDayUserCreationForm)
 
@@ -89,7 +89,7 @@ class DevDayUserAdmin(TestCase):
         response = self.client.get(
             reverse("admin:attendee_devdayuser_change", args=(user.id,))
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.context["adminform"].form, DevDayUserChangeForm)
 
 
@@ -134,4 +134,4 @@ class AttendeeEventFeedbackAdminTest(TestCase):
                 "admin:attendee_attendeeeventfeedback_change", args=(self.feedback.id,)
             )
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)

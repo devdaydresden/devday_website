@@ -1,10 +1,11 @@
 import luhn
+
 from django.core import mail
 from django.db import IntegrityError
 from django.test import TestCase
 from django.utils.translation import ugettext as _
 
-from attendee.models import Attendee, DevDayUser, AttendeeEventFeedback
+from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser
 from attendee.tests import attendee_testutils
 from event.models import Event
 from event.tests import event_testutils
@@ -114,9 +115,9 @@ class AttendeeTest(TestCase):
 
         u2 = DevDayUser.objects.create_user("another@example.com", "foo")
         a2 = Attendee.objects.create(user=u2, event=event)
-        self.assertNotEquals(attendee.checkin_code, a2.checkin_code)
+        self.assertNotEqual(attendee.checkin_code, a2.checkin_code)
         a3 = Attendee.objects.get_by_checkin_code_or_email(attendee.checkin_code, event)
-        self.assertEquals(attendee, a3)
+        self.assertEqual(attendee, a3)
 
         attendee.check_in()
         self.assertIsNotNone(attendee.checked_in)

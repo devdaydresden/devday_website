@@ -8,11 +8,18 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve as serve_static
 
 from devday.views import SendEmailView, exception_test_view
+from rest_framework import routers
+from talk.api_views import SessionViewSet
 from twitterfeed.views import TwitterwallView
 
 admin.autodiscover()
 
+router = routers.DefaultRouter()
+router.register(r"sessions", SessionViewSet)
+
 urlpatterns = [
+    url(r"^api/", include(router.urls)),
+    url(r"^api-auth/", include("rest_framework.urls")),
     url(r"^admin/", admin.site.urls),
     url(r"^admin/send_email/$", SendEmailView.as_view(), name="send_email"),
     url(r"^sitemap\.xml$", sitemap_view, {"sitemaps": {"cmspages": CMSSitemap}}),

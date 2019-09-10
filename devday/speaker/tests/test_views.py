@@ -5,10 +5,10 @@ from django.test import TestCase
 from attendee.tests import attendee_testutils
 from event.tests import event_testutils
 from speaker.forms import CreateSpeakerForm, UserSpeakerPortraitForm
-from speaker.models import Speaker, PublishedSpeaker
+from speaker.models import PublishedSpeaker, Speaker
 from speaker.tests import speaker_testutils
 from speaker.tests.speaker_testutils import TemporaryMediaTestCase
-from talk.models import Track, Talk
+from talk.models import Talk, Track
 
 
 class TestCreateSpeakerView(TestCase):

@@ -34,6 +34,7 @@ stringcase = "*"
 django-ordered-model = "*"
 django-formtools = "*"
 django-postgres-extra = "*"
+djangorestframework = "*"
 
 [dev-packages]
 coverage = "*"
@@ -45,6 +46,3 @@ pip = "==18.0"
 
 [requires]
 python_version = "3.7"
-
-[pipenv]
-allow_prereleases = true

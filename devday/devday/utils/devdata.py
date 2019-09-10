@@ -11,7 +11,6 @@ from os import makedirs
 from os.path import isfile, join
 from shutil import copyfile
 
-import lorem
 from cms import api
 from cms.models import Page
 from cms.models.placeholdermodel import Placeholder
@@ -26,14 +25,14 @@ from django.core.management.base import OutputWrapper
 from django.core.management.color import no_style
 from django.core.paginator import Paginator
 from django.utils import timezone
+
+import lorem
 import stringcase
-
-from talk import COMMITTEE_GROUP
-
 from attendee.models import Attendee
 from devday.utils.words import Words
 from event.models import Event
 from speaker.models import Speaker
+from talk import COMMITTEE_GROUP
 from talk.models import (
     Room,
     Talk,

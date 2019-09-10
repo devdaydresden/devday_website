@@ -194,6 +194,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
     "django.contrib.messages",
+    "rest_framework",
     "devday",
     "event.apps.EventsConfig",
     "attendee.apps.AttendeeConfig",
@@ -244,6 +245,17 @@ MIDDLEWARE = [
     "cms.middleware.language.LanguageCookieMiddleware",
 ]
 MIGRATION_MODULES = {}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ]
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"]
+}
 
 ROOT_URLCONF = "devday.urls"
 

@@ -15,7 +15,7 @@ from twitterfeed.views import TwitterwallView
 admin.autodiscover()
 
 router = routers.DefaultRouter()
-router.register(r"session", SessionViewSet)
+router.register(r"sessions", SessionViewSet)
 
 urlpatterns = [
     url(r"^api/", include(router.urls)),

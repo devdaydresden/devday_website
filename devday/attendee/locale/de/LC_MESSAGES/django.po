@@ -419,10 +419,10 @@ msgid_plural ""
 "You are registered as speaker and your following talks are not published yet "
 "and will be deleted:"
 msgstr[0] ""
-"Du bist als Sprecher angemeldet und deine folgende Session wurde noch nicht "
+"Du bist als SpeakerIn angemeldet und deine folgende Session wurde noch nicht "
 "veröffentlicht und wird gelöscht:"
 msgstr[1] ""
-"Du bist als Sprecher angemeldet und deine folgenden Sessions wurden noch "
+"Du bist als SpeakerIn angemeldet und deine folgenden Sessions wurden noch "
 "nicht veröffentlicht und werden gelöscht:"
 
 #: attendee/templates/attendee/devdayuser_confirm_delete.html:24
@@ -489,7 +489,7 @@ msgstr "Nutzerprofil für %(username)s"
 
 #: attendee/templates/attendee/profile.html:14
 msgid "Speaker"
-msgstr "Sprecher"
+msgstr "SpeakerIn"
 
 #: attendee/templates/attendee/profile.html:15
 #, python-format
@@ -498,9 +498,9 @@ msgid ""
 "href=\"%(speaker_profile)s\">speaker details page</a> to update your speaker "
 "data."
 msgstr ""
-"Du bist als Sprecher &quot;%(speaker_name)s&quot; angemeldet. Besuche deine "
-"<a href=\"%(speaker_profile)s\">Sprecherdetailseite</a>, um deine "
-"Sprecherdaten zu aktualisieren."
+"Du bist als SpeakerIn &quot;%(speaker_name)s&quot; angemeldet. Besuche deine "
+"<a href=\"%(speaker_profile)s\">SpeakerIndetailseite</a>, um deine "
+"SpeakerIndaten zu aktualisieren."
 
 #: attendee/templates/attendee/profile.html:19
 msgid "Events"

@@ -61,7 +61,7 @@ msgstr "QR-Code für Checkin"
 
 #: devday/cms_menus.py:95
 msgid "Speaker Profile"
-msgstr "Sprecher-Profil"
+msgstr "SpeakerIn-Profil"
 
 #: devday/cms_menus.py:101
 msgid "Program Committee"
@@ -524,11 +524,11 @@ msgstr "registrierte aber inaktive Teilnehmer"
 
 #: devday/views.py:99
 msgid "candidate speakers"
-msgstr "Sprecher-Kandidaten"
+msgstr "SpeakerIn-Kandidaten"
 
 #: devday/views.py:102
 msgid "accepted speakers"
-msgstr "Angenommene Sprecher"
+msgstr "Angenommene SpeakerIn"
 
 #: devday/views.py:138
 msgid "Successfully sent message to {} {} recipients"

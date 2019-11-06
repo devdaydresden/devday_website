@@ -351,7 +351,7 @@ class InactiveAttendeeView(StaffUserMixin, BaseListView):
             writer.writerows(
                 [
                     (
-                        u.email.encode("utf8"),
+                        u.email,
                         u.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
                     )
                     for u in context.get("object_list", [])
@@ -388,7 +388,7 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
             writer = csv.writer(output, delimiter=";")
             writer.writerow(("Email",))
             writer.writerows(
-                [(u.email.encode("utf8"),) for u in context.get("object_list", [])]
+                [(u.email,) for u in context.get("object_list", [])]
             )
             response = HttpResponse(
                 output.getvalue(), content_type="txt/csv; charset=utf-8"
@@ -418,7 +418,7 @@ class AttendeeListView(StaffUserMixin, BaseListView):
             writer.writerows(
                 [
                     (
-                        attendee.user.email.encode("utf8"),
+                        attendee.user.email,
                         attendee.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
                         attendee.user.contact_permission_date.strftime(
                             "%Y-%m-%d %H:%M:%S"

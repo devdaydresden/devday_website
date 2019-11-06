@@ -104,11 +104,11 @@ msgstr "Tracks"
 
 #: talk/models.py:52
 msgid "Speaker (draft)"
-msgstr "Sprecher (Entwurf)"
+msgstr "SpeakerIn (Entwurf)"
 
 #: talk/models.py:59
 msgid "Speaker (public)"
-msgstr "Sprecher (öffentlich)"
+msgstr "SpeakerIn (öffentlich)"
 
 #: talk/models.py:65 talk/templates/talk/talk_committee_overview.html:40
 msgid "Session title"
@@ -148,7 +148,7 @@ msgstr "Sessions"
 
 #: talk/models.py:87 talk/tests/test_models.py:105
 msgid "A draft speaker or a published speaker is required."
-msgstr "Ein Sprecher (Entwurf) oder Sprecher (öffentlich) ist erforderlich."
+msgstr "Ein/e SpeakerIn (Entwurf) oder SpeakerIn (öffentlich) ist erforderlich."
 
 #: talk/models.py:127
 msgid "Youtube video id"
@@ -168,11 +168,11 @@ msgstr "Kommentar"
 
 #: talk/models.py:158
 msgid "Visible for Speaker"
-msgstr "Sichtbar für den Sprecher"
+msgstr "Sichtbar für den/die SpeakerIn"
 
 #: talk/models.py:160
 msgid "Indicates whether the comment is visible to the speaker."
-msgstr "Gibt an, ob der Kommentar für den Sprecher sichtbar ist."
+msgstr "Gibt an, ob der Kommentar für den/die SpeakerIn sichtbar ist."
 
 #: talk/models.py:176 talk/templates/talk/speaker_details.html:11
 msgid "Name"
@@ -304,7 +304,7 @@ msgstr "Du hast noch kein Benutzerkonto?"
 
 #: talk/templates/talk/prepare_submit_session.html:21
 msgid "Register as speaker"
-msgstr "Als Sprecher registrieren"
+msgstr "Als SpeakerIn registrieren"
 
 #: talk/templates/talk/sessionreservation_confirm_body.txt:1
 #, python-format
@@ -630,12 +630,12 @@ msgstr ""
 
 #: talk/templates/talk/speaker_activation_email_subject.txt:1
 msgid "Confirm your speaker registration"
-msgstr "Bestätige deine Sprecheranmeldung"
+msgstr "Bestätige deine SpeakerInanmeldung"
 
 #: talk/templates/talk/speaker_details.html:3
 #: talk/templates/talk/speaker_profile.html:3
 msgid "Speaker profile"
-msgstr "Sprecherprofil"
+msgstr "SpeakerInprofil"
 
 #: talk/templates/talk/speaker_details.html:7
 #, python-format
@@ -643,7 +643,7 @@ msgid ""
 "Speaker profile for\n"
 "                %(username)s"
 msgstr ""
-"Sprecherprofil für\n"
+"SpeakerInprofil für\n"
 "\t\t%(username)s"
 
 #: talk/templates/talk/speaker_details.html:13
@@ -663,7 +663,7 @@ msgstr "Speakerbild"
 #: talk/templates/talk/speaker_profile.html:10
 #, python-format
 msgid "Speaker profile for %(username)s"
-msgstr "Sprecherprofil für %(username)s"
+msgstr "SpeakerInprofil für %(username)s"
 
 #: talk/templates/talk/speaker_profile.html:14
 msgid "Firstname"
@@ -700,7 +700,7 @@ msgstr "Passwort ändern"
 
 #: talk/templates/talk/speaker_registered.html:3
 msgid "Successfully registered as a speaker"
-msgstr "Erfolgreich als Sprecher registriert"
+msgstr "Erfolgreich als SpeakerIn registriert"
 
 #: talk/templates/talk/submission_closed.html:3
 #: talk/templates/talk/submission_closed.html:7
@@ -721,7 +721,7 @@ msgid ""
 "Visit your <a href=\"%(speaker_profile)s\">speaker profile</a> to see all "
 "your sessions."
 msgstr ""
-"Besuche dein <a href=\"%(speaker_profile)s\">Sprecherprofil</a>, um deine "
+"Besuche dein <a href=\"%(speaker_profile)s\">SpeakerInprofil</a>, um deine "
 "eingereichten Sessions anzusehen."
 
 #: talk/templates/talk/talk_comment_email_body.txt:1
@@ -842,7 +842,7 @@ msgstr "Session-Liste"
 
 #: talk/templates/talk/talk_committee_overview.html:39
 msgid "Speaker"
-msgstr "Sprecher"
+msgstr "SpeakerIn"
 
 #: talk/templates/talk/talk_committee_overview.html:41
 msgid "Vote average"

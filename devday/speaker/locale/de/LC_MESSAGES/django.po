@@ -20,7 +20,7 @@ msgstr ""
 
 #: speaker/apps.py:9 speaker/tests/test_appconfig.py:10
 msgid "Speaker management"
-msgstr "Sprecherverwaltung"
+msgstr "SpeakerInverwaltung"
 
 #: speaker/forms.py:61 speaker/forms.py:97
 msgid "How should we present your name to the audience?"
@@ -35,28 +35,28 @@ msgstr ""
 
 #: speaker/forms.py:73
 msgid "Register as speaker"
-msgstr "Als Sprecher anmelden"
+msgstr "Als SpeakerIn anmelden"
 
 #: speaker/forms.py:77
 msgid ""
 "By registering as a speaker, I agree to be contacted by the Dev Day "
 "organizers about conference details and my talk submissions."
 msgstr ""
-"Mit der Registrierung als Sprecher stimme ich zu, dass die Dev Day "
+"Mit der Registrierung als SpeakerIn stimme ich zu, dass die Dev Day "
 "Organisatoren zu Details zur Konferenz und meinen Sessioneinreichungen "
 "Kontakt mit mir aufnehmen dürfen."
 
 #: speaker/forms.py:109
 msgid "Change your speaker details"
-msgstr "Ändere deine Sprecherdaten"
+msgstr "Ändere deine SpeakerIndaten"
 
 #: speaker/forms.py:129 speaker/models.py:62 speaker/models.py:214
 msgid "Speaker image"
-msgstr "Sprecherfoto"
+msgstr "SpeakerInfoto"
 
 #: speaker/forms.py:134
 msgid "Change your speaker profile"
-msgstr "Ändere deine Sprecherdaten"
+msgstr "Ändere deine SpeakerIndaten"
 
 #: speaker/forms.py:138
 msgid "Submit your portrait"
@@ -96,7 +96,7 @@ msgstr "XXXL"
 
 #: speaker/models.py:28
 msgid "speaker name"
-msgstr "Sprechername"
+msgstr "SpeakerInname"
 
 #: speaker/models.py:29
 msgid "slug"
@@ -138,7 +138,7 @@ msgstr "Kurzvita"
 
 #: speaker/models.py:60
 msgid "registered as speaker"
-msgstr "Als Sprecher angemeldet"
+msgstr "Als SpeakerIn angemeldet"
 
 #: speaker/models.py:64 speaker/models.py:217
 msgid "Speaker image thumbnail"
@@ -154,15 +154,15 @@ msgstr "T-Shirtgröße"
 
 #: speaker/models.py:75
 msgid "speaker"
-msgstr "Sprecher"
+msgstr "SpeakerIn"
 
 #: speaker/models.py:76
 msgid "speakers"
-msgstr "Sprecher"
+msgstr "SpeakerInnen"
 
 #: speaker/models.py:211
 msgid "published as speaker"
-msgstr "Als Sprecher veröffentlicht"
+msgstr "Als SpeakerIn veröffentlicht"
 
 #: speaker/models.py:224
 msgid "email address"
@@ -170,11 +170,11 @@ msgstr "E-Mailadresse"
 
 #: speaker/models.py:229
 msgid "published speaker"
-msgstr "veröffentlichter Sprecher"
+msgstr "veröffentlichte/r SpeakerIn"
 
 #: speaker/models.py:230
 msgid "published speakers"
-msgstr "veröffentlichte Sprecher"
+msgstr "veröffentlichte SpeakerInnen"
 
 #: speaker/templates/speaker/publishedspeaker_detail.html:18
 #, python-format
@@ -182,14 +182,14 @@ msgid "Talks: %(talk_event)s"
 msgstr "Sessions: %(talk_event)s"
 
 #: speaker/templates/speaker/publishedspeaker_list.html:3
-msgid "Speaker Linup"
-msgstr "Sprecher"
+msgid "Speaker Line up"
+msgstr "SpeakerIn"
 
 #: speaker/templates/speaker/publishedspeaker_list.html:17
 msgid "Session selection is not done yet. No speaker list for you."
 msgstr ""
 "Die Sessionauswahl ist noch nicht abgeschlossen. Es ist noch keine "
-"Sprecherliste verfügbar."
+"SpeakerInliste verfügbar."
 
 #: speaker/templates/speaker/speaker_portrait_confirm_delete.html:5
 #: speaker/templates/speaker/speaker_user_profile.html:93
@@ -221,7 +221,7 @@ msgstr "Tausche dein Portraitfoto aus"
 
 #: speaker/templates/speaker/speaker_portrait_upload.html:33
 msgid "Speaker portrait"
-msgstr "Speakerfoto"
+msgstr "SpeakerInfoto"
 
 #: speaker/templates/speaker/speaker_portrait_upload.html:46
 msgid "Delete"
@@ -274,11 +274,11 @@ msgstr "Fehler beim Hochladen"
 
 #: speaker/templates/speaker/speaker_user_profile.html:3
 msgid "Speaker details"
-msgstr "Sprecherdaten"
+msgstr "SpeakerIndaten"
 
 #: speaker/templates/speaker/speaker_user_profile.html:7
 msgid "Your speaker details"
-msgstr "Deine Sprecherdaten"
+msgstr "Deine SpeakerIndaten"
 
 #: speaker/templates/speaker/speaker_user_profile.html:13
 msgid "Your sessions"

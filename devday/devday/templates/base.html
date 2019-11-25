@@ -100,7 +100,7 @@
     {% endblock %}
 
     <footer>
-        <img src="{% static 'images/seco-logo.svg' %}" alt="Software Engineering Community"> | <a href="{% page_url 'imprint' %}">IMPRESSUM</a>
+        <img src="{% static 'images/seco-logo.svg' %}" alt="Software Engineering Community"> | <a class="text-uppercase" href="{% page_url 'data-privacy' %}">{% trans "Privacy policy" %}</a> | <a class="text-uppercase" href="{% page_url 'imprint' %}">{% trans "Imprint" %}</a>
     </footer>
     <div class="modal fade" tabindex="-1" role="dialog" id="imageModal" aria-labelledby="imageModal" aria-hidden="true">
         <div class="modal-dialog modal-xl">

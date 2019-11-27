@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-14 15:02+0000\n"
-"PO-Revision-Date: 2019-05-14 17:03+0200\n"
+"POT-Creation-Date: 2019-11-25 14:26+0000\n"
+"PO-Revision-Date: 2019-11-25 15:26+0100\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -23,51 +23,51 @@ msgstr ""
 msgid "DevDay"
 msgstr "DevDay"
 
-#: devday/cms_menus.py:40
+#: devday/cms_menus.py:39
 msgid "Register now for {}"
 msgstr "Jetzt anmelden für {}"
 
-#: devday/cms_menus.py:46
+#: devday/cms_menus.py:47
 msgid "Submit session for {}"
 msgstr "Session einreichen für {}"
 
-#: devday/cms_menus.py:52
+#: devday/cms_menus.py:55
 msgid "Vote for your favourite sessions"
 msgstr "Stimme für deine bevorzugten Sessions"
 
-#: devday/cms_menus.py:57
+#: devday/cms_menus.py:63
 msgid "Sessions"
 msgstr "Sessions"
 
-#: devday/cms_menus.py:61
+#: devday/cms_menus.py:70
 msgid "Archive"
 msgstr "Archiv"
 
-#: devday/cms_menus.py:73
+#: devday/cms_menus.py:82
 msgid "Login"
 msgstr "Login"
 
-#: devday/cms_menus.py:78
+#: devday/cms_menus.py:89
 msgid "Profile"
 msgstr "Profil"
 
-#: devday/cms_menus.py:85
+#: devday/cms_menus.py:96
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: devday/cms_menus.py:89
+#: devday/cms_menus.py:101
 msgid "Checkin QR Code"
 msgstr "QR-Code für Checkin"
 
-#: devday/cms_menus.py:95
+#: devday/cms_menus.py:109
 msgid "Speaker Profile"
 msgstr "SpeakerIn-Profil"
 
-#: devday/cms_menus.py:101
+#: devday/cms_menus.py:118
 msgid "Program Committee"
 msgstr "Programmkomittee"
 
-#: devday/cms_menus.py:105
+#: devday/cms_menus.py:124
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -111,75 +111,87 @@ msgstr "Feedback zur Veranstaltung"
 msgid "Session feedback"
 msgstr "Feedback zu den Sessions"
 
-#: devday/extras.py:29 devday/tests/test_extras.py:65
+#: devday/extras.py:29 devday/tests/test_extras.py:68
 msgid "Unsupported image file format {}"
 msgstr "Nicht unterstütztes Bild-Dateiformat {}"
 
-#: devday/forms.py:42 devday/forms.py:70
+#: devday/forms.py:35 devday/forms.py:63
 msgid "Change my password"
 msgstr "Mein Passwort ändern"
 
-#: devday/forms.py:58
+#: devday/forms.py:51
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
-#: devday/forms.py:75
+#: devday/forms.py:68
 msgid "Recipient Group"
 msgstr "Empfängergruppe"
 
-#: devday/forms.py:77 devday/forms.py:93
+#: devday/forms.py:69 devday/forms.py:86
 msgid "Email Subject"
 msgstr "Email-Betreff"
 
-#: devday/forms.py:91
+#: devday/forms.py:82
 msgid "Recipients for this email"
 msgstr "Empfänger für diese Email"
 
-#: devday/forms.py:95
+#: devday/forms.py:89
 msgid "Email Body"
 msgstr "Email-Text"
 
-#: devday/forms.py:99
+#: devday/forms.py:93
 msgid "Send Test Email To Myself"
 msgstr "Test-Email an mich selbst senden"
 
-#: devday/forms.py:101
+#: devday/forms.py:96
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
-#: devday/settings/base.py:125 devday/settings/base.py:219
+#: devday/settings/base.py:127 devday/settings/base.py:227
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:141
+#: devday/settings/base.py:144
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:142
+#: devday/settings/base.py:145
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:143
+#: devday/settings/base.py:146
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:144
+#: devday/settings/base.py:147
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/settings/base.py:149
+#: devday/settings/base.py:151
+msgid "Image in carousel"
+msgstr "Bild in Karussel"
+
+#: devday/settings/base.py:152
+msgid "First image in carousel"
+msgstr "Erstes Bild in Karussel"
+
+#: devday/settings/base.py:153
+msgid "Image in galery"
+msgstr "Bild in Galerie"
+
+#: devday/settings/base.py:157
 msgid "Dev Day Page"
 msgstr "Dev-Day-Seite"
 
-#: devday/settings/base.py:150
+#: devday/settings/base.py:158
 msgid "Dev Day Page with Call to Action area"
 msgstr "Dev-Day-Seite mit Call-to-Action-Bereich"
 
-#: devday/settings/base.py:151
+#: devday/settings/base.py:159
 msgid "Dev Day Home Page"
 msgstr "Dev-Day-Homepage"
 
-#: devday/settings/base.py:154
+#: devday/settings/base.py:162
 msgid "Page with all static placeholders not for menu"
 msgstr "Seite mit allen statischen Platzhaltern, nicht im Menü verlinken"
 
@@ -219,6 +231,14 @@ msgstr "meine Seite"
 #: devday/templates/base.html:82
 msgid "Thanks to our sponsors"
 msgstr "Danke an unsere Sponsoren"
+
+#: devday/templates/base.html:103
+msgid "Privacy policy"
+msgstr "Datenschutzhinweise"
+
+#: devday/templates/base.html:103
+msgid "Imprint"
+msgstr "Impressum"
 
 #: devday/templates/devday/sendemail.html:34
 msgid "Please correct the error below."
@@ -506,34 +526,34 @@ msgstr "Dev Day Teilnehmer {}"
 msgid "Dev Day <{}>"
 msgstr "Dev Day <{}>"
 
-#: devday/views.py:87
+#: devday/views.py:97
 msgid "past and present attendees"
 msgstr "Frühere und aktuelle Teilnehmer"
 
-#: devday/views.py:90
+#: devday/views.py:101
 msgid "past attendees"
 msgstr "Frühere Teilnehmer"
 
-#: devday/views.py:93
+#: devday/views.py:105
 msgid "current attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
-#: devday/views.py:96
+#: devday/views.py:109
 msgid "registered but inactive attendees"
 msgstr "registrierte aber inaktive Teilnehmer"
 
-#: devday/views.py:99
+#: devday/views.py:113
 msgid "candidate speakers"
 msgstr "SpeakerIn-Kandidaten"
 
-#: devday/views.py:102
+#: devday/views.py:117
 msgid "accepted speakers"
 msgstr "Angenommene SpeakerIn"
 
-#: devday/views.py:138
+#: devday/views.py:153
 msgid "Successfully sent message to {} {} recipients"
 msgstr "Email erfolgreich an {} {} versendet"
 
-#: devday/views.py:147
+#: devday/views.py:160
 msgid "Successfully sent message for {} to yourself"
 msgstr "Test-Email für {} erfolgreich an dich selbst gesendet"

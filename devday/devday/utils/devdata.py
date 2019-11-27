@@ -286,6 +286,17 @@ tiefer in ein Thema einsteigen.</p>
         self.add_text_plugin_to_placeholder(impress, "content")
         api.publish_page(impress, self.user, "de")
 
+        data_privacy = api.create_page(
+            title="Datenschutzhinweise",
+            language="de",
+            published=True,
+            template="devday_no_cta.html",
+            reverse_id="data-privacy",
+            parent=None,
+        )
+        self.add_text_plugin_to_placeholder(data_privacy, "content")
+        api.publish_page(data_privacy, self.user, "de")
+
     def create_static_placeholder_text(
         self, name, lang="de", paras=3, title=None, text=None
     ):

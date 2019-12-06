@@ -358,6 +358,7 @@ tiefer in ein Thema einsteigen.</p>
             "speaker-register",
             "speaker_registered",
             "sponsoring-intro-text",
+            "sponsoring-form-prefix-text",
             "sponsoring-request-thanks",
             "sponsors",
             "submit-session-introtext",

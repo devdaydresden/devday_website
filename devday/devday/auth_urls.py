@@ -12,6 +12,7 @@ necessary to manually include these views.
 
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
 
 from devday.forms import (
     AuthenticationForm,
@@ -37,7 +38,7 @@ urlpatterns = [
     url(
         r"^password/change/$",
         auth_views.PasswordChangeView.as_view(
-            success_url="auth_password_change_done",
+            success_url=reverse_lazy("auth_password_change_done"),
             template_name="django_registration/password_change_form.html",
             form_class=PasswordChangeForm,
         ),
@@ -53,7 +54,7 @@ urlpatterns = [
     url(
         r"^password/reset/$",
         auth_views.PasswordResetView.as_view(
-            success_url="auth_password_reset_done",
+            success_url=reverse_lazy("auth_password_reset_done"),
             template_name="django_registration/password_reset_form.html",
             form_class=PasswordResetForm,
             email_template_name="django_registration/password_reset_email.txt",
@@ -64,7 +65,7 @@ urlpatterns = [
         r"^password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/"
         r"(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
         auth_views.PasswordResetConfirmView.as_view(
-            success_url="auth_password_reset_complete",
+            success_url=reverse_lazy("auth_password_reset_complete"),
             template_name="django_registration/password_reset_confirm.html",
             form_class=SetPasswordForm,
         ),

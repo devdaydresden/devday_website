@@ -12,22 +12,25 @@ services:
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
     command: "server -dev"
   app:
-    # Tag image as dev to distinguish from prod
-    image: ${DOCKER_REGISTRY}devday-website-app:dev
+    image: ${DOCKER_REGISTRY}devday_website_app_dev:latest
     build:
       context: .
-      dockerfile: docker/app/Dockerfile-dev
+      dockerfile: app-dev.Dockerfile
       args:
         http_proxy: ${http_proxy}
         no_proxy: ${no_proxy},vault
     ports:
       - "8000:8000"
     environment:
+      DEVDAY_PG_DBNAME: devday
+      DEVDAY_PG_HOST: db
+      DEVDAY_PG_PORT: 5432
+      DEVDAY_PG_USER: devday
       VAULT_URL: http://vault:8200
       DJANGO_SETTINGS_MODULE: devday.settings.dev
     env_file:
       dev-env
     volumes:
-      - "devday_media:/srv/devday/media"
-      - "devday_static:/srv/devday/static"
-      - "./devday:/srv/devday"
+      - "devday_media:/app/media"
+      - "devday_static:/app/static"
+      - "./devday:/app"

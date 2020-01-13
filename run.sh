@@ -95,7 +95,8 @@ case "$cmd" in
     ;;
   build)
     echo "*** Building Docker images"
-    $DOCKER_COMPOSE build $@
+    docker build --pull -t devdaydresden/devday_website_python_base:latest -f python_base.Dockerfile .
+    $DOCKER_COMPOSE build --pull $@
     ;;
   compose)
     $DOCKER_COMPOSE $@
@@ -125,11 +126,11 @@ case "$cmd" in
     echo "    Starting containers"
     docker_compose_up
     echo "    Compiling translations"
-    $DOCKER_COMPOSE exec "${container}" python manage.py compilemessages
+    $DOCKER_COMPOSE exec "${container}" python3 manage.py compilemessages
     echo "    Running migrations"
-    $DOCKER_COMPOSE exec "${container}" python manage.py migrate
+    $DOCKER_COMPOSE exec "${container}" python3 manage.py migrate
     echo "    Filling database"
-    $DOCKER_COMPOSE exec "${container}" python manage.py devdata
+    $DOCKER_COMPOSE exec "${container}" python3 manage.py devdata
     ;;
   docker-push)
     if [ -n "$DOCKER_USERNAME" ]; then
@@ -144,11 +145,11 @@ case "$cmd" in
     $DOCKER_COMPOSE logs -f "${container}"
     ;;
   manage)
-    $DOCKER_COMPOSE exec "${container}" python manage.py $@
+    $DOCKER_COMPOSE exec "${container}" python3 manage.py $@
     ;;
   messages)
-    $DOCKER_COMPOSE exec "${container}" python manage.py makemessages -l de --no-obsolete
-    $DOCKER_COMPOSE exec "${container}" python manage.py compilemessages -l de
+    $DOCKER_COMPOSE exec "${container}" python3 manage.py makemessages -l de --no-obsolete
+    $DOCKER_COMPOSE exec "${container}" python3 manage.py compilemessages -l de
     ;;
   purge)
     echo "*** Purge data"
@@ -178,7 +179,7 @@ case "$cmd" in
     echo "    Unpacking media dump"
     $DOCKER_COMPOSE exec -T "${container}" tar xz -C /srv/devday/media < "${mediadump}"
     echo "*** Running migrations"
-    $DOCKER_COMPOSE exec "${container}" python manage.py migrate
+    $DOCKER_COMPOSE exec "${container}" python3 manage.py migrate
     echo "*** Import completed"
     ;;
   shell)
@@ -200,7 +201,7 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker_compose_up
     fi
-    $DOCKER_COMPOSE exec "${container}" python manage.py test -v1 -k $@
+    $DOCKER_COMPOSE exec "${container}" python3 manage.py test -v1 -k $@
     ;;
   *)
     echo -e "error: unknown action \"${cmd}\":\n" >&2

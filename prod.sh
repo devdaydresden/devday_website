@@ -32,7 +32,11 @@ case "$cmd" in
     BACKUPDATA=$(date +%Y%m%d-%H%M%S%z)
     mkdir -p backup
     $DOCKER_COMPOSE exec db pg_dump -U postgres devday | gzip > "backup/prod-db-${BACKUPDATA}.sql.gz"
-    $DOCKER_COMPOSE run --rm --no-deps -T --entrypoint "tar cz -C /srv/devday/media ." app > "backup/prod-media-${BACKUPDATA}.tar.gz"
+    $DOCKER_COMPOSE run --rm --no-deps -T --entrypoint "tar cz -C /app/media ." app > "backup/prod-media-${BACKUPDATA}.tar.gz"
+    ;;
+  buildbase)
+    echo "*** Building Docker base image"
+    docker build --pull -t devdaydresden/devday_website_python_base:latest -f python_base.Dockerfile .
     ;;
   build)
     # Relevant for production/test environments with full vault setup
@@ -57,6 +61,10 @@ EOF
     ;;
   manage)
     $DOCKER_COMPOSE exec app python manage.py $@
+    ;;
+  pushbase)
+    echo "*** Pushing Docker base image"
+    docker push devdaydresden/devday_website_python_base:latest
     ;;
   restart)
     $DOCKER_COMPOSE stop app

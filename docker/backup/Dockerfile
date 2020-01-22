@@ -16,10 +16,10 @@ ENV DEVDAY_PG_PORT 5432
 ENV DEVDAY_PG_USER devday
 ENV DEVDAY_PG_PASSWORD ${DEVDAY_POSTGRES_PASSWORD}
 
-RUN mkdir -p /srv/devday/{backup,media}
+RUN mkdir -p /app/{backup,media}
 
-VOLUME /srv/devday/backup /srv/devday/media
+VOLUME /app/backup /app/media
 
-ADD backup.sh /srv/devday/
-WORKDIR /srv/devday/backup
-ENTRYPOINT /srv/devday/backup.sh
+ADD backup.sh /app/
+WORKDIR /app/backup
+ENTRYPOINT /app/backup.sh

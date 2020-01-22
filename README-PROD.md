@@ -23,12 +23,16 @@ Make sure that the following preconditions are met:
 To build the images run:
 
 ```
+./prod.sh buildbase
+./prod.sh pushbase
 ./prod.sh build
 ```
 
-which should work™. You might want to have a look into the generated
-`prod-env`, `prod-env-db` and `prod-env-mail` files and adapt the environment
-variables inside these files to fit your environment.
+which should work™. `buildbase` and `pushbase` are used to build and publish
+the Python base Docker images including all dependencies from `Pipfile.lock`.
+You might want to have a look into the generated `prod-env`, `prod-env-db` and
+`prod-env-mail` files and adapt the environment variables inside these files to
+fit your environment.
 
 The build process creates a self signed certificate for Vault. You may also
 create a CSR by running
@@ -110,7 +114,7 @@ You can follow the application startup logs with:
 > To import a media backup you can perform:
 >
 > ```
-> cat "<media dump>.tar.gz" | ./prod.sh exec -T app tar xz -C /srv/devday/media
+> cat "<media dump>.tar.gz" | ./prod.sh exec -T app tar xz -C /app/media
 > ```
 
 The application is now available on Port 8080 of the host system.

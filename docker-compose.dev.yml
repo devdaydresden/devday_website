@@ -26,8 +26,8 @@ services:
       DEVDAY_PG_HOST: db
       DEVDAY_PG_PORT: 5432
       DEVDAY_PG_USER: devday
-      VAULT_URL: http://vault:8200
       DJANGO_SETTINGS_MODULE: devday.settings.dev
+      VAULT_URL: http://vault:8200
     env_file:
       dev-env
     volumes:

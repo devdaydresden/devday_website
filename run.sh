@@ -42,6 +42,7 @@ usage() {
     cat >&2 <<EOD
 usage: ./run.sh backup
        ./run.sh build
+       ./run.sh buildbase
        ./run.sh compose [...]
        ./run.sh coverage
        ./run.sh coveralls
@@ -49,6 +50,7 @@ usage: ./run.sh backup
        ./run.sh manage [...]
        ./run.sh messages
        ./run.sh purge
+       ./run.sh pushbase
        ./run.sh -d databasedump.sql.gz -m mediadump.tar.gz restore
        ./run.sh [-c container] shell
        ./run.sh start
@@ -93,9 +95,12 @@ case "$cmd" in
     echo "*** Running backup"
     $DOCKER_COMPOSE -f docker-compose.tools.yml run --rm backup
     ;;
+  buildbase)
+    echo "*** Building Docker base image"
+    docker build --pull -t devdaydresden/devday_website_python_base:latest -f python_base.Dockerfile .
+    ;;
   build)
     echo "*** Building Docker images"
-    docker build --pull -t devdaydresden/devday_website_python_base:latest -f python_base.Dockerfile .
     $DOCKER_COMPOSE build --pull $@
     ;;
   compose)
@@ -158,6 +163,10 @@ case "$cmd" in
     echo "    Deleting media files"
     rm -rf devday/media/*
     ;;
+  pushbase)
+    echo "*** Pushing Docker base image"
+    docker push devdaydresden/devday_website_python_base:latest
+    ;;
   restore)
     if [ -z "${dbdump}" ]; then
       echo "error: must specify -d databasedump.sql.gz file to restore" >&2
@@ -177,7 +186,7 @@ case "$cmd" in
     echo "    Importing database dump"
     gunzip -c "${dbdump}" | $DOCKER_COMPOSE exec -T db psql -U devday devday
     echo "    Unpacking media dump"
-    $DOCKER_COMPOSE exec -T "${container}" tar xz -C /srv/devday/media < "${mediadump}"
+    $DOCKER_COMPOSE exec -T "${container}" tar xz -C /app/media < "${mediadump}"
     echo "*** Running migrations"
     $DOCKER_COMPOSE exec "${container}" python3 manage.py migrate
     echo "*** Import completed"

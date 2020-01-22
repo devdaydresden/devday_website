@@ -28,19 +28,23 @@ services:
     image: ${DOCKER_REGISTRY}devday-website-app:prod
     build:
       context: .
-      dockerfile: docker/app/Dockerfile-prod
+      dockerfile: app-prod.Dockerfile
       args:
         http_proxy: ${http_proxy}
         no_proxy: ${no_proxy},vault
     environment:
-      VAULT_URL: https://vault:8200
+      DEVDAY_PG_DBNAME: devday
+      DEVDAY_PG_HOST: db
+      DEVDAY_PG_PORT: 5432
+      DEVDAY_PG_USER: devday
       DJANGO_SETTINGS_MODULE: devday.settings.prod
+      VAULT_URL: https://vault:8200
     env_file:
       prod-env
     volumes:
-      - "devday_media:/srv/devday/media"
-      - "devday_static:/srv/devday/static"
-      - "devday_logs:/srv/devday/logs"
+      - "devday_media:/app/media"
+      - "devday_static:/app/static"
+      - "devday_logs:/app/logs"
     depends_on:
       - db
       - vault

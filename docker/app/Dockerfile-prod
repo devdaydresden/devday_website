@@ -45,7 +45,7 @@ COPY Pipfile Pipfile.lock /srv/devday/
 
 RUN apk --no-cache add \
     uwsgi-http \
-    uwsgi-python3
+    uwsgi-python
 
 RUN apk --no-cache add --virtual build-dependencies \
     build-base \

@@ -1,4 +1,5 @@
 import re
+from datetime import timedelta
 from urllib.parse import quote
 
 from bs4 import BeautifulSoup
@@ -22,7 +23,7 @@ from event.models import Event
 from event.tests import event_testutils
 from speaker.models import PublishedSpeaker
 from speaker.tests import speaker_testutils
-from talk.models import SessionReservation, Talk, Track
+from talk.models import SessionReservation, Talk, TalkFormat, Track
 from talk.tests import talk_testutils
 
 ADMIN_EMAIL = "admin@example.org"
@@ -557,13 +558,22 @@ class CSVViewTest(TestCase):
             "staff@example.com", cls.staff_password, is_staff=True
         )
         cls.user = DevDayUser.objects.create_user("test@example.org", "test")
-        cls.event = Event.objects.current_event()
-        cls.test_event = event_testutils.create_test_event()
+        now = timezone.now()
+        cls.future_event = event_testutils.create_test_event(
+            title="Future Event",
+            start_time=now + timedelta(days=30),
+            end_time=now + timedelta(days=31),
+        )
+        cls.past_event = event_testutils.create_test_event(
+            title="Past Event",
+            start_time=now - timedelta(days=335),
+            end_time=now - timedelta(days=334),
+        )
 
     def setUp(self):
-        self.attendee = Attendee.objects.create(user=self.user, event=self.event)
+        self.attendee = Attendee.objects.create(user=self.user, event=self.future_event)
         self.other_attendee = Attendee.objects.create(
-            user=self.user, event=self.test_event
+            user=self.user, event=self.past_event
         )
 
     def login(self):
@@ -589,21 +599,20 @@ class CSVViewTest(TestCase):
     def test_get_attendees_anonymous(self):
         self.get_anonymous("admin_csv_attendees")
 
-    # FIXME: repair test. Expectation that current event is in the future is wrong
-    # def test_get_attendees_staff(self):
-    #    self.login()
-    #    r = self.get_staff("admin_csv_attendees")
-    #    self.assertIn(
-    #        self.user.email, r.content.decode(), "user should be listed in attendees"
-    #    )
-    #
-    #    self.attendee.delete()
-    #    r = self.get_staff("admin_csv_attendees")
-    #    self.assertNotIn(
-    #        self.user.email,
-    #        r.content.decode(),
-    #        "user should not be listed in attendees",
-    #    )
+    def test_get_attendees_staff(self):
+        self.login()
+        r = self.get_staff("admin_csv_attendees")
+        self.assertIn(
+            self.user.email, r.content.decode(), "user should be listed in attendees"
+        )
+
+        self.attendee.delete()
+        r = self.get_staff("admin_csv_attendees")
+        self.assertNotIn(
+            self.user.email,
+            r.content.decode(),
+            "user should not be listed in attendees",
+        )
 
     def test_get_inactive_anonymous(self):
         self.get_anonymous("admin_csv_inactive")
@@ -628,40 +637,39 @@ class CSVViewTest(TestCase):
     def test_get_maycontact_anonymous(self):
         self.get_anonymous("admin_csv_maycontact")
 
-    # FIXME: repair test. Expectation that current event is in the future is wrong
-    # def test_get_maycontact_staff(self):
-    #    self.login()
-    #
-    #    self.user.contact_permission_date = timezone.now()
-    #    self.user.save()
-    #    r = self.get_staff("admin_csv_maycontact")
-    #    self.assertIn(
-    #        self.user.email, r.content.decode(), "user should be listed in maycontact"
-    #    )
-    #
-    #    self.user.contact_permission_date = None
-    #    self.user.save()
-    #    r = self.get_staff("admin_csv_maycontact")
-    #    self.assertIn(
-    #        self.user.email, r.content.decode(), "user should be listed in maycontact"
-    #    )
-    #
-    #    self.user.contact_permission_date = timezone.now()
-    #    self.attendee.delete()
-    #    self.user.save()
-    #    r = self.get_staff("admin_csv_maycontact")
-    #    self.assertIn(
-    #        self.user.email, r.content.decode(), "user should be listed in maycontact"
-    #    )
-    #
-    #    self.user.contact_permission_date = None
-    #    self.user.save()
-    #    r = self.get_staff("admin_csv_maycontact")
-    #    self.assertNotIn(
-    #        self.user.email,
-    #        r.content.decode(),
-    #        "user should not be listed in maycontact",
-    #    )
+    def test_get_maycontact_staff(self):
+        self.login()
+
+        self.user.contact_permission_date = timezone.now()
+        self.user.save()
+        r = self.get_staff("admin_csv_maycontact")
+        self.assertIn(
+            self.user.email, r.content.decode(), "user should be listed in maycontact"
+        )
+
+        self.user.contact_permission_date = None
+        self.user.save()
+        r = self.get_staff("admin_csv_maycontact")
+        self.assertIn(
+            self.user.email, r.content.decode(), "user should be listed in maycontact"
+        )
+
+        self.user.contact_permission_date = timezone.now()
+        self.attendee.delete()
+        self.user.save()
+        r = self.get_staff("admin_csv_maycontact")
+        self.assertIn(
+            self.user.email, r.content.decode(), "user should be listed in maycontact"
+        )
+
+        self.user.contact_permission_date = None
+        self.user.save()
+        r = self.get_staff("admin_csv_maycontact")
+        self.assertNotIn(
+            self.user.email,
+            r.content.decode(),
+            "user should not be listed in maycontact",
+        )
 
 
 class CheckInAttendeeViewTest(TestCase):
@@ -752,6 +760,12 @@ class CheckInAttendeeViewUrlTest(TestCase):
         )
         cls.user, _ = attendee_testutils.create_test_user("test@example.org")
         cls.attendee = Attendee.objects.create(user=cls.user, event=cls.event)
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        talk_format = (TalkFormat.objects.create(name="Workshop", duration=60),)
+        cls.talk = talk_testutils.create_test_talk(
+            speaker=speaker, event=cls.event, title="Test workshop", spots=10,
+        )
+        cls.talk.talkformat.set(talk_format)
         other_user, _ = attendee_testutils.create_test_user("other@example.org")
         cls.other_attendee = Attendee.objects.create(
             user=other_user, event=event_testutils.create_test_event("Other")
@@ -777,6 +791,11 @@ class CheckInAttendeeViewUrlTest(TestCase):
             return m.get("data-code")
         else:
             return None
+
+    def _create_confirmed_reservation(self):
+        reservation = SessionReservation.objects.create(
+            talk=self.talk, attendee=self.attendee, is_confirmed=True, is_waiting=False
+        )
 
     def login(self):
         self.client.login(username=self.staff.email, password=self.staff_password)
@@ -804,6 +823,16 @@ class CheckInAttendeeViewUrlTest(TestCase):
         r = self.client.get(url)
         self.assertEqual(r.status_code, 200, "should retrieve form")
         self.assertEqual(self._get_code(r), "OK", "should get checked in")
+        self.assertNotIn("Test workshop", r.context["checkin_reservations"])
+
+    def test_get_valid_with_reservations(self):
+        self._create_confirmed_reservation()
+        url = self._get_url_for_attendee(self.attendee)
+        self.login()
+        r = self.client.get(url)
+        self.assertEqual(r.status_code, 200, "should retrieve form")
+        self.assertEqual(self._get_code(r), "OK", "should get checked in")
+        self.assertIn("Test workshop", r.context["checkin_reservations"])
 
     def test_get_checked_in(self):
         url = self._get_url_for_attendee(self.attendee)
@@ -815,6 +844,20 @@ class CheckInAttendeeViewUrlTest(TestCase):
         self.assertEqual(
             self._get_code(r), "already", "atteendee should be checked in already"
         )
+        self.assertNotIn("Test workshop", r.context["checkin_reservations"])
+
+    def test_get_checked_in_with_reservation(self):
+        self._create_confirmed_reservation()
+        url = self._get_url_for_attendee(self.attendee)
+        self.attendee.check_in()
+        self.attendee.save()
+        self.login()
+        r = self.client.get(url)
+        self.assertEqual(r.status_code, 200, "should retrieve form")
+        self.assertEqual(
+            self._get_code(r), "already", "atteendee should be checked in already"
+        )
+        self.assertIn("Test workshop", r.context["checkin_reservations"])
 
     def test_get_not_registered(self):
         url = self._get_url(12345678, Attendee.objects.get_verification(12345678))

@@ -51,12 +51,12 @@ This creates a backup of the database and the media files. It creates a `db-`_ti
 $ ./run.sh backup
 *** Running backup
 Starting devday_hp_db_1 ... done
-+ cd /srv/devday/backup
++ cd /app/backup
 ++ date +%Y%m%d-%H%M%S%z
 + BACKUPDATE=20180913-141636+0000
 + pg_dump -U devday -h db -p 5432 devday
 + gzip
-+ tar czf media-20180913-141636+0000.tar.gz -C /srv/devday/media .
++ tar czf media-20180913-141636+0000.tar.gz -C /app/media .
 ```
 
 ### `build`: Build the necessary Docker images
@@ -76,6 +76,29 @@ Step 5/5 : COPY httpd.conf /usr/local/apache2/conf/
  ---> bb9f9690b35b
 Successfully built bb9f9690b35b
 Successfully tagged devday_hp_revproxy:latest
+```
+
+### `buildbase`: Build the Python base Docker image
+
+This builds the base Docker image including dependencies from Pipfile.lock and
+should be used when you make changes to the Python dependencies or want to use
+a recent Alpine base image. This image is published to
+[Dockerhub](https://hub.docker.com/repository/docker/devdaydresden/devday_website_python_base).
+
+```
+./run.sh buildbase
+*** Building Docker base image
+Sending build context to Docker daemon  40.05MB
+Step 1/12 : FROM alpine
+latest: Pulling from library/alpine
+
+...
+
+Step 12/12 : RUN     export PYTHONBUFFERED=1 ;     export PYTHONFAULTHANDLER=1 ;     export PIP_NO_CACHE_DIR=off ;     export PIP_DISABLE_VERSION_CHECK=on ;     export PIP_DEFAULT_TIMEOUT=100 ;     export PIPENV_HIDE_EMOJIS=true ;     export PIPENV_COLORBLIND=true ;     export PIPENV_NOSPIN=true ;     export PIPENV_DOTENV_LOCATION=config/.env ;     apk --no-cache add --virtual build-dependencies     build-base     gcc     jpeg-dev     libffi-dev     libffi-dev     libpng-dev     libxml2-dev     libxslt-dev     linux-headers     musl-dev     postgresql-dev     py3-pip     python3-dev     zlib-dev  && python3 -m pip install pipenv  && pipenv install --system --deploy --ignore-pipfile  && rm -rf /root/.cache  && find / -name __pycache__ -print0|xargs -0 rm -rf  && update-ca-certificates  && apk del build-dependencies
+ ---> Using cache
+ ---> 0bd1933946cc
+Successfully built 0bd1933946cc
+Successfully tagged devdaydresden/devday_website_python_base:latest
 ```
 
 ### `compose`: Run `docker-compose`
@@ -178,13 +201,25 @@ Removing volume devday_hp_pg_data
     Deleting media files
 ```
 
+### `pushbase` push the Python base image to Docker Hub
+
+```
+./run.sh pushbase
+*** Pushing Docker base image
+The push refers to repository [docker.io/devdaydresden/devday_website_python_base]
+
+...
+
+latest: digest: sha256:551085726a390ac5103311b6737a5313791b44834898545e5a8d669e7b4d0fb2 size: 1368
+```
+
 ### `shell`: Run a shell in the app container
 This command starts an interactive shell inside the app container, which contains the Python environment.
 
 ```
 $ ./run.sh shell
 *** Starting shell in app container
-root@d46a19f94493:/srv/devday/devday# ls -l
+root@d46a19f94493:/app/devday# ls -l
 total 80
 drwxr-xr-x 20 root root   640 Sep 11 13:10 attendee
 -rw-r--r--  1 root root    88 Sep 14 15:17 dev_requirements.txt

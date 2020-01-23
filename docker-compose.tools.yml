@@ -6,5 +6,5 @@ services:
     depends_on:
       - db
     volumes:
-      - "devday_media:/srv/devday/media"
-      - "./backup:/srv/devday/backup"
+      - "devday_media:/app/media"
+      - "./backup:/app/backup"

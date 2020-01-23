@@ -1,7 +1,7 @@
 dist: xenial
 language: python
 sudo: true
-python: 3.7
+python: 3.8
 services:
 - docker
 notifications:
@@ -13,4 +13,4 @@ script:
 - "./run.sh coverage"
 after_success:
 - pip install coveralls
-- "cd devday && coverage combine .coverage && coveralls"
+- "cd devday && coveralls"

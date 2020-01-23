@@ -72,7 +72,7 @@ EOF
     ;;
   shell)
     echo "*** Starting shell in 'app' container"
-    $DOCKER_COMPOSE exec app bash
+    $DOCKER_COMPOSE exec app sh
     ;;
   startall)
     echo "*** Starting all containers"

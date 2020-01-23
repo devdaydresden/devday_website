@@ -193,7 +193,7 @@ case "$cmd" in
     ;;
   shell)
     echo "*** Starting shell in ${container} container"
-    $DOCKER_COMPOSE exec "${container}" bash
+    $DOCKER_COMPOSE exec "${container}" sh
     ;;
   start|'')
     if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then

@@ -215,6 +215,38 @@ class Attendee(models.Model):
         )
 
 
+class BadgeData(TimeStampedModel):
+    attendee = models.OneToOneField(
+        Attendee,
+        verbose_name=_("Attendee"),
+        null=True,
+        blank=True,
+        limit_choices_to={"event__published": True},
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(
+        verbose_name=_("Title"),
+        max_length=50,
+        help_text=_("How would you like to be named"),
+    )
+    contact = models.CharField(
+        verbose_name=_("Contact"),
+        blank=True,
+        max_length=50,
+        help_text=_("optional contact information (i.e. a Twitter handle)"),
+    )
+    topics = models.TextField(
+        verbose_name=_("Topics"),
+        blank=True,
+        max_length=150,
+        help_text=_("Topics you would like to talk about"),
+    )
+
+    class Meta:
+        verbose_name = _("Badge data")
+        verbose_name_plural = _("Badge data")
+
+
 class AttendeeEventFeedback(TimeStampedModel):
     attendee = models.ForeignKey(
         Attendee,

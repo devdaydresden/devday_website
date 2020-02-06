@@ -3,9 +3,11 @@ from django.conf.urls import url
 from attendee.views import (
     AttendeeActivationView,
     AttendeeCancelView,
+    AttendeeConfirmationView,
     AttendeeEventFeedbackView,
     AttendeeRegisterSuccessView,
     AttendeeRegistrationView,
+    AttendeeRegistrationPendingView,
     AttendeeToggleRaffleView,
     CheckInAttendeeQRView,
     CheckInAttendeeSummaryView,
@@ -15,9 +17,11 @@ from attendee.views import (
     DevDayUserDeleteView,
     DevDayUserProfileView,
     DevDayUserRegistrationView,
+    EditBadgeDataView,
     FeedbackSummaryView,
     LoginOrRegisterAttendeeView,
     RaffleView,
+    AttendeeRegistrationCompleteView,
 )
 
 urlpatterns = [
@@ -44,14 +48,34 @@ urlpatterns = [
         name="devdayuser_activate",
     ),
     url(
+        r"^(?P<event>[^/]+)/attendee/pending/$",
+        AttendeeRegistrationPendingView.as_view(),
+        name="attendee_registration_pending",
+    ),
+    url(
         r"^(?P<event>[^/]+)/attendee/activate/(?P<activation_key>[-:\w]+)/$",
         AttendeeActivationView.as_view(),
         name="attendee_activate",
     ),
     url(
+        r"^(?P<event>[^/]+)/attendee/confirm/(?P<activation_key>[-:\w]+)/$",
+        AttendeeConfirmationView.as_view(),
+        name="attendee_confirm_existing",
+    ),
+    url(
         r"^(?P<event>[^/]+)/attendee/register/success/$",
         AttendeeRegisterSuccessView.as_view(),
         name="attendee_register_success",
+    ),
+    url(
+        r"^(?P<event>[^/]+)/attendee/register/complete/$",
+        AttendeeRegistrationCompleteView.as_view(),
+        name="attendee_registration_complete",
+    ),
+    url(
+        r"^(?P<event>[^/]+)/attendee/edit-badge/$",
+        EditBadgeDataView.as_view(),
+        name="edit_badge_data",
     ),
     url(
         r"^(?P<event>[^/]+)/attendee/toggle-raffle/$",

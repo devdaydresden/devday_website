@@ -16,7 +16,7 @@ from attendee.forms import (
     DevDayUserRegistrationForm,
     EventRegistrationForm,
 )
-from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser
+from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser, BadgeData
 from attendee.tests import attendee_testutils
 from attendee.views import AttendeeRegistrationView, DevDayUserRegistrationView
 from event.models import Event
@@ -124,11 +124,10 @@ class AttendeeProfileViewTest(TestCase):
 class AttendeeRegistrationViewTest(TestCase):
     def setUp(self):
         self.event = event_testutils.create_test_event()
-        self.url = "/{}/attendee/register/".format(self.event.slug)
-        self.register_existing_url = "/{}/attendee/register/success/".format(
-            self.event.slug
-        )
+        self.url = f"/{self.event.slug}/attendee/register/"
+        self.register_existing_url = f"/{self.event.slug}/attendee/pending/"
         self.register_new_url = "/accounts/register/complete/"
+        self.badge_data_url = f"/{self.event.slug}/attendee/edit-badge/"
 
     def test_get_email_context(self):
         request = HttpRequest()
@@ -210,21 +209,23 @@ class AttendeeRegistrationViewTest(TestCase):
 
     def test_get_with_existing_attendee(self):
         user = DevDayUser.objects.create_user("test@example.org", "test")
-        Attendee.objects.create(user=user, event=self.event)
+        attendee = Attendee.objects.create(user=user, event=self.event)
+        BadgeData.objects.create(attendee=attendee, title="Test Attendee")
 
         self.client.login(username="test@example.org", password="test")
         response = self.client.get(self.url)
 
-        self.assertRedirects(response, self.register_existing_url)
+        self.assertRedirects(response, self.badge_data_url)
 
     def test_post_with_existing_attendee(self):
         user = DevDayUser.objects.create_user("test@example.org", "test")
-        Attendee.objects.create(user=user, event=self.event)
+        attendee = Attendee.objects.create(user=user, event=self.event)
+        BadgeData.objects.create(attendee=attendee, title="Test Attendee")
 
         self.client.login(username="test@example.org", password="test")
         response = self.client.post(self.url)
 
-        self.assertRedirects(response, self.register_existing_url)
+        self.assertRedirects(response, self.badge_data_url)
 
     def test_with_closed_registration(self):
         self.event.registration_open = False

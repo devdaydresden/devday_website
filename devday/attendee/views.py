@@ -1,6 +1,7 @@
 import csv
 from io import StringIO
 
+from django.conf import settings
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.mixins import (
     AccessMixin,
@@ -9,28 +10,33 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core import signing
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.db.models import Avg, Count, Prefetch, Q
 from django.db.transaction import atomic
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView, TemplateView, UpdateView, View
-from django.views.generic.edit import FormView, ModelFormMixin
+from django.views.generic.edit import CreateView, FormView, ModelFormMixin
 from django.views.generic.list import BaseListView, ListView
 from django_registration import signals
 from django_registration.backends.activation.views import (
     ActivationView,
     RegistrationView,
 )
+from django_registration.exceptions import ActivationError
 
 from attendee.forms import (
     AttendeeEventFeedbackForm,
     AttendeeProfileForm,
     AttendeeRegistrationForm,
     CheckInAttendeeForm,
+    BadgeDataForm,
     DevDayUserRegistrationForm,
     EventRegistrationForm,
     RegistrationAuthenticationForm,
@@ -39,9 +45,11 @@ from attendee.signals import attendence_cancelled
 from event.models import Event
 from talk.models import Attendee, SessionReservation, Talk
 
-from .models import AttendeeEventFeedback, DevDayUser
+from .models import AttendeeEventFeedback, BadgeData, DevDayUser
 
 User = get_user_model()
+
+REGISTRATION_SALT = getattr(settings, "REGISTRATION_SALT", "registration")
 
 
 class AttendeeQRCodeMixIn(object):
@@ -118,7 +126,7 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView)
     def get_initial(self):
         initial = super().get_initial()
         initial["accept_general_contact"] = (
-            self.request.user.contact_permission_date is not None
+                self.request.user.contact_permission_date is not None
         )
         return initial
 
@@ -126,8 +134,8 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView)
         context = super(DevDayUserProfileView, self).get_context_data(**kwargs)
         attendees = (
             Attendee.objects.filter(event__published=True, user_id=self.request.user.id)
-            .select_related("user", "event")
-            .prefetch_related(
+                .select_related("user", "event")
+                .prefetch_related(
                 Prefetch(
                     "sessionreservation_set",
                     queryset=SessionReservation.objects.order_by("talk__title"),
@@ -136,7 +144,7 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView)
                 "reservations__talk",
                 "reservations__talk__event",
             )
-            .order_by("event__start_time")
+                .order_by("event__start_time")
         )
         context["attendees"] = attendees
         context["current_event"] = Event.objects.current_event()
@@ -151,8 +159,10 @@ class AttendeeRegistrationView(RegistrationView):
     }
     auth_level = None
     event = None
-    email_body_template = "attendee/attendee_activation_email_body.txt"
-    email_subject_template = "attendee/attendee_activation_email_subject.txt"
+    attendee_email_body_template = "attendee/attendee_activation_email_body.txt"
+    attendee_email_subject_template = "attendee/attendee_activation_email_subject.txt"
+    email_body_template = "attendee/attendee_activation_email_body_new_user.txt"
+    email_subject_template = "attendee/attendee_activation_email_subject_new_user.txt"
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
@@ -163,7 +173,8 @@ class AttendeeRegistrationView(RegistrationView):
         if user.is_anonymous:
             self.auth_level = "anonymous"
         elif user.get_attendee(event=self.event):
-            return redirect(self.get_success_url())
+            return redirect(
+                reverse_lazy("edit_badge_data", kwargs={"event": self.event.slug}))
         else:
             self.auth_level = "user"
         return super(AttendeeRegistrationView, self).dispatch(*args, **kwargs)
@@ -172,7 +183,7 @@ class AttendeeRegistrationView(RegistrationView):
         if self.auth_level == "anonymous":
             return reverse_lazy("django_registration_complete")
         return reverse_lazy(
-            "attendee_register_success", kwargs={"event": self.event.slug}
+            "attendee_registration_pending", kwargs={"event": self.event.slug}
         )
 
     def get_form_class(self, request=None):
@@ -192,6 +203,30 @@ class AttendeeRegistrationView(RegistrationView):
         context.update({"event": self.event})
         return context
 
+    def get_attendee_activation_key(self, attendee_id):
+        return signing.dumps(obj=attendee_id, salt=REGISTRATION_SALT)
+
+    def send_attendee_confirmation_email(self, attendee):
+        user = attendee.user
+        activation_key = self.get_attendee_activation_key(attendee.id)
+        context = self.get_email_context(activation_key)
+        context["user"] = user
+        context["attendee"] = attendee
+        subject = render_to_string(
+            template_name=self.attendee_email_subject_template,
+            context=context,
+            request=self.request,
+        )
+        # Force subject to a single line to avoid header-injection
+        # issues.
+        subject = "".join(subject.splitlines())
+        message = render_to_string(
+            template_name=self.attendee_email_body_template,
+            context=context,
+            request=self.request,
+        )
+        user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+
     @atomic
     def register(self, form):
         if self.auth_level == "anonymous":
@@ -203,8 +238,20 @@ class AttendeeRegistrationView(RegistrationView):
             return user
         else:
             attendee = form.save(commit=True)
-            # TODO: send event registration confirmation mail with more info
+
+            self.send_attendee_confirmation_email(attendee)
             return attendee.user
+
+
+class AttendeeRegistrationPendingView(TemplateView):
+    """
+    A view that displays a template when an attendee has registered. It should
+    display an advice that the user has to confirm the attendance by clicking
+    the activation link in the mail that is send by
+    AttendeeRegistrationView.send_attendee_confirmation_email.
+    """
+
+    template_name = "attendee/attendee_registration_pending.html"
 
 
 class DevDayUserRegistrationView(RegistrationView):
@@ -272,6 +319,38 @@ class AttendeeActivationView(ActivationView):
         )
 
 
+class AttendeeConfirmationView(ActivationView):
+    event = None
+
+    def get(self, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=self.kwargs.get("event"))
+        if not self.event.registration_open:
+            return redirect("django_registration_disallowed")
+        extra_context = {}
+        try:
+            self.activate(*args, **kwargs)
+        except ActivationError as e:
+            extra_context["activation_error"] = {
+                "message": e.message,
+                "code": e.code,
+                "params": e.params,
+            }
+        else:
+            return HttpResponseRedirect(force_text(self.get_success_url()))
+        context_data = self.get_context_data()
+        context_data.update(extra_context)
+        return self.render_to_response(context_data)
+
+    def activate(self, *args, **kwargs):
+        attendee_id = self.validate_key(kwargs.get("activation_key"))
+        get_object_or_404(Attendee, id=attendee_id)
+
+    def get_success_url(self, user=None):
+        return reverse_lazy(
+            "attendee_register_success", kwargs={"event": self.event.slug}
+        )
+
+
 class AttendeeCancelView(AttendeeRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         # remove attendee for user, event tuple
@@ -291,8 +370,51 @@ class AttendeeToggleRaffleView(AttendeeRequiredMixin, View):
         return JsonResponse({"raffle": self.attendee.raffle})
 
 
-class AttendeeRegisterSuccessView(AttendeeRequiredMixin, TemplateView):
+class AttendeeRegisterSuccessView(AttendeeRequiredMixin, CreateView):
     template_name = "attendee/attendee_register_success.html"
+    event = None
+    form_class = BadgeDataForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["event"] = self.event
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["attendee"] = self.attendee
+        return kwargs
+
+    def get_success_url(self):
+        return reverse(
+            "attendee_registration_complete", kwargs={"event": self.event.slug}
+        )
+
+
+class EditBadgeDataView(AttendeeRequiredMixin, UpdateView):
+    template_name = "attendee/badge_data_edit.html"
+    event = None
+    form_class = BadgeDataForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["event"] = self.event
+        return context
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(BadgeData, attendee=self.attendee)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["attendee"] = self.attendee
+        return kwargs
+
+    def get_success_url(self):
+        return reverse("user_profile")
+
+
+class AttendeeRegistrationCompleteView(AttendeeRequiredMixin, TemplateView):
+    template_name = "attendee/attendee_register_complete.html"
     event = None
 
     def get_context_data(self, **kwargs):
@@ -350,10 +472,7 @@ class InactiveAttendeeView(StaffUserMixin, BaseListView):
             writer.writerow(("Email", "Date joined"))
             writer.writerows(
                 [
-                    (
-                        u.email,
-                        u.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
-                    )
+                    (u.email, u.date_joined.strftime("%Y-%m-%d %H:%M:%S"),)
                     for u in context.get("object_list", [])
                 ]
             )
@@ -372,13 +491,13 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
     def get_queryset(self):
         qs = (
             super(ContactableAttendeeView, self)
-            .get_queryset()
-            .filter(
+                .get_queryset()
+                .filter(
                 Q(contact_permission_date__isnull=False)
                 | Q(attendees__event=Event.objects.current_event())
             )
-            .order_by("email")
-            .distinct()
+                .order_by("email")
+                .distinct()
         )
         return qs
 
@@ -387,9 +506,7 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
         try:
             writer = csv.writer(output, delimiter=";")
             writer.writerow(("Email",))
-            writer.writerows(
-                [(u.email,) for u in context.get("object_list", [])]
-            )
+            writer.writerows([(u.email,) for u in context.get("object_list", [])])
             response = HttpResponse(
                 output.getvalue(), content_type="txt/csv; charset=utf-8"
             )
@@ -405,9 +522,9 @@ class AttendeeListView(StaffUserMixin, BaseListView):
     def get_queryset(self):
         return (
             super(AttendeeListView, self)
-            .get_queryset()
-            .filter(event_id=Event.objects.current_event_id())
-            .order_by("user__email")
+                .get_queryset()
+                .filter(event_id=Event.objects.current_event_id())
+                .order_by("user__email")
         )
 
     def render_to_response(self, context):

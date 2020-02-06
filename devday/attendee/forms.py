@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django_registration.forms import RegistrationFormUniqueEmail
 
-from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser
+from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser, BadgeData
 from devday.forms import AuthenticationForm
 
 User = get_user_model()
@@ -440,3 +440,33 @@ class AttendeeEventFeedbackForm(forms.ModelForm):
         if self.instance.attendee_id is None:
             self.instance.attendee_id = self.initial["attendee"].id
         return super().save(commit)
+
+
+class BadgeDataForm(forms.ModelForm):
+    class Meta:
+        model = BadgeData
+        fields = ["title", "contact", "topics"]
+
+    def __init__(self, *args, **kwargs):
+        self.attendee = kwargs.pop("attendee")
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.html5_required = True
+        self.helper.layout = Layout(
+            Div(Field("title", wrapper_class="col-12"), css_class="form-row",),
+            Div(Field("contact", wrapper_class="col-12"), css_class="form-row",),
+            Div(Field("topics", wrapper_class="col-12"), css_class="form-row",),
+            Div(
+                Submit("submit", _("Submit your badge data")),
+                css_class="col-12 text-center",
+            ),
+        )
+
+    def save(self, commit=True):
+        badge_data = super().save(commit=False)
+        if not badge_data.attendee_id:
+            badge_data.attendee_id = self.attendee.id
+        if commit:
+            badge_data.save()
+        return badge_data

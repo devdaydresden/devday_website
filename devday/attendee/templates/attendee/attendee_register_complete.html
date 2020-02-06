@@ -1,0 +1,18 @@
+{% extends "devday_site.html" %}
+{% load cms_tags i18n %}
+{% block title %}{{ block.super }} // {% blocktrans with event=event.title %}Registration
+    for {{ event }} completed{% endblocktrans %}" %}{% endblock %}
+{% block content %}
+    <div class="content-area">
+        <div class="col-md-8 offset-md-2 col-12">
+            <h1>{% trans "Attendee registration completed" %}</h1>
+            <p>{% blocktrans with event=event.title %}You have completed the registration
+                for the event &quot;{{ event }}&quot;.{% endblocktrans %}</p>
+            {% static_placeholder "register-success" or %}Registration
+                completed.{% endstatic_placeholder %}
+            <p>{% url 'user_profile' as user_profile %}{% blocktrans %}Visit
+                <a href="{{ user_profile }}">your user profile</a> to review your
+                registration.{% endblocktrans %}</p>
+        </div>
+    </div>
+{% endblock %}

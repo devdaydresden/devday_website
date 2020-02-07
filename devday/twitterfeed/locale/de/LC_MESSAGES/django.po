@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-25 16:37+0000\n"
+"POT-Creation-Date: 2020-02-07 15:57+0000\n"
 "PO-Revision-Date: 2018-10-16 19:26+0200\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: twitterfeed/admin.py:12 twitterfeed/models.py:50
+#: twitterfeed/admin.py:12 twitterfeed/models.py:52
 msgid "show on site"
 msgstr "Auf der Webseite anzeigen"
 
@@ -42,18 +42,18 @@ msgstr "Twitter-Einstellung"
 msgid "Twitter settings"
 msgstr "Twitter-Einstellungen"
 
-#: twitterfeed/models.py:31
+#: twitterfeed/models.py:33
 msgid "Twitter profile image"
 msgstr "Twitter-Profilbild"
 
-#: twitterfeed/models.py:32
+#: twitterfeed/models.py:34
 msgid "Twitter profile images"
 msgstr "Twitter-Profilbilder"
 
-#: twitterfeed/models.py:53
+#: twitterfeed/models.py:55
 msgid "Tweet"
 msgstr "Tweet"
 
-#: twitterfeed/models.py:54
+#: twitterfeed/models.py:56
 msgid "Tweets"
 msgstr "Tweets"

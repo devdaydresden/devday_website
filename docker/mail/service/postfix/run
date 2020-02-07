@@ -6,6 +6,7 @@ postconf -e smtputf8_enable=no
 postconf -e inet_interfaces=all
 postconf -e inet_protocols=ipv4
 postconf -e mynetworks_style=subnet
+postconf -e smtp_tls_security_level=may
 
 # Do we want to modify the config first with the script?
 # shellcheck disable=SC1091
@@ -13,7 +14,7 @@ postconf -e mynetworks_style=subnet
 
 if [[ ! -z "$MAILNAME" ]]; then
     echo "$MAILNAME" > /etc/mailname
-    postconf -e myorigin="/etc/mailname"
+    postconf -e myhostname=$MAILNAME
     postconf -e smtp_always_send_ehlo=yes
     postconf -e smtp_helo_name=$MAILNAME
 fi
@@ -28,7 +29,23 @@ fi
 
 if [[ ! -z "$POSTFIX_RELAY_HOST" ]]; then
     # setup the relay
-    postconf -e relayhost=$POSTFIX_RELAY_HOST
+    postconf -e "relayhost=[$POSTFIX_RELAY_HOST]"
+    if [[ ! -z "$POSTFIX_RELAY_USERNAME" ]]; then
+        echo "$POSTFIX_RELAY_HOST $POSTFIX_RELAY_USERNAME:$POSTFIX_RELAY_PASSWORD" > /etc/postfix/relay_password
+        postmap hash:/etc/postfix/relay_password
+
+        postconf -e smtp_sasl_password_maps=hash:/etc/postfix/relay_password
+        postconf -e smtp_sasl_auth_enable=yes
+        postconf -e smtp_sasl_tls_security_options=noanonymous
+    fi
+fi
+
+if [[ ! -z "$POSTFIX_REWRITE_ENVELOPE" ]]; then
+    # setup envelope sender rewriting
+    echo "/.+/  $POSTFIX_REWRITE_ENVELOPE" > /etc/postfix/sender_canonical_maps
+
+    postconf -e sender_canonical_classes=envelope_sender
+    postconf -e sender_canonical_maps=regexp:/etc/postfix/sender_canonical_maps
 fi
 
 if [ -x /usr/libexec/postfix/master ]; then

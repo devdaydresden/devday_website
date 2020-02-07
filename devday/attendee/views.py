@@ -22,7 +22,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView, TemplateView, UpdateView, View
-from django.views.generic.edit import CreateView, FormView, ModelFormMixin
+from django.views.generic.edit import FormView, ModelFormMixin
 from django.views.generic.list import BaseListView, ListView
 from django_registration import signals
 from django_registration.backends.activation.views import (
@@ -35,8 +35,8 @@ from attendee.forms import (
     AttendeeEventFeedbackForm,
     AttendeeProfileForm,
     AttendeeRegistrationForm,
-    CheckInAttendeeForm,
     BadgeDataForm,
+    CheckInAttendeeForm,
     DevDayUserRegistrationForm,
     EventRegistrationForm,
     RegistrationAuthenticationForm,
@@ -126,7 +126,7 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView)
     def get_initial(self):
         initial = super().get_initial()
         initial["accept_general_contact"] = (
-                self.request.user.contact_permission_date is not None
+            self.request.user.contact_permission_date is not None
         )
         return initial
 
@@ -134,8 +134,8 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView)
         context = super(DevDayUserProfileView, self).get_context_data(**kwargs)
         attendees = (
             Attendee.objects.filter(event__published=True, user_id=self.request.user.id)
-                .select_related("user", "event")
-                .prefetch_related(
+            .select_related("user", "event")
+            .prefetch_related(
                 Prefetch(
                     "sessionreservation_set",
                     queryset=SessionReservation.objects.order_by("talk__title"),
@@ -144,7 +144,7 @@ class DevDayUserProfileView(LoginRequiredMixin, AttendeeQRCodeMixIn, UpdateView)
                 "reservations__talk",
                 "reservations__talk__event",
             )
-                .order_by("event__start_time")
+            .order_by("event__start_time")
         )
         context["attendees"] = attendees
         context["current_event"] = Event.objects.current_event()
@@ -174,7 +174,8 @@ class AttendeeRegistrationView(RegistrationView):
             self.auth_level = "anonymous"
         elif user.get_attendee(event=self.event):
             return redirect(
-                reverse_lazy("edit_badge_data", kwargs={"event": self.event.slug}))
+                reverse_lazy("edit_badge_data", kwargs={"event": self.event.slug})
+            )
         else:
             self.auth_level = "user"
         return super(AttendeeRegistrationView, self).dispatch(*args, **kwargs)
@@ -193,7 +194,7 @@ class AttendeeRegistrationView(RegistrationView):
         kwargs = super(AttendeeRegistrationView, self).get_form_kwargs()
         kwargs["event"] = self.event
         if self.request.user.is_authenticated:
-            kwargs["user"] = self.request.user
+            kwargs["instance"] = self.request.user
         return kwargs
 
     def get_email_context(self, activation_key):
@@ -203,15 +204,14 @@ class AttendeeRegistrationView(RegistrationView):
         context.update({"event": self.event})
         return context
 
-    def get_attendee_activation_key(self, attendee_id):
-        return signing.dumps(obj=attendee_id, salt=REGISTRATION_SALT)
+    def get_attendee_activation_key(self, user_id):
+        return signing.dumps(obj=user_id, salt=REGISTRATION_SALT)
 
-    def send_attendee_confirmation_email(self, attendee):
-        user = attendee.user
-        activation_key = self.get_attendee_activation_key(attendee.id)
+    def send_attendee_confirmation_email(self, user):
+        activation_key = self.get_attendee_activation_key(user.id)
         context = self.get_email_context(activation_key)
         context["user"] = user
-        context["attendee"] = attendee
+        context["event"] = self.event
         subject = render_to_string(
             template_name=self.attendee_email_subject_template,
             context=context,
@@ -237,10 +237,9 @@ class AttendeeRegistrationView(RegistrationView):
             self.send_activation_email(user)
             return user
         else:
-            attendee = form.save(commit=True)
-
-            self.send_attendee_confirmation_email(attendee)
-            return attendee.user
+            user = form.save(commit=True)
+            self.send_attendee_confirmation_email(user)
+            return user
 
 
 class AttendeeRegistrationPendingView(TemplateView):
@@ -252,6 +251,11 @@ class AttendeeRegistrationPendingView(TemplateView):
     """
 
     template_name = "attendee/attendee_registration_pending.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["event"] = get_object_or_404(Event, slug=self.kwargs["event"])
+        return context
 
 
 class DevDayUserRegistrationView(RegistrationView):
@@ -306,7 +310,8 @@ class AttendeeActivationView(ActivationView):
 
     def activate(self, *args, **kwargs):
         user = super().activate(*args, **kwargs)
-        Attendee.objects.create(event=self.event, user=user)
+        attendee = Attendee.objects.create(event=self.event, user=user)
+        BadgeData.objects.create(attendee=attendee, title=attendee.derive_title())
         return user
 
     def get_success_url(self, user=None):
@@ -319,8 +324,9 @@ class AttendeeActivationView(ActivationView):
         )
 
 
-class AttendeeConfirmationView(ActivationView):
+class AttendeeConfirmationView(LoginRequiredMixin, ActivationView):
     event = None
+    template_name = "attendee/attendee_confirmation_failed.html"
 
     def get(self, *args, **kwargs):
         self.event = get_object_or_404(Event, slug=self.kwargs.get("event"))
@@ -342,8 +348,18 @@ class AttendeeConfirmationView(ActivationView):
         return self.render_to_response(context_data)
 
     def activate(self, *args, **kwargs):
-        attendee_id = self.validate_key(kwargs.get("activation_key"))
-        get_object_or_404(Attendee, id=attendee_id)
+        activation_key = kwargs.get("activation_key")
+        user_id = self.validate_key(activation_key)
+        user = get_object_or_404(User, id=user_id)
+        if self.request.user != user:
+            raise ActivationError(
+                message=_("Account does not match the activation code"),
+                code="user_mismatch",
+                params={"activation_key": activation_key, "user": self.request.user},
+            )
+        attendee = Attendee.objects.create(event=self.event, user=user)
+        BadgeData.objects.create(attendee=attendee, title=attendee.derive_title())
+        return attendee
 
     def get_success_url(self, user=None):
         return reverse_lazy(
@@ -370,7 +386,7 @@ class AttendeeToggleRaffleView(AttendeeRequiredMixin, View):
         return JsonResponse({"raffle": self.attendee.raffle})
 
 
-class AttendeeRegisterSuccessView(AttendeeRequiredMixin, CreateView):
+class AttendeeRegisterSuccessView(AttendeeRequiredMixin, UpdateView):
     template_name = "attendee/attendee_register_success.html"
     event = None
     form_class = BadgeDataForm
@@ -379,6 +395,9 @@ class AttendeeRegisterSuccessView(AttendeeRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["event"] = self.event
         return context
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(BadgeData, attendee_id=self.attendee.id)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -491,13 +510,13 @@ class ContactableAttendeeView(StaffUserMixin, BaseListView):
     def get_queryset(self):
         qs = (
             super(ContactableAttendeeView, self)
-                .get_queryset()
-                .filter(
+            .get_queryset()
+            .filter(
                 Q(contact_permission_date__isnull=False)
                 | Q(attendees__event=Event.objects.current_event())
             )
-                .order_by("email")
-                .distinct()
+            .order_by("email")
+            .distinct()
         )
         return qs
 
@@ -522,9 +541,9 @@ class AttendeeListView(StaffUserMixin, BaseListView):
     def get_queryset(self):
         return (
             super(AttendeeListView, self)
-                .get_queryset()
-                .filter(event_id=Event.objects.current_event_id())
-                .order_by("user__email")
+            .get_queryset()
+            .filter(event_id=Event.objects.current_event_id())
+            .order_by("user__email")
         )
 
     def render_to_response(self, context):
@@ -604,11 +623,6 @@ class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
         context["event"] = Event.objects.get(slug=self.kwargs.get("event"))
         return context
 
-    def get_success_url(self):
-        return reverse_lazy(
-            "attendee_checkin", kwargs={"event": self.kwargs.get("event")}
-        )
-
     def form_valid(self, form):
         attendee = form.cleaned_data["attendee"]
         attendee.check_in()
@@ -618,7 +632,6 @@ class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
         context["checkin_message"] = self.get_success_message(form.cleaned_data)
         context["checkin_reservations"] = get_reservation_list(attendee)
         return self.render_to_response(context)
-        # return super().form_valid(form)
 
     def form_invalid(self, form):
         context = self.get_form_kwargs()

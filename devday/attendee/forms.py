@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django_registration.forms import RegistrationFormUniqueEmail
 
-from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser, BadgeData
+from attendee.models import Attendee, AttendeeEventFeedback, BadgeData, DevDayUser
 from devday.forms import AuthenticationForm
 
 User = get_user_model()
@@ -157,12 +157,11 @@ class EventRegistrationForm(ModelForm):
     """
 
     class Meta:
-        model = Attendee
+        model = User
         fields = []
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop("event")
-        self.user = kwargs.pop("user")
         super(EventRegistrationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = reverse_lazy(
@@ -188,10 +187,7 @@ class EventRegistrationForm(ModelForm):
         )
 
     def save(self, commit=True):
-        attendee = Attendee(event=self.event, user=self.user)
-        if commit:
-            attendee.save()
-        return attendee
+        return self.instance
 
 
 class RegistrationAuthenticationForm(AuthenticationForm):

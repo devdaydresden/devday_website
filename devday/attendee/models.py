@@ -209,6 +209,9 @@ class Attendee(models.Model):
             raise IntegrityError("attendee is already checked in")
         self.checked_in = timezone.now()
 
+    def derive_title(self):
+        return self.user.email.partition("@")[0].capitalize()
+
     def __str__(self):
         return _("{email} at {event}").format(
             email=self.user.email, event=self.event.title

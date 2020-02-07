@@ -98,6 +98,12 @@ class DevDayUserTest(TestCase):
         attendee = Attendee.objects.create(user=user, event=event)
         self.assertEqual(user.get_attendee(event), attendee)
 
+    def test_derive_title(self):
+        user = DevDayUser.objects.create_user("tester@example.org", USER_PASSWORD)
+        event = event_testutils.create_test_event("Test Event")
+        attendee = Attendee.objects.create(user=user, event=event)
+        self.assertEqual("Tester", attendee.derive_title())
+
     def test___str__(self):
         user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
         self.assertEqual(str(user), USER_EMAIL)

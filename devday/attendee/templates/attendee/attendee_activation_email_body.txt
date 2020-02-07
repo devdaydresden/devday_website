@@ -2,7 +2,9 @@
 
 thank you for registering for {{ event_title }}!
 
-To complete your registration please confirm your email address by clicking the following link.
+please click on the link below to confirm your intent to attend the event
+
+{{ event_title }}
 {% endblocktrans %}
 {{ scheme }}://{{ site.domain }}{% url 'attendee_confirm_existing' event=event.slug activation_key=activation_key %}
 {% blocktrans count days=expiration_days %}

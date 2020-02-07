@@ -270,21 +270,17 @@ class EventRegistrationFormTest(TestCase):
         event = event_testutils.create_test_event()
         user, _ = attendee_testutils.create_test_user()
 
-        form = EventRegistrationForm(event=event, user=user, data={})
-        attendee = form.save(commit=False)
-        self.assertIsNone(attendee.id)
-        self.assertEqual(attendee.event, event)
-        self.assertEqual(attendee.user, user)
+        form = EventRegistrationForm(event=event, instance=user, data={})
+        submitted_user = form.save(commit=False)
+        self.assertEqual(submitted_user, user)
 
     def test_save_with_commit(self):
         event = event_testutils.create_test_event()
         user, _ = attendee_testutils.create_test_user()
 
-        form = EventRegistrationForm(event=event, user=user, data={})
-        attendee = form.save()
-        self.assertIsNotNone(attendee.id)
-        self.assertEqual(attendee.event, event)
-        self.assertEqual(attendee.user, user)
+        form = EventRegistrationForm(event=event, instance=user, data={})
+        submitted_user = form.save()
+        self.assertEqual(submitted_user, user)
 
 
 class CheckInAttendeeFormTest(TestCase):

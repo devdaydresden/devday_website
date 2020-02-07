@@ -1,6 +1,6 @@
 {% extends "devday_site.html" %}
 {% load cms_tags i18n %}
-{% block title %}{{ block.super }} // {% blocktrans with event=event.title %}Registration for {{ event }} pending{% endblocktrans %}" %}{% endblock %}
+{% block title %}{{ block.super }} // {% blocktrans with event_title=event.title %}Registration for {{ event_title }} pending{% endblocktrans %}{% endblock %}
 {% block content %}
     <div class="content-area">
         <div class="col-md-8 offset-md-2 col-12">

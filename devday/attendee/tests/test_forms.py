@@ -1,13 +1,16 @@
+from datetime import timedelta
 from unittest.mock import MagicMock
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from django.test import TestCase
+from django.utils import timezone
 
 from attendee.forms import (
     AttendeeEventFeedbackForm,
     AttendeeProfileForm,
     AttendeeRegistrationForm,
+    BadgeDataForm,
     CheckInAttendeeForm,
     DevDayRegistrationForm,
     DevDayUserCreationForm,
@@ -15,7 +18,7 @@ from attendee.forms import (
     EventRegistrationForm,
     RegistrationAuthenticationForm,
 )
-from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser
+from attendee.models import Attendee, AttendeeEventFeedback, BadgeData, DevDayUser
 from attendee.tests import attendee_testutils
 from event.models import Event
 from event.tests import event_testutils
@@ -66,6 +69,18 @@ class DevDayUserCreationFormTest(TestCase):
         self.assertIsNotNone(user.id)
         self.assertTrue(user.check_password("s3cr3t"))
 
+    def test_form_save_no_commit(self):
+        form = DevDayUserCreationForm(
+            data={
+                "email": "test@example.org",
+                "password1": "s3cr3t",
+                "password2": "s3cr3t",
+            }
+        )
+        user = form.save(commit=False)
+        self.assertIsNone(user.id)
+        self.assertTrue(user.check_password("s3cr3t"))
+
 
 class RegistrationAuthenticationFormTest(TestCase):
     def test_get_user_form(self):
@@ -94,6 +109,35 @@ class DevDayUserRegistrationFormTest(TestCase):
         self.assertIsNotNone(user.id)
         self.assertFalse(user.is_active)
         self.assertIsNone(user.contact_permission_date)
+        self.assertTrue(user.check_password("s3cr3t"))
+
+    def test_form_save_no_commit(self):
+        form = DevDayUserRegistrationForm(
+            data={
+                "email": "test@example.org",
+                "password1": "s3cr3t",
+                "password2": "s3cr3t",
+            }
+        )
+        user = form.save(commit=False)
+        self.assertIsNone(user.id)
+        self.assertFalse(user.is_active)
+        self.assertIsNone(user.contact_permission_date)
+        self.assertTrue(user.check_password("s3cr3t"))
+
+    def test_form_save_with_contact_permission(self):
+        form = DevDayUserRegistrationForm(
+            data={
+                "email": "test@example.org",
+                "password1": "s3cr3t",
+                "password2": "s3cr3t",
+                "accept_general_contact": "checked",
+            }
+        )
+        user = form.save(commit=True)
+        self.assertIsNotNone(user.id)
+        self.assertFalse(user.is_active)
+        self.assertIsNotNone(user.contact_permission_date)
         self.assertTrue(user.check_password("s3cr3t"))
 
 
@@ -133,6 +177,22 @@ class AttendeeRegistrationFormTest(TestCase):
         self.assertIsNone(user.contact_permission_date)
         self.assertTrue(user.check_password("s3cr3t"))
 
+    def test_form_save_contact_permission(self):
+        form = AttendeeRegistrationForm(
+            event=self.event,
+            data={
+                "email": "test@example.org",
+                "password1": "s3cr3t",
+                "password2": "s3cr3t",
+                "accept_general_contact": "checked",
+            },
+        )
+        user = form.save(commit=True)
+        self.assertIsNotNone(user.id)
+        self.assertFalse(user.is_active)
+        self.assertIsNotNone(user.contact_permission_date)
+        self.assertTrue(user.check_password("s3cr3t"))
+
     def test_form_save_no_commit(self):
         form = AttendeeRegistrationForm(
             event=self.event,
@@ -158,6 +218,52 @@ class AttendeeProfileFormTest(TestCase):
         form.save(commit=False)
         user.save.assert_not_called()
 
+    def test_form_save_accept_general_contact(self):
+        user, _ = attendee_testutils.create_test_user()
+        form = AttendeeProfileForm(
+            instance=user,
+            data={
+                "accept_general_contact": "checked",
+                "contact_permission_date": "",
+                "date_joined": user.date_joined.isoformat(),
+            },
+        )
+        user = form.save()
+        self.assertIsNotNone(user.contact_permission_date)
+
+    def test_form_save_accept_general_contact_again(self):
+        user, _ = attendee_testutils.create_test_user()
+        user.contact_permission_date = timezone.now() - timedelta(days=1)
+        user.save()
+        user.refresh_from_db()
+        permission_date = user.contact_permission_date
+        form = AttendeeProfileForm(
+            instance=user,
+            data={
+                "accept_general_contact": "checked",
+                "contact_permission_date": user.contact_permission_date.isoformat(),
+                "date_joined": user.date_joined.isoformat(),
+            },
+        )
+        user = form.save()
+        self.assertIsNotNone(user.contact_permission_date)
+        self.assertEqual(user.contact_permission_date, permission_date)
+
+    def test_form_save_no_accept_general_contact(self):
+        user, _ = attendee_testutils.create_test_user()
+        user.contact_permission_date = timezone.now()
+        user.save()
+        form = AttendeeProfileForm(
+            instance=user,
+            data={
+                "accept_general_contact": "",
+                "contact_permission_date": user.contact_permission_date.isoformat(),
+                "date_joined": user.date_joined.isoformat(),
+            },
+        )
+        user = form.save()
+        self.assertIsNone(user.contact_permission_date)
+
 
 class EventRegistrationFormTest(TestCase):
     def test_form_save_no_commit(self):
@@ -167,6 +273,16 @@ class EventRegistrationFormTest(TestCase):
         form = EventRegistrationForm(event=event, user=user, data={})
         attendee = form.save(commit=False)
         self.assertIsNone(attendee.id)
+        self.assertEqual(attendee.event, event)
+        self.assertEqual(attendee.user, user)
+
+    def test_save_with_commit(self):
+        event = event_testutils.create_test_event()
+        user, _ = attendee_testutils.create_test_user()
+
+        form = EventRegistrationForm(event=event, user=user, data={})
+        attendee = form.save()
+        self.assertIsNotNone(attendee.id)
         self.assertEqual(attendee.event, event)
         self.assertEqual(attendee.user, user)
 
@@ -290,3 +406,78 @@ class AttendeeEventFeedbackFormTest(TestCase):
         self.assertEqual(feedback.overall_score, 3)
         self.assertEqual(feedback.organisation_score, 4)
         self.assertEqual(feedback.session_score, 5)
+
+
+class BadgeDataFormTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event("Test event")
+        user, _ = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(user=user, event=self.event)
+
+    def test_form_has_helper(self):
+        form = BadgeDataForm(attendee=self.attendee)
+        self.assertTrue(hasattr(form, "helper"))
+        self.assertIsInstance(form.helper, FormHelper)
+        self.assertTrue(form.helper.html5_required)
+
+    def test_form_has_layout(self):
+        form = BadgeDataForm(attendee=self.attendee)
+        self.assertTrue(hasattr(form, "helper"))
+        self.assertTrue(hasattr(form.helper, "layout"))
+        self.assertIsInstance(form.helper.layout, Layout)
+
+    def test_save_with_no_commit(self):
+        test_topics = "- attend events\n- talk\n- food"
+        form = BadgeDataForm(
+            attendee=self.attendee,
+            data={
+                "title": "The Attendee",
+                "contact": "@attendee",
+                "topics": test_topics,
+            },
+        )
+        badge_data = form.save(commit=False)
+        self.assertIsNone(badge_data.id)
+        self.assertEqual(badge_data.attendee, self.attendee)
+        self.assertEqual(badge_data.title, "The Attendee")
+        self.assertEqual(badge_data.contact, "@attendee")
+        self.assertEqual(badge_data.topics, test_topics)
+
+    def test_save_with_commit(self):
+        test_topics = "- attend events\n- talk\n- food"
+        form = BadgeDataForm(
+            attendee=self.attendee,
+            data={
+                "title": "The Attendee",
+                "contact": "@attendee",
+                "topics": test_topics,
+            },
+        )
+        badge_data = form.save()
+        self.assertIsNotNone(badge_data.id)
+        self.assertEqual(badge_data.attendee, self.attendee)
+        self.assertEqual(badge_data.title, "The Attendee")
+        self.assertEqual(badge_data.contact, "@attendee")
+        self.assertEqual(badge_data.topics, test_topics)
+
+    def test_save_with_commit_existing(self):
+        test_topics = "- attend events\n- talk\n- food"
+        original_badge_data = BadgeData.objects.create(
+            attendee=self.attendee, title="Mr. Attendee"
+        )
+        form = BadgeDataForm(
+            attendee=self.attendee,
+            instance=original_badge_data,
+            data={
+                "title": "The Attendee",
+                "contact": "@attendee",
+                "topics": test_topics,
+            },
+        )
+        badge_data = form.save()
+        self.assertIsNotNone(badge_data.id)
+        self.assertEqual(badge_data.id, original_badge_data.id)
+        self.assertEqual(badge_data.attendee, self.attendee)
+        self.assertEqual(badge_data.title, "The Attendee")
+        self.assertEqual(badge_data.contact, "@attendee")
+        self.assertEqual(badge_data.topics, test_topics)

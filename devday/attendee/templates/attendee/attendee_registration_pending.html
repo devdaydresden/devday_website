@@ -1,0 +1,11 @@
+{% extends "devday_site.html" %}
+{% load cms_tags i18n %}
+{% block title %}{{ block.super }} // {% blocktrans with event_title=event.title %}Registration for {{ event_title }} pending{% endblocktrans %}{% endblock %}
+{% block content %}
+    <div class="content-area">
+        <div class="col-md-8 offset-md-2 col-12">
+            <h1>{% trans "Attendee registration pending" %}</h1>
+            <p>{% static_placeholder "registrater-attendee-pending" or %}{% blocktrans with event_title=event.title %}You are almost done with your registration for the event &quot;{{ event_title }}&quot; please click on the activation link contained in the email we sent to your registered email address.{% endblocktrans %}{% endstatic_placeholder %}</p>
+        </div>
+    </div>
+{% endblock %}

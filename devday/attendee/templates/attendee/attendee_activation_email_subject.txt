@@ -1,1 +1,1 @@
-{% load i18n %}[{{ site.name }}] {% trans "Confirm your registration" %}
+{% load i18n %}[{{ site.name }}] {% blocktrans with event_title=event.title %}Confirm your attendance for {{ event_title }}{% endblocktrans %}

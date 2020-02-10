@@ -15,7 +15,7 @@ User = get_user_model()
 class AttendeeAdminTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.event = Event.objects.get(title="devdata.18")
+        cls.event = Event.objects.get(title="devdata.20")
         cls.devdata = DevData()
         cls.devdata.create_talk_formats()
         cls.devdata.update_events()
@@ -39,7 +39,7 @@ class AttendeeAdminTest(TestCase):
 class DevDayUserAdmin(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.event = Event.objects.get(title="devdata.18")
+        cls.event = Event.objects.get(title="devdata.20")
         cls.devdata = DevData()
         cls.devdata.create_talk_formats()
         cls.devdata.update_events()

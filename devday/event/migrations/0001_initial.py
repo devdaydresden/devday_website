@@ -27,6 +27,12 @@ def create_devday_events_fwd(apps, schema_manager):
                   start_time=timezone.make_aware(datetime(2019, 5, 21, 13, 0)),
                   end_time=timezone.make_aware(datetime(2019, 5, 21, 20, 0)))
     event.save()
+    event = Event(id=4, title='devdata.20', slug='devdata20',
+                  description='Dev Data.20 am 5.5. in Dresden',
+                  location='Dresden', full_day=False,
+                  start_time=timezone.make_aware(datetime(2020, 5, 5, 13, 0)),
+                  end_time=timezone.make_aware(datetime(2020, 5, 5, 20, 0)))
+    event.save()
     sequence_sql = connections[DEFAULT_DB_ALIAS].ops. \
         sequence_reset_sql(no_style(), [Event])
     if sequence_sql:
@@ -37,6 +43,7 @@ def create_devday_events_fwd(apps, schema_manager):
 
 def create_devday_events_rev(apps, schema_manager):
     Event = apps.get_model("event", "Event")
+    Event.objects.filter(pk=4).delete()
     Event.objects.filter(pk=3).delete()
     Event.objects.filter(pk=2).delete()
     Event.objects.filter(pk=1).delete()

@@ -561,8 +561,8 @@ class CSVViewTest(TestCase):
         now = timezone.now()
         cls.future_event = event_testutils.create_test_event(
             title="Future Event",
-            start_time=now + timedelta(days=30),
-            end_time=now + timedelta(days=31),
+            start_time=now + timedelta(days=160),
+            end_time=now + timedelta(days=161),
         )
         cls.past_event = event_testutils.create_test_event(
             title="Past Event",

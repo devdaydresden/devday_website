@@ -136,7 +136,7 @@ class DevDataTests(TestCase):
     def subtest_update_events(self):
         self.devdata.update_events()
         events = list(Event.objects.order_by("start_time"))
-        self.assertEqual(len(events), 3, "there are three events")
+        self.assertEqual(len(events), 4, "there are four events")
         stdformat = TalkFormat.objects.get(name="Vortrag", duration=60)
         for e in events[:-1]:
             self.assertEqual(e.registration_open, False, "registration not open")
@@ -168,9 +168,9 @@ class DevDataTests(TestCase):
         events = Event.objects.annotate(natt=Count("attendee"))
         for e in events:
             self.assertTrue(
-                users * 0.70 <= e.natt <= users * 0.80,
+                users * 0.70 <= e.natt <= users * 0.85,
                 "about {:d} attend event {}: actual {}".format(
-                    int(users * 0.8), e.title, e.natt
+                    int(users * 0.85), e.title, e.natt
                 ),
             )
         self.subtest_get_committee_members()
@@ -189,7 +189,7 @@ class DevDataTests(TestCase):
             self.devdata.create_speakers,
             self.devdata.get_speakers,
         )
-        speakers = 150
+        speakers = 200
         number_of_speakers = Speaker.objects.count()
         self.assertTrue(
             speakers * 0.70 <= number_of_speakers <= speakers * 1.2,

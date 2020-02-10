@@ -43,6 +43,7 @@ def create_devday_events_fwd(apps, schema_manager):
 
 def create_devday_events_rev(apps, schema_manager):
     Event = apps.get_model("event", "Event")
+    Event.objects.filter(pk=4).delete()
     Event.objects.filter(pk=3).delete()
     Event.objects.filter(pk=2).delete()
     Event.objects.filter(pk=1).delete()

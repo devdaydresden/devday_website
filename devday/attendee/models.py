@@ -209,10 +209,45 @@ class Attendee(models.Model):
             raise IntegrityError("attendee is already checked in")
         self.checked_in = timezone.now()
 
+    def derive_title(self):
+        return self.user.email.partition("@")[0].capitalize()
+
     def __str__(self):
         return _("{email} at {event}").format(
             email=self.user.email, event=self.event.title
         )
+
+
+class BadgeData(TimeStampedModel):
+    attendee = models.OneToOneField(
+        Attendee,
+        verbose_name=_("Attendee"),
+        null=True,
+        blank=True,
+        limit_choices_to={"event__published": True},
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(
+        verbose_name=_("Title"),
+        max_length=50,
+        help_text=_("How would you like to be named"),
+    )
+    contact = models.CharField(
+        verbose_name=_("Contact"),
+        blank=True,
+        max_length=50,
+        help_text=_("optional contact information (i.e. a Twitter handle)"),
+    )
+    topics = models.TextField(
+        verbose_name=_("Topics"),
+        blank=True,
+        max_length=150,
+        help_text=_("Topics you would like to talk about"),
+    )
+
+    class Meta:
+        verbose_name = _("Badge data")
+        verbose_name_plural = _("Badge data")
 
 
 class AttendeeEventFeedback(TimeStampedModel):

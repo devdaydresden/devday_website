@@ -1,6 +1,6 @@
 import re
 from datetime import timedelta
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 from bs4 import BeautifulSoup
 
@@ -13,10 +13,11 @@ from django.utils import timezone
 
 from attendee.forms import (
     AttendeeRegistrationForm,
+    BadgeDataForm,
     DevDayUserRegistrationForm,
     EventRegistrationForm,
 )
-from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser
+from attendee.models import Attendee, AttendeeEventFeedback, BadgeData, DevDayUser
 from attendee.tests import attendee_testutils
 from attendee.views import AttendeeRegistrationView, DevDayUserRegistrationView
 from event.models import Event
@@ -124,11 +125,10 @@ class AttendeeProfileViewTest(TestCase):
 class AttendeeRegistrationViewTest(TestCase):
     def setUp(self):
         self.event = event_testutils.create_test_event()
-        self.url = "/{}/attendee/register/".format(self.event.slug)
-        self.register_existing_url = "/{}/attendee/register/success/".format(
-            self.event.slug
-        )
+        self.url = f"/{self.event.slug}/attendee/register/"
+        self.register_existing_url = f"/{self.event.slug}/attendee/pending/"
         self.register_new_url = "/accounts/register/complete/"
+        self.badge_data_url = f"/{self.event.slug}/attendee/edit-badge/"
 
     def test_get_email_context(self):
         request = HttpRequest()
@@ -202,29 +202,34 @@ class AttendeeRegistrationViewTest(TestCase):
         response = self.client.post(self.url)
 
         self.assertRedirects(response, self.register_existing_url)
-        try:
-            attendee = Attendee.objects.get(user=user, event=self.event)
-        except Attendee.DoesNotExist:
-            self.fail("Attendee expected")
-        self.assertEqual(attendee.user, user)
+        attendee = Attendee.objects.filter(user=user, event=self.event).first()
+        self.assertIsNone(attendee)
+        self.assertEqual(len(mail.outbox), 1)
+        activation_mail = mail.outbox[0]
+        self.assertIn(user.email, activation_mail.to)
+        self.assertIn(self.event.title, activation_mail.body)
+        self.assertIn(self.event.slug, activation_mail.body)
+        self.assertIn("/attendee/confirm/", activation_mail.body)
 
     def test_get_with_existing_attendee(self):
         user = DevDayUser.objects.create_user("test@example.org", "test")
-        Attendee.objects.create(user=user, event=self.event)
+        attendee = Attendee.objects.create(user=user, event=self.event)
+        BadgeData.objects.create(attendee=attendee, title="Test Attendee")
 
         self.client.login(username="test@example.org", password="test")
         response = self.client.get(self.url)
 
-        self.assertRedirects(response, self.register_existing_url)
+        self.assertRedirects(response, self.badge_data_url)
 
     def test_post_with_existing_attendee(self):
         user = DevDayUser.objects.create_user("test@example.org", "test")
-        Attendee.objects.create(user=user, event=self.event)
+        attendee = Attendee.objects.create(user=user, event=self.event)
+        BadgeData.objects.create(attendee=attendee, title="Test Attendee")
 
         self.client.login(username="test@example.org", password="test")
         response = self.client.post(self.url)
 
-        self.assertRedirects(response, self.register_existing_url)
+        self.assertRedirects(response, self.badge_data_url)
 
     def test_with_closed_registration(self):
         self.event.registration_open = False
@@ -232,6 +237,131 @@ class AttendeeRegistrationViewTest(TestCase):
 
         response = self.client.get(self.url)
         self.assertRedirects(response, "/accounts/register/closed/")
+
+
+class AttendeeRegisterSuccessViewTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event("Test Event")
+        self.user, self.password = attendee_testutils.create_test_user(is_active=True)
+        self.attendee = Attendee.objects.create(user=self.user, event=self.event)
+        self.badge_data = BadgeData.objects.create(
+            attendee=self.attendee, title=self.attendee.derive_title()
+        )
+        self.login_url = reverse("auth_login")
+        self.url = f"/{self.event.slug}/attendee/register/success/"
+
+    def test_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, "{}?{}".format(self.login_url, urlencode({"next": self.url}, safe="/"))
+        )
+
+    def test_non_attendee(self):
+        non_attendee, password = attendee_testutils.create_test_user(
+            email="test2@example.org", is_active=True
+        )
+        self.client.login(username=non_attendee.email, password=password)
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, reverse("attendee_registration", kwargs={"event": self.event.slug})
+        )
+
+    def test_get(self):
+        self.client.login(username=self.user.email, password=self.password)
+        r = self.client.get(self.url)
+        self.assertEqual(r.status_code, 200)
+        self.assertTemplateUsed(r, "attendee/attendee_register_success.html")
+        self.assertIn("object", r.context_data)
+        self.assertIsInstance(r.context_data["object"], BadgeData)
+        self.assertEqual(r.context_data["object"], self.badge_data)
+        self.assertIn("form", r.context_data)
+        self.assertIsInstance(r.context_data["form"], BadgeDataForm)
+        self.assertIn("event", r.context_data)
+        self.assertEqual(r.context_data["event"], self.event)
+
+    def test_post(self):
+        self.client.login(username=self.user.email, password=self.password)
+        original_title = self.badge_data.title
+        test_topics = "- test\n- food\n- misc"
+        r = self.client.post(
+            self.url,
+            data={
+                "title": "Call Me Tester",
+                "contact": "@tester",
+                "topics": test_topics,
+            },
+        )
+        self.assertRedirects(
+            r,
+            reverse(
+                "attendee_registration_complete", kwargs={"event": self.event.slug}
+            ),
+        )
+        self.badge_data.refresh_from_db()
+        self.assertNotEqual(self.badge_data.title, original_title)
+        self.assertEqual(self.badge_data.title, "Call Me Tester")
+        self.assertEqual(self.badge_data.contact, "@tester")
+        self.assertEqual(self.badge_data.topics, test_topics)
+
+
+class EditBadgeDataViewTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event("Test Event")
+        self.user, self.password = attendee_testutils.create_test_user(is_active=True)
+        self.attendee = Attendee.objects.create(user=self.user, event=self.event)
+        self.badge_data = BadgeData.objects.create(
+            attendee=self.attendee, title=self.attendee.derive_title()
+        )
+        self.login_url = reverse("auth_login")
+        self.url = f"/{self.event.slug}/attendee/edit-badge/"
+
+    def test_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, "{}?{}".format(self.login_url, urlencode({"next": self.url}, safe="/"))
+        )
+
+    def test_non_attendee(self):
+        non_attendee, password = attendee_testutils.create_test_user(
+            email="test2@example.org", is_active=True
+        )
+        self.client.login(username=non_attendee.email, password=password)
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, reverse("attendee_registration", kwargs={"event": self.event.slug})
+        )
+
+    def test_get(self):
+        self.client.login(username=self.user.email, password=self.password)
+        r = self.client.get(self.url)
+        self.assertEqual(r.status_code, 200)
+        self.assertTemplateUsed(r, "attendee/badge_data_edit.html")
+        self.assertIn("object", r.context_data)
+        self.assertIsInstance(r.context_data["object"], BadgeData)
+        self.assertEqual(r.context_data["object"], self.badge_data)
+        self.assertIn("form", r.context_data)
+        self.assertIsInstance(r.context_data["form"], BadgeDataForm)
+        self.assertIn("event", r.context_data)
+        self.assertEqual(r.context_data["event"], self.event)
+
+    def test_post(self):
+        self.client.login(username=self.user.email, password=self.password)
+        original_title = self.badge_data.title
+        test_topics = "- test\n- food\n- misc"
+        r = self.client.post(
+            self.url,
+            data={
+                "title": "Call Me Tester",
+                "contact": "@tester",
+                "topics": test_topics,
+            },
+        )
+        self.assertRedirects(r, reverse("user_profile"))
+        self.badge_data.refresh_from_db()
+        self.assertNotEqual(self.badge_data.title, original_title)
+        self.assertEqual(self.badge_data.title, "Call Me Tester")
+        self.assertEqual(self.badge_data.contact, "@tester")
+        self.assertEqual(self.badge_data.topics, test_topics)
 
 
 class DevDayRegistrationViewTest(TestCase):
@@ -428,6 +558,57 @@ class AttendeeActivationViewTest(TestCase):
         self.event.save()
         response = self.client.get(self.url)
         self.assertRedirects(response, "/accounts/register/closed/")
+
+
+class AttendeeConfirmationViewTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event("Test Event")
+        self.user, self.password = attendee_testutils.create_test_user(is_active=True)
+        self.login_url = reverse("auth_login")
+        activation_key = AttendeeRegistrationView().get_attendee_activation_key(
+            self.user.id
+        )
+        self.url = f"/{self.event.slug}/attendee/confirm/{activation_key}/"
+
+    def test_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, "{}?{}".format(self.login_url, urlencode({"next": self.url}, safe="/"))
+        )
+
+    def test_other_user(self):
+        other_user, password = attendee_testutils.create_test_user(
+            email="test2example.org", is_active=True
+        )
+        self.client.login(username=other_user.email, password=password)
+        r = self.client.get(self.url)
+        self.assertEqual(r.status_code, 200)
+        self.assertTemplateUsed("attendee/attendee_confirmation_failed")
+        self.assertIn("activation_error", r.context_data)
+        self.assertEqual(r.context_data["activation_error"]["code"], "user_mismatch")
+
+    def test_matching_user(self):
+        self.client.login(username=self.user.email, password=self.password)
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, reverse("attendee_register_success", kwargs={"event": self.event.slug})
+        )
+        self.assertTrue(
+            Attendee.objects.filter(event=self.event, user=self.user).exists()
+        )
+        attendee = Attendee.objects.get(event=self.event, user=self.user)
+        self.assertTrue(BadgeData.objects.filter(attendee=attendee))
+        badge_data = BadgeData.objects.get(attendee=attendee)
+        self.assertEqual(badge_data.title, attendee.derive_title())
+        self.assertEqual(badge_data.contact, "")
+        self.assertEqual(badge_data.topics, "")
+
+    def test_registration_closed(self):
+        self.event.registration_open = False
+        self.event.save()
+        self.client.login(username=self.user.email, password=self.password)
+        r = self.client.get(self.url)
+        self.assertRedirects(r, "/accounts/register/closed/")
 
 
 class AttendeeCancelViewTest(TestCase):
@@ -720,9 +901,8 @@ class CheckInAttendeeViewTest(TestCase):
         self.assertEqual(r.status_code, 200, "should show result page")
         r = self.client.get(self.url)
         self.assertEqual(r.status_code, 200, "should retrieve form")
-        # FIXME attendee never changes over here, but does in the view
-        # self.assertIsNotNone(self.attendee.checked_in,
-        #                      'attendee should be checked in')
+        self.attendee.refresh_from_db()
+        self.assertIsNotNone(self.attendee.checked_in, "attendee should be checked in")
 
     def test_post_email(self):
         self.login()
@@ -730,17 +910,8 @@ class CheckInAttendeeViewTest(TestCase):
         self.assertEqual(r.status_code, 200, "should show result page")
         r = self.client.get(self.url)
         self.assertEqual(r.status_code, 200, "should retrieve form")
-        # FIXME attendee never changes over here, but does in the view
-        # self.assertIsNotNone(self.attendee.checked_in,
-        #                      'attendee should be checked in')
-
-    def _has_attendee_error(self, r):
-        s = BeautifulSoup(r.content, "lxml")
-        m = s.find(id="error_1_id_attendee")
-        if m:
-            return True
-        else:
-            return False
+        self.attendee.refresh_from_db()
+        self.assertIsNotNone(self.attendee.checked_in, "attendee should be checked in")
 
     def test_post_none_existing_code_or_email(self):
         self.login()
@@ -748,7 +919,7 @@ class CheckInAttendeeViewTest(TestCase):
             self.url, data={"attendee": "this is not an email address"}
         )
         self.assertEqual(r.status_code, 200, "should show result page")
-        self.assertTrue(self._has_attendee_error(r), "should show error")
+        self.assertIn("attendee", r.context_data["form"].errors, "should show error")
 
 
 class CheckInAttendeeViewUrlTest(TestCase):

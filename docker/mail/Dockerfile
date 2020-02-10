@@ -7,6 +7,8 @@ RUN http_proxy=${http_proxy} https_proxy=${http_proxy} \
     apk add --no-cache \
     bash \
     ca-certificates \
+    cyrus-sasl-plain \
+    cyrus-sasl-login \
     mailx \
     postfix \
     rsyslog \

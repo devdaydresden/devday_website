@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-25 16:37+0000\n"
-"PO-Revision-Date: 2018-10-25 11:54+0200\n"
+"POT-Creation-Date: 2020-02-07 15:57+0000\n"
+"PO-Revision-Date: 2020-02-07 16:58+0100\n"
 "Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: speaker/apps.py:9 speaker/tests/test_appconfig.py:10
 msgid "Speaker management"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Change your speaker details"
 msgstr "Ändere deine SpeakerIndaten"
 
-#: speaker/forms.py:129 speaker/models.py:62 speaker/models.py:214
+#: speaker/forms.py:129 speaker/models.py:65 speaker/models.py:240
 msgid "Speaker image"
 msgstr "SpeakerInfoto"
 
@@ -102,23 +102,23 @@ msgstr "SpeakerInname"
 msgid "slug"
 msgstr "Slug"
 
-#: speaker/models.py:31
+#: speaker/models.py:30
 msgid "twitter handle"
 msgstr "Twitter-Handle"
 
-#: speaker/models.py:32
+#: speaker/models.py:31
 msgid "Phone"
 msgstr "Telefon"
 
-#: speaker/models.py:34
+#: speaker/models.py:32
 msgid "job or study subject"
 msgstr "Beruf oder Studiengang"
 
-#: speaker/models.py:36
+#: speaker/models.py:34
 msgid "company or institution"
 msgstr "Firma oder Institution"
 
-#: speaker/models.py:39
+#: speaker/models.py:38
 msgid "Video permitted"
 msgstr "Videoerlaubnis erteilt"
 
@@ -132,47 +132,47 @@ msgstr ""
 "Session auf den Social-Media-Kanälen des Veranstalters und auf der Webseite "
 "devday.de verwendet werden dürfen."
 
-#: speaker/models.py:45
+#: speaker/models.py:46
 msgid "Short biography"
 msgstr "Kurzvita"
 
-#: speaker/models.py:60
+#: speaker/models.py:62
 msgid "registered as speaker"
 msgstr "Als SpeakerIn angemeldet"
 
-#: speaker/models.py:64 speaker/models.py:217
+#: speaker/models.py:68 speaker/models.py:243
 msgid "Speaker image thumbnail"
 msgstr "Vorschau Speakerbild"
 
-#: speaker/models.py:68 speaker/models.py:221
+#: speaker/models.py:75 speaker/models.py:250
 msgid "Public speaker image"
 msgstr "Öffentliches Speakerbild"
 
-#: speaker/models.py:72
+#: speaker/models.py:82
 msgid "T-shirt size"
 msgstr "T-Shirtgröße"
 
-#: speaker/models.py:75
+#: speaker/models.py:86
 msgid "speaker"
 msgstr "SpeakerIn"
 
-#: speaker/models.py:76
+#: speaker/models.py:87
 msgid "speakers"
 msgstr "SpeakerInnen"
 
-#: speaker/models.py:211
+#: speaker/models.py:236
 msgid "published as speaker"
 msgstr "Als SpeakerIn veröffentlicht"
 
-#: speaker/models.py:224
+#: speaker/models.py:256
 msgid "email address"
 msgstr "E-Mailadresse"
 
-#: speaker/models.py:229
+#: speaker/models.py:261
 msgid "published speaker"
 msgstr "veröffentlichte/r SpeakerIn"
 
-#: speaker/models.py:230
+#: speaker/models.py:262
 msgid "published speakers"
 msgstr "veröffentlichte SpeakerInnen"
 
@@ -182,10 +182,10 @@ msgid "Talks: %(talk_event)s"
 msgstr "Sessions: %(talk_event)s"
 
 #: speaker/templates/speaker/publishedspeaker_list.html:3
-msgid "Speaker Line up"
-msgstr "SpeakerIn"
+msgid "Speaker LineUp"
+msgstr "SpeakerInnen-Lineup"
 
-#: speaker/templates/speaker/publishedspeaker_list.html:17
+#: speaker/templates/speaker/publishedspeaker_list.html:39
 msgid "Session selection is not done yet. No speaker list for you."
 msgstr ""
 "Die Sessionauswahl ist noch nicht abgeschlossen. Es ist noch keine "

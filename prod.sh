@@ -60,7 +60,7 @@ EOF
     $DOCKER_COMPOSE build $@
     ;;
   manage)
-    $DOCKER_COMPOSE exec app python manage.py $@
+    $DOCKER_COMPOSE exec app python3 manage.py $@
     ;;
   pushbase)
     echo "*** Pushing Docker base image"

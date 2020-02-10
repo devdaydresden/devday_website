@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from attendee.forms import DevDayUserChangeForm, DevDayUserCreationForm
-from attendee.models import Attendee, AttendeeEventFeedback
+from attendee.models import Attendee, AttendeeEventFeedback, BadgeData
 from attendee.tests import attendee_testutils
 from devday.utils.devdata import DevData
 from event.models import Event
@@ -15,16 +15,16 @@ User = get_user_model()
 class AttendeeAdminTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.event = Event.objects.get(title="devdata.18")
+        cls.event = Event.objects.get(title="devdata.20")
         cls.devdata = DevData()
         cls.devdata.create_talk_formats()
         cls.devdata.update_events()
         cls.devdata.create_users_and_attendees(amount=10, events=[cls.event])
 
     def setUp(self):
-        self.user_password = u"s3cr3t"
+        self.user_password = "s3cr3t"
         self.user = User.objects.create_superuser(
-            u"admin@example.org", self.user_password
+            "admin@example.org", self.user_password
         )
         self.client.login(email=self.user.email, password=self.user_password)
 
@@ -39,16 +39,16 @@ class AttendeeAdminTest(TestCase):
 class DevDayUserAdmin(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.event = Event.objects.get(title="devdata.18")
+        cls.event = Event.objects.get(title="devdata.20")
         cls.devdata = DevData()
         cls.devdata.create_talk_formats()
         cls.devdata.update_events()
         cls.devdata.create_users_and_attendees(amount=10, events=[cls.event])
 
     def setUp(self):
-        self.user_password = u"s3cr3t"
+        self.user_password = "s3cr3t"
         self.user = User.objects.create_superuser(
-            u"admin@example.org", self.user_password
+            "admin@example.org", self.user_password
         )
         self.client.login(email=self.user.email, password=self.user_password)
 
@@ -113,9 +113,9 @@ class AttendeeEventFeedbackAdminTest(TestCase):
         )
 
     def setUp(self):
-        self.user_password = u"s3cr3t"
+        self.user_password = "s3cr3t"
         self.user = User.objects.create_superuser(
-            u"admin@example.org", self.user_password
+            "admin@example.org", self.user_password
         )
         self.client.login(email=self.user.email, password=self.user_password)
 
@@ -133,5 +133,41 @@ class AttendeeEventFeedbackAdminTest(TestCase):
             reverse(
                 "admin:attendee_attendeeeventfeedback_change", args=(self.feedback.id,)
             )
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+class BadeDataAdminTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = event_testutils.create_test_event(title="Test event")
+        user1, _ = attendee_testutils.create_test_user("test1@example.org")
+        user2, _ = attendee_testutils.create_test_user("test2@example.org")
+        cls.attendees = [
+            Attendee.objects.create(user=user1, event=cls.event),
+            Attendee.objects.create(user=user2, event=cls.event),
+        ]
+        cls.badge_data = BadgeData.objects.create(
+            attendee=cls.attendees[0],
+            title="The Attendee",
+            contact="@attendee",
+            topics="- Code\n- Hack\n- Play",
+        )
+
+    def setUp(self):
+        user_password = "s3cr3t"
+        self.user = User.objects.create_superuser("admin@example.org", user_password)
+        self.client.login(email=self.user.email, password=user_password)
+
+    def test_list(self):
+        response = self.client.get(reverse("admin:attendee_badgedata_changelist"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            response.context["cl"].result_count == 1, "should list a badge data item"
+        )
+
+    def test_change(self):
+        response = self.client.get(
+            reverse("admin:attendee_badgedata_change", args=(self.badge_data.id,))
         )
         self.assertEqual(response.status_code, 200)

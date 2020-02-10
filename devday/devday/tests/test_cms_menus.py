@@ -49,7 +49,7 @@ class DevDayMenuTest(TestCase):
         self.assertIn(cms_menus.SESSIONS_PUBLISHED, entries[2].attr)
         self.assertIn(cms_menus.CHILDREN, entries[3].attr)
         self.assertEqual(
-            len(entries[3].children), 2, "Archive should have two children"
+            len(entries[3].children), 3, "Archive should have three children"
         )
         self.assertEqual(entries[4].url, reverse("auth_login"))
 

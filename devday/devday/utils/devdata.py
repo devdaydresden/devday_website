@@ -215,45 +215,37 @@ class DevData:
         self.add_text_plugin_to_placeholder(
             index,
             "eventinfo",
-            """<h4>Fünf Jahre
-DevDay</h4> <p>Der Dev Day feiert seinen fünften Geburtstag - und den wollen
-wir mit euch verbringen! Die <strong>Konferenz</strong> für alle
-<strong>IT-Interessenten</strong> - Studierende oder Professionals, aus Dresden
-oder auch dem anderen Ende von Deutschland - hält zu ihrem kleinen Jubiläum
-einige Neuigkeiten und Überaschungen bereit, also seid gespannt und merkt euch
-bereits jetzt den <strong>21.05.2019</strong> vor. Definitiv gleich bleibt
-jedoch: auch 2019 ist der Dev Day für alle Teilnehmer kostenlos.</p>
-<p>Organisiert wird der Dev Day durch uns, die Software Engineering Community
-(kurz SECO) der T-Systems Multimedia Solutions GmbH. Wir sind ein ca.
-15-köpfiges, bunt gemischtes Team größtenteils aus Software- und System
-Architekten und –Entwicklern bestehend. Neben vielen kleinen Events vor allem
-zum Wissensaustausch in der T-Systems MMS organisieren wir einmal im Jahr auch
-den Dev Day. Unser größtes Ziel dabei: Wissensaustausch und Vernetzung über die
-Grenzen von Unternehmen und Dresden hinaus.</p>
+            """<p>Am <strong>05.05.2020 </strong>ist es soweit – der Dev Day findet zum 6ten Mal in der Börse Dresden statt. 
+Seid dabei, wenn wir die neusten Innovationen und heißesten Trends der IT-Branche diskutieren.</p>
+<p>Für alle die den Dev Day noch nicht kennen – die IT-Konferenz wird von der 
+Software Engineering Community der T-Systems Multimedia Solutions veranstaltet und bietet Platz zum 
+Netzwerken und Wissensaustausch zu allen IT-Themen. Egal welche Technologie, egal ob 
+Trends und Innovationen oder Themen, die euch schon immer beschäftigt haben, wir diskutieren Methodiken, 
+Codes und die menschliche Seite in der Softwareentwicklung – auf dem Dev Day ist Platz für alle Themen! 
+Dabei sind alle IT-Interessenten herzlich willkommen, egal ob Studierende, Fachexperten oder Quereinsteiger, 
+unabhängig von ihrer Erfahrung, ihrem Geschlecht, ihrer ethnischen Herkunft und ihrer Religion!</p>
 """,
         )
         self.add_text_plugin_to_placeholder(
             index,
             "cfp_open",
-            body="""<h4>Call for Papers</h4>
-<p>Für den Dev Day 19 brauchen wir wieder eure Unterstützung: meldet euch als
-<strong>Speaker</strong> an und schlagt uns spannende, interessante
-<strong>Vorträge</strong> vor!</p>
-<p>Für 2019 haben wir uns ein paar Neuigkeiten überlegt, um noch mehr Themen
-Raum zu bieten.</p>
-<p>Für die <strong>Vorträge haben wir dieses Mal zwei Längen</strong>: 45 und
-60 Minuten. Und das <strong>Session-Grid wird größer</strong>: wir machen
-statt eines Abschluss-Vortrags vier weiter, reguläre Talks.</p>
-<p>Zusätzlich gibt es Raum für <strong>drei Workshops</strong> am Vormittag:
-jeweils bis zu 15 Teilnehmer können zusammen <strong>drei Stunden</strong>
-tiefer in ein Thema einsteigen.</p>
+            body="""<h4>Call for Papers</h4><p>Ihr habt ein cooles Thema, 
+dass ihr gerne vorstellen wollt? – Dann reicht jetzt eure 
+Vorträge für den Dev Day ein und nutzt die Chance eure Vision mit uns zu teilen! 
+Wie schon im letzten Jahr bieten wir euch dafür verschiedene Formate an - 
+ob 10 Minuten Lightningtalk, 30 oder 60 minütige Session 
+oder gar ein Workshop über mehrere Stunden – ihr könnt entscheiden, 
+wie ihr die Teilnehmenden von eueren Themen begeistern wollt.</p>
+<p>Der Call for Paper ist bis zum 15.01.2020 geöffnet.</p>
+<p>Unsicher ob euer Vortrag zu uns passt? – Dann sprecht uns an, 
+wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p>
 """,
         )
         self.add_text_plugin_to_placeholder(
             index,
             "save_the_date",
             body="""<h4>Save the Date</h4>
-<p>Der Dev Day 19 findet am <strong>21. Mai 2019</strong> am gewohnten Ort, der
+<p>Der Dev Day 20 findet am <strong>5. Mai 2020</strong> am gewohnten Ort, der
 <strong>Börse Dresden</strong> statt.</p>""",
         )
         self.add_text_plugin_to_placeholder(

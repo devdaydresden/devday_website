@@ -47,7 +47,7 @@ class EventManagerTest(TestCase):
     def test_absolute_url(self):
         self.assertEqual(
             Event.objects.current_event().get_absolute_url(),
-            "/devdata19/sessions/",
+            "/devdata20/sessions/",
             "should have the right URI",
         )
 

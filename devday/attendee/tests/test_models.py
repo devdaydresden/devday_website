@@ -1,11 +1,15 @@
+from base64 import urlsafe_b64decode, urlsafe_b64encode
+from hashlib import sha1
+
 import luhn
 
+from django.conf import settings
 from django.core import mail
 from django.db import IntegrityError
 from django.test import TestCase
 from django.utils.translation import ugettext as _
 
-from attendee.models import Attendee, AttendeeEventFeedback, DevDayUser
+from attendee.models import Attendee, AttendeeEventFeedback, BadgeData, DevDayUser
 from attendee.tests import attendee_testutils
 from event.models import Event
 from event.tests import event_testutils
@@ -88,6 +92,18 @@ class DevDayUserTest(TestCase):
         self.assertEqual(email.subject, "Test mail")
         self.assertEqual(email.body, "Test mail body")
 
+    def test_get_attendee(self):
+        user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
+        event = event_testutils.create_test_event("Test Event")
+        attendee = Attendee.objects.create(user=user, event=event)
+        self.assertEqual(user.get_attendee(event), attendee)
+
+    def test_derive_title(self):
+        user = DevDayUser.objects.create_user("tester@example.org", USER_PASSWORD)
+        event = event_testutils.create_test_event("Test Event")
+        attendee = Attendee.objects.create(user=user, event=event)
+        self.assertEqual("Tester", attendee.derive_title())
+
     def test___str__(self):
         user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
         self.assertEqual(str(user), USER_EMAIL)
@@ -98,31 +114,84 @@ class AttendeeTest(TestCase):
     Tests for attendee.models.Attendee.
     """
 
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = event_testutils.create_test_event()
+        cls.user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
+
     def test___str__(self):
-        event = event_testutils.create_test_event()
-        user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
-        attendee = Attendee.objects.create(user=user, event=event)
-        self.assertEqual(str(attendee), _("{} at {}").format(user.email, event.title))
+        attendee = Attendee.objects.create(user=self.user, event=self.event)
+        self.assertEqual(
+            str(attendee), _("{} at {}").format(self.user.email, self.event.title)
+        )
 
     def test_checkin_code(self):
-        event = Event.objects.current_event()
-        user = DevDayUser.objects.create_user(USER_EMAIL, USER_PASSWORD)
-        attendee = Attendee.objects.create(user=user, event=event)
+        attendee = Attendee.objects.create(user=self.user, event=self.event)
         self.assertEqual(str(attendee.user), USER_EMAIL)
         self.assertTrue(len(attendee.checkin_code) > 0, "has a checkin-code")
         self.assertTrue(luhn.verify(attendee.checkin_code), "checkin-code is valid")
         self.assertIsNone(attendee.checked_in, "is not checked in")
 
         u2 = DevDayUser.objects.create_user("another@example.com", "foo")
-        a2 = Attendee.objects.create(user=u2, event=event)
+        a2 = Attendee.objects.create(user=u2, event=self.event)
         self.assertNotEqual(attendee.checkin_code, a2.checkin_code)
-        a3 = Attendee.objects.get_by_checkin_code_or_email(attendee.checkin_code, event)
+        a3 = Attendee.objects.get_by_checkin_code_or_email(
+            attendee.checkin_code, self.event
+        )
         self.assertEqual(attendee, a3)
 
         attendee.check_in()
         self.assertIsNotNone(attendee.checked_in)
         with self.assertRaises(IntegrityError):
             attendee.check_in()
+
+    def test_get_verification(self):
+        attendee = Attendee.objects.create(user=self.user, event=self.event)
+        verification = attendee.get_verification()
+        self.assertIsNotNone(verification)
+        self.assertIsNotNone(urlsafe_b64decode(verification.encode("utf-8")))
+
+    def test_get_checkin_url(self):
+        attendee = Attendee.objects.create(user=self.user, event=self.event)
+        checkin_url = attendee.get_checkin_url(event=self.event)
+        self.assertIn(self.event.slug, checkin_url)
+        self.assertIn(str(attendee.id), checkin_url)
+        self.assertIn(attendee.get_verification(), checkin_url)
+
+
+class AttendeeManagerTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = create_test_event()
+        cls.user, _ = attendee_testutils.create_test_user("test@example.org")
+
+    def test_get_checkin_code_or_email_with_checkin_code(self):
+        attendee = Attendee.objects.create(
+            user=self.user, event=self.event, checkin_code="abcd"
+        )
+        self.assertEqual(
+            Attendee.objects.get_by_checkin_code_or_email("abcd", self.event), attendee
+        )
+
+    def test_get_checkin_code_or_email_with_email(self):
+        attendee = Attendee.objects.create(
+            user=self.user, event=self.event, checkin_code="efgh"
+        )
+        self.assertEqual(
+            Attendee.objects.get_by_checkin_code_or_email(
+                "test@example.org", self.event
+            ),
+            attendee,
+        )
+
+    def test_is_verification_valid(self):
+        attendee = Attendee.objects.create(user=self.user, event=self.event)
+        m = sha1(settings.SECRET_KEY.encode())
+        m.update("{:08d}".format(int(attendee.id)).encode())
+        verification = urlsafe_b64encode(m.digest()).decode("utf-8")
+        self.assertTrue(
+            Attendee.objects.is_verification_valid(attendee.id, verification)
+        )
 
 
 class AttendeeEventFeedbackTest(TestCase):
@@ -146,3 +215,14 @@ class AttendeeEventFeedbackTest(TestCase):
                 self.attendee, self.event.title, 5, 4, 5, "Rocked again"
             ),
         )
+
+
+class BadgeDataTest(TestCase):
+    def setUp(self):
+        self.event = create_test_event()
+        self.test_user, _ = attendee_testutils.create_test_user()
+        self.attendee = Attendee.objects.create(user=self.test_user, event=self.event)
+
+    def test_create(self):
+        badge_data = BadgeData.objects.create(attendee=self.attendee, title="Attendee")
+        self.assertIsNotNone(badge_data)

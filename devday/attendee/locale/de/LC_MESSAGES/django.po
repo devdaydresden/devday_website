@@ -1,22 +1,22 @@
-# devday attendee app.
-# Copyright (C) 2016 T-Systems Multimedia Solutions GmbH
+# devday website attendee app.
+# Copyright (C) 2016-2020 T-Systems Multimedia Solutions GmbH
 # This file is distributed under the same license as the devday attendee app package.
-# Jan Dittberner <jan.dittberner@t-systems.com>, 2016.
+# Jan Dittberner <jan.dittberner@t-systems.com>, 2016-2020
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-11 17:57+0000\n"
-"PO-Revision-Date: 2020-02-11 17:51+0100\n"
-"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
+"PO-Revision-Date: 2020-02-11 20:46+0100\n"
+"Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: attendee/admin.py:36
@@ -73,8 +73,8 @@ msgid ""
 "By clicking the button below I express my intent to attend the event {event} "
 "and agree to be contacted by the Dev Day organizers about conference details."
 msgstr ""
-"Durch Klick auf den unten stehende Button bestätige ich meine Absicht an der "
-"Veranstaltung {event} teilzunehmen und stimme zu, dass mich die Dev Day-"
+"Durch Klick auf den unten stehenden Button bestätige ich meine Absicht an "
+"der Veranstaltung {event} teilzunehmen und stimme zu, dass mich die Dev Day-"
 "Organisatoren zu Details zur Konferenz kontaktieren dürfen."
 
 #: attendee/forms.py:186 attendee/forms.py:324
@@ -156,7 +156,7 @@ msgstr "Deine Badge-Daten anpassen"
 
 #: attendee/models.py:57
 msgid "email address"
-msgstr "E-Mailadresse"
+msgstr "E-Mail-Adresse"
 
 #: attendee/models.py:59
 msgid "staff status"
@@ -484,7 +484,7 @@ msgid ""
 msgstr ""
 "Du benötigst ein Benutzerkonto auf dieser Seite, um an der Veranstaltung "
 "%(event_title)s teilzunehmen. Bitte registriere ein Benutzerkonto durch "
-"Angabe deiner E-Mailadresse."
+"Angabe deiner E-Mail-Adresse."
 
 #: attendee/templates/attendee/attendee_registration.html:23
 #, python-format
@@ -512,7 +512,7 @@ msgid ""
 msgstr ""
 "Du bist mit deiner Anmeldung für die Veranstaltung &quot;"
 "%(event_title)s&quot; fast fertig. Bitte klicke zur Bestätigung auf den "
-"Bestätigungslink, den wir an deine hinterlegte E-Mailadresse geschickt haben."
+"Bestätigungslink, den wir an deine hinterlegte E-Mail-Adresse geschickt haben."
 
 #: attendee/templates/attendee/badge_data_edit.html:3
 #, python-format

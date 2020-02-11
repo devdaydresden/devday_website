@@ -1,22 +1,22 @@
-# devday website.
-# Copyright (C) 2016 T-Systems Multimedia Solutions GmbH
+# devday website main application
+# Copyright (C) 2016-2020 T-Systems Multimedia Solutions GmbH
 # This file is distributed under the same license as the devday website package.
-# Jan Dittberner <jan.dittberner@t-systems.com>, 2016.
+# Jan Dittberner <jan.dittberner@t-systems.com>, 2016-2020
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-11 17:57+0000\n"
-"PO-Revision-Date: 2020-02-11 18:59+0100\n"
-"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
+"PO-Revision-Date: 2020-02-11 20:44+0100\n"
+"Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: devday/cms_apps.py:8
@@ -434,7 +434,7 @@ msgid ""
 "exists with the email you entered. You should receive them shortly."
 msgstr ""
 "Wir haben dir Hinweise zum Setzen deines Passworts gemailt, falls ein "
-"Nutzerkonto mit der eingegebenen E-Mailadresse existiert. Du solltest diese "
+"Nutzerkonto mit der eingegebenen E-Mail-Adresse existiert. Du solltest diese "
 "in Kürze erhalten."
 
 #: devday/templates/django_registration/password_reset_done.html:8
@@ -477,7 +477,7 @@ msgid ""
 "Forgotten your password? Enter your email address below, and we'll email "
 "instructions for setting a new one."
 msgstr ""
-"Hast du dein Passwort vergessen? Gib unten deine E-Mailadresse ein und wir "
+"Hast du dein Passwort vergessen? Gib unten deine E-Mail-Adresse ein und wir "
 "werden dir Hinweise schicken, wie du ein neues Passwort setzen kannst."
 
 #: devday/templates/django_registration/password_reset_subject.txt:2

@@ -1,22 +1,22 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# devday website talk application
+# Copyright (C) 2016-2020 T-Systems Multimedia Solutions GmbH
+# This file is distributed under the same license as the devday website package.
+# Jan Dittberner <jan.dittberner@t-systems.com>, 2016-2020
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-07 15:57+0000\n"
-"PO-Revision-Date: 2019-05-14 15:53+0200\n"
-"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
+"PO-Revision-Date: 2020-02-11 20:45+0100\n"
+"Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: talk/admin.py:114
@@ -449,7 +449,7 @@ msgstr "Bestätigungs-E-Mail wurde gesendet"
 #: talk/templates/talk/sessionreservation_confirmation_sent.html:7
 msgid "We sent an email with a confirmation link to your email address."
 msgstr ""
-"Wir haben eine E-Mail mit einem Bestätigungslink an deine E-Mailadresse "
+"Wir haben eine E-Mail mit einem Bestätigungslink an deine E-Mail-Adresse "
 "gesendet."
 
 #: talk/templates/talk/sessionreservation_confirmation_sent.html:9
@@ -588,7 +588,7 @@ msgstr ""
 "\n"
 "Um deine Anmeldung abzuschließen klicke bitte auf den folgenden Link, um "
 "deine\n"
-"E-Mailadresse zu bestätigen.\n"
+"E-Mail-Adresse zu bestätigen.\n"
 
 #: talk/templates/talk/speaker_activation_email.txt:8
 #, python-format
@@ -649,7 +649,7 @@ msgstr ""
 
 #: talk/templates/talk/speaker_details.html:13
 msgid "Email address"
-msgstr "E-Mailadresse"
+msgstr "E-Mail-Adresse"
 
 #: talk/templates/talk/speaker_details.html:16
 msgid "Short biography"

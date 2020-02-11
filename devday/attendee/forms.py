@@ -173,11 +173,13 @@ class EventRegistrationForm(ModelForm):
             Div(
                 Div(
                     HTML(
-                        _(
-                            '<p class="text-info">By registering as an'
-                            " attendee, I agree to be contacted by the Dev Day"
-                            " organizers about conference details."
-                            "</p>"
+                        '<p class="text-info">{}</p>'.format(
+                            _(
+                                "By clicking the button below"
+                                " I express my intent to attend the event {event}"
+                                " and agree to be contacted by the Dev Day"
+                                " organizers about conference details."
+                            ).format(event=self.event.title)
                         )
                     )
                 ),

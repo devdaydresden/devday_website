@@ -163,6 +163,7 @@ class AttendeeRegistrationView(RegistrationView):
     attendee_email_subject_template = "attendee/attendee_activation_email_subject.txt"
     email_body_template = "attendee/attendee_activation_email_body_new_user.txt"
     email_subject_template = "attendee/attendee_activation_email_subject_new_user.txt"
+    template_name = "attendee/attendee_registration.html"
 
     def dispatch(self, *args, **kwargs):
         user = self.request.user
@@ -186,6 +187,13 @@ class AttendeeRegistrationView(RegistrationView):
         return reverse_lazy(
             "attendee_registration_pending", kwargs={"event": self.event.slug}
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {"auth_level": self.auth_level, "event": self.event,}
+        )
+        return context
 
     def get_form_class(self, request=None):
         return self.form_classes.get(self.auth_level, None)

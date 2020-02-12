@@ -406,6 +406,7 @@ msgid "No more attendees in the raffle"
 msgstr "Keine weiteren Teilnehmer für die Verlosung"
 
 #: attendee/templates/attendee/attendee_register_complete.html:3
+#, python-format
 msgid "Registration for %(event)s completed"
 msgstr "Registrierung für die Veranstaltung %(event)s abgeschlossen"
 

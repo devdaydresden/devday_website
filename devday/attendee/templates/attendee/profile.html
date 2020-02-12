@@ -77,6 +77,9 @@
                                         {% endif %}
                                     </td>
                                     <td>
+                                        {% comment %}
+                                        FIXME: implement is_raffle_available in a proper way (see https://github.com/devdaydresden/devday_website/issues/233)
+
                                         {% if event.is_raffle_available %}
                                             <div class="form-check-inline">
                                                 <input class="form-check-input"
@@ -136,6 +139,7 @@
                                                 </div>
                                             {% endif %}
                                         {% endif %}
+                                        {% endcomment %}
                                     </td>
                                 </tr>
                             {% endwith %}

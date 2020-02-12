@@ -168,3 +168,27 @@ class EventTest(TestCase):
             end_time=now - timedelta(hours=1),
         )
         self.assertTrue(event.has_ended())
+
+    def test_is_raffle_available(self):
+        now = timezone.now()
+        event = Event(
+            title="Test running",
+            description="Test Event running",
+            start_time=now - timedelta(hours=1),
+            end_time=now + timedelta(hours=1),
+        )
+        self.assertTrue(event.is_raffle_available())
+        event = Event(
+            title="Test future",
+            description="Test Event in the future",
+            start_time=now + timedelta(hours=1),
+            end_time=now + timedelta(hours=2),
+        )
+        self.assertTrue(event.is_raffle_available())
+        event = Event(
+            title="Test past",
+            description="Test Event that has ended",
+            start_time=now - timedelta(hours=2),
+            end_time=now - timedelta(hours=1),
+        )
+        self.assertFalse(event.is_raffle_available())

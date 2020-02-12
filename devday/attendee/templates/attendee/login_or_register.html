@@ -15,7 +15,9 @@
     {% if request.user.is_anonymous %}
         <div class="row">
             <div class="col-12 col-md-5 offset-md-1">
-                <h2>{% blocktrans %}Register for {{ current_event }}{% endblocktrans %}</h2>
+                {% static_placeholder "register-intro-anonymous-headline" or %}
+                    <h2>
+                        {% blocktrans %}Register for {{ current_event }}{% endblocktrans %}</h2>{% endstatic_placeholder %}
                 <p>{% static_placeholder "register-intro-anonymous" %}</p>
                 <p class="text-center">
                     <a class="btn btn-primary"
@@ -23,7 +25,8 @@
                 </p>
             </div>
             <div class="col-12 col-md-5">
-                <h3>{% trans "Did you attend Dev Day last year? Use your existing credentials!" %}</h3>
+                {% static_placeholder "register-intro-existing" or %}
+                    <h3>{% trans "Did you attend Dev Day last year? Use your existing credentials!" %}</h3>{% endstatic_placeholder %}
                 {% crispy form %}
                 <p style="margin-top: 1em;">{% trans "Forgotten password?" %} <a
                         href="{% url 'auth_password_reset' %}">{% trans "Reset it!" %}</a>
@@ -33,7 +36,7 @@
     {% else %}
         <div class="row">
             <div class="col-12 col-md-10 offset-md-1">
-                {% static_placeholder "register-intro-introtext-authenticated" %}
+                {% static_placeholder "register-intro-introtext-authenticated" or %}{% blocktrans %}You are already logged in, great! You may proceed to register for {{ current_event }} directly.{% endblocktrans %}{% endstatic_placeholder %}
             </div>
         </div>
         <div class="row">

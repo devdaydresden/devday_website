@@ -5,9 +5,11 @@
 {% block content %}
     <div class="content-area">
         <div class="col-md-8 offset-md-2 col-12">
-            <h1>{% trans "Attendee registration successful" %}</h1>
-            <p>{% blocktrans with event=event.title %}You are now registered for the event
-                &quot;{{ event }}&quot;.{% endblocktrans %}</p>
+            {% static_placeholder "register-attendee-success" or %}
+                <h1>{% trans "Attendee registration successful" %}</h1>
+                <p>
+                    {% blocktrans with event=event.title %}You are now registered for the event &quot;{{ event }}&quot;.{% endblocktrans %}</p>
+            {% endstatic_placeholder %}
             {% static_placeholder "register-attendee-fill-badge" or %}
                 {% trans "Please fill your badge information." %}{% endstatic_placeholder %}
             <div class="row">

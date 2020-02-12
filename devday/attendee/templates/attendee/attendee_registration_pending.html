@@ -4,7 +4,7 @@
 {% block content %}
     <div class="content-area">
         <div class="col-md-8 offset-md-2 col-12">
-            <h1>{% trans "Attendee registration pending" %}</h1>
+            {% static_placeholder "register-attendee-pending-headline" or %}<h1>{% trans "Attendee registration pending" %}</h1>{% endstatic_placeholder %}
             <p>{% static_placeholder "register-attendee-pending" or %}{% blocktrans with event_title=event.title %}You are almost done with your registration for the event &quot;{{ event_title }}&quot; please click on the activation link contained in the email we sent to your registered email address.{% endblocktrans %}{% endstatic_placeholder %}</p>
         </div>
     </div>

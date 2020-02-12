@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-12 20:44+0000\n"
-"PO-Revision-Date: 2020-02-12 21:45+0100\n"
+"POT-Creation-Date: 2020-02-12 20:58+0000\n"
+"PO-Revision-Date: 2020-02-12 21:58+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -669,14 +669,12 @@ msgstr "Nutzerprofil für %(username)s"
 msgid "Speaker"
 msgstr "SpeakerIn"
 
-#: attendee/templates/attendee/profile.html:16
+#: attendee/templates/attendee/profile.html:17
 #, python-format
 msgid ""
-"You are registered\n"
-"                    as speaker &quot;%(speaker_name)s&quot;. Visit your\n"
-"                    <a href=\"%(speaker_profile)s\">speaker details page</a> "
-"to update\n"
-"                    your speaker data."
+"You are registered as speaker &quot;%(speaker_name)s&quot;. Visit your\n"
+"                        <a href=\"%(speaker_profile)s\">speaker details "
+"page</a> to update your speaker data."
 msgstr ""
 "Du bist als SpeakerIn &quot;%(speaker_name)s&quot; angemeldet. Besuche deine "
 "<a href=\"%(speaker_profile)s\">SpeakerIndetailseite</a>, um deine "
@@ -723,10 +721,16 @@ msgstr "Du hast deine Reservierung für diese Session noch nicht bestätigt"
 msgid "Resend confirmation mail"
 msgstr "Bestätigungs-E-Mail erneut senden"
 
-#: attendee/templates/attendee/profile.html:151
-msgid ""
-"You are not currently registered to participate in any\n"
-"                    event."
+#: attendee/templates/attendee/profile.html:137
+msgid "Edit badge data"
+msgstr "Badge-Daten bearbeiten"
+
+#: attendee/templates/attendee/profile.html:140
+msgid "Cancel Registration"
+msgstr "Anmeldung stornieren"
+
+#: attendee/templates/attendee/profile.html:152
+msgid "You are not currently registered to participate in any event."
 msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."
 
 #: attendee/templates/event/eventattendee_checkin_summary.html:3

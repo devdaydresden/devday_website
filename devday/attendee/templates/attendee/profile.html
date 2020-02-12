@@ -13,10 +13,10 @@
             <div class="offset-lg-2 col-lg-8 col-12 text-justify">
                 {% url 'user_speaker_profile' as speaker_profile %}
                 <h3>{% trans "Speaker" %}</h3>
-                <p>{% blocktrans with speaker_name=user.speaker.name %}You are registered
-                    as speaker &quot;{{ speaker_name }}&quot;. Visit your
-                    <a href="{{ speaker_profile }}">speaker details page</a> to update
-                    your speaker data.{% endblocktrans %}</p>
+                <p>
+                    {% blocktrans with speaker_name=user.speaker.name %}You are registered as speaker &quot;{{ speaker_name }}&quot;. Visit your
+                        <a href="{{ speaker_profile }}">speaker details page</a> to update your speaker data.{% endblocktrans %}
+                </p>
             </div>
         {% endif %}
         <div class="offset-lg-2 col-lg-8 col-12">
@@ -128,18 +128,18 @@
                                                     })
                                                 </script>
                                             {% endaddtoblock %}
-                                            {% if not event.is_started %}
-                                                <div class="btn-group float-left float-sm-right">
-                                                    <a class="btn btn-{% if not attendee.badgedata %}warning{% else %}success{% endif %}"
-                                                       href="{% url "edit_badge_data" event=event.slug %}">{% trans "Edit badge data" %}</a>
-                                                    {% if not user.get_speaker %}
-                                                        <a class="btn btn-danger"
-                                                           href="{% url "attendee_cancel" event=event.slug %}">{% trans "Cancel Registration" %}</a>
-                                                    {% endif %}
-                                                </div>
-                                            {% endif %}
                                         {% endif %}
                                         {% endcomment %}
+                                        {% if not event.is_started %}
+                                            <div class="btn-group float-left float-sm-right">
+                                                <a class="btn btn-{% if not attendee.badgedata %}warning{% else %}success{% endif %}"
+                                                   href="{% url "edit_badge_data" event=event.slug %}">{% trans "Edit badge data" %}</a>
+                                                {% if not user.get_speaker %}
+                                                    <a class="btn btn-danger"
+                                                       href="{% url "attendee_cancel" event=event.slug %}">{% trans "Cancel Registration" %}</a>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endwith %}
@@ -147,8 +147,8 @@
                     </table>
                 </div>
             {% else %}
-                <p>{% blocktrans %}You are not currently registered to participate in any
-                    event.{% endblocktrans %}</p>
+                <p>
+                    {% blocktrans %}You are not currently registered to participate in any event.{% endblocktrans %}</p>
             {% endif %}
         </div>
     </div>

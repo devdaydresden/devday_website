@@ -1,0 +1,29 @@
+{% extends "devday_site.html" %}
+{% load i18n crispy_forms_tags cms_tags %}
+{% block title %}
+    {% if auth_level == "anonymous" %}
+        {% blocktrans with event_title=event.title %}Register for {{ event_title }}{% endblocktrans %}{% else %}
+        {% blocktrans with event_title=event.title %}Attend {{ event_title }}{% endblocktrans %}
+    {% endif %}
+{% endblock %}
+{% block content_body %}
+    <div class="row">
+        <div class="col-md-8 offset-md-2 col-12 content-area">
+            <div class="text-center">
+                {% if auth_level == "anonymous" %}
+                    {% static_placeholder "register-attendee-introtext" or %}<h2>
+                        {% blocktrans with event_title=event.title %}Register for {{ event_title }}{% endblocktrans %}</h2>
+                        <p>
+                            {% blocktrans with event_title=event.title %}You need an account on this site to attend {{ event_title }}. Please register an account using your email address.{% endblocktrans %}</p>
+                    {% endstatic_placeholder %}
+                {% else %}
+                    {% static_placeholder "attendee-attend-introtext" or %}<h2>
+                        {% blocktrans with event_title=event.title %}Attend {{ event_title }}{% endblocktrans %}</h2>{% endstatic_placeholder %}
+                    <p>
+                        {% blocktrans with event_title=event.title %}Please click on the button below to attend the event {{ event_title }}.{% endblocktrans %}</p>
+                {% endif %}
+            </div>
+            {% crispy form %}
+        </div>
+    </div>
+{% endblock %}

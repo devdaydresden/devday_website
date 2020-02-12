@@ -1,22 +1,22 @@
-# devday website.
-# Copyright (C) 2016 T-Systems Multimedia Solutions GmbH
+# devday website main application
+# Copyright (C) 2016-2020 T-Systems Multimedia Solutions GmbH
 # This file is distributed under the same license as the devday website package.
-# Jan Dittberner <jan.dittberner@t-systems.com>, 2016.
+# Jan Dittberner <jan.dittberner@t-systems.com>, 2016-2020
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-07 15:57+0000\n"
-"PO-Revision-Date: 2019-11-25 15:26+0100\n"
-"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
+"POT-Creation-Date: 2020-02-11 17:57+0000\n"
+"PO-Revision-Date: 2020-02-11 20:44+0100\n"
+"Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: devday/cms_apps.py:8
@@ -248,17 +248,19 @@ msgstr "Bitte den unten aufgeführten Fehler korrigieren."
 msgid "Please correct the errors below."
 msgstr "Bitte die unten aufgeführten Fehler korrigieren."
 
-#: devday/templates/devday/staticplaceholders.html:3
-msgid "Edit Static Placeholder Contents"
-msgstr "Inhalt der Static Placeholders bearbeiten"
+#: devday/templates/devday_all_static_placeholders.html:26
+msgid "Static placeholders"
+msgstr "Statische Platzhalter"
 
-#: devday/templates/devday/staticplaceholders.html:7
-msgid "Static Placeholder"
-msgstr "Static Placeholder"
-
-#: devday/templates/devday/staticplaceholders.html:10
-msgid "This static placeholder has not been filled yet."
-msgstr "Dieser Static Placeholder wurde noch nicht ausgefüllt."
+#: devday/templates/devday_all_static_placeholders.html:27
+msgid ""
+"This is a list of all static placeholders. The template devday/templates/"
+"devday_all_static_placeholders.html must be modified if a new static "
+"placeholder is introduced."
+msgstr ""
+"Dies ist eine Liste aller statischen Platzhalter (static_placeholder). Das "
+"Template devday/templates/devday_all_static_placeholders.html muss angepasst "
+"werden, wenn ein neuer statischer Platzhalter eingeführt wird."
 
 #: devday/templates/devday_index.html:25
 msgid "Reserve your spot in one of the workshops or the excursion."
@@ -432,7 +434,7 @@ msgid ""
 "exists with the email you entered. You should receive them shortly."
 msgstr ""
 "Wir haben dir Hinweise zum Setzen deines Passworts gemailt, falls ein "
-"Nutzerkonto mit der eingegebenen E-Mailadresse existiert. Du solltest diese "
+"Nutzerkonto mit der eingegebenen E-Mail-Adresse existiert. Du solltest diese "
 "in Kürze erhalten."
 
 #: devday/templates/django_registration/password_reset_done.html:8
@@ -475,7 +477,7 @@ msgid ""
 "Forgotten your password? Enter your email address below, and we'll email "
 "instructions for setting a new one."
 msgstr ""
-"Hast du dein Passwort vergessen? Gib unten deine E-Mailadresse ein und wir "
+"Hast du dein Passwort vergessen? Gib unten deine E-Mail-Adresse ein und wir "
 "werden dir Hinweise schicken, wie du ein neues Passwort setzen kannst."
 
 #: devday/templates/django_registration/password_reset_subject.txt:2

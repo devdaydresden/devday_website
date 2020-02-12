@@ -180,7 +180,7 @@ class AttendeeRegistrationViewTest(TestCase):
     def test_get_anonymous(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "django_registration/registration_form.html")
+        self.assertTemplateUsed(response, "attendee/attendee_registration.html")
         self.assertIn("form", response.context)
         self.assertIsInstance(response.context["form"], AttendeeRegistrationForm)
 
@@ -190,7 +190,7 @@ class AttendeeRegistrationViewTest(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "django_registration/registration_form.html")
+        self.assertTemplateUsed(response, "attendee/attendee_registration.html")
         self.assertIn("form", response.context)
         self.assertIsInstance(response.context["form"], EventRegistrationForm)
         self.assertIn("user", response.context)

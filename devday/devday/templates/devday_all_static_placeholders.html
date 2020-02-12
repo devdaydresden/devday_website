@@ -2,149 +2,235 @@
 {% comment %}
   This is the page template for a test page with all static placeholders to
   allow publication of static placeholders that are only used on non-CMS URLs.
+
+  You can use the following shell command to find all defined static_placeholder
+  instances in the code base:
+
+  git grep -h '{%\s*static_placeholder' | \
+  sed 's/^.*{% static_placeholder "\([^"]*\)".*$/\1/' | \
+  sort -u
+
+  Please add new placeholders in lexical order to ease your co-maintainers'
+  lifes.
 {% endcomment %}
-{% load cms_tags %}
+{% load cms_tags i18n %}
 
 {% block title %}{% page_attribute "page_title" %}{% endblock title %}
 
 {% block content_block_1 %}
     <div class="stripe c-white">
-        <div class="row">
-            <div class="col-12">
-                <h2>action-event-feedback-intro</h2>
-                <p>{% static_placeholder "action-event-feedback-intro" or %}
-                    action-event-feedback-intro{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>attendee-edit-badge-data</h2>
-                <p>{% static_placeholder "attendee-edit-badge-data" or %}
-                    attendee-edit-badge-data{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>checkin-instructions</h2>
-                <p>{% static_placeholder "checkin-instructions" or %}
-                    checkin-instruction{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>checkin-result</h2>
-                <p>{% static_placeholder "checkin-result" or %}
-                    checkin-result{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>create-talk-introtext</h2>
-                <p>{% static_placeholder "create-talk-introtext" or %}
-                    create-talk-introtext{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>event-feedback-intro</h2>
-                <p>{% static_placeholder "event-feedback-intro" or %}
-                event-feedback-intro{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>gdpr_teaser</h2>
-                <p>{% static_placeholder "gdpr_teaser" or %}
-                    gdpr_teaser{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>login-intro</h2>
-                <p>{% static_placeholder "login-intro" or %}
-                    login-intro{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>register-attendee-fill-badge</h2>
-                <p>{% static_placeholder "register-attendee-fill-badge" or %}
-                    register-attendee-fill-badge{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>register-attendee-introtext</h2>
-                <p>{% static_placeholder "register-attendee-introtext" or %}
-                    register-attendee-introtext{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>registrater-attendee-pending</h2>
-                <p>{% static_placeholder "registrater-attendee-pending" or %}
-                    registrater-attendee-pending{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>register-intro-anonymous</h2>
-                <p>{% static_placeholder "register-intro-anonymous" or %}
-                    register-intro-anymous{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>register-intro-introtext-authenticated</h2>
-                <p>
-                    {% static_placeholder "register-intro-introtext-authenticated" or %}
-                        register-intro-introtext-authenticated{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>register-intro</h2>
-                <p>{% static_placeholder "register-intro" or %}
-                    register-intro{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>register-success</h2>
-                <p>{% static_placeholder "register-success" or %}
-                    register-success{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>session-reservation-intro-fully-booked</h2>
-                <p>{% static_placeholder "session-reservation-intro-fully-booked" or %}
-                    session-reservation-intro-fully-booked{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>session-reservation-intro-free-slots</h2>
-                <p>{% static_placeholder "session-reservation-intro-free-slots" or %}
-                    session-reservation-intro-free-slots{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>speaker_registered</h2>
-                <p>{% static_placeholder "speaker_registered" or %}
-                    speaker_registered{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>speaker-register</h2>
-                <p>{% static_placeholder "speaker-register" or %}
-                    speaker-register{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>sponsoring-intro-text</h2>
-                <p>{% static_placeholder "sponsoring-intro-text" or %}
-                    sponsoring-intro-text{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>sponsoring-form-prefix-text</h2>
-                <p>{% static_placeholder "sponsoring-form-prefix-text" or %}
-                    sponsoring-form-prefix-text{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>sponsoring-request-thanks</h2>
-                <p>{% static_placeholder "sponsoring-request-thanks" or %}
-                    sponsoring-request-thanks{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>submit-session-introtext</h2>
-                <p>{% static_placeholder "submit-session-introtext" or %}
-                    submit-session-introtext{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>talk-grid-introtext</h2>
-                <p>{% static_placeholder "talk-grid-intro-text" or %}
-                    talk-grid-intro-text{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>talk_submission_closed</h2>
-                <p>{% static_placeholder "talk_submission_closed" or %}
-                    talk_submission_closed{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>talk_submitted</h2>
-                <p>{% static_placeholder "talk_submitted" or %}
-                    talk_submitted{% endstatic_placeholder %}</p>
-                <hr>
-
-                <h2>talk-voting-intro-text</h2>
-                <p>{% static_placeholder "talk-voting-intro-text" or %}
-                    talk-voting-intro-text{% endstatic_placeholder %}</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    {% placeholder "intro" or %}
+                        <h2>{% trans "Static placeholders" %}</h2>
+                        <p class="text-info">{% trans "This is a list of all static placeholders. The template devday/templates/devday_all_static_placeholders.html must be modified if a new static placeholder is introduced." %}</p>{% endplaceholder %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-lg-6">
+                    <h3>attendee-attend-introtext</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/attendee_registration.html</p>
+                    <p>
+                        {% static_placeholder "attendee-attend-introtext" or %}attendee-attend-introtext{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>attendee-edit-badge-data</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/badge_data_edit.html</p>
+                    <p>
+                        {% static_placeholder "attendee-edit-badge-data" or %}attendee-edit-badge-data{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>checkin-instructions</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/checkin.html</p>
+                    <p>
+                        {% static_placeholder "checkin-instructions" or %}checkin-instruction{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>checkin-result</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/checkin_result.html</p>
+                    <p>
+                        {% static_placeholder "checkin-result" or %}checkin-result{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>create-talk-introtext</h3>
+                    <p class="text-muted">used in talk/templates/talk/talk_form.html</p>
+                    <p>
+                        {% static_placeholder "create-talk-introtext" or %}create-talk-introtext{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>event-feedback-intro</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/event_feedback.html</p>
+                    <p>
+                        {% static_placeholder "event-feedback-intro" or %}event-feedback-intro{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>gdpr_teaser</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/profile.html</p>
+                    <p>
+                        {% static_placeholder "gdpr_teaser" or %}gdpr_teaser{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>login-intro</h3>
+                    <p class="text-muted">used in devday/templates/django_registration/login.html</p>
+                    <p>
+                        {% static_placeholder "login-intro" or %}login-intro{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>register-attendee-fill-badge</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/attendee_register_success.html</p>
+                    <p>
+                        {% static_placeholder "register-attendee-fill-badge" or %}register-attendee-fill-badge{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>register-attendee-introtext</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/attendee_registration.html and attendee/templates/attendee/login_or_register.html</p>
+                    <p>
+                        {% static_placeholder "register-attendee-introtext" or %}register-attendee-introtext{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>register-attendee-pending</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/attendee_registration_pending.html</p>
+                    <p>
+                        {% static_placeholder "register-attendee-pending" or %}register-attendee-pending{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>register-intro</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/login_or_register.html</p>
+                    <p>
+                        {% static_placeholder "register-intro" or %}register-intro{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>register-intro-anonymous</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/login_or_register.html</p>
+                    <p>
+                        {% static_placeholder "register-intro-anonymous" or %}register-intro-anymous{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>register-intro-introtext-authenticated</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/login_or_register.html</p>
+                    <p>
+                        {% static_placeholder "register-intro-introtext-authenticated" or %}register-intro-introtext-authenticated{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>register-success</h3>
+                    <p class="text-muted">used in attendee/templates/attendee/attendee_register_complete.html</p>
+                    <p>
+                        {% static_placeholder "register-success" or %}register-success{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>register-user-introtext</h3>
+                    <p class="text-muted">used in devday/templates/django_registration/registration_form.html</p>
+                    <p>
+                        {% static_placeholder "register-user-introtext" or %}register-user-introtext{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>session-reservation-intro-free-slots</h3>
+                    <p class="text-muted">used in talk/templates/talk/sessionreservation_create.html</p>
+                    <p>
+                        {% static_placeholder "session-reservation-intro-free-slots" or %}session-reservation-intro-free-slots{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>session-reservation-intro-fully-booked</h3>
+                    <p class="text-muted">used in talk/templates/talk/sessionreservation_create.html</p>
+                    <p>
+                        {% static_placeholder "session-reservation-intro-fully-booked" or %}session-reservation-intro-fully-booked{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>speaker-register</h3>
+                    <p class="text-muted">used in speaker/templates/speaker/speaker_form.html</p>
+                    <p>
+                        {% static_placeholder "speaker-register" or %}speaker-register{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>speaker_registered</h3>
+                    <p class="text-muted">used in talk/templates/talk/speaker_registered.html</p>
+                    <p>
+                        {% static_placeholder "speaker_registered" or %}speaker_registered{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>sponsoring-form-prefix-text</h3>
+                    <p class="text-muted">used in sponsoring/templates/sponsoring/sponsoring.html</p>
+                    <p>
+                        {% static_placeholder "sponsoring-form-prefix-text" or %}sponsoring-form-prefix-text{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>sponsoring-intro-text</h3>
+                    <p class="text-muted">used in sponsoring/templates/sponsoring/sponsoring.html</p>
+                    <p>
+                        {% static_placeholder "sponsoring-intro-text" or %}sponsoring-intro-text{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>sponsoring-request-thanks</h3>
+                    <p class="text-muted">used in sponsoring/templates/sponsoring/sponsoring_thanks.html</p>
+                    <p>
+                        {% static_placeholder "sponsoring-request-thanks" or %}sponsoring-request-thanks{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>sponsors</h3>
+                    <p class="text-muted">used in devday/templates/base.html</p>
+                    <p>
+                        {% static_placeholder "sponsors" or %}sponsors{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>submit-session-introtext</h3>
+                    <p class="text-muted">used in talk/templates/talk/prepare_submit_session.html</p>
+                    <p>
+                        {% static_placeholder "submit-session-introtext" or %}submit-session-introtext{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>talk-grid-introtext</h3>
+                    <p class="text-muted">used in talk/templates/talk/talk_grid.html</p>
+                    <p>
+                        {% static_placeholder "talk-grid-intro-text" or %}talk-grid-intro-text{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>talk_submission_closed</h3>
+                    <p class="text-muted">used in talk/templates/talk/submission_closed.html</p>
+                    <p>
+                        {% static_placeholder "talk_submission_closed" or %}talk_submission_closed{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>talk_submitted</h3>
+                    <p class="text-muted">used in talk/templates/talk/submitted.html</p>
+                    <p>
+                        {% static_placeholder "talk_submitted" or %}talk_submitted{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h3>talk-voting-intro-text</h3>
+                    <p class="text-muted">used in talk/templates/talk/talk_voting.html</p>
+                    <p>
+                        {% static_placeholder "talk-voting-intro-text" or %}talk-voting-intro-text{% endstatic_placeholder %}</p>
+                    <hr>
+                </div>
             </div>
         </div>
         <div class="container">

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-11 17:57+0000\n"
-"PO-Revision-Date: 2020-02-11 20:46+0100\n"
+"POT-Creation-Date: 2020-02-12 20:58+0000\n"
+"PO-Revision-Date: 2020-02-12 21:58+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -223,7 +223,7 @@ msgstr "Wie bist du auf den Dev Day aufmerksam geworden?"
 msgid "raffle"
 msgstr "Verlosung"
 
-#: attendee/models.py:172 attendee/templates/attendee/profile.html:87
+#: attendee/models.py:172
 msgid "Take part in the raffle"
 msgstr "An der Verlosung teilnehmen"
 
@@ -407,31 +407,27 @@ msgstr "Keine weiteren Teilnehmer für die Verlosung"
 
 #: attendee/templates/attendee/attendee_register_complete.html:3
 #, python-format
-msgid ""
-"Registration\n"
-"    for %(event)s completed"
+msgid "Registration for %(event)s completed"
 msgstr "Registrierung für die Veranstaltung %(event)s abgeschlossen"
 
 #: attendee/templates/attendee/attendee_register_complete.html:8
 msgid "Attendee registration completed"
 msgstr "Teilnehmeranmeldung abgeschlossen"
 
-#: attendee/templates/attendee/attendee_register_complete.html:9
+#: attendee/templates/attendee/attendee_register_complete.html:10
 #, python-format
 msgid ""
-"You have completed the registration\n"
-"                for the event &quot;%(event)s&quot;."
+"You have completed the registration for the event &quot;%(event)s&quot;."
 msgstr ""
 "Du hast deine Anmeldung für die Veranstaltung &quot;%(event)s&quot; "
 "abgeschlossen."
 
-#: attendee/templates/attendee/attendee_register_complete.html:13
+#: attendee/templates/attendee/attendee_register_complete.html:12
 #, python-format
 msgid ""
 "Visit\n"
-"                <a href=\"%(user_profile)s\">your user profile</a> to review "
-"your\n"
-"                registration."
+"                    <a href=\"%(user_profile)s\">your user profile</a> to "
+"review your registration."
 msgstr ""
 "Besuche dein <a href=\"%(user_profile)s\">Benutzerprofil</a>, um deine "
 "Anmeldung zu prüfen."
@@ -443,24 +439,22 @@ msgid ""
 "    for %(event)s successful"
 msgstr "Registrierung für die Veranstaltung %(event)s erfolgreich"
 
-#: attendee/templates/attendee/attendee_register_success.html:8
+#: attendee/templates/attendee/attendee_register_success.html:9
 msgid "Attendee registration successful"
 msgstr "Teilnehmeranmeldung erfolgreich"
 
-#: attendee/templates/attendee/attendee_register_success.html:9
+#: attendee/templates/attendee/attendee_register_success.html:11
 #, python-format
-msgid ""
-"You are now registered for the event\n"
-"                &quot;%(event)s&quot;."
+msgid "You are now registered for the event &quot;%(event)s&quot;."
 msgstr "Du bist jetzt für die Veranstaltung &quot;%(event)s&quot; angemeldet."
 
-#: attendee/templates/attendee/attendee_register_success.html:12
-#: attendee/templates/attendee/badge_data_edit.html:11
+#: attendee/templates/attendee/attendee_register_success.html:14
+#: attendee/templates/attendee/badge_data_edit.html:12
 msgid "Please fill your badge information."
 msgstr "Bitte fülle die Informationen für dein Badge aus."
 
-#: attendee/templates/attendee/attendee_register_success.html:19
-#: attendee/templates/attendee/badge_data_edit.html:18
+#: attendee/templates/attendee/attendee_register_success.html:21
+#: attendee/templates/attendee/badge_data_edit.html:19
 msgid "Badge preview"
 msgstr "Badge-Vorschau"
 
@@ -512,22 +506,21 @@ msgid ""
 msgstr ""
 "Du bist mit deiner Anmeldung für die Veranstaltung &quot;"
 "%(event_title)s&quot; fast fertig. Bitte klicke zur Bestätigung auf den "
-"Bestätigungslink, den wir an deine hinterlegte E-Mail-Adresse geschickt haben."
+"Bestätigungslink, den wir an deine hinterlegte E-Mail-Adresse geschickt "
+"haben."
 
 #: attendee/templates/attendee/badge_data_edit.html:3
 #, python-format
 msgid "Edit your badge data for %(event)s successful"
 msgstr "Badge-Datenbearbeitung für %(event)s erfolgreich"
 
-#: attendee/templates/attendee/badge_data_edit.html:7
+#: attendee/templates/attendee/badge_data_edit.html:8
 msgid "Edit your badge data"
 msgstr "Bearbeite deine Badge-Daten"
 
-#: attendee/templates/attendee/badge_data_edit.html:8
+#: attendee/templates/attendee/badge_data_edit.html:10
 #, python-format
-msgid ""
-"You are registered for the event\n"
-"                &quot;%(event)s&quot;."
+msgid "You are registered for the event &quot;%(event)s&quot;."
 msgstr "Du bist für die Veranstaltung &quot;%(event)s&quot; angemeldet."
 
 #: attendee/templates/attendee/checkin_qrcode_include.html:5
@@ -629,28 +622,37 @@ msgid_plural "from %(counter)s attendees"
 msgstr[0] "eines Teilnehmers"
 msgstr[1] "von %(counter)s Teilnehmern"
 
-#: attendee/templates/attendee/login_or_register.html:18
+#: attendee/templates/attendee/login_or_register.html:20
 #, python-format
 msgid "Register for %(current_event)s"
 msgstr "Für %(current_event)s anmelden"
 
-#: attendee/templates/attendee/login_or_register.html:22
-#: attendee/templates/attendee/login_or_register.html:42
+#: attendee/templates/attendee/login_or_register.html:24
+#: attendee/templates/attendee/login_or_register.html:45
 msgid "Register"
 msgstr "Anmelden"
 
-#: attendee/templates/attendee/login_or_register.html:26
+#: attendee/templates/attendee/login_or_register.html:29
 msgid "Did you attend Dev Day last year? Use your existing credentials!"
 msgstr ""
 "Du warst schon mal beim Dev Day? Dann nutze deine vorhandenen Anmeldedaten!"
 
-#: attendee/templates/attendee/login_or_register.html:28
+#: attendee/templates/attendee/login_or_register.html:31
 msgid "Forgotten password?"
 msgstr "Passwort vergessen?"
 
-#: attendee/templates/attendee/login_or_register.html:29
+#: attendee/templates/attendee/login_or_register.html:32
 msgid "Reset it!"
 msgstr "Zurücksetzen!"
+
+#: attendee/templates/attendee/login_or_register.html:39
+#, python-format
+msgid ""
+"You are already logged in, great! You may proceed to register for "
+"%(current_event)s directly."
+msgstr ""
+"Super, du bist schon eingeloggt! Damit kannst du dich direkt für die "
+"Teilnahme an der Veranstaltung %(current_event)s anmelden!"
 
 #: attendee/templates/attendee/profile.html:3
 msgid "Attendee profile"
@@ -667,14 +669,12 @@ msgstr "Nutzerprofil für %(username)s"
 msgid "Speaker"
 msgstr "SpeakerIn"
 
-#: attendee/templates/attendee/profile.html:16
+#: attendee/templates/attendee/profile.html:17
 #, python-format
 msgid ""
-"You are registered\n"
-"                    as speaker &quot;%(speaker_name)s&quot;. Visit your\n"
-"                    <a href=\"%(speaker_profile)s\">speaker details page</a> "
-"to update\n"
-"                    your speaker data."
+"You are registered as speaker &quot;%(speaker_name)s&quot;. Visit your\n"
+"                        <a href=\"%(speaker_profile)s\">speaker details "
+"page</a> to update your speaker data."
 msgstr ""
 "Du bist als SpeakerIn &quot;%(speaker_name)s&quot; angemeldet. Besuche deine "
 "<a href=\"%(speaker_profile)s\">SpeakerIndetailseite</a>, um deine "
@@ -721,18 +721,16 @@ msgstr "Du hast deine Reservierung für diese Session noch nicht bestätigt"
 msgid "Resend confirmation mail"
 msgstr "Bestätigungs-E-Mail erneut senden"
 
-#: attendee/templates/attendee/profile.html:131
+#: attendee/templates/attendee/profile.html:137
 msgid "Edit badge data"
 msgstr "Badge-Daten bearbeiten"
 
-#: attendee/templates/attendee/profile.html:134
+#: attendee/templates/attendee/profile.html:140
 msgid "Cancel Registration"
 msgstr "Anmeldung stornieren"
 
-#: attendee/templates/attendee/profile.html:146
-msgid ""
-"You are not currently registered to participate in any\n"
-"                    event."
+#: attendee/templates/attendee/profile.html:152
+msgid "You are not currently registered to participate in any event."
 msgstr "Du bist zur Zeit für keine Veranstaltung angemeldet."
 
 #: attendee/templates/event/eventattendee_checkin_summary.html:3

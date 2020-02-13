@@ -340,6 +340,7 @@ class AttendeeConfirmationView(LoginRequiredMixin, ActivationView):
         self.event = get_object_or_404(Event, slug=self.kwargs.get("event"))
         if not self.event.registration_open:
             return redirect("django_registration_disallowed")
+
         extra_context = {}
         try:
             self.activate(*args, **kwargs)
@@ -365,8 +366,11 @@ class AttendeeConfirmationView(LoginRequiredMixin, ActivationView):
                 code="user_mismatch",
                 params={"activation_key": activation_key, "user": self.request.user},
             )
-        attendee = Attendee.objects.create(event=self.event, user=user)
-        BadgeData.objects.create(attendee=attendee, title=attendee.derive_title())
+        attendee, created = Attendee.objects.get_or_create(event=self.event, user=user)
+        badge_data, created = BadgeData.objects.get_or_create(attendee=attendee)
+        if created:
+            badge_data.title = attendee.derive_title()
+            badge_data.save()
         return attendee
 
     def get_success_url(self, user=None):

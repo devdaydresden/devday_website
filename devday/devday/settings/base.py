@@ -242,7 +242,6 @@ MIDDLEWARE = [
     "cms.middleware.user.CurrentUserMiddleware",
     "cms.middleware.page.CurrentPageMiddleware",
     "cms.middleware.toolbar.ToolbarMiddleware",
-    "cms.middleware.language.LanguageCookieMiddleware",
 ]
 MIGRATION_MODULES = {}
 
@@ -267,6 +266,9 @@ SPONSORING_FROM_EMAIL = "info@devday.de"
 SPONSORING_RECIPIENTS = ["info@devday.de"]
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+CSRF_COOKIE_AGE = None
 
 SITE_ID = 1
 STATIC_ROOT = os.path.join(BASE_DIR, "static")

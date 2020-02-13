@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-12 20:58+0000\n"
-"PO-Revision-Date: 2020-02-12 21:58+0100\n"
+"POT-Creation-Date: 2020-02-13 12:42+0100\n"
+"PO-Revision-Date: 2020-02-13 12:43+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: attendee/admin.py:36
@@ -82,8 +82,8 @@ msgid "Register as attendee"
 msgstr "Als Teilnehmer anmelden"
 
 #: attendee/forms.py:220
-msgid "Login"
-msgstr "Login"
+msgid "Login and enroll now"
+msgstr "Jetzt einloggen und anmelden"
 
 #: attendee/forms.py:241 attendee/forms.py:294
 msgid "E-Mail"
@@ -628,9 +628,8 @@ msgid "Register for %(current_event)s"
 msgstr "Für %(current_event)s anmelden"
 
 #: attendee/templates/attendee/login_or_register.html:24
-#: attendee/templates/attendee/login_or_register.html:45
-msgid "Register"
-msgstr "Anmelden"
+msgid "Register now"
+msgstr "Jetzt registrieren"
 
 #: attendee/templates/attendee/login_or_register.html:29
 msgid "Did you attend Dev Day last year? Use your existing credentials!"
@@ -653,6 +652,10 @@ msgid ""
 msgstr ""
 "Super, du bist schon eingeloggt! Damit kannst du dich direkt für die "
 "Teilnahme an der Veranstaltung %(current_event)s anmelden!"
+
+#: attendee/templates/attendee/login_or_register.html:45
+msgid "Register"
+msgstr "Anmelden"
 
 #: attendee/templates/attendee/profile.html:3
 msgid "Attendee profile"
@@ -815,3 +818,6 @@ msgstr "Willkommen!"
 #: attendee/views.py:725
 msgid "Attendee <b>{}</b> was successfully checked in."
 msgstr "Teilnehmer <b>{}</b> wurde erfolgreich eingecheckt."
+
+#~ msgid "Login"
+#~ msgstr "Login"

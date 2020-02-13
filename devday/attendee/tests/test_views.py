@@ -603,6 +603,34 @@ class AttendeeConfirmationViewTest(TestCase):
         self.assertEqual(badge_data.contact, "")
         self.assertEqual(badge_data.topics, "")
 
+    def test_confirmation_twice(self):
+        self.client.login(username=self.user.email, password=self.password)
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, reverse("attendee_register_success", kwargs={"event": self.event.slug})
+        )
+        self.assertTrue(
+            Attendee.objects.filter(event=self.event, user=self.user).exists()
+        )
+        attendee = Attendee.objects.get(event=self.event, user=self.user)
+        badge_data = BadgeData.objects.get(attendee=attendee)
+        self.assertEqual(badge_data.title, attendee.derive_title())
+        badge_data.topics = "Foo, Bar, Misc & Stuff"
+        badge_data.contact = "@testandee"
+        badge_data.title = "Attendee"
+        badge_data.save()
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, reverse("attendee_register_success", kwargs={"event": self.event.slug})
+        )
+        attendee = Attendee.objects.get(event=self.event, user=self.user)
+        self.assertTrue(BadgeData.objects.filter(attendee=attendee))
+        # ensure that badge data is not changed
+        badge_data.refresh_from_db()
+        self.assertEqual(badge_data.topics, "Foo, Bar, Misc & Stuff")
+        self.assertEqual(badge_data.contact, "@testandee")
+        self.assertEqual(badge_data.title, "Attendee")
+
     def test_registration_closed(self):
         self.event.registration_open = False
         self.event.save()

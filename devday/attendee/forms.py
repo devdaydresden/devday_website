@@ -217,7 +217,7 @@ class RegistrationAuthenticationForm(AuthenticationForm):
                 Field("password", template="devday/form/field.html"),
             ),
             Div(
-                Submit("submit", _("Login"), css_class="btn-default"),
+                Submit("submit", _("Login and enroll now"), css_class="btn-default"),
                 css_class="text-center",
             ),
         )

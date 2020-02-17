@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core import mail
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -12,7 +13,7 @@ from attendee.models import Attendee
 from attendee.tests import attendee_testutils
 from devday.utils.devdata import DevData
 from devday.utils.html_mail import DevDayEmailMessage
-from devday.views import DevDayEmailRecipients
+from devday.views import DevDayEmailRecipients, get_recipient_list_from_file
 from event.models import Event
 from speaker.models import PublishedSpeaker, Speaker
 from speaker.tests import speaker_testutils
@@ -287,6 +288,17 @@ class TestLogin(TestCase):
         self.assertEqual(response.context["request"].user, user)
 
 
+class GetRecipientListFromFileTest(TestCase):
+    def test_get_recipient_list_from_file(self):
+        test_recipients = ["recipient_a@example.org", "recipient_b@example.org"]
+        upload_file = SimpleUploadedFile(
+            "recipients.txt", "\n".join(test_recipients).encode("UTF-8")
+        )
+
+        recipients = get_recipient_list_from_file(upload_file)
+        self.assertListEqual(recipients, test_recipients)
+
+
 class SendEmailViewTest(TestCase):
     def setUp(self):
         dev_data = DevData()
@@ -360,20 +372,29 @@ class SendEmailViewTest(TestCase):
         self.assertIn("attendee@example.com", msg.recipients())
         self.assertNotIn("nocontact@example.com", msg.recipients())
 
+    def test_send_email_to_list_of_uploaded_addresses(self):
+        mail.outbox = []
+        self.client.login(username=settings.ADMINUSER_EMAIL, password="admin")
 
-# class StaticPlaceholderViewTest(TestCase):
-#     def setUp(self):
-#         dev_data = DevData()
-#         dev_data.create_admin_user()
-#         self.url = reverse_lazy('edit_static_placeholders')
-#
-#     def test_anonymous_access(self):
-#         r = self.client.get(self.url)
-#         self.assertRedirects(r, f'/accounts/login/?next={self.url}',
-#                              status_code=302)
-#
-#     def test_open_view(self):
-#         self.client.login(username=settings.ADMINUSER_EMAIL,
-#                           password='admin')
-#         r = self.client.get(self.url)
-#         self.assertEqual(r.status_code, 200, 'get should return the form')
+        test_recipients = ["recipient_a@example.org", "recipient_b@example.org"]
+
+        upload_file = SimpleUploadedFile(
+            "recipients.txt", "\n".join(test_recipients).encode("UTF-8")
+        )
+
+        r = self.client.post(
+            self.url,
+            data={
+                "recipients": "users",
+                "subject": "a message to all users",
+                "body": "<p>a single sentence as the <b>message</b>.",
+                "sendreal": "",
+                "recipients_file": upload_file,
+            },
+        )
+
+        self.assertEqual(len(mail.outbox), 1, "should have one messages")
+        msg = mail.outbox[0]
+        self.assertListEqual(
+            msg.recipients(), test_recipients + [settings.DEFAULT_FROM_EMAIL]
+        )

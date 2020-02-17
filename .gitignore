@@ -29,11 +29,11 @@ node_modules/
 /devday/devday/static/treebeard/
 /docker/vault/config/ssl
 /prod-env*
+/dev-env*
 vault-cluster-*.json
 docker/app/vault.crt
 vault-*.json
 /devday/media/
-dev-env
 .python-version
 .env
 tags

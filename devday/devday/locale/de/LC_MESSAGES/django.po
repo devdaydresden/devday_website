@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-11 17:57+0000\n"
-"PO-Revision-Date: 2020-02-11 20:44+0100\n"
+"POT-Creation-Date: 2020-02-17 14:15+0000\n"
+"PO-Revision-Date: 2020-02-17 15:19+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: devday/cms_apps.py:8
@@ -115,35 +115,47 @@ msgstr "Feedback zu den Sessions"
 msgid "Unsupported image file format {}"
 msgstr "Nicht unterstütztes Bild-Dateiformat {}"
 
-#: devday/forms.py:35 devday/forms.py:63
+#: devday/forms.py:37 devday/forms.py:65
 msgid "Change my password"
 msgstr "Mein Passwort ändern"
 
-#: devday/forms.py:51
+#: devday/forms.py:53
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
-#: devday/forms.py:68
+#: devday/forms.py:76
+msgid "invalid email address {}"
+msgstr "ungültige E-Mailadresse {}"
+
+#: devday/forms.py:84
 msgid "Recipient Group"
 msgstr "Empfängergruppe"
 
-#: devday/forms.py:69 devday/forms.py:86
+#: devday/forms.py:86
+msgid "Recipient List"
+msgstr "Empfängerliste"
+
+#: devday/forms.py:88
+msgid "a list of recipient email addresses (one address on each line)"
+msgstr "Eine Liste von Empfänger-E-Mailadressen (eine Adresse pro Zeile)"
+
+#: devday/forms.py:90 devday/forms.py:108
 msgid "Email Subject"
 msgstr "Email-Betreff"
 
-#: devday/forms.py:82
+#: devday/forms.py:103
 msgid "Recipients for this email"
 msgstr "Empfänger für diese Email"
 
-#: devday/forms.py:89
+#: devday/forms.py:111
 msgid "Email Body"
 msgstr "Email-Text"
 
-#: devday/forms.py:93
+#: devday/forms.py:115
 msgid "Send Test Email To Myself"
 msgstr "Test-Email an mich selbst senden"
 
-#: devday/forms.py:96
+#: devday/forms.py:118
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
@@ -528,34 +540,38 @@ msgstr "Dev Day Teilnehmer {}"
 msgid "Dev Day <{}>"
 msgstr "Dev Day <{}>"
 
-#: devday/views.py:97
+#: devday/views.py:98
 msgid "past and present attendees"
 msgstr "Frühere und aktuelle Teilnehmer"
 
-#: devday/views.py:101
+#: devday/views.py:102
 msgid "past attendees"
 msgstr "Frühere Teilnehmer"
 
-#: devday/views.py:105
+#: devday/views.py:106
 msgid "current attendees"
 msgstr "Teilnehmer der aktuellen Veranstaltung"
 
-#: devday/views.py:109
+#: devday/views.py:110
 msgid "registered but inactive attendees"
 msgstr "registrierte aber inaktive Teilnehmer"
 
-#: devday/views.py:113
+#: devday/views.py:114
 msgid "candidate speakers"
 msgstr "SpeakerIn-Kandidaten"
 
-#: devday/views.py:117
+#: devday/views.py:118
 msgid "accepted speakers"
 msgstr "Angenommene SpeakerIn"
 
-#: devday/views.py:153
+#: devday/views.py:158
+msgid "email addresses from uploaded file"
+msgstr "E-Mailadressen aus hochgeladener Datei"
+
+#: devday/views.py:169
 msgid "Successfully sent message to {} {} recipients"
 msgstr "Email erfolgreich an {} {} versendet"
 
-#: devday/views.py:160
+#: devday/views.py:176
 msgid "Successfully sent message for {} to yourself"
 msgstr "Test-Email für {} erfolgreich an dich selbst gesendet"

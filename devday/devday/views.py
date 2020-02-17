@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -119,6 +120,13 @@ class DevDayEmailRecipients:
         }
 
 
+def get_recipient_list_from_file(uploaded_file):
+    addresses = []
+    for address in [line.strip().decode("ascii") for line in uploaded_file.readlines()]:
+        addresses.append(address)
+    return addresses
+
+
 class SendEmailView(StaffUserMixin, SuccessMessageMixin, FormView):
     template_name = "devday/sendemail.html"
     form_class = SendEmailForm
@@ -146,19 +154,28 @@ class SendEmailView(StaffUserMixin, SuccessMessageMixin, FormView):
     def form_valid(self, form):
         msg = create_html_mail(form.cleaned_data["subject"], form.cleaned_data["body"])
         recipients = form.cleaned_data["recipients"]
+        if form.cleaned_data["recipients_file"]:
+            label = _("email addresses from uploaded file")
+        else:
+            label = self.choices.get_choice_label(recipients)
         if form.cleaned_data.get("sendreal"):
-            msg.recipientlist = self.choices.get_email_addresses(recipients)
+            if form.cleaned_data["recipients_file"]:
+                msg.recipientlist = get_recipient_list_from_file(
+                    form.cleaned_data["recipients_file"]
+                )
+            else:
+                msg.recipientlist = self.choices.get_email_addresses(recipients)
             msg.recipientlist += [settings.DEFAULT_FROM_EMAIL]
             self.success_message = _(
                 "Successfully sent message to {} {} recipients"
-            ).format(len(msg.recipientlist), self.choices.get_choice_label(recipients))
+            ).format(len(msg.recipientlist), label)
             msg.send()
             return super().form_valid(form)
         else:
             msg.recipientlist = (self.request.user.email,)
             self.success_message = _(
                 "Successfully sent message for {} to yourself"
-            ).format(self.choices.get_choice_label(recipients))
+            ).format(label)
             messages.success(self.request, self.success_message)
             msg.send()
             return self.render_to_response(self.get_context_data(form=form))

@@ -2,6 +2,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, Layout, Submit
 from django import forms
 from django.contrib.auth import forms as auth_forms
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
@@ -64,8 +66,30 @@ class SetPasswordForm(auth_forms.SetPasswordForm):
         )
 
 
+def validate_email_address_file(address_file):
+    errors = []
+    for address in [line.strip().decode("ascii") for line in address_file.readlines()]:
+        try:
+            validate_email(address)
+        except ValidationError as e:
+            errors.append(
+                ValidationError(
+                    message=_("invalid email address {}").format(address), code=e.code
+                )
+            )
+    address_file.seek(0)
+    if errors:
+        raise ValidationError(errors)
+
+
 class SendEmailForm(forms.Form):
     recipients = forms.ChoiceField(label=_("Recipient Group"), choices=[])
+    recipients_file = forms.FileField(
+        label=_("Recipient List"),
+        required=False,
+        help_text=_("a list of recipient email addresses (one address on each line)"),
+        validators=[validate_email_address_file],
+    )
     subject = forms.CharField(label=_("Email Subject"), max_length=100)
     body = forms.CharField(label="Email Body", widget=CKEditorWidget())
 
@@ -80,6 +104,7 @@ class SendEmailForm(forms.Form):
         self.helper.layout = Layout(
             Div(
                 Field("recipients", help_text=_("Recipients for this email")),
+                Field("recipients_file"),
                 Field(
                     "subject",
                     autofocus="autofocus",

@@ -9,6 +9,7 @@ container='app'
 DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
 export DOCKER_REGISTRY="${DOCKER_REGISTRY:-devdaydresden}/"  # note trailing /
 
+
 docker_compose_up() {
   $DOCKER_COMPOSE up -d vault
   while ! http_proxy= curl --silent --fail http://localhost:8200/v1/sys/health; do
@@ -37,6 +38,15 @@ docker_compose_up() {
   echo "VAULT_TOKEN=${APP_TOKEN}" > dev-env
   $DOCKER_COMPOSE up -d
 }
+
+setup_postgres_root_password() {
+  # define initial PostgreSQL root password
+  [ -f "dev-env-db" ] || touch dev-env-db
+
+  grep -q POSTGRES_PASSWORD dev-env-db \
+    || echo "POSTGRES_PASSWORD=$(openssl rand -base64 30)" >dev-env-db
+}
+
 
 usage() {
     cat >&2 <<EOD
@@ -101,6 +111,7 @@ case "$cmd" in
     ;;
   build)
     echo "*** Building Docker images"
+    setup_postgres_root_password
     $DOCKER_COMPOSE build --pull $@
     ;;
   compose)
@@ -129,6 +140,7 @@ case "$cmd" in
     ;;
   devdata)
     echo "    Starting containers"
+    setup_postgres_root_password
     docker_compose_up
     echo "    Compiling translations"
     $DOCKER_COMPOSE exec "${container}" python3 manage.py compilemessages

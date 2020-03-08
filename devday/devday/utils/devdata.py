@@ -518,6 +518,19 @@ wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p
                 if p < 0.10:
                     self.create_talk(speaker, formats, event)
 
+    def create_talk_media(self, talks=Talk.objects.all()):
+        for talk in list(talks):
+            talk.media = TalkMedia()
+            talk.media.talk = talk
+
+            if self.rng.randint(0, 2) > 0:
+                talk.media.youtube = "E5VN-MI1mZA"
+            if self.rng.randint(0, 2) > 0:
+                talk.media.slideshare = "zEvpGJkZqrLIGa"
+            if self.rng.randint(0, 2) > 0:
+                talk.media.codelink = "https://github.com/devdaydresden/devday_website"
+            talk.media.save()
+
     def vote_for_talk(self, events=None):
         if events is None:  # pragma: no branch
             events = (Event.objects.current_event(),)
@@ -682,6 +695,7 @@ wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p
         )
         # TODO: create published speakers for published talks
         self.create_objects("talks", Talk, 1, self.create_talks)
+        self.create_objects("talk media", TalkMedia, 1, self.create_talk_media)
         # TODO: vote on unpublished talks only
         self.create_objects("votes", Vote, 1, self.vote_for_talk)
         self.create_objects("tracks", Track, 1, self.create_tracks)

@@ -630,15 +630,6 @@ wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p
             for time_slot in session_slots:
                 for room in rooms:
                     talk = talks.pop()
-                    talk.media = TalkMedia()
-                    talk.media.talk = talk
-                    if self.rng.randint(0, 2) > 0:
-                        talk.media.youtube = "exampleid"
-                    if self.rng.randint(0, 2) > 0:
-                        talk.media.slideshare = "exampleid"
-                    if self.rng.randint(0, 2) > 0:
-                        talk.media.codelink = "https://git.example.com/"
-                    talk.media.save()
                     TalkSlot.objects.create(time=time_slot, room=room, talk=talk)
                     talk.publish(self.rng.choice(tracks))
         return details

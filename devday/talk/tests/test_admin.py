@@ -100,7 +100,7 @@ class AdminTest(TestCase):
         self.assertRedirects(response, reverse("admin:talk_talk_changelist"))
         talk = Talk.objects.get(pk=talk.pk)
         self.assertIsNone(talk.track_id)
-        self.assertIsNone(talk.published_speaker)
+        self.assertFalse(talk.published_speakers.exists())
 
         response = self.client.post(
             reverse("admin:talk_talk_changelist"),
@@ -114,7 +114,7 @@ class AdminTest(TestCase):
         self.assertRedirects(response, reverse("admin:talk_talk_changelist"))
         talk = Talk.objects.get(pk=talk.pk)
         self.assertEqual(talk.track, tracks[0])
-        self.assertIsNotNone(talk.published_speaker)
+        self.assertTrue(talk.published_speakers.exists())
 
     def test_talk_admin_process_waiting_list(self):
         event = Event.objects.current_event()

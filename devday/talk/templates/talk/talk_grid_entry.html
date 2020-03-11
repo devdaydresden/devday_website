@@ -5,6 +5,6 @@
     {% endif %}
     <span class="title"><a
             href="{% url 'talk_details' event=talk.event.slug slug=talk.slug %}">{{ talk.title }}</a></span>
-    <span class="speaker"><a
-            href="{% url 'public_speaker_profile' event=talk.published_speaker.event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a></span>
+    <span class="speaker">{% for speaker in talk.published_speakers.all %}<a
+            href="{% url 'public_speaker_profile' event=talk.event.slug slug=speaker.slug %}">{{ talk.speaker.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
 </span>

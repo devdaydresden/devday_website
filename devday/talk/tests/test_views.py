@@ -1001,7 +1001,7 @@ class TestTalkListView(TestCase):
 
     def test_reservations_in_grid(self):
         talk = Talk.objects.filter(
-            event=self.event, published_speaker__isnull=False
+            event=self.event, published_speakers__isnull=False
         ).first()
         talk.spots = 10
         talk.save()

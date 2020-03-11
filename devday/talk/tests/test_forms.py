@@ -45,8 +45,12 @@ class TalkFormTest(TestCase):
 
     def test_widgets(self):
         form = TalkForm()
+        self.assertIsInstance(form.fields["title"].widget, forms.TextInput)
         self.assertIsInstance(form.fields["abstract"].widget, forms.Textarea)
         self.assertIsInstance(form.fields["remarks"].widget, forms.Textarea)
+        self.assertIsInstance(
+            form.fields["talkformat"].widget, forms.CheckboxSelectMultiple
+        )
 
 
 class CreateTalkFormTest(TestCase):
@@ -80,7 +84,7 @@ class CreateTalkFormTest(TestCase):
         event = Event.objects.create(
             title="Test event", slug="test_event", start_time=now(), end_time=now()
         )
-        event.talkform = talk_format
+        event.talkformat.add(talk_format)
         speaker, _, password = speaker_testutils.create_test_speaker()
         form = CreateTalkForm(
             draft_speaker=speaker,
@@ -97,6 +101,26 @@ class CreateTalkFormTest(TestCase):
         self.assertIsInstance(talk, Talk)
         self.assertEqual(talk.draft_speakers.count(), 1)
         self.assertEqual(talk.draft_speakers.first(), speaker)
+
+    def test_save_without_commit(self):
+        talk_format = TalkFormat.objects.create(name="A Talk", duration=90)
+        event = event_testutils.create_test_event()
+        event.talkformat.add(talk_format)
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+        form = CreateTalkForm(
+            draft_speaker=speaker,
+            initial={"event": event},
+            data={
+                "event": event.id,
+                "title": "Test",
+                "abstract": "Test abstract",
+                "remarks": "Test remarks",
+                "talkformat": [talk_format.id],
+            },
+        )
+        talk = form.save(commit=False)
+        self.assertIsInstance(talk, Talk)
+        self.assertEqual(TalkDraftSpeaker.objects.filter(talk=talk).count(), 0)
 
 
 class EditTalkFormTest(TestCase):

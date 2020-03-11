@@ -237,6 +237,182 @@ class TalkTest(TestCase):
         self.assertTrue(talk.is_feedback_allowed)
 
 
+class TalkDraftSpeakerRemovalPreventionTest(TestCase):
+    def setUp(self) -> None:
+        self.speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.event = create_test_event()
+        self.talk = Talk.objects.create(
+            draft_speaker=self.speaker,
+            event=self.event,
+            title="An important message",
+            abstract="A talk",
+            remarks="",
+        )
+        self.assertTrue(TalkDraftSpeaker.objects.filter(talk_id=self.talk.id).exists())
+
+    def test_delete_talk(self):
+        talk_id = self.talk.id
+        self.talk.delete()
+        self.assertFalse(TalkDraftSpeaker.objects.filter(talk_id=talk_id).exists())
+
+    def test_delete_speaker(self):
+        talk_id = self.talk.id
+        speaker_id = self.speaker.id
+        self.speaker.delete()
+        self.assertFalse(Talk.objects.filter(id=talk_id).exists())
+        self.assertFalse(TalkDraftSpeaker.objects.filter(talk_id=talk_id).exists())
+        self.assertFalse(
+            TalkDraftSpeaker.objects.filter(draft_speaker_id=speaker_id).exists()
+        )
+
+    def test_remove_of_last_draft_speaker(self):
+        with self.assertRaises(ValidationError) as e:
+            self.talk.draft_speakers.remove(self.speaker)
+        self.assertEqual(e.exception.code, "cannot_delete_last_speaker_from_talk")
+
+    def test_remove_draft_speaker_if_second_draft_speaker_exists(self):
+        talk_id = self.talk.id
+        second_speaker, _, _ = speaker_testutils.create_test_speaker(
+            "test2@example.org", "Test Speaker 2"
+        )
+        TalkDraftSpeaker.objects.create(
+            talk=self.talk, draft_speaker=second_speaker, order=2
+        )
+        self.assertEqual(self.talk.draft_speakers.count(), 2)
+        self.talk.draft_speakers.remove(self.speaker)
+        self.assertTrue(Talk.objects.filter(id=talk_id).exists())
+        self.assertEqual(self.talk.draft_speakers.count(), 1)
+
+    def test_remove_draft_speaker_if_published_speaker_exists(self):
+        talk_id = self.talk.id
+        published_speaker = PublishedSpeaker.objects.copy_from_speaker(
+            self.speaker, self.event
+        )
+        TalkPublishedSpeaker.objects.create(
+            talk=self.talk, published_speaker=published_speaker, order=1
+        )
+        self.assertEqual(self.talk.draft_speakers.count(), 1)
+        self.talk.draft_speakers.remove(self.speaker)
+        self.assertTrue(Talk.objects.filter(id=talk_id).exists())
+        self.assertFalse(self.talk.draft_speakers.count(), 0)
+        self.assertEqual(self.talk.published_speakers.count(), 1)
+
+    def test_remove_talk_from_draft_speaker(self):
+        talk_id = self.talk.id
+        self.speaker.talk_set.remove(self.talk)
+        self.assertFalse(Talk.objects.filter(id=talk_id).exists())
+        self.assertFalse(TalkDraftSpeaker.objects.filter(talk_id=talk_id).exists())
+
+    def test_clear_of_last_draft_speaker(self):
+        with self.assertRaises(ValidationError) as e:
+            self.talk.draft_speakers.clear()
+        self.assertEqual(e.exception.code, "cannot_delete_last_speaker_from_talk")
+
+    def test_clear_if_published_speaker_exists(self):
+        talk_id = self.talk.id
+        published_speaker = PublishedSpeaker.objects.copy_from_speaker(
+            self.speaker, self.event
+        )
+        TalkPublishedSpeaker.objects.create(
+            talk=self.talk, published_speaker=published_speaker, order=1
+        )
+        self.assertEqual(self.talk.draft_speakers.count(), 1)
+        self.talk.draft_speakers.clear()
+        self.assertTrue(Talk.objects.filter(id=talk_id).exists())
+        self.assertFalse(self.talk.draft_speakers.count(), 0)
+        self.assertEqual(self.talk.published_speakers.count(), 1)
+
+
+class TalkPublishedSpeakerRemovalPreventionTest(TestCase):
+    def setUp(self) -> None:
+        self.speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.event = create_test_event()
+        self.talk = Talk.objects.create(
+            draft_speaker=self.speaker,
+            event=self.event,
+            title="An important message",
+            abstract="A talk",
+            remarks="",
+        )
+        self.published_speaker = PublishedSpeaker.objects.copy_from_speaker(
+            self.speaker, self.event
+        )
+        TalkPublishedSpeaker.objects.create(
+            talk=self.talk, published_speaker=self.published_speaker, order=1
+        )
+        self.assertTrue(TalkDraftSpeaker.objects.filter(talk_id=self.talk.id).exists())
+        self.assertTrue(
+            TalkPublishedSpeaker.objects.filter(talk_id=self.talk.id).exists()
+        )
+
+    def test_delete_talk(self):
+        talk_id = self.talk.id
+        self.talk.delete()
+        self.assertFalse(TalkDraftSpeaker.objects.filter(talk_id=talk_id).exists())
+        self.assertFalse(TalkPublishedSpeaker.objects.filter(talk_id=talk_id).exists())
+
+    def test_remove_published_speaker_with_existing_draft_speaker(self):
+        talk_id = self.talk.id
+        published_speaker_id = self.published_speaker.id
+        self.talk.published_speakers.remove(self.published_speaker)
+        self.assertTrue(Talk.objects.filter(id=talk_id).exists())
+        self.assertFalse(
+            TalkPublishedSpeaker.objects.filter(
+                published_speaker_id=published_speaker_id
+            ).exists()
+        )
+
+    def test_remove_talk_from_published_speaker(self):
+        talk_id = self.talk.id
+        self.published_speaker.talk_set.remove(self.talk)
+        self.assertTrue(Talk.objects.filter(id=talk_id).exists())
+        self.assertFalse(TalkPublishedSpeaker.objects.filter(talk_id=talk_id).exists())
+
+    def test_remove_last_published_speaker_with_no_draft_speaker(self):
+        self.talk.draft_speakers.clear()
+        with self.assertRaises(ValidationError) as e:
+            self.talk.published_speakers.remove(self.published_speaker)
+        self.assertEquals(e.exception.code, "cannot_delete_last_speaker_from_talk")
+
+    def test_remove_published_speaker_with_second_speaker(self):
+        self.talk.draft_speakers.clear()
+        speaker2, _, _ = speaker_testutils.create_test_speaker(
+            "speaker2@example.org", "Test speaker 2"
+        )
+        published_speaker2 = PublishedSpeaker.objects.copy_from_speaker(
+            speaker2, self.event
+        )
+        TalkPublishedSpeaker.objects.create(
+            talk=self.talk, published_speaker=published_speaker2, order=2
+        )
+        talk_id = self.talk.id
+        published_speaker_id = self.published_speaker.id
+        self.talk.published_speakers.remove(self.published_speaker)
+        self.assertTrue(Talk.objects.filter(id=talk_id).exists())
+        self.assertFalse(
+            TalkPublishedSpeaker.objects.filter(
+                published_speaker_id=published_speaker_id
+            ).exists()
+        )
+
+    def test_clear_published_speakers_with_draft_speaker(self):
+        talk_id = self.talk.id
+        published_speaker_id = self.published_speaker.id
+        self.talk.published_speakers.clear()
+        self.assertTrue(Talk.objects.filter(id=talk_id).exists())
+        self.assertFalse(
+            TalkPublishedSpeaker.objects.filter(
+                published_speaker_id=published_speaker_id
+            ).exists()
+        )
+
+    def test_clear_published_speakers_with_no_draft_speaker(self):
+        self.talk.draft_speakers.clear()
+        with self.assertRaises(ValidationError) as e:
+            self.talk.published_speakers.clear()
+        self.assertEquals(e.exception.code, "cannot_delete_last_speaker_from_talk")
+
+
 class VoteTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(email="speaker@example.org")

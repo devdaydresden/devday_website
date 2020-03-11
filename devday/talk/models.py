@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core import signing
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import m2m_changed, pre_delete, post_delete
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
@@ -18,7 +18,7 @@ from event.models import Event
 from ordered_model.models import OrderedModel
 from psqlextra.manager import PostgresManager
 from speaker import models as speaker_models
-from speaker.models import PublishedSpeaker
+from speaker.models import PublishedSpeaker, Speaker
 
 log = logging.getLogger(__name__)
 
@@ -118,7 +118,7 @@ class Talk(models.Model):
         super(Talk, self).save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-        if self.published_speakers.exists():
+        if TalkPublishedSpeaker.objects.filter(talk=self).exists():
             return "{} - {}".format(
                 ", ".join(
                     [
@@ -185,7 +185,14 @@ class TalkPublishedSpeaker(OrderedModel, TimeStampedModel):
         verbose_name_plural = _("Talk published speakers")
 
 
-@receiver(m2m_changed, sender=TalkDraftSpeaker)
+@receiver(post_delete, sender=TalkDraftSpeaker)
+def remove_talks_without_speakers(sender, instance, **kwargs):
+    talk = instance.talk
+    if not talk.published_speakers.exists() and not talk.draft_speakers.exists():
+        talk.delete()
+
+
+@receiver(m2m_changed, sender=Talk.draft_speakers.through)
 def prevent_removal_of_last_draft_speaker(sender, instance, action, **kwargs):
     if kwargs["reverse"]:
         return

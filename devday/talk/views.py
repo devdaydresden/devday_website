@@ -228,7 +228,7 @@ class CommitteeTalkOverview(CommitteeRequiredMixin, ListView):
     template_name_suffix = "_committee_overview"
 
     ORDER_MAP = {
-        "speaker": "draft_speaker__name",
+        "speaker": "draft_speakers__name",
         "score": "average_score",
         "score_sum": "vote_sum",
     }
@@ -602,9 +602,10 @@ class InfoBeamerXMLView(BaseListView):
                 ElementTree.SubElement(event_xml, "abstract").text = talk.abstract
                 ElementTree.SubElement(event_xml, "language").text = "de"
                 persons_xml = ElementTree.SubElement(event_xml, "persons")
-                ElementTree.SubElement(
-                    persons_xml, "person", id=str(talk.published_speaker_id)
-                ).text = talk.published_speaker.name
+                for speaker in talk.published_speakers.all():
+                    ElementTree.SubElement(
+                        persons_xml, "person", id=str(speaker.slug)
+                    ).text = speaker.name
 
         response_kwargs.setdefault("content_type", "application/xml")
         return HttpResponse(

@@ -65,8 +65,9 @@ class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
                 "events_open_for_talk_submission": Event.objects.filter(
                     submission_open=True
                 ).order_by("start_time"),
-                "sessions": Talk.objects.filter(draft_speaker=context["speaker"])
-                .select_related("event", "draft_speaker", "published_speaker")
+                "sessions": Talk.objects.filter(draft_speakers=context["speaker"])
+                .select_related("event")
+                .prefetch_related("draft_speaker", "published_speaker")
                 .order_by("-event__title", "title"),
                 "speaker_image_height": settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT,
                 "speaker_image_width": settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH,
@@ -185,8 +186,7 @@ class PublishedSpeakerDetailView(DetailView):
         def talk_event_sort_key(talk):
             return talk.event.start_time
 
-        context["talks"] = sorted(
-            set(talks), key=talk_event_sort_key, reverse=True)
+        context["talks"] = sorted(set(talks), key=talk_event_sort_key, reverse=True)
         return context
 
 

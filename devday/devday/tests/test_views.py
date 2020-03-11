@@ -18,7 +18,7 @@ from event.models import Event
 from speaker.models import PublishedSpeaker, Speaker
 from speaker.tests import speaker_testutils
 from talk import COMMITTEE_GROUP
-from talk.models import Talk
+from talk.models import Talk, TalkPublishedSpeaker
 
 User = get_user_model()
 
@@ -167,13 +167,17 @@ class DevDayEmailRecipientsTest(TestCase):
         published_speaker = PublishedSpeaker.objects.copy_from_speaker(
             speaker, Event.objects.current_event()
         )
-        Talk.objects.create(
-            published_speaker=published_speaker,
+        talk = Talk.objects.create(
+            draft_speaker=speaker,
             title="Test",
             abstract="Test abstract",
             remarks="Test remarks",
             event=Event.objects.current_event(),
         )
+        TalkPublishedSpeaker.objects.create(
+            talk=talk, published_speaker=published_speaker, order=1
+        )
+        talk.draft_speakers.clear()
 
     def test_form_choices(self):
         self.assertEqual(

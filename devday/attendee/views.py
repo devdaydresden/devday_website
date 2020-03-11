@@ -190,9 +190,7 @@ class AttendeeRegistrationView(RegistrationView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(
-            {"auth_level": self.auth_level, "event": self.event,}
-        )
+        context.update({"auth_level": self.auth_level, "event": self.event})
         return context
 
     def get_form_class(self, request=None):
@@ -503,7 +501,7 @@ class InactiveAttendeeView(StaffUserMixin, BaseListView):
             writer.writerow(("Email", "Date joined"))
             writer.writerows(
                 [
-                    (u.email, u.date_joined.strftime("%Y-%m-%d %H:%M:%S"),)
+                    (u.email, u.date_joined.strftime("%Y-%m-%d %H:%M:%S"))
                     for u in context.get("object_list", [])
                 ]
             )
@@ -594,7 +592,7 @@ class DevDayUserDeleteView(LoginRequiredMixin, DeleteView):
 
     def _get_unpublished_talks(self):
         return Talk.objects.filter(
-            published_speaker__isnull=True, draft_speaker__user=self.request.user
+            published_speakers__isnull=True, draft_speakers__user=self.request.user
         )
 
     def get_context_data(self, **kwargs):

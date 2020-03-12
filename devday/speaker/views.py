@@ -67,7 +67,7 @@ class UserSpeakerProfileView(LoginRequiredMixin, UpdateView):
                 ).order_by("start_time"),
                 "sessions": Talk.objects.filter(draft_speakers=context["speaker"])
                 .select_related("event")
-                .prefetch_related("draft_speaker", "published_speaker")
+                .prefetch_related("draft_speakers", "published_speakers")
                 .order_by("-event__title", "title"),
                 "speaker_image_height": settings.TALK_PUBLIC_SPEAKER_IMAGE_HEIGHT,
                 "speaker_image_width": settings.TALK_PUBLIC_SPEAKER_IMAGE_WIDTH,

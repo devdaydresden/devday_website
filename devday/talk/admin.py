@@ -1,4 +1,3 @@
-import logging
 from functools import update_wrapper
 
 from django.conf.urls import url
@@ -26,13 +25,13 @@ from .models import (
     Room,
     SessionReservation,
     Talk,
+    TalkDraftSpeaker,
     TalkFormat,
     TalkMedia,
+    TalkPublishedSpeaker,
     TalkSlot,
     TimeSlot,
     Track,
-    TalkPublishedSpeaker,
-    TalkDraftSpeaker,
 )
 
 

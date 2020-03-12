@@ -260,9 +260,11 @@ class TestTalkDetails(TestCase):
 
     def test_get_context_data(self):
         response = self.client.get(self.url)
-        self.assertIn("speaker", response.context)
+        self.assertIn("speakers", response.context)
         self.assertIn("event", response.context)
-        self.assertEqual(response.context["speaker"], self.talk.published_speaker)
+        self.assertListEqual(
+            list(self.talk.published_speakers.all()), list(response.context["speakers"])
+        )
         self.assertEqual(response.context["event"], self.event)
         self.assertNotIn("reservation", response.context)
 
@@ -386,10 +388,10 @@ class TestCommitteeTalkDetails(TestCase):
 
 class TestSubmitTalkComment(TestCase):
     def setUp(self):
-        speaker, _, _ = speaker_testutils.create_test_speaker()
+        self.speaker, _, _ = speaker_testutils.create_test_speaker()
         event = event_testutils.create_test_event()
         self.talk = Talk.objects.create(
-            draft_speaker=speaker,
+            draft_speaker=self.speaker,
             event=event,
             title="I have something important to say",
         )
@@ -469,7 +471,7 @@ class TestSubmitTalkComment(TestCase):
         self.assertEqual(comments[0].commenter, user)
         self.assertEqual(len(mail.outbox), 1)
         speaker_mail = mail.outbox[0]
-        self.assertIn(self.talk.draft_speaker.user.email, speaker_mail.recipients())
+        self.assertIn(self.speaker.user.email, speaker_mail.recipients())
         self.assertIn(self.talk.title, speaker_mail.subject)
         self.assertIn(self.talk.title, speaker_mail.body)
 
@@ -999,7 +1001,7 @@ class TestTalkListView(TestCase):
 
     def test_reservations_in_grid(self):
         talk = Talk.objects.filter(
-            event=self.event, published_speaker__isnull=False
+            event=self.event, published_speakers__isnull=False
         ).first()
         talk.spots = 10
         talk.save()
@@ -2132,50 +2134,55 @@ class TestTalkFeedbackSummaryView(TestCase):
             ),
         ]
         track = Track.objects.create(name="Test Track")
+        dummy_speaker, _, _ = speaker_testutils.create_test_speaker()
         self.talks = [
             Talk.objects.create(
-                published_speaker=self.speakers[0],
+                draft_speaker=dummy_speaker,
                 title="Talk topic 1",
                 abstract="Talk abstract 1",
                 event=self.event,
                 track=track,
             ),
             Talk.objects.create(
-                published_speaker=self.speakers[1],
+                draft_speaker=dummy_speaker,
                 title="Talk topic 2",
                 abstract="Talk abstract 2",
                 event=self.event,
                 track=track,
             ),
             Talk.objects.create(
-                published_speaker=self.speakers[2],
+                draft_speaker=dummy_speaker,
                 title="Talk topic 3",
                 abstract="Talk abstract 3",
                 event=self.event,
                 track=track,
             ),
             Talk.objects.create(
-                published_speaker=self.speakers[3],
+                draft_speaker=dummy_speaker,
                 title="Talk topic 4",
                 abstract="Talk abstract 4",
                 event=self.event,
                 track=track,
             ),
             Talk.objects.create(
-                published_speaker=self.speakers[4],
+                draft_speaker=dummy_speaker,
                 title="Talk topic 5",
                 abstract="Talk abstract 5",
                 event=self.event,
                 track=track,
             ),
             Talk.objects.create(
-                published_speaker=self.speakers[5],
+                draft_speaker=dummy_speaker,
                 title="Talk topic 6",
                 abstract="Talk abstract 6",
                 event=self.event,
                 track=track,
             ),
         ]
+        for i in range(len(self.talks)):
+            self.talks[i].published_speakers.add(self.speakers[i])
+            self.talks[i].draft_speakers.clear()
+            self.talks[i].save()
 
     def test_needs_staff(self):
         # test anonymous get

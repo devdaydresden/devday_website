@@ -107,12 +107,12 @@ case "$cmd" in
     ;;
   buildbase)
     echo "*** Building Docker base image"
-    docker build --pull -t devdaydresden/devday_website_python_base:latest -f python_base.Dockerfile .
+    docker build --pull -t devdaydresden/devday_website_python_base:latest -f python_base.Dockerfile $@ .
     ;;
   build)
     echo "*** Building Docker images"
     setup_postgres_root_password
-    $DOCKER_COMPOSE build --pull $@
+    $DOCKER_COMPOSE build $@
     ;;
   compose)
     $DOCKER_COMPOSE $@

@@ -94,7 +94,9 @@
                     <ul>
                         {% for talk in unscheduled %}
                             <li class="track-{{ talk.track.name|slugify }}">
-                                <a href="{% url 'public_speaker_profile' event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a>
+                                {% for speaker in talk.published_speakers.all %}
+                                    <a href="{% url 'public_speaker_profile' event=event.slug slug=speaker.slug %}">{{ speaker.name }}</a>{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
                                 -
                                 <a href="{% url 'talk_details' event=event.slug slug=talk.slug %}">{{ talk.title }}</a>
                                 {% if talk.spots %}

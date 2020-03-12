@@ -15,16 +15,16 @@
               </div>
               <div id="collapseOne{{ forloop.counter }}" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  <h4>
-                    <a href="{% url "public_speaker_profile" event=event.slug slug=talk.published_speaker.slug %}">{{ talk.published_speaker.name }}</a>
-                  </h4>
-                  <p>{{ talk.published_speaker.short_biography|striptags|urlize|linebreaksbr }}</p>
+                  {% for speaker in talk.published_speakers.all %}
+                      <h4><a href="{% url "public_speaker_profile" event=event.slug slug=speaker.slug %}">{{ speaker.name }}</a></h4>
+                      <p>{{ speaker.short_biography|striptags|urlize|linebreaksbr }}</p>
+                  {% endfor %}
                   <h4>Abstract</h4>
                   <p>{{ talk.abstract|striptags|urlize|linebreaksbr }}</p>
                   {% if talk.media.youtube %}
                     <div class="col-sm-6 col-xs-12">
                       <iframe width="560" height="315"
-                              src="https://www.youtube.com/embed/{{ talk.media.youtube }}"
+                              src="//www.youtube-nocookie.com/embed/{{ talk.media.youtube }}"
                               frameborder="0" allowfullscreen></iframe>
                     </div>
                   {% endif %}

@@ -42,6 +42,7 @@ from talk.models import (
     TimeSlot,
     Track,
     Vote,
+    TalkDraftSpeaker,
 )
 from twitterfeed.models import Tweet, TwitterProfileImage
 
@@ -486,14 +487,13 @@ wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p
         return self.get_speakers()
 
     def create_talk(self, speaker, formats, event):
-        talk = Talk(
+        talk = Talk.objects.create(
             draft_speaker=speaker,
             title=Words.sentence(self.rng).title(),
             abstract=lorem.paragraph(),
             remarks=lorem.paragraph(),
             event=event,
         )
-        talk.save()
         talk.talkformat.add(
             *self.rng.sample(formats, self.rng.randint(1, len(formats)))
         )

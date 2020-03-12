@@ -3,6 +3,7 @@ MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
 LABEL vendor="T-Systems Multimedia Solutions GmbH"
 
 ARG http_proxy
+ARG https_proxy
 ARG no_proxy
 
 RUN apk --no-cache add \

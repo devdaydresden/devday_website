@@ -5,8 +5,9 @@ from django.conf import settings
 from django.core import signing
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import m2m_changed, pre_delete, post_delete
+from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -14,24 +15,14 @@ from model_utils.models import TimeStampedModel
 
 from attendee.models import Attendee
 from event.models import Event
+from ordered_model.models import OrderedModel
 from psqlextra.manager import PostgresManager
 from speaker import models as speaker_models
-from speaker.models import PublishedSpeaker
-
-T_SHIRT_SIZES = (
-    (1, _("XS")),
-    (2, _("S")),
-    (3, _("M")),
-    (4, _("L")),
-    (5, _("XL")),
-    (6, _("XXL")),
-    (7, _("XXXL")),
-)
+from speaker.models import PublishedSpeaker, Speaker
 
 log = logging.getLogger(__name__)
 
 
-@python_2_unicode_compatible
 class Track(TimeStampedModel):
     name = models.CharField(max_length=100, blank=False)
     event = models.ForeignKey(
@@ -57,21 +48,28 @@ class ReservableTalkManager(models.Manager):
         )
 
 
-@python_2_unicode_compatible
+class TalkManager(models.Manager):
+    def create(self, **kwargs):
+        draft_speaker = kwargs.pop("draft_speaker")
+        talk = super().create(**kwargs)
+        TalkDraftSpeaker.objects.create(talk=talk, draft_speaker=draft_speaker, order=1)
+        return talk
+
+
 class Talk(models.Model):
-    draft_speaker = models.ForeignKey(
+    draft_speakers = models.ManyToManyField(
         speaker_models.Speaker,
         verbose_name=_("Speaker (draft)"),
-        null=True,
-        on_delete=models.SET_NULL,
         blank=True,
+        through="TalkDraftSpeaker",
+        through_fields=("talk", "draft_speaker"),
     )
-    published_speaker = models.ForeignKey(
+    published_speakers = models.ManyToManyField(
         speaker_models.PublishedSpeaker,
         verbose_name=_("Speaker (public)"),
-        null=True,
         blank=True,
-        on_delete=models.CASCADE,
+        through="TalkPublishedSpeaker",
+        through_fields=("talk", "published_speaker"),
     )
     submission_timestamp = models.DateTimeField(auto_now_add=True)
     title = models.CharField(verbose_name=_("Session title"), max_length=255)
@@ -93,7 +91,7 @@ class Talk(models.Model):
         help_text=_("Maximum number of attendees for this talk"),
     )
 
-    objects = models.Manager()
+    objects = TalkManager()
     reservable = ReservableTalkManager()
 
     class Meta:
@@ -101,16 +99,15 @@ class Talk(models.Model):
         verbose_name_plural = _("Sessions")
         ordering = ["title"]
 
-    def clean(self):
-        super().clean()
-        if not self.draft_speaker and not self.published_speaker:
-            raise ValidationError(
-                _("A draft speaker or a published speaker is required.")
-            )
-
     def publish(self, track):
         self.track = track
-        self.published_speaker = self.draft_speaker.publish(self.event)
+        for draft_speaker in TalkDraftSpeaker.objects.filter(talk=self):
+            published_speaker = draft_speaker.draft_speaker.publish(self.event)
+            TalkPublishedSpeaker.objects.update_or_create(
+                talk=self,
+                published_speaker=published_speaker,
+                order=draft_speaker.order,
+            )
         self.save()
 
     def save(
@@ -121,10 +118,26 @@ class Talk(models.Model):
         super(Talk, self).save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-        if self.published_speaker_id:
-            return "{} - {}".format(self.published_speaker, self.title)
+        if TalkPublishedSpeaker.objects.filter(talk=self).exists():
+            return "{} - {}".format(
+                ", ".join(
+                    [
+                        str(speaker.published_speaker)
+                        for speaker in TalkPublishedSpeaker.objects.filter(talk=self)
+                    ]
+                ),
+                self.title,
+            )
         else:
-            return "{} - {}".format(self.draft_speaker, self.title)
+            return "{} - {}".format(
+                ", ".join(
+                    [
+                        str(speaker.draft_speaker)
+                        for speaker in TalkDraftSpeaker.objects.filter(talk=self)
+                    ]
+                ),
+                self.title,
+            )
 
     @property
     def is_limited(self):
@@ -146,6 +159,111 @@ class Talk(models.Model):
         )
 
 
+class TalkDraftSpeaker(OrderedModel, TimeStampedModel):
+    talk = models.ForeignKey(Talk, verbose_name=_("Talk"), on_delete=models.CASCADE)
+    draft_speaker = models.ForeignKey(
+        speaker_models.Speaker, verbose_name=_("Speaker"), on_delete=models.CASCADE
+    )
+
+    class Meta(OrderedModel.Meta, TimeStampedModel.Meta):
+        unique_together = ("talk", "draft_speaker")
+        verbose_name = _("Talk draft speaker")
+        verbose_name_plural = _("Talk draft speakers")
+
+
+class TalkPublishedSpeaker(OrderedModel, TimeStampedModel):
+    talk = models.ForeignKey(Talk, verbose_name=_("Talk"), on_delete=models.CASCADE)
+    published_speaker = models.ForeignKey(
+        speaker_models.PublishedSpeaker,
+        verbose_name=_("Published speaker"),
+        on_delete=models.CASCADE,
+    )
+
+    class Meta(OrderedModel.Meta, TimeStampedModel.Meta):
+        unique_together = ("talk", "published_speaker")
+        verbose_name = _("Talk published speaker")
+        verbose_name_plural = _("Talk published speakers")
+
+
+@receiver(post_delete, sender=TalkDraftSpeaker)
+def remove_talks_without_speakers(sender, instance, **kwargs):
+    talk = instance.talk
+    if not talk.published_speakers.exists() and not talk.draft_speakers.exists():
+        talk.delete()
+
+
+@receiver(m2m_changed, sender=Talk.draft_speakers.through)
+def prevent_removal_of_last_draft_speaker(sender, instance, action, **kwargs):
+    if kwargs["reverse"]:
+        return
+    if action == "pre_remove":
+        draft_speaker_count = (
+            TalkDraftSpeaker.objects.using(kwargs["using"])
+            .filter(talk=instance)
+            .count()
+        )
+        if draft_speaker_count - len(kwargs["pk_set"]) == 0:
+            if (
+                not TalkPublishedSpeaker.objects.using(kwargs["using"])
+                .filter(talk=instance)
+                .exists()
+            ):
+                raise ValidationError(
+                    _(
+                        "Cannot delete last draft speaker from talk without published speaker"
+                    ),
+                    "cannot_delete_last_speaker_from_talk",
+                )
+    elif action == "pre_clear":
+        if (
+            not TalkPublishedSpeaker.objects.using(kwargs["using"])
+            .filter(talk=instance)
+            .exists()
+        ):
+            raise ValidationError(
+                _(
+                    "Cannot delete last draft speaker from talk without published speaker"
+                ),
+                "cannot_delete_last_speaker_from_talk",
+            )
+
+
+@receiver(m2m_changed, sender=TalkPublishedSpeaker)
+def prevent_removal_of_last_published_speaker(sender, instance, action, **kwargs):
+    if kwargs["reverse"]:
+        return
+    if action == "pre_remove":
+        published_speaker_count = (
+            TalkPublishedSpeaker.objects.using(kwargs["using"])
+            .filter(talk=instance)
+            .count()
+        )
+        if published_speaker_count - len(kwargs["pk_set"]) == 0:
+            if (
+                not TalkDraftSpeaker.objects.using(kwargs["using"])
+                .filter(talk=instance)
+                .exists()
+            ):
+                raise ValidationError(
+                    _(
+                        "Cannot delete last published speaker from talk without draft speaker"
+                    ),
+                    "cannot_delete_last_speaker_from_talk",
+                )
+    elif action == "pre_clear":
+        if (
+            not TalkDraftSpeaker.objects.using(kwargs["using"])
+            .filter(talk=instance)
+            .exists()
+        ):
+            raise ValidationError(
+                _(
+                    "Cannot delete last published speaker from talk without draft speaker"
+                ),
+                "cannot_delete_last_speaker_from_talk",
+            )
+
+
 class TalkMedia(models.Model):
     talk = models.OneToOneField(Talk, related_name="media", on_delete=models.CASCADE)
     youtube = models.CharField(
@@ -159,7 +277,6 @@ class TalkMedia(models.Model):
     )
 
 
-@python_2_unicode_compatible
 class Vote(models.Model):
     voter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     talk = models.ForeignKey(Talk, on_delete=models.CASCADE)
@@ -170,11 +287,13 @@ class Vote(models.Model):
 
     def __str__(self):
         return "{} voted {} for {} by {}".format(
-            self.voter, self.score, self.talk.title, self.talk.draft_speaker
+            self.voter,
+            self.score,
+            self.talk.title,
+            ", ".join([str(speaker) for speaker in self.talk.draft_speakers.all()]),
         )
 
 
-@python_2_unicode_compatible
 class TalkComment(TimeStampedModel):
     commenter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     talk = models.ForeignKey(Talk, on_delete=models.CASCADE)
@@ -187,7 +306,12 @@ class TalkComment(TimeStampedModel):
 
     def __str__(self):
         return "{} commented {} for {} by {}".format(
-            self.commenter, self.comment, self.talk.title, self.talk.draft_speaker
+            self.commenter,
+            self.comment,
+            self.talk.title,
+            ", ".join(
+                [str(draft_speaker) for draft_speaker in self.talk.draft_speakers.all()]
+            ),
         )
 
 
@@ -196,7 +320,6 @@ class RoomManager(models.Manager):
         return self.filter(event=event)
 
 
-@python_2_unicode_compatible
 class Room(TimeStampedModel):
     name = models.CharField(verbose_name=_("Name"), max_length=100, blank=False)
     priority = models.PositiveSmallIntegerField(verbose_name=_("Priority"), default=0)
@@ -216,7 +339,6 @@ class Room(TimeStampedModel):
         return self.name
 
 
-@python_2_unicode_compatible
 class TimeSlot(TimeStampedModel):
     name = models.CharField(max_length=40, blank=False)
     start_time = models.DateTimeField(default=timezone.now)
@@ -237,7 +359,6 @@ class TimeSlot(TimeStampedModel):
         return "{} ({})".format(self.name, self.event)
 
 
-@python_2_unicode_compatible
 class TalkSlot(TimeStampedModel):
     talk = models.OneToOneField(Talk, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -251,7 +372,6 @@ class TalkSlot(TimeStampedModel):
         return "{} {}".format(self.room, self.time)
 
 
-@python_2_unicode_compatible
 class TalkFormat(models.Model):
     name = models.CharField(max_length=40, blank=False)
     duration = models.PositiveSmallIntegerField(verbose_name=_("Duration"), default=60)
@@ -323,7 +443,10 @@ class AttendeeVote(TimeStampedModel):
 
     def __str__(self):
         return "{} voted {} for {} by {}".format(
-            self.attendee, self.score, self.talk.title, self.talk.published_speaker
+            self.attendee,
+            self.score,
+            self.talk.title,
+            ", ".join(self.talk.published_speakers.all()),
         )
 
 
@@ -359,7 +482,12 @@ class AttendeeFeedback(TimeStampedModel):
         return "{} gave feedback for {} by {}: score={}, comment={}".format(
             self.attendee,
             self.talk.title,
-            self.talk.published_speaker,
+            ", ".join(
+                [
+                    str(published_speaker)
+                    for published_speaker in self.talk.published_speakers.all()
+                ]
+            ),
             self.score,
             self.comment,
         )

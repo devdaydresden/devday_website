@@ -25,8 +25,10 @@ from .models import (
     Room,
     SessionReservation,
     Talk,
+    TalkDraftSpeaker,
     TalkFormat,
     TalkMedia,
+    TalkPublishedSpeaker,
     TalkSlot,
     TimeSlot,
     Track,
@@ -72,31 +74,62 @@ class RoomAdmin(admin.ModelAdmin):
     ordering = ["-event__title", "name"]
 
 
+class TalkDraftSpeakerInline(PrefetchAdmin, admin.StackedInline):
+    model = TalkDraftSpeaker
+    extra = 1
+    fields = ("draft_speaker",)
+
+    queryset_prefetch_fields = {"draft_speaker": (Speaker, ("user",))}
+
+
+class TalkPublishedSpeakerInline(PrefetchAdmin, admin.StackedInline):
+    model = TalkPublishedSpeaker
+    extra = 1
+    fields = ("published_speaker",)
+
+    queryset_prefetch_fields = {"published_speaker": (PublishedSpeaker, ("event",))}
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        field = super().formfield_for_foreignkey(db_field, request, **kwargs)
+        field.queryset = field.queryset.filter(event__exact=request._obj_.event)
+        return field
+
+
 @admin.register(Talk)
 class TalkAdmin(PrefetchAdmin, admin.ModelAdmin):
-    list_display = ("title", "draft_speaker", "event", "track")
-    search_fields = ("title", "draft_speaker__name", "event__title", "track__name")
+    list_display = ("title", "draft_speakers_joined", "event", "track")
+    search_fields = ("title", "draft_speakers__name", "event__title", "track__name")
     list_filter = ["event", "track"]
-    inlines = [TalkMediaInline, TalkSlotInline]
+    inlines = [
+        TalkDraftSpeakerInline,
+        TalkPublishedSpeakerInline,
+        TalkMediaInline,
+        TalkSlotInline,
+    ]
     ordering = ["title"]
-    list_select_related = ["draft_speaker", "event", "track", "track__event"]
+    list_select_related = ["event", "track", "track__event"]
     filter_horizontal = ("talkformat",)
     prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("event",)
     actions = ["publish_talks", "process_waiting_list"]
 
     queryset_prefetch_fields = {
-        "draft_speaker": (Speaker, ("user",)),
-        "published_speaker": (PublishedSpeaker, ("speaker", "speaker__user", "event")),
+        "draft_speakers": (Speaker, ("user",)),
+        "published_speakers": (PublishedSpeaker, ("speaker", "speaker__user", "event")),
         "track": (Track, ("event",)),
     }
+
+    def draft_speakers_joined(self, obj):
+        return ", ".join([speaker.name for speaker in obj.draft_speakers.all()])
+
+    draft_speakers_joined.name = _("Draft speakers")
 
     def get_queryset(self, request):
         return (
             super()
             .get_queryset(request)
-            .select_related(
-                "event", "draft_speaker", "published_speaker", "track", "track__event"
-            )
+            .select_related("event", "track", "track__event")
+            .prefetch_related("draft_speakers", "published_speakers")
         )
 
     def publish_talks(self, request, queryset):
@@ -167,6 +200,10 @@ class TalkAdmin(PrefetchAdmin, admin.ModelAdmin):
         "Process waiting list for selected sessions"
     )
 
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        request._obj_ = obj
+        return super().get_form(request, obj, change, **kwargs)
+
 
 class AddTalkSlotView(SessionWizardView):
     template_name = "talk/admin/talkslot_add_form.html"
@@ -206,14 +243,7 @@ create_talk_slot = AddTalkSlotView.as_view()
 class TalkSlotAdmin(admin.ModelAdmin):
     list_display = ["time", "event", "room", "talk"]
     list_filter = ["time__event"]
-    list_select_related = (
-        "time",
-        "talk",
-        "room",
-        "time__event",
-        "talk__published_speaker",
-        "talk__published_speaker__event",
-    )
+    list_select_related = ("time", "talk", "room", "time__event")
     form = TalkSlotForm
 
     # NOTYET autocomplete_fields = list_display, needs Django 2.x
@@ -272,14 +302,8 @@ class SessionReservationAdmin(admin.ModelAdmin):
 
 @admin.register(AttendeeFeedback)
 class AttendeeFeedbackAdmin(admin.ModelAdmin):
-    list_display = ("attendee_name", "talk_speaker", "talk_title", "score")
-    list_select_related = (
-        "attendee__user",
-        "talk",
-        "talk__event",
-        "talk__published_speaker",
-        "talk__published_speaker__event",
-    )
+    list_display = ("attendee_name", "talk_speakers", "talk_title", "score")
+    list_select_related = ("attendee__user", "talk", "talk__event")
     readonly_fields = ("attendee", "talk")
 
     ordering = ("talk__title", "attendee__user__email")
@@ -288,8 +312,13 @@ class AttendeeFeedbackAdmin(admin.ModelAdmin):
     def attendee_name(self, obj):
         return obj.attendee.user.email
 
-    def talk_speaker(self, obj):
-        return obj.talk.published_speaker.name
+    def talk_speakers(self, obj):
+        return ", ".join(
+            [
+                str(s.published_speaker)
+                for s in TalkPublishedSpeaker.objects.filter(talk=obj.talk)
+            ]
+        )
 
     def talk_title(self, obj):
         return obj.talk.title
@@ -297,19 +326,12 @@ class AttendeeFeedbackAdmin(admin.ModelAdmin):
     queryset_prefetch_fields = {
         "attendee": (Attendee, ("user", "event")),
         "talk": (Talk, ("title", "event")),
-        "talk__published_speaker": (PublishedSpeaker, ("name", "event")),
+        "talk__published_speakers": (PublishedSpeaker, ("name", "event")),
     }
 
     def get_queryset(self, request):
         return (
             super()
             .get_queryset(request)
-            .select_related(
-                "talk",
-                "talk__published_speaker",
-                "talk__published_speaker__event",
-                "attendee",
-                "attendee__user",
-                "attendee__event",
-            )
+            .select_related("talk", "attendee", "attendee__user", "attendee__event")
         )

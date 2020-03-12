@@ -19,6 +19,7 @@ from talk.models import (
     TalkSlot,
     TimeSlot,
     Vote,
+    TalkDraftSpeaker,
 )
 
 User = get_user_model()
@@ -41,23 +42,16 @@ class TalkForm(forms.ModelForm):
 
 class CreateTalkForm(TalkForm):
     class Meta(TalkForm.Meta):
-        fields = (
-            "title",
-            "abstract",
-            "remarks",
-            "talkformat",
-            "draft_speaker",
-            "event",
-        )
+        fields = ("title", "abstract", "remarks", "talkformat", "event")
         widgets = {
             "abstract": forms.Textarea(attrs={"rows": 3}),
             "remarks": forms.Textarea(attrs={"rows": 3}),
             "talkformat": forms.CheckboxSelectMultiple(),
-            "draft_speaker": forms.HiddenInput,
             "event": forms.HiddenInput,
         }
 
     def __init__(self, *args, **kwargs):
+        self.draft_speaker = kwargs.pop("draft_speaker")
         super(CreateTalkForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_action = reverse_lazy(
@@ -68,7 +62,7 @@ class CreateTalkForm(TalkForm):
         self.helper.html5_required = True
 
         self.helper.layout = Layout(
-            Field("draft_speaker"),
+            Field("draft_speakers"),
             Field("event"),
             Div(
                 Field("title", autofocus="autofocus"),
@@ -85,6 +79,15 @@ class CreateTalkForm(TalkForm):
                 css_class="form-group",
             ),
         )
+
+    def save(self, commit=True):
+        talk = super().save(commit)
+        draft_speaker = TalkDraftSpeaker(
+            talk=talk, draft_speaker=self.draft_speaker, order=1
+        )
+        if commit:
+            draft_speaker.save()
+        return talk
 
 
 class EditTalkForm(TalkForm):
@@ -180,9 +183,7 @@ class SessionReservationForm(forms.ModelForm):
 
 class TalkSlotForm(forms.ModelForm):
     talk = forms.ModelChoiceField(
-        queryset=Talk.objects.select_related(
-            "event", "draft_speaker", "published_speaker", "published_speaker__event"
-        ).distinct()
+        queryset=Talk.objects.select_related("event").distinct()
     )
     time = forms.ModelChoiceField(queryset=TimeSlot.objects.select_related("event"))
 
@@ -231,12 +232,7 @@ class AddTalkSlotFormStep2(forms.ModelForm):
             Talk.objects.filter(
                 event=self.event, track_id__isnull=False, talkslot__isnull=True
             )
-            .select_related(
-                "event",
-                "draft_speaker",
-                "published_speaker",
-                "published_speaker__event",
-            )
+            .select_related("event")
             .distinct()
         )
         self.fields["time"].queryset = TimeSlot.objects.filter(

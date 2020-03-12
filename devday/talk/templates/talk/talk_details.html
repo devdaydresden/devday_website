@@ -3,7 +3,6 @@
 {% block title %}{{ block.super }} // {% trans "Talk" %} -
     {{ talk.title }}{% endblock %}
 {% block content_body %}
-    {% url 'public_speaker_profile' event=event.slug slug=speaker.slug as speaker_profile_url %}
     <div class="row talk-details">
         <div class="col-12">
             {% if current %}
@@ -43,7 +42,7 @@
                     </div>
                     <div class="card-body">
                         <iframe width="560" height="315"
-                            src="https://www.youtube.com/embed/{{ talk.media.youtube }}"
+                            src="//www.youtube-nocookie.com/embed/{{ talk.media.youtube }}"
                             frameborder="0"
                             allowfullscreen></iframe>
                     </div>
@@ -138,15 +137,17 @@
 {% endblock content_body %}
 {% block content_box_2_wrapper_classes %} content-sidebar{% endblock %}
 {% block content_box_2_wrapper %}
-    {% url 'public_speaker_profile' event=event.slug slug=speaker.slug as speaker_profile_url %}
     <div class="text-center">
         <div class="row speaker-details">
+        {% for speaker in speakers %}
+            {% url 'public_speaker_profile' event=event.slug slug=speaker.slug as speaker_profile_url %}
             <div class="col-12">
                 <h1 class="speaker-name"><a href="{{ speaker_profile_url }}">{{ speaker.name }}</a></h1>
                 <a class="speaker-image" href="{{ speaker_profile_url }}">
                     <img src="{% if speaker.public_image %}{{ speaker.public_image.url }}{% else %}{% static "img/speaker-dummy.png" %}{% endif %}"
                          class="img-fluid" alt="{{ speaker }}"></a>
             </div>
+        {% endfor %}
         </div>
     </div>
 {% endblock content_box_2_wrapper %}

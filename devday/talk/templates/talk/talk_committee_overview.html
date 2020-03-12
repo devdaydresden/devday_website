@@ -46,7 +46,11 @@
                         <tbody>
                         {% for talk in talk_list %}
                             <tr>
-                                <td><a href="{% url 'speaker_details' pk=talk.draft_speaker.pk %}">{{ talk.draft_speaker.name }}</a></td>
+                                <td>
+                                    {% for speaker in talk.draft_speakers.all %}
+                                    <a href="{% url 'speaker_details' pk=speaker.pk %}">{{ speaker.name }}</a>{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </td>
                                 <td><a href="{% url 'talk_committee_details' pk=talk.pk %}">{{ talk.title }}</a><br>
                                 {% for fmt in talk.talkformat.all %} <span class="talkformat-label talkformat-label-{{fmt.duration}}">{{ fmt }}</span> {% endfor %}</td>
                                 <td>

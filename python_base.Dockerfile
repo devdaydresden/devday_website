@@ -21,6 +21,7 @@ RUN apk --no-cache add \
     libpq \
     libxml2 \
     libxslt \
+    openssl \
     python3
 
 RUN \

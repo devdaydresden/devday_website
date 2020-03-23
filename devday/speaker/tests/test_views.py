@@ -8,7 +8,7 @@ from speaker.forms import CreateSpeakerForm, UserSpeakerPortraitForm
 from speaker.models import PublishedSpeaker, Speaker
 from speaker.tests import speaker_testutils
 from speaker.tests.speaker_testutils import TemporaryMediaTestCase
-from talk.models import Talk, Track, TalkPublishedSpeaker
+from talk.models import Talk, TalkPublishedSpeaker, Track
 
 
 class TestCreateSpeakerView(TestCase):
@@ -109,6 +109,22 @@ class TestUserSpeakerProfileView(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["speaker"], self.speaker)
+
+    def test_talk_on_speaker_profile(self):
+        event = event_testutils.create_test_event()
+        talk = Talk.objects.create(
+            draft_speaker=self.speaker,
+            title="Test Talk",
+            abstract="Test abstract",
+            remarks="",
+            event=event,
+        )
+        self.client.login(username=self.email, password=self.password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["speaker"], self.speaker)
+        self.assertIn("sessions", response.context)
+        self.assertIn(talk, response.context["sessions"])
 
 
 class TestUserSpeakerPortraitUploadView(TemporaryMediaTestCase):

@@ -277,13 +277,13 @@ This command runs `manage.py test` inside the app container.
 
 ### Reading emails
 
-During development Django will use the `django.core.mail.backends.console.EmailBackend`, which will send emails to the 
+During development Django will use the `django.core.mail.backends.console.EmailBackend`, which will send emails to 
 stdout (console) of the Docker container running the app.
 
 That means that you can easily read the emails by checking the log of the Docker container running the app:
 
 ```shell script
-# docker logs --follow <name of app-container>
+# ./run.sh logs
 ```
 
 

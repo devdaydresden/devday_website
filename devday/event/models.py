@@ -65,6 +65,7 @@ class Event(models.Model):
     talkformat = models.ManyToManyField(
         "talk.TalkFormat", verbose_name=_("Talk Formats")
     )
+    online_event = models.BooleanField(verbose_name=_("Online Event"), default=False)
 
     objects = EventManager()
 

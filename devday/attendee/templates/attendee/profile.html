@@ -132,8 +132,12 @@
                                         {% endcomment %}
                                         {% if not event.is_started %}
                                             <div class="btn-group float-left float-sm-right">
+
+                                                {% if not event.online_event %}
                                                 <a class="btn btn-{% if not attendee.badgedata %}warning{% else %}success{% endif %}"
                                                    href="{% url "edit_badge_data" event=event.slug %}">{% trans "Edit badge data" %}</a>
+                                                {% endif %}
+                                            
                                                 {% if not user.get_speaker %}
                                                     <a class="btn btn-danger"
                                                        href="{% url "attendee_cancel" event=event.slug %}">{% trans "Cancel Registration" %}</a>

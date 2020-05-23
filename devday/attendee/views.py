@@ -173,7 +173,7 @@ class AttendeeRegistrationView(RegistrationView):
 
         if user.is_anonymous:
             self.auth_level = "anonymous"
-        elif user.get_attendee(event=self.event):
+        elif user.get_attendee(event=self.event) and not self.event.online_event:
             return redirect(
                 reverse_lazy("edit_badge_data", kwargs={"event": self.event.slug})
             )

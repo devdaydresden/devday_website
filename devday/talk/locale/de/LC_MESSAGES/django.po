@@ -20,10 +20,8 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: talk/admin.py:125
-#, fuzzy
-#| msgid "Register as speaker"
 msgid "Draft speakers"
-msgstr "Als SpeakerIn registrieren"
+msgstr "Unbestätigte SpeakerInnen"
 
 #: talk/admin.py:147
 #, python-format
@@ -135,20 +133,16 @@ msgid "Speaker"
 msgstr "SpeakerIn"
 
 #: talk/models.py:170
-#, fuzzy
-#| msgid "Talk Formats"
 msgid "Talk draft speaker"
-msgstr "Session-Formate"
+msgstr "Session unbestätigte SpeakerIn"
 
 #: talk/models.py:171
 msgid "Talk draft speakers"
-msgstr ""
+msgstr "Session unbestätigte SpeakerInnen"
 
 #: talk/models.py:178
-#, fuzzy
-#| msgid "Publish talks"
 msgid "Published speaker"
-msgstr "Sessions veröffentlichen"
+msgstr "Veröffentlichte SpeakerInnen"
 
 #: talk/models.py:184
 msgid "Talk published speaker"

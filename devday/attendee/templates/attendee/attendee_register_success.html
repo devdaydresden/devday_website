@@ -8,19 +8,24 @@
             {% static_placeholder "register-attendee-success" or %}
                 <h1>{% trans "Attendee registration successful" %}</h1>
                 <p>
-                    {% blocktrans with event=event.title %}You are now registered for the event &quot;{{ event }}&quot;.{% endblocktrans %}</p>
+                    {% blocktrans with event=event.title %}You are now registered for the event &quot;{{ event }}&quot;.{% endblocktrans %}
+                </p>
             {% endstatic_placeholder %}
-            {% static_placeholder "register-attendee-fill-badge" or %}
-                {% trans "Please fill your badge information." %}{% endstatic_placeholder %}
-            <div class="row">
-                <div class="col-6">
-                    {% crispy form %}
+
+            {% if not event.online_event %}
+                {% static_placeholder "register-attendee-fill-badge" or %}
+                    {% trans "Please fill your badge information." %}
+                {% endstatic_placeholder %}
+                <div class="row">
+                    <div class="col-6">
+                        {% crispy form %}
+                    </div>
+                    <div class="col-6 badge-preview">
+                        <img src="{% static "images/devday20_badge_preview.png" %}"
+                             alt="{% trans "Badge preview" %}"/>
+                    </div>
                 </div>
-                <div class="col-6 badge-preview">
-                    <img src="{% static "images/devday20_badge_preview.png" %}"
-                         alt="{% trans "Badge preview" %}"/>
-                </div>
-            </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

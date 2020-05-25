@@ -383,6 +383,7 @@ wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p
             e = events[-1]
             e.registration_open = True
             e.submission_open = True
+            e.online_event = True
             e.save()
             e.talkformat.add(*TalkFormat.objects.all())
             self.write_ok()

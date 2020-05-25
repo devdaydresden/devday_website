@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-17 14:15+0000\n"
+"POT-Creation-Date: 2020-05-25 20:09+0000\n"
 "PO-Revision-Date: 2020-02-17 15:19+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -123,39 +123,39 @@ msgstr "Mein Passwort ändern"
 msgid "Reset my password"
 msgstr "Mein Passwort zurücksetzen"
 
-#: devday/forms.py:76
+#: devday/forms.py:77
 msgid "invalid email address {}"
 msgstr "ungültige E-Mailadresse {}"
 
-#: devday/forms.py:84
+#: devday/forms.py:86
 msgid "Recipient Group"
 msgstr "Empfängergruppe"
 
-#: devday/forms.py:86
+#: devday/forms.py:88
 msgid "Recipient List"
 msgstr "Empfängerliste"
 
-#: devday/forms.py:88
+#: devday/forms.py:90
 msgid "a list of recipient email addresses (one address on each line)"
 msgstr "Eine Liste von Empfänger-E-Mailadressen (eine Adresse pro Zeile)"
 
-#: devday/forms.py:90 devday/forms.py:108
+#: devday/forms.py:93 devday/forms.py:111
 msgid "Email Subject"
 msgstr "Email-Betreff"
 
-#: devday/forms.py:103
+#: devday/forms.py:106
 msgid "Recipients for this email"
 msgstr "Empfänger für diese Email"
 
-#: devday/forms.py:111
+#: devday/forms.py:114
 msgid "Email Body"
 msgstr "Email-Text"
 
-#: devday/forms.py:115
+#: devday/forms.py:118
 msgid "Send Test Email To Myself"
 msgstr "Test-Email an mich selbst senden"
 
-#: devday/forms.py:118
+#: devday/forms.py:121
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
@@ -568,10 +568,10 @@ msgstr "Angenommene SpeakerIn"
 msgid "email addresses from uploaded file"
 msgstr "E-Mailadressen aus hochgeladener Datei"
 
-#: devday/views.py:169
+#: devday/views.py:170
 msgid "Successfully sent message to {} {} recipients"
 msgstr "Email erfolgreich an {} {} versendet"
 
-#: devday/views.py:176
+#: devday/views.py:177
 msgid "Successfully sent message for {} to yourself"
 msgstr "Test-Email für {} erfolgreich an dich selbst gesendet"

@@ -153,15 +153,12 @@ msgid "Talk published speakers"
 msgstr ""
 
 #: talk/models.py:213 talk/models.py:225
-#, fuzzy
-#| msgid "A draft speaker or a published speaker is required."
 msgid "Cannot delete last draft speaker from talk without published speaker"
-msgstr ""
-"Ein/e SpeakerIn (Entwurf) oder SpeakerIn (öffentlich) ist erforderlich."
+msgstr "Ein/e SpeakerIn (Entwurf) oder SpeakerIn (öffentlich) ist erforderlich."
 
 #: talk/models.py:249 talk/models.py:261
 msgid "Cannot delete last published speaker from talk without draft speaker"
-msgstr ""
+msgstr "Ein/e SpeakerIn (öffentlich) oder SpeakerIn (Entwurf) ist erforderlich."
 
 #: talk/models.py:270
 msgid "Youtube video id"

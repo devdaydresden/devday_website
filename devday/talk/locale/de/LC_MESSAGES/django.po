@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-25 20:09+0000\n"
+"POT-Creation-Date: 2020-05-26 17:06+0000\n"
 "PO-Revision-Date: 2020-02-11 20:45+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
@@ -154,11 +154,13 @@ msgstr ""
 
 #: talk/models.py:213 talk/models.py:225
 msgid "Cannot delete last draft speaker from talk without published speaker"
-msgstr "Ein/e SpeakerIn (Entwurf) oder SpeakerIn (öffentlich) ist erforderlich."
+msgstr ""
+"Ein/e SpeakerIn (Entwurf) oder SpeakerIn (öffentlich) ist erforderlich."
 
 #: talk/models.py:249 talk/models.py:261
 msgid "Cannot delete last published speaker from talk without draft speaker"
-msgstr "Ein/e SpeakerIn (öffentlich) oder SpeakerIn (Entwurf) ist erforderlich."
+msgstr ""
+"Ein/e SpeakerIn (öffentlich) oder SpeakerIn (Entwurf) ist erforderlich."
 
 #: talk/models.py:270
 msgid "Youtube video id"

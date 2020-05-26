@@ -76,7 +76,10 @@ class DevDayMenuTest(TestCase):
         self.assertIn(cms_menus.USER_CAN_REGISTER, entries[0].attr)
         self.assertIn(cms_menus.SESSIONS_PUBLISHED, entries[1].attr)
 
-    def test_logged_in(self):
+    def test_logged_in_offline_event(self):
+        self.event.online_event = False
+        self.event.save()
+
         (user, _) = create_test_user()
         Attendee.objects.filter(user=user, event=self.event).delete()
         entries = get_nodes(user=user)
@@ -96,3 +99,23 @@ class DevDayMenuTest(TestCase):
             reverse("attendee_checkin_qrcode", kwargs={"event": self.event.slug}),
         )
         self.assertEqual(children[2].url, reverse("auth_logout"))
+
+    def test_logged_in_online_event(self):
+        self.event.online_event = True
+        self.event.save()
+
+        (user, _) = create_test_user()
+        Attendee.objects.filter(user=user, event=self.event).delete()
+        entries = get_nodes(user=user)
+        self.assertEqual(entries[4].url, "#")
+        children = entries[4].children
+        self.assertEqual(children[0].url, reverse("user_profile"))
+        self.assertEqual(children[1].url, reverse("auth_logout"))
+
+        Attendee.objects.create(user=user, event=self.event)
+        entries = get_nodes(user=user)
+        self.assertEqual(entries[3].url, "#")
+        children = entries[3].children
+        self.assertEqual(len(children), 2, "profile menu should have two entries")
+        self.assertEqual(children[0].url, reverse("user_profile"))
+        self.assertEqual(children[1].url, reverse("auth_logout"))

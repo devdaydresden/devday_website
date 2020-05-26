@@ -148,6 +148,7 @@ class DevDayModifier(Modifier):
         return (
             request.user.is_authenticated
             and event.published
+            and not event.online_event
             and request.user.get_attendee(event) is not None
         )
 

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "bedb77c71eee54c739649be608b4ba08ec78c0258fa588288a254f5b2cb913ce"
+            "sha256": "ea9d83ff56f8531231cf9ca8a52c4b6669175f323eccdfbfc930836f213a2097"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -200,9 +200,12 @@
             "version": "==1.2.0"
         },
         "djangocms-column": {
-            "editable": true,
-            "git": "https://github.com/isotoma/djangocms-column",
-            "ref": "e964416e60dd974d58c9c70be7e08209249461ae"
+            "hashes": [
+                "sha256:289d62f31983ba1255106fe0b5872e8cf8ee9f78073aa9513710549705d037d8",
+                "sha256:68698c21e1a6fb6b215a34d84742d339798f82cff3188fda4c9cf07b71a7d2bd"
+            ],
+            "index": "pypi",
+            "version": "==1.10.0"
         },
         "djangocms-file": {
             "hashes": [

@@ -34,7 +34,7 @@ django-ordered-model = "*"
 django-formtools = "*"
 django-postgres-extra = "*"
 djangorestframework = "*"
-djangocms-column = {editable = true,git = "https://github.com/isotoma/djangocms-column",ref = "e964416e60dd974d58c9c70be7e08209249461ae"}
+djangocms-column = "*"
 
 [dev-packages]
 coverage = "*"

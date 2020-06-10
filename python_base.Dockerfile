@@ -48,6 +48,7 @@ RUN \
     export PIPENV_COLORBLIND=true ; \
     export PIPENV_NOSPIN=true ; \
     export PIPENV_DOTENV_LOCATION=config/.env ; \
+    export PIPENV_USE_SYSTEM=1 ; \
     apk --no-cache add --virtual build-dependencies \
     build-base \
     gcc \
@@ -63,9 +64,10 @@ RUN \
     py3-pip \
     python3-dev \
     zlib-dev \
- && python3 -m pip install pipenv \
- && pipenv install --system --deploy --ignore-pipfile \
+ && python3 -m pip install -U pip wheel \
+ && python3 -m pip install "pipenv <=2018.11.26|>2020.6.2" \
+ && pipenv install --three --system --deploy --ignore-pipfile \
  && rm -rf /root/.cache \
  && find / -name __pycache__ -print0|xargs -0 rm -rf \
- && update-ca-certificates \
- && apk del build-dependencies
+ && apk del build-dependencies \
+ && update-ca-certificates

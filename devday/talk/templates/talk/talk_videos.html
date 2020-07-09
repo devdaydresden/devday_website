@@ -21,24 +21,19 @@
                   {% endfor %}
                   <h4>Abstract</h4>
                   <p>{{ talk.abstract|striptags|urlize|linebreaksbr }}</p>
-                  {% if talk.media.youtube %}
-                    <div class="col-sm-6 col-xs-12">
-                      <iframe width="560" height="315"
-                              src="//www.youtube-nocookie.com/embed/{{ talk.media.youtube }}"
-                              frameborder="0" allowfullscreen></iframe>
-                    </div>
-                  {% endif %}
-                  {% if talk.media.slideshare %}
-                    <div class="col-sm-6 col-xs-12">
-                      <iframe width="595" height="485"
-                              src="https://www.slideshare.net/slideshow/embed_code/key/{{ talk.media.slideshare }}"
-                              frameborder="0" marginwidth="0" scrolling="no" style=""
-                              allowfullscreen></iframe>
-                    </div>
-                  {% endif %}
-                  {% if talk.media.codelink %}
+                  {% if talk.media.video %}
                     <div class="col-sm-12">
-                      {% trans "Example code" %}: <a href="{{ talk.media.codelink }}">{{ talk.media.codelink }}</a>
+                        {% trans "Video" %}: <a href="{{ talk.media.video }}">{{ talk.media.video }}</a>
+                    </div>
+                  {% endif %}
+                  {% if talk.media.slides %}
+                    <div class="col-sm-12">
+                        {% trans "Slide deck" %}: <a href="{{ talk.media.slides }}">{{ talk.media.slides }}</a>
+                    </div>
+                  {% endif %}
+                  {% if talk.media.code %}
+                    <div class="col-sm-12">
+                      {% trans "Example code" %}: <a href="{{ talk.media.code }}">{{ talk.media.code }}</a>
                     </div>
                   {% endif %}
                 </div>

@@ -266,15 +266,9 @@ def prevent_removal_of_last_published_speaker(sender, instance, action, **kwargs
 
 class TalkMedia(models.Model):
     talk = models.OneToOneField(Talk, related_name="media", on_delete=models.CASCADE)
-    youtube = models.CharField(
-        verbose_name=_("Youtube video id"), max_length=64, blank=True
-    )
-    slideshare = models.CharField(
-        verbose_name=_("Slideshare id"), max_length=64, blank=True
-    )
-    codelink = models.CharField(
-        verbose_name=_("Source code"), max_length=255, blank=True
-    )
+    video = models.URLField(verbose_name=_("Video"), blank=True)
+    slides = models.URLField(verbose_name=_("Slides"), blank=True)
+    code = models.URLField(verbose_name=_("Source code"), blank=True)
 
 
 class Vote(models.Model):

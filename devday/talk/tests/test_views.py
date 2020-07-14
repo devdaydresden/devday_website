@@ -1104,10 +1104,10 @@ class TestTalkVideoView(TestCase):
         talk1.publish(track)
         talk2.publish(track)
         TalkMedia.objects.create(
-            talk=talk1, codelink="https://example.org/git/talk1code"
+            talk=talk1, code="https://example.org/git/talk1code"
         )
         TalkMedia.objects.create(
-            talk=talk2, codelink="https://example.org/git/talk1code"
+            talk=talk2, code="https://example.org/git/talk1code"
         )
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)

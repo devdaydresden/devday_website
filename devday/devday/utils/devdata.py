@@ -525,11 +525,11 @@ wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p
             talk.media.talk = talk
 
             if self.rng.randint(0, 2) > 0:
-                talk.media.youtube = "E5VN-MI1mZA"
+                talk.media.video = "https://www.youtube.com/watch?v=E5VN-MI1mZA"
             if self.rng.randint(0, 2) > 0:
-                talk.media.slideshare = "zEvpGJkZqrLIGa"
+                talk.media.slides = "https://www.slideshare.net/CBInsights/global-healthcare-report-q2-2019-162433349?ref="
             if self.rng.randint(0, 2) > 0:
-                talk.media.codelink = "https://github.com/devdaydresden/devday_website"
+                talk.media.code = "https://github.com/devdaydresden/devday_website"
             talk.media.save()
 
     def vote_for_talk(self, events=None):

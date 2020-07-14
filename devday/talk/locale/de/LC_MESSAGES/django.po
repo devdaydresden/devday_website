@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-26 17:06+0000\n"
-"PO-Revision-Date: 2020-02-11 20:45+0100\n"
+"POT-Creation-Date: 2020-07-09 13:57+0000\n"
+"PO-Revision-Date: 2020-07-09 16:00+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: talk/admin.py:125
@@ -49,8 +49,8 @@ msgstr "Warteliste für ausgewählte Sessions verarbeiten"
 msgid "Talk slot created successfully"
 msgstr "Talk-Slot erfolgreich angelegt"
 
-#: talk/admin.py:254 talk/models.py:29 talk/models.py:83 talk/models.py:327
-#: talk/models.py:348
+#: talk/admin.py:254 talk/models.py:29 talk/models.py:83 talk/models.py:321
+#: talk/models.py:342
 msgid "Event"
 msgstr "Veranstaltung"
 
@@ -122,8 +122,8 @@ msgstr "Session"
 msgid "Sessions"
 msgstr "Sessions"
 
-#: talk/models.py:163 talk/models.py:175 talk/models.py:400 talk/models.py:430
-#: talk/models.py:464 talk/templates/talk/talk_committee_details.html:3
+#: talk/models.py:163 talk/models.py:175 talk/models.py:394 talk/models.py:424
+#: talk/models.py:458 talk/templates/talk/talk_committee_details.html:3
 #: talk/templates/talk/talk_details.html:3
 msgid "Talk"
 msgstr "Session"
@@ -146,11 +146,11 @@ msgstr "Veröffentlichte SpeakerInnen"
 
 #: talk/models.py:184
 msgid "Talk published speaker"
-msgstr ""
+msgstr "Veröffentlichte/r SpeakerIn"
 
 #: talk/models.py:185
 msgid "Talk published speakers"
-msgstr ""
+msgstr "Veröffentlichte/r SpeakerInnen"
 
 #: talk/models.py:213 talk/models.py:225
 msgid "Cannot delete last draft speaker from talk without published speaker"
@@ -162,108 +162,110 @@ msgid "Cannot delete last published speaker from talk without draft speaker"
 msgstr ""
 "Ein/e SpeakerIn (öffentlich) oder SpeakerIn (Entwurf) ist erforderlich."
 
+#: talk/models.py:269 talk/templates/talk/talk_details.html:41
+#: talk/templates/talk/talk_list_entry.html:22
+#: talk/templates/talk/talk_videos.html:26
+msgid "Video"
+msgstr "Video"
+
 #: talk/models.py:270
-msgid "Youtube video id"
-msgstr "Youtube-Video-ID"
+msgid "Slides"
+msgstr "Folien"
 
-#: talk/models.py:273
-msgid "Slideshare id"
-msgstr "Slideshare-ID"
-
-#: talk/models.py:276
+#: talk/models.py:271
 msgid "Source code"
 msgstr "Quellcode"
 
-#: talk/models.py:300 talk/models.py:470
+#: talk/models.py:294 talk/models.py:464
 msgid "Comment"
 msgstr "Kommentar"
 
-#: talk/models.py:302
+#: talk/models.py:296
 msgid "Visible for Speaker"
 msgstr "Sichtbar für den/die SpeakerIn"
 
-#: talk/models.py:304
+#: talk/models.py:298
 msgid "Indicates whether the comment is visible to the speaker."
 msgstr "Gibt an, ob der Kommentar für den/die SpeakerIn sichtbar ist."
 
-#: talk/models.py:324 talk/templates/talk/speaker_details.html:11
+#: talk/models.py:318 talk/templates/talk/speaker_details.html:11
 msgid "Name"
 msgstr "Name"
 
-#: talk/models.py:325
+#: talk/models.py:319
 msgid "Priority"
 msgstr "Priorität"
 
-#: talk/models.py:333
+#: talk/models.py:327
 msgid "Room"
 msgstr "Raum"
 
-#: talk/models.py:334
+#: talk/models.py:328
 msgid "Rooms"
 msgstr "Räume"
 
-#: talk/models.py:350
+#: talk/models.py:344
 msgid "Block"
 msgstr "Block"
 
-#: talk/models.py:353
+#: talk/models.py:347
 msgid "Time slot"
 msgstr "Zeitslot"
 
-#: talk/models.py:354
+#: talk/models.py:348
 msgid "Time slots"
 msgstr "Zeitslots"
 
-#: talk/models.py:368
+#: talk/models.py:362
 msgid "Talk slot"
 msgstr "Session-Slot"
 
-#: talk/models.py:369
+#: talk/models.py:363
 msgid "Talk slots"
 msgstr "Session-Slots"
 
-#: talk/models.py:377
+#: talk/models.py:371
 msgid "Duration"
 msgstr "Länge"
 
-#: talk/models.py:382 talk/models.py:383
+#: talk/models.py:376 talk/models.py:377
 msgid "Talk Format"
 msgstr "Session-Format"
 
-#: talk/models.py:393 talk/models.py:423 talk/models.py:456
+#: talk/models.py:387 talk/models.py:417 talk/models.py:450
 msgid "Attendee"
 msgstr "Teilnehmer"
 
-#: talk/models.py:405
+#: talk/models.py:399
 msgid "Confirmed"
 msgstr "Bestätigt"
 
-#: talk/models.py:406
+#: talk/models.py:400
 msgid "On waiting list"
 msgstr "Auf der Warteliste"
 
-#: talk/models.py:409
+#: talk/models.py:403
 msgid "Session reservation"
 msgstr "Platzreservierung"
 
-#: talk/models.py:410
+#: talk/models.py:404
 msgid "Session reservations"
 msgstr "Platzreservierungen"
 
-#: talk/models.py:440
+#: talk/models.py:434
 msgid "Attendee vote"
 msgstr "Teilnehmerabstimmung"
 
-#: talk/models.py:441
+#: talk/models.py:435
 msgid "Attendee votes"
 msgstr "Teilnehmerabstimmungen"
 
-#: talk/models.py:474
+#: talk/models.py:468
 msgctxt "attendee feedback singular form"
 msgid "Attendee feedback"
 msgstr "Teilnehmerfeedback"
 
-#: talk/models.py:477
+#: talk/models.py:471
 msgctxt "attendee feedback plural form"
 msgid "Attendee feedback"
 msgstr "Teilnehmerfeedback"
@@ -865,20 +867,18 @@ msgstr[1] "(Insgesamt %(vote_sum)s bei %(vote_count)s Stimmen)"
 msgid "There are no talks yet."
 msgstr "Es wurden noch keine Sessions eingereicht."
 
-#: talk/templates/talk/talk_details.html:41
-msgid "Video"
-msgstr "Video"
-
-#: talk/templates/talk/talk_details.html:54
+#: talk/templates/talk/talk_details.html:51
+#: talk/templates/talk/talk_videos.html:31
 msgid "Slide deck"
 msgstr "Folien"
 
-#: talk/templates/talk/talk_details.html:68
-#: talk/templates/talk/talk_videos.html:41
+#: talk/templates/talk/talk_details.html:61
+#: talk/templates/talk/talk_list_entry.html:24
+#: talk/templates/talk/talk_videos.html:36
 msgid "Example code"
 msgstr "Beispielcode"
 
-#: talk/templates/talk/talk_details.html:76
+#: talk/templates/talk/talk_details.html:69
 msgid "Your feedback for this session"
 msgstr "Dein Feedback für diese Session"
 
@@ -963,6 +963,10 @@ msgstr "Aus der Warteliste entfernen"
 msgid "Archive: List of Talks at"
 msgstr "Archiv: Liste der Vorträge vom"
 
+#: talk/templates/talk/talk_list_entry.html:23
+msgid "Slide Deck"
+msgstr "Folien"
+
 #: talk/templates/talk/talk_list_preview.html:7
 msgid "Schedule Preview"
 msgstr "Sessionvorschau"
@@ -986,11 +990,11 @@ msgstr "%(event.title)s - Videos, Folien und Beispielcode"
 msgid "Videos, Slides and Example Code for %(event.title)s"
 msgstr "Videos, Folien und Beispielcode für %(event.title)s"
 
-#: talk/templates/talk/talk_videos.html:51
+#: talk/templates/talk/talk_videos.html:46
 msgid "No videos, slides or example code found."
 msgstr "Keine Videos, Folien oder Beispielcode gefunden."
 
-#: talk/templates/talk/talk_videos.html:53
+#: talk/templates/talk/talk_videos.html:48
 #, python-format
 msgid "Videos and Slides for %(event)s have not been published yet."
 msgstr "Es wurden noch keine Videos und Folien für %(event)s veröffentlicht."

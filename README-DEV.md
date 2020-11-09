@@ -144,7 +144,7 @@ app_1    |
 app_1    | System check identified no issues (0 silenced).
 app_1    |
 app_1    | You have unapplied migrations; your app may not work properly until they are applied.
-app_1    | Run 'python manage.py migrate' to apply them.
+app_1    | Run 'python3 manage.py migrate' to apply them.
 app_1    | September 27, 2018 - 19:48:29
 app_1    | Django version 1.9.8, using settings 'devday.settings.dev'
 app_1    | Starting development server at http://0.0.0.0:8000/
@@ -153,7 +153,7 @@ app_1    | Quit the server with CONTROL-C.
 
 ### `manage`: Run Django Admin
 
-For development and maintenance tasks, run the Django Admin command inside the app container. This simply runs `python manage.py $@`.
+For development and maintenance tasks, run the Django Admin command inside the app container. This simply runs `python3 manage.py $@`.
 
 ```
 $ ./run.sh manage migrate

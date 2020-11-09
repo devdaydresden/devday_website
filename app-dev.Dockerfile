@@ -2,23 +2,9 @@ FROM devdaydresden/devday_website_python_base
 MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
 LABEL vendor="T-Systems Multimedia Solutions GmbH"
 
-ARG http_proxy
-ARG https_proxy
-ARG no_proxy
-
-RUN apk --no-cache add \
-    ca-certificates \
-    dumb-init \
-    gettext \
-    jpeg \
-    libmagic \
-    libpng \
-    libpq \
-    libxml2 \
-    libxslt \
-    python3
-
 RUN \
+    set -eu ; \
+    export DEBIAN_FRONTENT=noninteractive ; \
     export PYTHONBUFFERED=1 ; \
     export PYTHONFAULTHANDLER=1 ; \
     export PIP_NO_CACHE_DIR=off ; \
@@ -28,26 +14,27 @@ RUN \
     export PIPENV_COLORBLIND=true ; \
     export PIPENV_NOSPIN=true ; \
     export PIPENV_DOTENV_LOCATION=config/.env ; \
-    apk --no-cache add --virtual build-dependencies \
-    build-base \
-    gcc \
-    jpeg-dev \
+    export PIPENV_USE_SYSTEM=1 ; \
+    apt-get update \
+ && apt-get install --no-install-recommends -y \
+    build-essential \
     libffi-dev \
-    libffi-dev \
+    libjpeg-dev \
     libpng-dev \
+    libpq-dev \
     libxml2-dev \
     libxslt-dev \
-    linux-headers \
-    musl-dev \
-    postgresql-dev \
-    py3-pip \
+    linux-headers-$(dpkg --print-architecture) \
     python3-dev \
-    zlib-dev
-
-RUN \
-    pipenv install --system --deploy --ignore-pipfile --dev --verbose \
- && rm -rf /root/.cache \
- && find / -name __pycache__ -print0|xargs -0 rm -rf
+    python3-pip \
+    zlib1g-dev \
+ && python3 -m pip install -U pip wheel pipenv \
+ && pipenv install --system --deploy --ignore-pipfile --dev --verbose \
+ && rm -rf /root/.cache /root/.local /tmp/*.json \
+ && python3 -m pip uninstall --yes pipenv \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* \
+ && find /usr/local -type d -name __pycache__ -print0 | xargs -0 rm -rf
 
 EXPOSE 8000
 

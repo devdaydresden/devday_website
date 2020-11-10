@@ -6,7 +6,7 @@ ENV \
     REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 RUN set -eu ; \
-    export DEBIAN_FRONTENT=noninteractive ; \
+    export DEBIAN_FRONTEND=noninteractive ; \
     apt-get update \
  && apt-get install --no-install-recommends --yes \
     ca-certificates \
@@ -41,7 +41,7 @@ WORKDIR /python-code/
 
 RUN \
     set -eu ; \
-    export DEBIAN_FRONTENT=noninteractive ; \
+    export DEBIAN_FRONTEND=noninteractive ; \
     export PYTHONBUFFERED=1 ; \
     export PYTHONFAULTHANDLER=1 ; \
     export PIP_NO_CACHE_DIR=off ; \

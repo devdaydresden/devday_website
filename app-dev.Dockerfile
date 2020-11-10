@@ -4,7 +4,7 @@ LABEL vendor="T-Systems Multimedia Solutions GmbH"
 
 RUN \
     set -eu ; \
-    export DEBIAN_FRONTENT=noninteractive ; \
+    export DEBIAN_FRONTEND=noninteractive ; \
     export PYTHONBUFFERED=1 ; \
     export PYTHONFAULTHANDLER=1 ; \
     export PIP_NO_CACHE_DIR=off ; \

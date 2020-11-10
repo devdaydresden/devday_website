@@ -7,7 +7,7 @@ VOLUME /app/media /app/static /app/logs
 WORKDIR /app
 
 RUN set -eu ; \
-    export DEBIAN_FRONTENT=noninteractive ; \
+    export DEBIAN_FRONTEND=noninteractive ; \
     apt-get update \
  && apt-get install --no-install-recommends --yes \
     uwsgi \

@@ -1,11 +1,5 @@
 version: '3'
 services:
-  db:
-    build:
-      context: docker/db
-    restart: always
-    volumes:
-      - "pg_data:/var/lib/postgresql/data"
   vault:
     ports:
       - "8200:8200"
@@ -19,4 +13,3 @@ services:
 volumes:
   devday_media:
   devday_static:
-  pg_data:

@@ -12,8 +12,7 @@ RUN set -eu ; \
     ca-certificates \
     curl \
     dumb-init \
-    gettext \
-    git \
+    gettext-base \
     libjpeg62-turbo \
     libmagic1 \
     libpng16-16 \

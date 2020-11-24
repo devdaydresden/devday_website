@@ -1,16 +1,16 @@
 version: '3'
 services:
   db:
-    image: ${DOCKER_REGISTRY}devday-website-db:prod
-    build:
-      dockerfile: Dockerfile-prod
+    image: postgres:12
     env_file:
       prod-env-db
-  vault:
-    image: ${DOCKER_REGISTRY}devday-website-vault:prod
-    build:
-      context: docker/vault
     volumes:
+      - "./docker/db/devday_db-prod.sql:/docker-entrypoint-initdb.d/init-user-db.sql"
+      - "pg_data:/var/lib/postgresql/data"
+  vault:
+    image: vault:1.6.0
+    volumes:
+      - "./docker/vault/config:/vault/config"
       - "vaultlogs:/vault/logs"
       - "vaultfile:/vault/file"
     command: server
@@ -68,3 +68,4 @@ volumes:
   vaultfile:
   devday_logs:
   devday_twitterwall:
+  pg_data:

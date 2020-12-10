@@ -13,7 +13,7 @@ CURL="curl --cacert config/ssl/vault.crt.pem"
 echo "Unseal keys and root token are kept in ${VAULT_KEY_FILE}"
 
 INIT_STATUS=$(${CURL} --silent ${VAULT_API_URL}/sys/init | \
-  python -c 'from __future__ import print_function; import json, sys; print(json.load(sys.stdin)["initialized"])')
+  python3 -c 'import json, sys; print(json.load(sys.stdin)["initialized"])')
 
 if [ "${INIT_STATUS}" = "True" ]; then
   if [ ! -f "${VAULT_KEY_FILE}" ]; then
@@ -33,21 +33,21 @@ else
   # unseal vault with 2 of 3 keys
   ${CURL} -X PUT --silent \
     --data "$(printf '{ "key": "%s" }' \
-    "$(python -c 'from __future__ import print_function; import json, sys; print(json.load(sys.stdin)["keys_base64"][0])' < "${VAULT_KEY_FILE}")")" \
+    "$(python3 -c 'import json, sys; print(json.load(sys.stdin)["keys_base64"][0])' < "${VAULT_KEY_FILE}")")" \
     ${VAULT_API_URL}/sys/unseal > /dev/null
   ${CURL} -X PUT --silent \
     --data "$(printf '{ "key": "%s" }' \
-    "$(python -c 'from __future__ import print_function; import json, sys; print(json.load(sys.stdin)["keys_base64"][1])' < "${VAULT_KEY_FILE}")")" \
+    "$(python3 -c 'import json, sys; print(json.load(sys.stdin)["keys_base64"][1])' < "${VAULT_KEY_FILE}")")" \
     ${VAULT_API_URL}/sys/unseal > /dev/null
   ${CURL} --fail --silent ${VAULT_API_URL}/sys/health > /dev/null
   echo "Vault unsealed successfully"
 fi
 
-ROOT_TOKEN=$(python -c 'from __future__ import print_function; import json, sys; print(json.load(sys.stdin)["root_token"])' < "${VAULT_KEY_FILE}")
+ROOT_TOKEN=$(python3 -c 'import json, sys; print(json.load(sys.stdin)["root_token"])' < "${VAULT_KEY_FILE}")
 
 # enable audit logging
 HAS_AUDIT_LOGFILE=$(${CURL} --silent -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/sys/audit | \
-  python -c 'from __future__ import print_function; import json, sys; print("logfile/" in json.load(sys.stdin))')
+  python3 -c 'import json, sys; print("logfile/" in json.load(sys.stdin))')
 if [ "${HAS_AUDIT_LOGFILE}" = "True" ]; then
   echo "Audit logging is already initialized"
 else
@@ -57,18 +57,31 @@ else
   echo "Enabled audit logging to /vault/logs/audit.log"
 fi
 
-# enable versioning for secret backend
+IS_SECRETS_AVAILABLE=$(${CURL} --silent -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/sys/mounts | \
+  python3 -c 'import json, sys; print("secret/" in json.load(sys.stdin)["data"])')
+
+if [ "${IS_SECRETS_AVAILABLE}" = "True" ]; then
+  echo "Secret engine /secret is mounted"
+else
+  # create secret backend
+  ${CURL} -X POST --silent -H "X-Vault-Token: ${ROOT_TOKEN}" \
+    --data '{"type": "kv", "options": {"version": "2"}}' \
+    ${VAULT_API_URL}/sys/mounts/secret
+  echo "Mounted secret engine at /secret"
+fi
+
+# enable versioning for secret engine
 IS_SECRET_V2=$(${CURL} --silent -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/sys/mounts/secret/tune | \
-  python -c 'from __future__ import print_function; import json, sys; print(json.load(sys.stdin)["options"]["version"] == "2")')
+  python3 -c 'import json, sys; print(json.load(sys.stdin)["options"]["version"] == "2")')
 
 if [ "${IS_SECRET_V2}" = "True" ]; then
-  echo "Secret backend /secret is already versioned (KV 2)"
+  echo "Secret engine /secret is already versioned (KV 2)"
 else
-  # enable versioning for secret backend
+  # enable versioning for secret engine
   ${CURL} -X POST --silent -H "X-Vault-Token: ${ROOT_TOKEN}" \
     --data '{"options": {"version": "2"}}' \
     ${VAULT_API_URL}/sys/mounts/secret/tune
-  echo "Enabled versioning for secret mount"
+  echo "Enabled versioning for secret engine /secret"
 fi
 
 # setup policy
@@ -94,13 +107,13 @@ else
     $(openssl rand -base64 64) \
     $(openssl rand -base64 30))" \
     ${VAULT_API_URL}/secret/data/devday >/dev/null
-  ${CURL} --silent --fail -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/secret/data/devday | python -m json.tool
+  ${CURL} --silent --fail -H "X-Vault-Token: ${ROOT_TOKEN}" ${VAULT_API_URL}/secret/data/devday | python3 -m json.tool
 fi
 
 if [ -f "../../prod-env" ]; then
   . ../../prod-env
   if [ -n "${VAULT_TOKEN}" ]; then
-    TOKEN_INFO=$(${CURL} --silent -X POST -H "X-Vault-Token: ${ROOT_TOKEN}" --data "$(printf '{"token": "%s"}' "${VAULT_TOKEN}")" ${VAULT_API_URL}/auth/token/lookup | python -c 'from __future__ import print_function; import json, sys; j=json.load(sys.stdin); print("errors" in j and "invalid" or j["data"]["expire_time"])')
+    TOKEN_INFO=$(${CURL} --silent -X POST -H "X-Vault-Token: ${ROOT_TOKEN}" --data "$(printf '{"token": "%s"}' "${VAULT_TOKEN}")" ${VAULT_API_URL}/auth/token/lookup | python3 -c 'import json, sys; j=json.load(sys.stdin); print("errors" in j and "invalid" or j["data"]["expire_time"])')
     if [ "${TOKEN_INFO}" = "invalid" ]; then
       echo "Current application token is invalid"
     else
@@ -115,7 +128,7 @@ fi
 APP_TOKEN=$(${CURL} -X POST --silent -H "X-Vault-Token: ${ROOT_TOKEN}" \
   --data '{"policies": ["devday"], "metadata": {"user": "devday"}, "ttl": "24h", "renewable": true}' \
   ${VAULT_API_URL}/auth/token/create/devday-app | \
-  python -c 'from __future__ import print_function; import json, sys; print(json.load(sys.stdin)["auth"]["client_token"])')
+  python3 -c 'import json, sys; print(json.load(sys.stdin)["auth"]["client_token"])')
 echo "Created application token"
 
 if [ -f "../../prod-env" ]; then

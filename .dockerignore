@@ -1,6 +1,7 @@
 *.log
-*.mo
-*.pyc
+**/.gitignore
+**/*.mo
+**/*.pyc
 .*.swp
 .DS_Store
 .git
@@ -10,7 +11,7 @@
 .vagrant/
 .venv/
 .vscode/
-__pycache__/
+**/__pycache__/
 
 /backup/
 /devday/media

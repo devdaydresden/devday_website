@@ -1,14 +1,16 @@
 version: '3'
 services:
   db:
-    image: ${DOCKER_REGISTRY}devday-website-db:dev
-    restart: "no"
+    image: postgres:12
     ports:
       - "15432:5432"
     env_file:
       dev-env-db
+    volumes:
+      - "pg_data:/var/lib/postgresql/data"
+      - "./docker/db/devday_db.sql:/docker-entrypoint-initdb.d/init-user-db.sql"
   vault:
-    image: vault:1.0.2
+    image: vault:1.6.0
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: devday_root
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
@@ -36,3 +38,6 @@ services:
       - "devday_media:/app/media"
       - "devday_static:/app/static"
       - "./devday:/app"
+
+volumes:
+  pg_data:

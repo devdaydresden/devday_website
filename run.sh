@@ -34,7 +34,7 @@ docker_compose_up() {
       APP_TOKEN=$(curl -X POST --silent -H "X-Vault-Token: devday_root" --fail \
       --data '{"policies": ["devday"], "metadata": {"user": "devday"}, "ttl": "24h", "renewable": true}' \
       http://localhost:8200/v1/auth/token/create/devday-app | \
-      python -c 'from __future__ import print_function; import json, sys; print(json.load(sys.stdin)["auth"]["client_token"])')
+      python3 -c 'import json, sys; print(json.load(sys.stdin)["auth"]["client_token"])')
   echo "VAULT_TOKEN=${APP_TOKEN}" > dev-env
   $DOCKER_COMPOSE up -d
 }
@@ -103,7 +103,12 @@ touch dev-env
 case "$cmd" in
   backup)
     echo "*** Running backup"
-    $DOCKER_COMPOSE -f docker-compose.tools.yml run --rm backup
+    $DOCKER_COMPOSE up -d db
+    $DOCKER_COMPOSE exec db sh -c 'while ! pg_isready; do sleep 1; done'
+    BACKUPDATA=$(date +%Y%m%d-%H%M%S%z)
+    mkdir -p backup
+    $DOCKER_COMPOSE exec db pg_dump -U postgres devday | gzip > "backup/dev-db-${BACKUPDATA}.sql.gz"
+    $DOCKER_COMPOSE run --rm --no-deps -T --entrypoint "tar cz -C /app/media ." app > "backup/dev-media-${BACKUPDATA}.tar.gz"
     ;;
   buildbase)
     echo "*** Building Docker base image"

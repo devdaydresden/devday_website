@@ -1,5 +1,5 @@
 /**
- * Build on 2019-9-10
+ * Build on 2021-1-13
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -13688,6 +13688,9 @@ form .btn {
               box-shadow: 2px 0 0 #ffffff, 4px 0 0 #ffffff, 4px -2px 0 #ffffff, 4px -4px 0 #ffffff, 4px -6px 0 #ffffff, 4px -8px 0 #ffffff;
       -webkit-transform: rotate(45deg);
               transform: rotate(45deg); }
+
+textarea.cke_source {
+  max-height: none; }
 
 .speaker-image {
   max-width: 280px;

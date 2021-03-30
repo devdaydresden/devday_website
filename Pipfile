@@ -35,6 +35,7 @@ django-formtools = "*"
 django-postgres-extra = "*"
 djangorestframework = "*"
 djangocms-column = "*"
+django-treebeard = "<4.5"
 
 [dev-packages]
 coverage = "*"

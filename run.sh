@@ -6,38 +6,7 @@ set -e
 dbdump=''
 mediadump=''
 container='app'
-DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.dev.yml"
-export DOCKER_REGISTRY="${DOCKER_REGISTRY:-devdaydresden}/"  # note trailing /
 
-
-docker_compose_up() {
-  $DOCKER_COMPOSE up -d vault
-  while ! http_proxy= curl --silent --fail http://localhost:8200/v1/sys/health; do
-    echo -n '.'
-  done
-  echo " vault is running"
-  # fill vault with content
-  http_proxy= \
-      curl -X POST -H "X-Vault-Token: devday_root" --fail \
-      --data '{"data": {"postgresql_password": "devday", "secret_key": "s3cr3t", "confirmation_salt": "s4lt3d-stuff"}}' \
-      http://localhost:8200/v1/secret/data/devday
-  http_proxy= \
-      curl -X PUT -H "X-Vault-Token: devday_root" --fail \
-      --data "$(printf '{"policy": "%s"}' \
-      "$(sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/\\n/g' -e 's/"/\\"/g' < docker/vault/devday_policy.hcl)")" \
-      http://localhost:8200/v1/sys/policy/devday
-  http_proxy= \
-      curl -X POST -H "X-Vault-Token: devday_root" --fail \
-      --data '{"allowed_policies": ["devday"]}"' \
-      http://localhost:8200/v1/auth/token/roles/devday-app
-  http_proxy= \
-      APP_TOKEN=$(curl -X POST --silent -H "X-Vault-Token: devday_root" --fail \
-      --data '{"policies": ["devday"], "metadata": {"user": "devday"}, "ttl": "24h", "renewable": true}' \
-      http://localhost:8200/v1/auth/token/create/devday-app | \
-      python3 -c 'import json, sys; print(json.load(sys.stdin)["auth"]["client_token"])')
-  echo "VAULT_TOKEN=${APP_TOKEN}" > dev-env
-  $DOCKER_COMPOSE up -d
-}
 
 setup_postgres_root_password() {
   # define initial PostgreSQL root password
@@ -60,7 +29,6 @@ usage: ./run.sh backup
        ./run.sh manage [...]
        ./run.sh messages
        ./run.sh purge
-       ./run.sh pushbase
        ./run.sh -d databasedump.sql.gz -m mediadump.tar.gz restore
        ./run.sh [-c container] shell
        ./run.sh start
@@ -103,40 +71,40 @@ touch dev-env
 case "$cmd" in
   backup)
     echo "*** Running backup"
-    $DOCKER_COMPOSE up -d db
-    $DOCKER_COMPOSE exec db sh -c 'while ! pg_isready; do sleep 1; done'
+    docker-compose up -d db
+    docker-compose exec db sh -c 'while ! pg_isready; do sleep 1; done'
     BACKUPDATA=$(date +%Y%m%d-%H%M%S%z)
     mkdir -p backup
-    $DOCKER_COMPOSE exec db pg_dump -U postgres devday | gzip > "backup/dev-db-${BACKUPDATA}.sql.gz"
-    $DOCKER_COMPOSE run --rm --no-deps -T --entrypoint "tar cz -C /app/media ." app > "backup/dev-media-${BACKUPDATA}.tar.gz"
+    docker-compose exec db pg_dump -U postgres devday | gzip > "backup/dev-db-${BACKUPDATA}.sql.gz"
+    docker-compose run --rm --no-deps -T --entrypoint "tar cz -C /app/media ." app > "backup/dev-media-${BACKUPDATA}.tar.gz"
     ;;
   buildbase)
     echo "*** Building Docker base image"
-    docker build --pull -t devdaydresden/devday_website_python_base:latest -f python_base.Dockerfile $@ .
+    docker build --pull -t devdaydresden/devday_website_python_base:latest_dev -f python_base.Dockerfile $@ .
     ;;
   build)
     echo "*** Building Docker images"
     setup_postgres_root_password
-    $DOCKER_COMPOSE build $@
+    docker-compose build $@
     ;;
   compose)
-    $DOCKER_COMPOSE $@
+    docker-compose $@
     ;;
   coverage)
-    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
+    if [ -z "$(docker-compose ps -q)" ]; then
       echo "*** Starting all containers"
-      docker_compose_up
+      docker-compose up -d
     fi
-    $DOCKER_COMPOSE exec "${container}" coverage run --branch manage.py test -v1 -k $@
-    $DOCKER_COMPOSE exec "${container}" coverage report -m
-    $DOCKER_COMPOSE exec "${container}" coverage html
+    docker-compose exec "${container}" coverage run --branch manage.py test -v1 -k $@
+    docker-compose exec "${container}" coverage report -m
+    docker-compose exec "${container}" coverage html
     ;;
   coveralls)
-    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
+    if [ -z "$(docker-compose ps -q)" ]; then
       echo "*** Starting all containers"
-      docker_compose_up
+      docker_compose up -d
     fi
-    $DOCKER_COMPOSE exec "${container}" env \
+    docker-compose exec "${container}" env \
       CI_BRANCH="${TRAVIS_BRANCH}" \
       CI_BUILD_URL="${TRAVIS_BUILD_WEB_URL}" \
       CI_NAME="Travis" \
@@ -146,13 +114,13 @@ case "$cmd" in
   devdata)
     echo "    Starting containers"
     setup_postgres_root_password
-    docker_compose_up
+    docker-compose up -d
     echo "    Compiling translations"
-    $DOCKER_COMPOSE exec "${container}" python3 manage.py compilemessages
+    docker-compose exec "${container}" python3 manage.py compilemessages
     echo "    Running migrations"
-    $DOCKER_COMPOSE exec "${container}" python3 manage.py migrate
+    docker-compose exec "${container}" python3 manage.py migrate
     echo "    Filling database"
-    $DOCKER_COMPOSE exec "${container}" python3 manage.py devdata
+    docker-compose exec "${container}" python3 manage.py devdata
     ;;
   docker-push)
     if [ -n "$DOCKER_USERNAME" ]; then
@@ -161,28 +129,24 @@ case "$cmd" in
       echo "WARNING: \$DOCKER_USERNAME is not set.  Assuming you're already logged in to Docker" >&2
     fi
     echo "*** Pushing Docker images to Docker hub"
-    $DOCKER_COMPOSE push
+    docker-compose push
     ;;
   log|logs)
-    $DOCKER_COMPOSE logs -f "${container}"
+    docker-compose logs -f "${container}"
     ;;
   manage)
-    $DOCKER_COMPOSE exec "${container}" python3 manage.py $@
+    docker-compose exec "${container}" python3 manage.py $@
     ;;
   messages)
-    $DOCKER_COMPOSE exec "${container}" python3 manage.py makemessages -l de --no-obsolete
-    $DOCKER_COMPOSE exec "${container}" python3 manage.py compilemessages -l de
+    docker-compose exec "${container}" python3 manage.py makemessages -l de --no-obsolete
+    docker-compose exec "${container}" python3 manage.py compilemessages -l de
     ;;
   purge)
     echo "*** Purge data"
     echo "    Deleting all containers and volumes"
-    $DOCKER_COMPOSE down --volumes
+    docker-compose down --volumes
     echo "    Deleting media files"
     rm -rf devday/media/*
-    ;;
-  pushbase)
-    echo "*** Pushing Docker base image"
-    docker push devdaydresden/devday_website_python_base:latest
     ;;
   restore)
     if [ -z "${dbdump}" ]; then
@@ -195,39 +159,39 @@ case "$cmd" in
     fi
     echo "*** Restoring database dump ${dbdump} and media dump ${mediadump}"
     echo "    Deleting all containers and volumes"
-    $DOCKER_COMPOSE down --volumes
+    docker-compose down --volumes
     echo "    Starting containers"
-    docker_compose_up
+    docker-compose up -d
     echo "    Waiting for database to be available"
-    $DOCKER_COMPOSE exec db sh -c 'until pg_isready -U devday -d devday; do sleep 1; done'
+    docker-compose exec db sh -c 'until pg_isready -U devday -d devday; do sleep 1; done'
     echo "    Importing database dump"
-    gunzip -c "${dbdump}" | $DOCKER_COMPOSE exec -T db psql -U devday devday
+    gunzip -c "${dbdump}" | docker-compose exec -T db psql -U devday devday
     echo "    Unpacking media dump"
-    $DOCKER_COMPOSE exec -T "${container}" tar xz -C /app/media < "${mediadump}"
+    docker-compose exec -T "${container}" tar xz -C /app/media < "${mediadump}"
     echo "*** Running migrations"
-    $DOCKER_COMPOSE exec "${container}" python3 manage.py migrate
+    docker-compose exec "${container}" python3 manage.py migrate
     echo "*** Import completed"
     ;;
   shell)
     echo "*** Starting shell in ${container} container"
-    $DOCKER_COMPOSE exec "${container}" sh
+    docker-compose exec "${container}" sh
     ;;
   start|'')
-    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
+    if [ -z "$(docker-compose ps -q)" ]; then
       echo "*** Starting all containers"
-      docker_compose_up
+      docker-compose up -d
     fi
-    $DOCKER_COMPOSE logs -f "${container}"
+    docker-compose logs -f "${container}"
     ;;
   stop)
-    $DOCKER_COMPOSE down
+    docker-compose down
     ;;
   test)
-    if [ -z "$($DOCKER_COMPOSE ps -q)" ]; then
+    if [ -z "$(docker-compose ps -q)" ]; then
       echo "*** Starting all containers"
-      docker_compose_up
+      docker-compose up -d
     fi
-    $DOCKER_COMPOSE exec "${container}" python3 manage.py test -v1 -k $@
+    docker-compose exec "${container}" python3 manage.py test -v1 -k $@
     ;;
   *)
     echo -e "error: unknown action \"${cmd}\":\n" >&2

@@ -16,6 +16,21 @@ setup_postgres_root_password() {
     || echo "POSTGRES_PASSWORD=$(openssl rand -base64 30)" >dev-env-db
 }
 
+setup_dev_env() {
+  [ -f "dev-env" ] || touch dev-env
+
+  grep -q POSTGRESQL_PASSWORD dev-env \
+    || echo 'POSTGRESQL_PASSWORD=devday' >>dev-env
+  grep -q SECRET_KEY dev-env \
+    || echo "SECRET_KEY=$(openssl rand -base64 30)" >>dev-env
+  grep -q CONFIRMATION_SALT dev-env \
+    || echo "CONFIRMATION_SALT=$(openssl rand -base64 30)" >>dev-env
+  grep -q "ADMINS=" dev-env \
+    || echo "ADMINS=Local Admin <admin@devday.de>" >>dev-env
+  grep -q "DEBUG=" dev-env \
+    || echo "DEBUG=true" >>dev-env
+}
+
 
 usage() {
     cat >&2 <<EOD
@@ -78,13 +93,10 @@ case "$cmd" in
     docker-compose exec db pg_dump -U postgres devday | gzip > "backup/dev-db-${BACKUPDATA}.sql.gz"
     docker-compose run --rm --no-deps -T --entrypoint "tar cz -C /app/media ." app > "backup/dev-media-${BACKUPDATA}.tar.gz"
     ;;
-  buildbase)
-    echo "*** Building Docker base image"
-    docker build --pull -t devdaydresden/devday_website_python_base:latest_dev -f python_base.Dockerfile $@ .
-    ;;
   build)
     echo "*** Building Docker images"
     setup_postgres_root_password
+    setup_dev_env
     docker-compose build $@
     ;;
   compose)
@@ -114,6 +126,7 @@ case "$cmd" in
   devdata)
     echo "    Starting containers"
     setup_postgres_root_password
+    setup_dev_env
     docker-compose up -d
     echo "    Compiling translations"
     docker-compose exec "${container}" python3 manage.py compilemessages
@@ -179,6 +192,8 @@ case "$cmd" in
   start|'')
     if [ -z "$(docker-compose ps -q)" ]; then
       echo "*** Starting all containers"
+      setup_postgres_root_password
+      setup_dev_env
       docker-compose up -d
     fi
     docker-compose logs -f "${container}"

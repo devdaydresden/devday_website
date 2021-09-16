@@ -8,10 +8,10 @@ The project consists of a Django CMS content management part and some custom Dja
 This project uses a number of tools and frameworks. Here are the major
 documentation links:
 
-- Django: https://docs.djangoproject.com/en/1.11/
-- Django-CMS: http://docs.django-cms.org/en/release-3.5.x/
+- Django: https://docs.djangoproject.com/en/2.2/
+- Django-CMS: http://docs.django-cms.org/en/release-3.8.x/
 - Crispy-Forms: https://django-crispy-forms.readthedocs.io/en/latest/
-- Python 3: https://docs.python.org/3.6/
+- Python 3: https://docs.python.org/3/
 - yarn: https://yarnpkg.com/en/docs
 - Sass: https://sass-lang.com/documentation/file.SASS_REFERENCE.html
 - Gulp: https://github.com/gulpjs/gulp/tree/v3.9.1/docs

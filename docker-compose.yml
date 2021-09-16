@@ -1,15 +1,45 @@
 version: '3'
 services:
-  vault:
+  db:
+    image: postgres:12
     ports:
-      - "8200:8200"
-    cap_add:
-      - IPC_LOCK
+      - "15432:5432"
+    env_file:
+      dev-env-db
+    volumes:
+      - "pg_data:/var/lib/postgresql/data"
+      - "./docker/db/devday_db.sql:/docker-entrypoint-initdb.d/init-user-db.sql"
   app:
+    image: devdaydresden/devday_website_app:latest_dev
+    build:
+      context: .
+      dockerfile: app-dev.Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        no_proxy: ${no_proxy},vault
+    read_only: true
+    ports:
+      - "8000:8000"
+    environment:
+      DEVDAY_PG_DBNAME: devday
+      DEVDAY_PG_HOST: db
+      DEVDAY_PG_PORT: 5432
+      DEVDAY_PG_USER: devday
+      DJANGO_SETTINGS_MODULE: devday.settings
+    env_file:
+      dev-env
+    volumes:
+      - "./devday:/app"
+      - "devday_logs:/app/logs"
+      - "devday_media:/app/media"
+      - "devday_static:/app/static"
+    tmpfs:
+      - /tmp
     depends_on:
       - db
-      - vault
 
 volumes:
+  devday_logs:
   devday_media:
   devday_static:
+  pg_data:

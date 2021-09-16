@@ -1,6 +1,9 @@
-FROM devdaydresden/devday_website_python_base
-MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
+FROM debian:buster-slim AS builder
+LABEL maintainer="Jan Dittberner <jan.dittberner@t-systems.com>"
 LABEL vendor="T-Systems Multimedia Solutions GmbH"
+
+COPY Pipfile Pipfile.lock /python-code/
+WORKDIR /python-code/
 
 RUN \
     set -eu ; \
@@ -18,13 +21,23 @@ RUN \
     apt-get update \
  && apt-get install --no-install-recommends -y \
     build-essential \
+    ca-certificates \
+    curl \
+    dumb-init \
+    gettext \
+    httpie \
+    iproute2 \
     libffi-dev \
     libjpeg-dev \
+    libjpeg62-turbo \
+    libmagic1 \
     libpng-dev \
     libpq-dev \
     libxml2-dev \
     libxslt-dev \
     linux-headers-$(dpkg --print-architecture) \
+    openssl \
+    procps \
     python3-dev \
     python3-pip \
     zlib1g-dev \
@@ -33,8 +46,7 @@ RUN \
  && rm -rf /root/.cache /root/.local /tmp/*.json \
  && python3 -m pip uninstall --yes pipenv \
  && apt-get clean \
- && rm -rf /var/lib/apt/lists/* \
- && find /usr/local -type d -name __pycache__ -print0 | xargs -0 rm -rf
+ && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8000
 

@@ -36,7 +36,6 @@ usage() {
     cat >&2 <<EOD
 usage: ./run.sh backup
        ./run.sh build
-       ./run.sh buildbase
        ./run.sh compose [...]
        ./run.sh coverage
        ./run.sh coveralls

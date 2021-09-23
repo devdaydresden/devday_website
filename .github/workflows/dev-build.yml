@@ -34,19 +34,18 @@ jobs:
           postgresql init scripts: docker/db/dev
       -
         name: Run tests
-        run:
-          run: >-
-            docker run --rm
-            -e DEVDAY_PG_DBNAME=devday
-            -e DEVDAY_PG_HOST=db
-            -e DEVDAY_PG_PORT=5432
-            -e DEVDAY_PG_USER=devday
-            -e DJANGO_SETTINGS_MODULE=devday.settings
-            -e POSTGRESQL_PASSWORD=devday
-            -e SECRET=test_secret
-            -e CONFIRMATION_SALT=test_confirmation_salt
-            -e "ADMINS=Admin1 <admin1@example.org>, Admin2 <admin2@example.org>"
-            -e DEBUG=true
-            -v ${{ github.workspace }}/devday:/app
-            devday_website_app:latest_dev
-            coverage run --branch manage.py test
+        run: >-
+          docker run --rm
+          -e DEVDAY_PG_DBNAME=devday
+          -e DEVDAY_PG_HOST=db
+          -e DEVDAY_PG_PORT=5432
+          -e DEVDAY_PG_USER=devday
+          -e DJANGO_SETTINGS_MODULE=devday.settings
+          -e POSTGRESQL_PASSWORD=devday
+          -e SECRET=test_secret
+          -e CONFIRMATION_SALT=test_confirmation_salt
+          -e "ADMINS=Admin1 <admin1@example.org>, Admin2 <admin2@example.org>"
+          -e DEBUG=true
+          -v ${{ github.workspace }}/devday:/app
+          devday_website_app:latest_dev
+          coverage run --branch manage.py test

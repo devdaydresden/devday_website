@@ -12,11 +12,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  # build the production Docker image using information from
-  # https://github.com/marketplace/actions/build-and-push-docker-images
   docker-ci:
     runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
       -
         name: Build application image
         id: docker_build
@@ -27,17 +44,19 @@ jobs:
           tags: devday_website_app:latest_dev
           file: app-dev.Dockerfile
       -
-        name: Setup PostgreSQL database
-        uses: m4nu56/postgresql-action@1.0
-        with:
-          postgresql version: '12'
-          postgresql init scripts: docker/db/dev
+        name: Setup test database user
+        run: |
+          umask 077
+          echo "localhost:5432:*:postgres:postgres" > ~/.pgpass
+          ls -l ~/.pgpass
+          cat ~/.pgpass
+          psql -h localhost -p 5432 -U postgres -d postgres -w -f docker/db/dev/init-user-db.sql
       -
         name: Run tests
         run: >-
           docker run --rm
           -e DEVDAY_PG_DBNAME=devday
-          -e DEVDAY_PG_HOST=localhost
+          -e DEVDAY_PG_HOST=db
           -e DEVDAY_PG_PORT=5432
           -e DEVDAY_PG_USER=devday
           -e DJANGO_SETTINGS_MODULE=devday.settings
@@ -46,8 +65,8 @@ jobs:
           -e CONFIRMATION_SALT=test_confirmation_salt
           -e "ADMINS=Admin1 <admin1@example.org>, Admin2 <admin2@example.org>"
           -e DEBUG=true
-          --network host
+          --network "${{ job.container.network }}"
           --entrypoint ""
           -v ${{ github.workspace }}/devday:/app
           devday_website_app:latest_dev
-          coverage run --branch manage.py test
+          coverage run --branch manage.py test -v 2

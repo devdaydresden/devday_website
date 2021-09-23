@@ -14,7 +14,7 @@ on:
 jobs:
   # build the production Docker image using information from
   # https://github.com/marketplace/actions/build-and-push-docker-images
-  docker:
+  docker-ci:
     runs-on: ubuntu-latest
     steps:
       -
@@ -23,6 +23,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: false
+          load: true
           tags: devday_website_app:latest_dev
           file: app-dev.Dockerfile
       -
@@ -33,11 +34,9 @@ jobs:
           postgresql init scripts: docker/db/dev
       -
         name: Run tests
-        uses: addnab/docker-run-action@v3
-        with:
-          image: devday_website_app:latest_dev
-          run: coverage run --branch manage.py test
-          options: >-
+        run:
+          run: >-
+            docker run --rm
             -e DEVDAY_PG_DBNAME=devday
             -e DEVDAY_PG_HOST=db
             -e DEVDAY_PG_PORT=5432
@@ -49,3 +48,5 @@ jobs:
             -e "ADMINS=Admin1 <admin1@example.org>, Admin2 <admin2@example.org>"
             -e DEBUG=true
             -v ${{ github.workspace }}/devday:/app
+            devday_website_app:latest_dev
+            coverage run --branch manage.py test

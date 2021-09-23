@@ -27,7 +27,7 @@ jobs:
           file: app-dev.Dockerfile
       -
         name: Setup PostgreSQL database
-        uses: m4nu56/postgresql-action@v1
+        uses: m4nu56/postgresql-action@1.0
         with:
           postgresql version: '12'
           postgresql init scripts: docker/db/dev

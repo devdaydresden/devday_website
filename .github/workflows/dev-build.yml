@@ -47,5 +47,6 @@ jobs:
           -e "ADMINS=Admin1 <admin1@example.org>, Admin2 <admin2@example.org>"
           -e DEBUG=true
           -v ${{ github.workspace }}/devday:/app
+          -w /app
           devday_website_app:latest_dev
           coverage run --branch manage.py test

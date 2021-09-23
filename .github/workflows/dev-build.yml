@@ -30,7 +30,7 @@ jobs:
         with:
           push: false
           load: true
-          tags: devdaydresden/devday_website_app:latest_dev
+          tags: devday_website_app:latest_dev
           file: app-dev.Dockerfile
       -
         name: setup PostgreSQL database
@@ -42,7 +42,7 @@ jobs:
         name: run tests
         uses: addnab/docker-run-action@v3
         with:
-          image: devdaydresden/devday_website_app:latest_dev
+          image: devday_website_app:latest_dev
           run: coverage run --branch manage.py test
           options: >-
             -e DEVDAY_PG_DBNAME=devday
@@ -55,3 +55,4 @@ jobs:
             -e CONFIRMATION_SALT=test_confirmation_salt
             -e "ADMINS=Admin1 <admin1@example.org>, Admin2 <admin2@example.org>"
             -e DEBUG=true
+            -v ${{ github.workspace }}:/devday:/app

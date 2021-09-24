@@ -48,8 +48,6 @@ jobs:
         run: |
           umask 077
           echo "localhost:5432:*:postgres:postgres" > ~/.pgpass
-          ls -l ~/.pgpass
-          cat ~/.pgpass
           psql -h localhost -p 5432 -U postgres -d postgres -w -f docker/db/dev/init-user-db.sql
       -
         name: Run tests

@@ -68,3 +68,8 @@ jobs:
           -v ${{ github.workspace }}/devday:/app
           devday_website_app:latest_dev
           coverage run --branch manage.py test -v 2
+      -
+        name: Coveralls
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          base-path: devday

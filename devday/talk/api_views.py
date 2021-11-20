@@ -3,15 +3,24 @@ from rest_framework.relations import StringRelatedField
 from talk.models import Talk
 
 
-class SessionSerializer(serializers.ModelSerializer):
+class SessionSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.CharField(source="slug")
+    description = serializers.CharField(source="abstract")
+
+    # TODO Jens: Replace 'event' and 'speakers' with proper nested relationships once their endpoints are done.
     event = StringRelatedField()
-    published_speaker = StringRelatedField()
+    published_speakers = StringRelatedField(many=True)
 
     class Meta:
         model = Talk
-        fields = ["url", "title", "abstract", "published_speakers", "event"]
+        fields = ["id", "url", "title", "description", "published_speakers", "event"]
+        lookup_field = "slug"
+        extra_kwargs = {
+            "url": {'lookup_field': 'slug'}
+        }
 
 
 class SessionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Talk.objects.filter(published_speakers__isnull=False)
     serializer_class = SessionSerializer
+    lookup_field = 'slug'

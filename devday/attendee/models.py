@@ -74,6 +74,7 @@ class DevDayUser(AbstractBaseUser, PermissionsMixin):
     contact_permission_date = models.DateTimeField(
         _("contact permission date"), null=True, blank=True
     )
+    favourite_talks = models.ManyToManyField("talk.Talk")
 
     objects = DevDayUserManager()
 

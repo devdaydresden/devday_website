@@ -12,11 +12,11 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 Please keep this list of settings sorted alphabetically!
 
 """
+import json
 import mimetypes
 import os
 from email.utils import parseaddr as parse_email_address
-
-import requests
+from typing import Any, Callable
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
@@ -26,36 +26,11 @@ def gettext(s):
     return s
 
 
-_VAULT_DATA = None
+_setting_json = None
+_vault_integration = None
 
 
-def _build_vault_secret_url():
-    return "{}/{}/data/devday".format(
-        os.environ["VAULT_URL"], os.environ.setdefault("VAULT_SECRET_PATH", "v1/secret")
-    )
-
-
-def _fetch_from_vault():
-    global _VAULT_DATA
-    if not _VAULT_DATA:
-        if "VAULT_URL" in os.environ and "VAULT_TOKEN" in os.environ:
-            _VAULT_RENEW_URL = "{}/v1/auth/token/renew-self".format(
-                os.environ["VAULT_URL"]
-            )
-            s = requests.Session()
-            s.headers.update({"x-vault-token": os.environ["VAULT_TOKEN"]})
-            r = s.post(_VAULT_RENEW_URL, data="{}")
-            r.raise_for_status()
-            r = s.get(_build_vault_secret_url())
-            r.raise_for_status()
-            _VAULT_DATA = r.json()["data"]["data"]
-            s.close()
-        else:
-            _VAULT_DATA = {}
-    return _VAULT_DATA
-
-
-def get_setting(var_name, value_type: callable = str, default_value=None):
+def get_setting(var_name, value_type: Callable[[str], Any] = str, default_value=None):
     """
     Try to get a setting from Vault or the environment and fallback to
     default_value if it is defined.
@@ -71,32 +46,48 @@ def get_setting(var_name, value_type: callable = str, default_value=None):
     :param default_value: default value
     :return: variable from Vault or the environment
     """
-    try:
-        value = _fetch_from_vault()[var_name.lower()]
-    except KeyError:
-        try:
-            value = os.environ[var_name]
-        except KeyError:
-            if default_value is None:
-                if "VAULT_URL" in os.environ:
-                    error_msg = (
-                        "Define and set %s in Vault key at %s or set the"
-                        " environment variable %s"
-                    ) % (var_name.lower(), _build_vault_secret_url(), var_name)
-                else:
-                    error_msg = (
-                        "Set VAULT_URL and VAULT_TOKEN to use settings in"
-                        " HashiCorp Vault or set the environment variable %s"
-                    ) % (var_name.upper())
-                raise ImproperlyConfigured(error_msg)
+    global _setting_json, _vault_integration
+
+    if _setting_json is None:
+        if "VAULT_URL" in os.environ:
+            from devday.vault_integration import vault_integration
+
+            _vault_integration = vault_integration
+            _setting_json = _vault_integration.get_settings_from_vault()
+        else:
+            if os.path.exists("settings.json"):
+                with open("settings.json", "r") as settings_json:
+                    _setting_json = json.load(settings_json)
             else:
-                return default_value
-    try:
-        return value_type(value)
-    except ValueError:
-        raise ImproperlyConfigured(
-            "Cannot interpret value %s as %s", value, value_type.__name__
-        )
+                _setting_json = {}
+
+    if var_name.lower() in _setting_json:
+        return _setting_json[var_name.lower()]
+
+    if var_name in os.environ:
+        value = os.environ[var_name]
+        try:
+            return value_type(value)
+        except ValueError:
+            raise ImproperlyConfigured(
+                "Cannot interpret value %s as %s", value, value_type.__name__
+            )
+
+    if default_value is None:
+        if "VAULT_URL" in os.environ:
+            error_msg = (
+                "Define and set {} in Vault key at {} or set the"
+                " environment variable {}"
+            ).format(var_name.lower(), _vault_integration.secret_url, var_name)
+        else:
+            error_msg = (
+                "Set VAULT_URL, VAULT_ROLE_ID and VAULT_SECRET_ID to use"
+                " settings in HashiCorp Vault, define settings in a"
+                " settings.json file or set the environment variable {}"
+            ).format(var_name)
+        raise ImproperlyConfigured(error_msg)
+    else:
+        return default_value
 
 
 def split_emails(value: str):
@@ -109,9 +100,7 @@ def split_list(value: str):
 
 mimetypes.add_type("image/svg+xml", ".svg", True)
 
-
 DEBUG = get_setting("DEBUG", bool, default_value=False)
-
 
 # settings for django-django_registration
 # see: https://django-registration.readthedocs.io/en/2.1.1/index.html
@@ -197,7 +186,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.messages",
     "rest_framework",
-    "devday",
+    "devday.apps.DevDayApp",
     "event.apps.EventsConfig",
     "attendee.apps.AttendeeConfig",
     "talk.apps.SessionsConfig",
@@ -261,8 +250,12 @@ ROOT_URLCONF = "devday.urls"
 SECRET_KEY = get_setting("SECRET_KEY")
 
 SPONSORING_OPEN = get_setting("SPONSORING_OPEN", bool, False)
-SPONSORING_FROM_EMAIL = get_setting("SPONSORING_FROM_EMAIL", default_value="info@devday.de")
-SPONSORING_RECIPIENTS = get_setting("SPONSORING_RECIPIENTS", split_list, default_value=["info@devday.de"])
+SPONSORING_FROM_EMAIL = get_setting(
+    "SPONSORING_FROM_EMAIL", default_value="info@devday.de"
+)
+SPONSORING_RECIPIENTS = get_setting(
+    "SPONSORING_RECIPIENTS", split_list, default_value=["info@devday.de"]
+)
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -351,7 +344,6 @@ LOGGING = {
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
 
 ADMINUSER_EMAIL = get_setting("DEVDAY_ADMINUSER_EMAIL", default_value="admin@devday.de")
 

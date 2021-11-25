@@ -48,7 +48,7 @@ class SessionSerializer(serializers.HyperlinkedModelSerializer):
         ret = super().to_representation(instance)
 
         ret["actions"] = {
-            "favourite": ret["url"] + "favourite"
+            "favourite": ret["url"] + "favourite/"
         }
 
         return ret

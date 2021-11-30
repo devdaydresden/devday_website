@@ -207,7 +207,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "django_file_form",
     "django_file_form.ajaxuploader",
-    "twitterfeed",
+    "twitterfeed.apps.TwitterFeedConfig",
     "speaker.apps.SpeakerConfig",
     "django.contrib.postgres",
     "psqlextra",
@@ -318,6 +318,7 @@ THUMBNAIL_PROCESSORS = (
 TIME_ZONE = "Europe/Berlin"
 TWITTERFEED_PROXIES = {}
 TWITTERFEED_PATHS = ["/"]
+TWITTERFEED_INTERVAL = get_setting("TWITTERFEED_INTERVAL", int, 60)
 
 LOGGING = {
     "version": 1,

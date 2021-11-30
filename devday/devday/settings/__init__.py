@@ -365,6 +365,8 @@ _local_log_names = [
     "twitterfeed",
 ]
 
+RUN_SCHEDULED_JOBS = get_setting("RUN_SCHEDULED_JOBS", value_type=bool, default_value=False)
+
 if DEBUG:
     DEBUG_TOOLBAR_PATCH_SETTINGS = False
     DEBUG_TOOLBAR_CONFIG = {

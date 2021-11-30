@@ -2,7 +2,7 @@ import logging
 
 from django.apps import AppConfig
 from django.conf import settings
-from django.core.management import call_command, CommandError
+from django.core.management import call_command
 from django.utils.translation import ugettext_lazy as _
 
 from devday.apps import get_scheduler
@@ -34,5 +34,11 @@ class TwitterFeedConfig(AppConfig):
     name = "twitterfeed"
     verbose_name = _("Twitter Feed")
 
+    def __init__(self, app_name, app_module):
+        self.job_scheduled = False
+        super().__init__(app_name, app_module)
+
     def ready(self):
-        schedule_fetch_twitter_feed()
+        if (not self.job_scheduled) and settings.RUN_SCHEDULED_JOBS:
+            schedule_fetch_twitter_feed()
+            self.job_scheduled = True

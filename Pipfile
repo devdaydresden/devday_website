@@ -38,6 +38,7 @@ djangocms-column = "*"
 django-treebeard = "<4.5"
 django-debug-toolbar = "*"
 apscheduler = "*"
+"backports.zoneinfo" = "*"
 
 [dev-packages]
 coverage = "*"

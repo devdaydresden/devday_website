@@ -15,7 +15,7 @@ ALLOWED_HOSTS = [
     "www.devday.de",
     "localhost",
     "devday-test.mms-at-work.de",
-    "devday-test.t-systems-mms.eu",
+    "devday-test.t-systems-mms.com",
 ]
 
 DEFAULT_FROM_EMAIL = "info@devday.de"

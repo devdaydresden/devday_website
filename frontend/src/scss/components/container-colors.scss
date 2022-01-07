@@ -28,6 +28,20 @@
     }
 }
 
+.col-start {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    text-align:  center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    > .row {
+        width: 100%;
+    }
+}
+
 .col-highlight {
     background: $highlight;
 

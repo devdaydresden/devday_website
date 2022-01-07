@@ -1,5 +1,5 @@
 /**
- * Build on 2021-1-13
+ * Build on 2022-1-7
  * @package devday17-frontend
  * @version v1.0.0
  */
@@ -13442,6 +13442,11 @@ h6 {
       margin: 0 auto;
       display: block; }
 
+.col-highlight.col-start {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  text-align: left; }
+
 .stripe {
   width: 100%; }
   .stripe.c-base {
@@ -13463,6 +13468,21 @@ h6 {
   padding-top: 15px;
   padding-bottom: 15px; }
   .col-center > .row {
+    width: 100%; }
+
+.col-start {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  text-align: center;
+  padding-top: 15px;
+  padding-bottom: 15px; }
+  .col-start > .row {
     width: 100%; }
 
 .col-highlight {

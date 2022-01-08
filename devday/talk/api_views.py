@@ -48,8 +48,7 @@ class SessionSerializer(serializers.HyperlinkedModelSerializer):
         ret = super().to_representation(instance)
 
         ret["actions"] = {
-            "favourite": ret["url"] + "favourite",
-            "unfavourite": ret["url"] + "unfavourite"
+            "favourite": ret["url"] + "favourite/"
         }
 
         return ret
@@ -60,8 +59,8 @@ class SessionViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SessionSerializer
     lookup_field = 'slug'
 
-    @action(detail=True, methods=['post'])
-    def favourite(self, request, slug):
+    @action(detail=True, methods=['put'])
+    def favourite(self, request, slug=None):
         session = self.get_object()
         user = request.user
         user.favourite_talks.add(session)
@@ -69,8 +68,8 @@ class SessionViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['post'])
-    def unfavourite(self, request, slug):
+    @favourite.mapping.delete
+    def delete_favourite(self, request, slug=None):
         session = self.get_object()
         user = request.user
         user.favourite_talks.remove(session)

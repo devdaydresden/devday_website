@@ -222,6 +222,7 @@ INSTALLED_APPS = [
     "speaker.apps.SpeakerConfig",
     "django.contrib.postgres",
     "psqlextra",
+    "drf_spectacular",
 ]
 
 LANGUAGE_CODE = "de"
@@ -253,6 +254,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 ROOT_URLCONF = "devday.urls"
@@ -441,3 +443,8 @@ else:
         "http": get_setting("http_proxy"),
         "https": get_setting("https_proxy"),
     }
+
+SPECTACULAR_SETTINGS = {
+    'SERVE_PUBLIC': False,
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticated'],
+}

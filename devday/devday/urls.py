@@ -5,7 +5,9 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap as sitemap_view
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import path
 from django.views.static import serve as serve_static
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 from devday.views import SendEmailView, exception_test_view
 from rest_framework import routers
@@ -25,6 +27,9 @@ router.register(r"events", EventDetailViewSet)
 
 urlpatterns = [
     url(r"^api/", include(router.urls)),
+    url(r"^api/schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    url(r"^api/schema/redoc/", SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    url(r"^api/schema/", SpectacularAPIView.as_view(), name='schema'),
     url(r"^api-auth/", include("rest_framework.urls")),
     url(r"^api-token-auth/", views.obtain_auth_token),
     url(r"^admin/", admin.site.urls),

@@ -186,6 +186,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.messages",
     "rest_framework",
+    "rest_framework.authtoken",
     "devday.apps.DevDayApp",
     "event.apps.EventsConfig",
     "attendee.apps.AttendeeConfig",
@@ -211,6 +212,7 @@ INSTALLED_APPS = [
     "speaker.apps.SpeakerConfig",
     "django.contrib.postgres",
     "psqlextra",
+    "drf_spectacular",
 ]
 
 LANGUAGE_CODE = "de"
@@ -240,8 +242,10 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 ROOT_URLCONF = "devday.urls"
@@ -436,3 +440,8 @@ else:
         "http": get_setting("http_proxy"),
         "https": get_setting("https_proxy"),
     }
+
+SPECTACULAR_SETTINGS = {
+    'SERVE_PUBLIC': False,
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticated'],
+}

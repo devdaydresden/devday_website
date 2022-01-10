@@ -719,14 +719,6 @@
             "index": "pypi",
             "version": "==2.27.1"
         },
-        "setuptools": {
-            "hashes": [
-                "sha256:2932bfeb248c648dc411ea9714d5a6de7a33ef1a0db2f0fce644d8172b0479e8",
-                "sha256:2b62b3dbec1fe95585dadf3bd9a014c8c578624918190428c3a7994bb52ae2b8"
-            ],
-            "markers": "python_version >= '3.7'",
-            "version": "==60.3.1"
-        },
         "six": {
             "hashes": [
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
@@ -1007,14 +999,6 @@
             ],
             "index": "pypi",
             "version": "==4.0.3"
-        },
-        "pip": {
-            "hashes": [
-                "sha256:070e4bf493c7c2c9f6a08dd797dd3c066d64074c38e9e8a0fb4e6541f266d96c",
-                "sha256:a0e11645ee37c90b40c46d607070c4fd583e2cd46231b1c06e389c5e814eed76"
-            ],
-            "index": "pypi",
-            "version": "==18.0"
         },
         "requests": {
             "hashes": [

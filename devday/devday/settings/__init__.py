@@ -262,7 +262,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 ROOT_URLCONF = "devday.urls"
@@ -386,7 +386,9 @@ _local_log_names = [
     "twitterfeed",
 ]
 
-RUN_SCHEDULED_JOBS = get_setting("RUN_SCHEDULED_JOBS", value_type=bool, default_value=False)
+RUN_SCHEDULED_JOBS = get_setting(
+    "RUN_SCHEDULED_JOBS", value_type=bool, default_value=False
+)
 
 if DEBUG:
     DEBUG_TOOLBAR_PATCH_SETTINGS = False
@@ -459,6 +461,6 @@ else:
     }
 
 SPECTACULAR_SETTINGS = {
-    'SERVE_PUBLIC': False,
-    'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticated'],
+    "SERVE_PUBLIC": False,
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],
 }

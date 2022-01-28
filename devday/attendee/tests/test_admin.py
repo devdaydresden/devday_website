@@ -69,8 +69,8 @@ class DevDayUserAdmin(TestCase):
             reverse("admin:attendee_devdayuser_add"),
             data={
                 "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "password1": "l0nGs3cr3t",
+                "password2": "l0nGs3cr3t",
                 "attendees-TOTAL_FORMS": "0",
                 "attendees-INITIAL_FORMS": "0",
                 "attendees-MIN_NUM_FORMS": "0",
@@ -79,7 +79,7 @@ class DevDayUserAdmin(TestCase):
         )
         user = User.objects.get(email="test@example.org")
         self.assertIsNotNone(user.id)
-        self.assertTrue(user.check_password("s3cr3t"))
+        self.assertTrue(user.check_password("l0nGs3cr3t"))
         self.assertRedirects(
             response, reverse("admin:attendee_devdayuser_change", args=(user.id,))
         )

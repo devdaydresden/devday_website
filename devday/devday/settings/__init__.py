@@ -109,6 +109,23 @@ ALLOWED_HOSTS = get_setting(
     "ALLOWED_HOSTS", split_list, default_value=["0.0.0.0", "127.0.0.1", "localhost"]
 )
 AUTH_USER_MODEL = "attendee.DevDayUser"
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 8,
+        },
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -245,7 +262,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 ROOT_URLCONF = "devday.urls"
@@ -369,7 +386,9 @@ _local_log_names = [
     "twitterfeed",
 ]
 
-RUN_SCHEDULED_JOBS = get_setting("RUN_SCHEDULED_JOBS", value_type=bool, default_value=False)
+RUN_SCHEDULED_JOBS = get_setting(
+    "RUN_SCHEDULED_JOBS", value_type=bool, default_value=False
+)
 
 if DEBUG:
     DEBUG_TOOLBAR_PATCH_SETTINGS = False
@@ -404,7 +423,7 @@ else:
             },
             "loggers": {
                 "django.request": {
-                    "handlers": ["file", "mail_admins"],
+                    "handlers": ["console", "mail_admins"],
                     "level": "ERROR",
                     "propagate": False,
                 }
@@ -420,18 +439,12 @@ else:
                 "include_html": True,
                 "filters": ["require_debug_false"],
             },
-            "file": {
-                "class": "logging.FileHandler",
-                "filename": os.path.join(BASE_DIR, "logs", "devday.log"),
-                "formatter": "simple",
-                "level": "INFO",
-            },
         }
     )
 
     for log_name in _local_log_names:
         LOGGING["loggers"][log_name] = {
-            "handlers": ["file", "mail_admins"],
+            "handlers": ["console", "mail_admins"],
             "level": "INFO",
             "propagate": True,
         }
@@ -442,6 +455,6 @@ else:
     }
 
 SPECTACULAR_SETTINGS = {
-    'SERVE_PUBLIC': False,
-    'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticated'],
+    "SERVE_PUBLIC": False,
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],
 }

@@ -26,7 +26,7 @@ from event.tests import event_testutils
 ADMIN_EMAIL = "admin@example.org"
 ADMIN_PASSWORD = "sUp3rS3cr3t"
 USER_EMAIL = "test@example.org"
-USER_PASSWORD = "s3cr3t"
+USER_PASSWORD = "l0nGs3cr3t"
 
 
 class DevDayRegistrationFormTest(TestCase):
@@ -60,26 +60,26 @@ class DevDayUserCreationFormTest(TestCase):
     def test_form_save_commit(self):
         form = DevDayUserCreationForm(
             data={
-                "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "email": USER_EMAIL,
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
             }
         )
         user = form.save(commit=True)
         self.assertIsNotNone(user.id)
-        self.assertTrue(user.check_password("s3cr3t"))
+        self.assertTrue(user.check_password(USER_PASSWORD))
 
     def test_form_save_no_commit(self):
         form = DevDayUserCreationForm(
             data={
-                "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "email": USER_EMAIL,
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
             }
         )
         user = form.save(commit=False)
         self.assertIsNone(user.id)
-        self.assertTrue(user.check_password("s3cr3t"))
+        self.assertTrue(user.check_password(USER_PASSWORD))
 
 
 class RegistrationAuthenticationFormTest(TestCase):
@@ -100,37 +100,37 @@ class DevDayUserRegistrationFormTest(TestCase):
     def test_form_save_commit(self):
         form = DevDayUserRegistrationForm(
             data={
-                "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "email": USER_EMAIL,
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
             }
         )
         user = form.save(commit=True)
         self.assertIsNotNone(user.id)
         self.assertFalse(user.is_active)
         self.assertIsNone(user.contact_permission_date)
-        self.assertTrue(user.check_password("s3cr3t"))
+        self.assertTrue(user.check_password(USER_PASSWORD))
 
     def test_form_save_no_commit(self):
         form = DevDayUserRegistrationForm(
             data={
-                "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "email": USER_EMAIL,
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
             }
         )
         user = form.save(commit=False)
         self.assertIsNone(user.id)
         self.assertFalse(user.is_active)
         self.assertIsNone(user.contact_permission_date)
-        self.assertTrue(user.check_password("s3cr3t"))
+        self.assertTrue(user.check_password(USER_PASSWORD))
 
     def test_form_save_with_contact_permission(self):
         form = DevDayUserRegistrationForm(
             data={
-                "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "email": USER_EMAIL,
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
                 "accept_general_contact": "checked",
             }
         )
@@ -138,7 +138,7 @@ class DevDayUserRegistrationFormTest(TestCase):
         self.assertIsNotNone(user.id)
         self.assertFalse(user.is_active)
         self.assertIsNotNone(user.contact_permission_date)
-        self.assertTrue(user.check_password("s3cr3t"))
+        self.assertTrue(user.check_password(USER_PASSWORD))
 
 
 class AttendeeRegistrationFormTest(TestCase):
@@ -166,24 +166,24 @@ class AttendeeRegistrationFormTest(TestCase):
         form = AttendeeRegistrationForm(
             event=self.event,
             data={
-                "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "email": USER_EMAIL,
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
             },
         )
         user = form.save(commit=True)
         self.assertIsNotNone(user.id)
         self.assertFalse(user.is_active)
         self.assertIsNone(user.contact_permission_date)
-        self.assertTrue(user.check_password("s3cr3t"))
+        self.assertTrue(user.check_password(USER_PASSWORD))
 
     def test_form_save_contact_permission(self):
         form = AttendeeRegistrationForm(
             event=self.event,
             data={
-                "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "email": USER_EMAIL,
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
                 "accept_general_contact": "checked",
             },
         )
@@ -191,22 +191,22 @@ class AttendeeRegistrationFormTest(TestCase):
         self.assertIsNotNone(user.id)
         self.assertFalse(user.is_active)
         self.assertIsNotNone(user.contact_permission_date)
-        self.assertTrue(user.check_password("s3cr3t"))
+        self.assertTrue(user.check_password(USER_PASSWORD))
 
     def test_form_save_no_commit(self):
         form = AttendeeRegistrationForm(
             event=self.event,
             data={
-                "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "email": USER_EMAIL,
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
             },
         )
         user = form.save(commit=False)
         self.assertIsNone(user.id)
         self.assertFalse(user.is_active)
         self.assertIsNone(user.contact_permission_date)
-        self.assertTrue(user.check_password("s3cr3t"))
+        self.assertTrue(user.check_password(USER_PASSWORD))
 
 
 class AttendeeProfileFormTest(TestCase):

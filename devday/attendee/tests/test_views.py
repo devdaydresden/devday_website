@@ -30,7 +30,7 @@ from talk.tests import talk_testutils
 ADMIN_EMAIL = "admin@example.org"
 ADMIN_PASSWORD = "sUp3rS3cr3t"
 USER_EMAIL = "test@example.org"
-USER_PASSWORD = "s3cr3t"
+USER_PASSWORD = "l0nGs3cr3t"
 
 
 class AttendeeProfileViewTest(TestCase):
@@ -143,8 +143,8 @@ class AttendeeRegistrationViewTest(TestCase):
             self.url,
             data={
                 "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
             },
             follow=False,
         )
@@ -161,8 +161,8 @@ class AttendeeRegistrationViewTest(TestCase):
             self.url,
             data={
                 "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
                 "accept_general_contact": "checked",
             },
             follow=False,
@@ -386,7 +386,7 @@ class DevDayRegistrationViewTest(TestCase):
         self.assertEqual(data["next"], next_url)
         # post form with correct data
         data.update(
-            {"email": "test@example.org", "password1": "s3cr3t", "password2": "s3cr3t"}
+            {"email": "test@example.org", "password1": USER_PASSWORD, "password2": USER_PASSWORD}
         )
         response = self.client.post(self.url, data=data, follow=False)
         self.assertRedirects(response, "/accounts/register/complete/")
@@ -401,8 +401,8 @@ class DevDayRegistrationViewTest(TestCase):
         request.POST.update(
             next="/foo",
             email="test@example.org",
-            password1="s3cr3t",
-            password2="s3cr3t",
+            password1=USER_PASSWORD,
+            password2=USER_PASSWORD,
         )
         context = DevDayUserRegistrationView(request=request).get_email_context(
             "testkey"
@@ -425,8 +425,8 @@ class DevDayRegistrationViewTest(TestCase):
             self.url,
             data={
                 "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
             },
             follow=False,
         )
@@ -444,8 +444,8 @@ class DevDayRegistrationViewTest(TestCase):
             self.url,
             data={
                 "email": "test@example.org",
-                "password1": "s3cr3t",
-                "password2": "s3cr3t",
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
                 "accept_general_contact": "checked",
             },
             follow=False,

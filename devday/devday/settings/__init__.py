@@ -423,7 +423,7 @@ else:
             },
             "loggers": {
                 "django.request": {
-                    "handlers": ["file", "mail_admins"],
+                    "handlers": ["console", "mail_admins"],
                     "level": "ERROR",
                     "propagate": False,
                 }
@@ -439,18 +439,12 @@ else:
                 "include_html": True,
                 "filters": ["require_debug_false"],
             },
-            "file": {
-                "class": "logging.FileHandler",
-                "filename": os.path.join(BASE_DIR, "logs", "devday.log"),
-                "formatter": "simple",
-                "level": "INFO",
-            },
         }
     )
 
     for log_name in _local_log_names:
         LOGGING["loggers"][log_name] = {
-            "handlers": ["file", "mail_admins"],
+            "handlers": ["console", "mail_admins"],
             "level": "INFO",
             "propagate": True,
         }

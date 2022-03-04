@@ -193,6 +193,7 @@ DEFAULT_EMAIL_SENDER = "info-bounce@devday.de"
 
 INSTALLED_APPS = [
     "ckeditor",
+    "corsheaders",
     "djangocms_admin_style",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -243,6 +244,7 @@ MEDIA_URL = "/media/"
 MIDDLEWARE = [
     "cms.middleware.utils.ApphookReloadMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -254,6 +256,13 @@ MIDDLEWARE = [
     "cms.middleware.toolbar.ToolbarMiddleware",
 ]
 MIGRATION_MODULES = {}
+
+CORS_ALLOWED_ORIGINS = get_setting(
+    "CORS_ALLOWED_ORIGINS",
+    split_list,
+    default_value=["https://www.devday.de", "https://devday.de"],
+)
+CORS_URLS_REGEX = r"^/api/.*$"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

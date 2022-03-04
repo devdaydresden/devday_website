@@ -40,6 +40,7 @@ django-debug-toolbar = "*"
 apscheduler = "*"
 "backports.zoneinfo" = "*"
 drf-spectacular = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 coverage = "*"

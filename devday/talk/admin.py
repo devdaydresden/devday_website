@@ -91,7 +91,9 @@ class TalkPublishedSpeakerInline(PrefetchAdmin, admin.StackedInline):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         field = super().formfield_for_foreignkey(db_field, request, **kwargs)
-        field.queryset = field.queryset.filter(event__exact=request._obj_.event)
+        if request._obj_:
+            event = request._obj_.event
+            field.queryset = field.queryset.filter(event__exact=event)
         return field
 
 

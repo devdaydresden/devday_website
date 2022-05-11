@@ -93,7 +93,7 @@ class Command(BaseCommand):
                 self.stdout.write("no tweets yet, fetching tweets from one year in the past")
             response = requests.get(
                 twitter_search_url, headers=headers,
-                params={'q': search_query.value, 'include_entities': 'true', 'count': 100},
+                params={'q': search_query.value, 'include_entities': 'true', 'count': 100, 'tweet_mode': 'extended'},
                 proxies=settings.TWITTERFEED_PROXIES)
         if options['verbosity'] > 1:
             self.stdout.write("fetched from " + response.url)

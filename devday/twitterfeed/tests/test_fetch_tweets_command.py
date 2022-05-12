@@ -134,10 +134,16 @@ class TestFetchTweetCommand(TestCase):
         TwitterSetting.objects.create(name='search_query', value='#example OR TO:example')
         call_command('fetch_tweets', verbosity=0)
         mock_get.assert_called_with(
-            'https://api.twitter.com/1.1/search/tweets.json',
-            headers={'Authorization': 'Bearer 4ll y0ur b4s3 4r3 b3l0ng t0 u5'},
-            params={'q': '#example OR TO:example', 'include_entities': 'true', 'count': 100},
-            proxies={})
+            "https://api.twitter.com/1.1/search/tweets.json",
+            headers={"Authorization": "Bearer 4ll y0ur b4s3 4r3 b3l0ng t0 u5"},
+            params={
+                "q": "#example OR TO:example",
+                "include_entities": "true",
+                "count": 100,
+                "tweet_mode": "extended",
+            },
+            proxies={},
+        )
 
     @patch('twitterfeed.management.commands.fetch_tweets.requests.get')
     def test_command_fetches_after_last_tweet(self, mock_get):

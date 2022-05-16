@@ -19,6 +19,7 @@ RUN \
     export PIPENV_DOTENV_LOCATION=config/.env ; \
     export PIPENV_USE_SYSTEM=1 ; \
     apt-get update \
+ && apt-get dist-upgrade -y \
  && apt-get install --no-install-recommends -y \
     build-essential \
     ca-certificates \

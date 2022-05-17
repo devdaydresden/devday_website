@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $highlight: #35a4a3;
 $base: #171034;
 $base-v2: #2A2D49;
@@ -86,11 +88,11 @@ $mf-active-top: -$mf-font-size !default;
 
 // Margin & Paddings
 $mf-gap: $mf-font-size * 1.5 !default;
-$mf-spacer: $mf-font-size / 4 !default;
+$mf-spacer: math.div($mf-font-size, 4) !default;
 $mf-fieldset-margin: 0 0 $mf-gap * 2 !default;
 $mf-checkbox-gap: $mf-font-size * 2 !default;
 $mf-checkbox-top: 0 !default;
-$mf-radio-margin: $mf-font-size / -4 !default;
+$mf-radio-margin: math.div($mf-font-size, -4) !default;
 
 // Colors
 $mf-input-color: #333333 !default;

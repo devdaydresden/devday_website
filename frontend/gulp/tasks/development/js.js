@@ -9,12 +9,11 @@ var header     = require('gulp-header');
 var fs         = require('fs');
 var config     = require('../../config');
 
-
-var options      = minimist(process.argv.slice(2), config.environment);
+var options    = minimist(process.argv.slice(2), config.environment);
 
 // concat javascript files
 // write sourcemaps and uglify if param production is set
-gulp.task('js', function(callback) {
+function build_js(callback) {
     var result = gulp.src(config.js.src)
         .pipe(gulpif(options.env === config.environment.production, sourcemaps.init({
             loadMaps: true
@@ -36,9 +35,9 @@ gulp.task('js', function(callback) {
     }
 
     return result;
-});
+}
 
-gulp.task('js-bs', function(callback) {
+function js_browsersync(callback) {
     return gulp.src(config.js.src)
         .pipe(gulpif(options.env === config.environment.production, sourcemaps.init({
             loadMaps: true
@@ -52,4 +51,4 @@ gulp.task('js-bs', function(callback) {
         .on('end', function() {
              gulp.start(['bs-reload']);
         }));
-});
+}

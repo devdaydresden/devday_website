@@ -105,9 +105,9 @@ module.exports = {
 
     jquery: {
         src:  [
-            'bower_components/jquery/dist/jquery.js'
+            nodemodules + '/jquery/dist/jquery.js'
         ],
-        dest: assets + '/js/'
+        dest: assets + '/js'
     },
 
     images: {

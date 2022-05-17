@@ -1,7 +1,8 @@
-var gulp         = require('gulp');
-var config       = require('../../config');
+/*
+var { src, dest } = require('gulp');
+var config        = require('../config');
 
-gulp.task('jquery', function(callback) {
-   return gulp.src(config.jquery.src)
-      .pipe(gulp.dest(config.jquery.dest));
-});
+function build_jquery() {
+   return src(config.jquery.src).pipe(dest(config.jquery.dest));
+}
+*/

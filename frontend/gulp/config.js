@@ -19,7 +19,6 @@ module.exports = {
     strings: {
         banner: [
             '/**',
-            ' * Build on <%= new Date().getFullYear() %>-<%= new Date().getMonth() + 1 %>-<%= new Date().getDate() %>',
             ' * @package ' + pkg.name + '',
             ' * @version v' + pkg.version  + '',
             ' */',

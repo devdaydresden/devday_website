@@ -6,13 +6,12 @@
  *
  */
 
-var basepath = './';
-var assets = '../devday/devday/static';
-var srcDir = 'src';
-var nodemodules = 'node_modules';
-var srcTest = 'src-test';
-var fs = require('fs');
-var pkg = JSON.parse(fs.readFileSync('./package.json'));
+const basepath = './';
+const assets = '../devday/devday/static';
+const srcDir = 'src';
+const nodemodules = 'node_modules';
+const fs = require('fs');
+const pkg = JSON.parse(fs.readFileSync('./package.json'));
 
 module.exports = {
     basepath: basepath,
@@ -35,7 +34,7 @@ module.exports = {
 
     sass: {
         src: srcDir + '/scss/style.scss',
-        allsrc: [
+        all_src: [
             srcDir + '/scss/*.scss',
             srcDir + '/scss/components/*.scss',
             nodemodules + '@fortawesome/fontawesome-free/scss/*.scss'

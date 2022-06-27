@@ -1,9 +1,7 @@
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 
-@python_2_unicode_compatible
 class TwitterSetting(models.Model):
     name = models.CharField(
         verbose_name=_("setting name"), max_length=100, unique=True, blank=False
@@ -18,7 +16,6 @@ class TwitterSetting(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
 class TwitterProfileImage(models.Model):
     user_profile_image_url = models.CharField(max_length=255, unique=True)
     image_data = models.ImageField(
@@ -37,7 +34,6 @@ class TwitterProfileImage(models.Model):
         return self.user_profile_image_url
 
 
-@python_2_unicode_compatible
 class Tweet(models.Model):
     twitter_id = models.BigIntegerField(unique=True, null=False, blank=False)
     user_profile_image = models.ForeignKey(

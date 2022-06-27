@@ -12,7 +12,6 @@ from django.db import IntegrityError, models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -52,7 +51,6 @@ class DevDayUserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-@python_2_unicode_compatible
 class DevDayUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("email address"), unique=True)
     is_staff = models.BooleanField(

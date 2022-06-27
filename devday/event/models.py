@@ -2,7 +2,6 @@ from django.apps import apps
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
@@ -38,7 +37,6 @@ class EventManager(models.Manager):
         return event
 
 
-@python_2_unicode_compatible
 class Event(models.Model):
     title = models.CharField(verbose_name=_("Event title"), max_length=256, unique=True)
     slug = models.SlugField(verbose_name=_("Short name for URLs"), unique=True)

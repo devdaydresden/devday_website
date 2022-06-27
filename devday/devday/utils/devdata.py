@@ -131,7 +131,7 @@ class DevData:
         self.style = style if style else no_style()
 
     def __del__(self):
-        if self.devnull:
+        if hasattr(self, 'devnull') and self.devnull:
             self.devnull.close()
 
     def write_action(self, msg):

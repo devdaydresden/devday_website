@@ -6,7 +6,7 @@ title Context diagram Dev Day Website Neu
 Enterprise_Boundary(DEVDAY, "Dev Day infrastructure") {
   System_Boundary(Applications, "Applications") {
     System(DevDayPWA, "Dev Day website", "Progressive web application")
-    System(DevDayAPI, "Dev Day API", "Dev Day API (i.e. attendee management, sponsor management, mail)")
+    System(DevDayAPI, "Dev Day API", "Dev Day API (i.e. attendee management, mail, twitter proxy)")
     System(TwitterWall, "Dev Day Twitterwall", "Dev Day Twitter wall")
     System(Pretalx, "Pretalx", "Talk management")
     System(CMS, "WordPress", "WordPress CMS")

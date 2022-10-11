@@ -1,4 +1,4 @@
-FROM debian:buster-slim AS builder
+FROM debian:bullseye-slim AS builder
 
 RUN set -eu ; \
     export DEBIAN_FRONTEND=noninteractive ; \
@@ -44,7 +44,7 @@ RUN \
       --uid 10000 \
       devday
 
-COPY Pipfile Pipfile.lock /python-code/
+COPY pyproject.toml poetry.lock /python-code/
 WORKDIR /python-code/
 
 RUN \
@@ -54,25 +54,21 @@ RUN \
     export PYTHONFAULTHANDLER=1 ; \
     export PIP_NO_CACHE_DIR=off ; \
     export PIP_DISABLE_VERSION_CHECK=on ; \
-    export PIP_DEFAULT_TIMEOUT=100 ; \
-    export PIPENV_HIDE_EMOJIS=true ; \
-    export PIPENV_COLORBLIND=true ; \
-    export PIPENV_NOSPIN=true ; \
-    export PIPENV_DOTENV_LOCATION=config/.env ; \
-    export PIPENV_USE_SYSTEM=1 \
- && python3 -m pip install -U pip wheel pipenv \
- && pipenv install --three --system --deploy --ignore-pipfile \
+    export PIP_DEFAULT_TIMEOUT=100 \ 
+ && python3 -m pip install -U wheel poetry \
+ && poetry config virtualenvs.in-project true \ 
+ && poetry install \
  && rm -rf /root/.cache /root/.local /tmp/*.json \
- && python3 -m pip uninstall --yes pipenv
+ && python3 -m pip uninstall --yes poetry
 
 COPY devday /app/
 RUN set -eu ; \
     cd /app ; \
     echo 'SECRET_KEY="dummy"' > compilemessages_settings.py \
- && DJANGO_SETTINGS_MODULE=compilemessages_settings python3 manage.py compilemessages \
+ && DJANGO_SETTINGS_MODULE=compilemessages_settings /python-code/.venv/bin/python3 manage.py compilemessages \
  && rm -rf compilemessages_settings.py __pycache__ /var/lib/apt/lists/*
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 LABEL maintainer="Jan Dittberner <jan.dittberner@t-systems.com>"
 LABEL vendor="T-Systems Multimedia Solutions GmbH"
 
@@ -118,7 +114,7 @@ COPY devday /app/
 
 COPY docker/app/start-application.sh docker/app/uwsgi.ini docker/app/devday.wsgi /app/
 
-COPY --from=builder /usr/local/lib/python3.7/dist-packages /usr/local/lib/python3.7/dist-packages
+COPY --from=builder /python-code/.venv /python-code/.venv
 COPY --from=builder /app/attendee/locale/de/LC_MESSAGES/django.mo /app/attendee/locale/de/LC_MESSAGES/
 COPY --from=builder /app/devday/locale/de/LC_MESSAGES/django.mo /app/devday/locale/de/LC_MESSAGES/
 COPY --from=builder /app/event/locale/de/LC_MESSAGES/django.mo /app/event/locale/de/LC_MESSAGES/

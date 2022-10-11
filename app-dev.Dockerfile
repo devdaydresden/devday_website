@@ -50,4 +50,6 @@ EXPOSE 8000
 VOLUME /app
 WORKDIR /app
 
-ENTRYPOINT ["dumb-init", "/python-code/.venv/bin/python3", "manage.py", "runserver", "0.0.0.0:8000"]
+ENV PATH="/python-code/.venv/bin:$PATH"
+
+ENTRYPOINT ["dumb-init", "python3", "manage.py", "runserver", "0.0.0.0:8000"]

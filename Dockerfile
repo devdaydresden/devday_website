@@ -61,11 +61,13 @@ RUN \
  && rm -rf /root/.cache /root/.local /tmp/*.json \
  && python3 -m pip uninstall --yes poetry
 
+ENV PATH="/python-code/.venv/bin:$PATH"
+
 COPY devday /app/
 RUN set -eu ; \
     cd /app ; \
     echo 'SECRET_KEY="dummy"' > compilemessages_settings.py \
- && DJANGO_SETTINGS_MODULE=compilemessages_settings /python-code/.venv/bin/python3 manage.py compilemessages \
+ && DJANGO_SETTINGS_MODULE=compilemessages_settings python3 manage.py compilemessages \
  && rm -rf compilemessages_settings.py __pycache__ /var/lib/apt/lists/*
 
 FROM debian:bullseye-slim
@@ -128,5 +130,7 @@ RUN mkdir -p /app/media /app/static /app/logs ; \
     chown -R devday.devday /app/media /app/static /app/logs
 VOLUME /app/media /app/static /app/logs
 USER devday
+
+ENV PATH="/python-code/.venv/bin:$PATH"
 
 ENTRYPOINT ["dumb-init", "/app/start-application.sh"]

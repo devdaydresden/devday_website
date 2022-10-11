@@ -6,7 +6,6 @@ set -e
 dbdump=''
 mediadump=''
 container='app'
-container_python='/python-code/.venv/bin/python3'
 
 
 setup_postgres_root_password() {
@@ -107,7 +106,7 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker-compose up -d
     fi
-    docker-compose exec "${container}" coverage run --branch manage.py test -v1 -k $@
+    docker-compose exec "${container}" coverage run --branch manage.py test -v1 --keepdb $@
     docker-compose exec "${container}" coverage report -m
     docker-compose exec "${container}" coverage html
     ;;
@@ -129,11 +128,11 @@ case "$cmd" in
     setup_dev_env
     docker-compose up -d
     echo "    Compiling translations"
-    docker-compose exec "${container}" "${container_python}" manage.py compilemessages
+    docker-compose exec "${container}" python3 manage.py compilemessages
     echo "    Running migrations"
-    docker-compose exec "${container}" "${container_python}" manage.py migrate
+    docker-compose exec "${container}" python3 manage.py migrate
     echo "    Filling database"
-    docker-compose exec "${container}" "${container_python}" manage.py devdata
+    docker-compose exec "${container}" python3 manage.py devdata
     ;;
   docker-push)
     if [ -n "$DOCKER_USERNAME" ]; then
@@ -148,11 +147,11 @@ case "$cmd" in
     docker-compose logs -f "${container}"
     ;;
   manage)
-    docker-compose exec "${container}" "${container_python}" manage.py $@
+    docker-compose exec "${container}" python3 manage.py $@
     ;;
   messages)
-    docker-compose exec "${container}" "${container_python}" manage.py makemessages -l de --no-obsolete
-    docker-compose exec "${container}" "${container_python}" manage.py compilemessages -l de
+    docker-compose exec "${container}" python3 manage.py makemessages -l de --no-obsolete
+    docker-compose exec "${container}" python3 manage.py compilemessages -l de
     ;;
   purge)
     echo "*** Purge data"
@@ -182,7 +181,7 @@ case "$cmd" in
     echo "    Unpacking media dump"
     docker-compose exec -T "${container}" tar xz -C /app/media < "${mediadump}"
     echo "*** Running migrations"
-    docker-compose exec "${container}" "${container_python}" manage.py migrate
+    docker-compose exec "${container}" python3 manage.py migrate
     echo "*** Import completed"
     ;;
   shell)
@@ -206,7 +205,7 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker-compose up -d
     fi
-    docker-compose exec "${container}" "${container_python}" manage.py test -v1 -k $@
+    docker-compose exec "${container}" python3 manage.py test -v1 -k $@
     ;;
   *)
     echo -e "error: unknown action \"${cmd}\":\n" >&2

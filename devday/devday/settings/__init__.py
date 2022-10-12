@@ -329,11 +329,8 @@ TEMPLATES = [
                 "talk.context_processors.reservation_context_processor",
                 "event.contextprocessors.current_event_contextprocessor",
             ],
-            "loaders": [
-                "django.template.loaders.filesystem.Loader",
-                "django.template.loaders.app_directories.Loader",
-            ],
         },
+        "APP_DIRS": True,
     }
 ]
 THUMBNAIL_HIGH_RESOLUTION = True

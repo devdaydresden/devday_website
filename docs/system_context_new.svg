@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="1208px" preserveAspectRatio="none" style="width:1914px;height:1208px;" version="1.1" viewBox="0 0 1914 1208" width="1914px" zoomAndPan="magnify"><defs/><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" textLength="352" x="792.5" y="16.708">Context diagram Dev Day Website Neu</text><!--MD5=[64a2356494fe220f1cadbe248b124682]
+cluster DEVDAY--><rect fill="#FFFFFF" height="986" style="stroke: #444444; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;" width="907" x="541.08" y="211.9531"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="84" x="952.58" y="226.9482">«boundary»</text><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="204" x="892.58" y="245.1016">Dev Day infrastructure</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="84" x="952.58" y="260.0137">[Enterprise]</text><!--MD5=[4f404de55baf87f510f6f29ca86187cc]
+cluster Applications--><rect fill="#FFFFFF" height="631" style="stroke: #444444; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;" width="495" x="565.08" y="286.9531"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="84" x="770.58" y="301.9482">«boundary»</text><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="106" x="759.58" y="320.1016">Applications</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="62" x="781.58" y="335.0137">[System]</text><!--MD5=[b4e09d266be9964199f2622adcc056fa]
+cluster Backend--><rect fill="#FFFFFF" height="184" style="stroke: #444444; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;" width="859" x="565.08" y="989.9531"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="84" x="952.58" y="1004.9482">«boundary»</text><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="157" x="916.08" y="1023.1016">Backend Services</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="62" x="963.58" y="1038.0137">[System]</text><!--MD5=[47aa7ccc559546dc4b0a9626517cb6ca]
+cluster ExternalSystems--><rect fill="#FFFFFF" height="184" style="stroke: #444444; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;" width="431" x="1472.08" y="741.9531"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="84" x="1645.58" y="756.9482">«boundary»</text><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="154" x="1610.58" y="775.1016">External Systems</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="62" x="1656.58" y="790.0137">[System]</text><!--MD5=[dcd076bd9a6de58081886d11f6285406]
+entity DevDayPWA--><rect fill="#1168BD" height="85.1875" style="stroke: #3C7FC0; stroke-width: 1.5;" width="212" x="599.08" y="353.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="676.58" y="375.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="149" x="630.58" y="392.7734">Dev Day website</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="707.08" y="409.542"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="192" x="609.08" y="425.8389">Progressive web application</text><!--MD5=[e798dbde731ed4f1e39591c8d80bb2e1]
+entity DevDayAPI--><rect fill="#1168BD" height="117.7813" style="stroke: #3C7FC0; stroke-width: 1.5;" width="202" x="842.08" y="545.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="914.58" y="567.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="109" x="888.58" y="584.7734">Dev Day API</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="945.08" y="601.542"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="178" x="852.08" y="617.8389">Dev Day API (i.e. attendee</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="178" x="852.08" y="634.1357">management, mail, twitter</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="42" x="922.08" y="650.4326">proxy)</text><!--MD5=[b8dadd6482b11d869033e4f560f0b9ff]
+entity TwitterWall--><rect fill="#1168BD" height="85.1875" style="stroke: #3C7FC0; stroke-width: 1.5;" width="197" x="846.58" y="353.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="916.58" y="375.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="177" x="856.58" y="392.7734">Dev Day Twitterwall</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="947.08" y="409.542"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="137" x="876.58" y="425.8389">Dev Day Twitter wall</text><!--MD5=[ae2fe97d93b43f3d536139ab1f33409b]
+entity Pretalx--><rect fill="#1168BD" height="85.1875" style="stroke: #3C7FC0; stroke-width: 1.5;" width="144" x="581.08" y="816.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="624.58" y="838.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="63" x="621.58" y="855.7734">Pretalx</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="655.08" y="872.542"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="124" x="591.08" y="888.8389">Talk management</text><!--MD5=[b21194f3cc51182c46c07cbdb0c49fd9]
+entity CMS--><rect fill="#1168BD" height="85.1875" style="stroke: #3C7FC0; stroke-width: 1.5;" width="130" x="677.08" y="562.4531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="713.58" y="583.5918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="99" x="692.58" y="601.2734">WordPress</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="744.08" y="618.042"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="110" x="687.08" y="634.3389">WordPress CMS</text><!--MD5=[7ecf93eeeaaa0fdaf1b9c2d66d6701b7]
+entity Vault--><rect fill="#1168BD" height="101.4844" style="stroke: #3C7FC0; stroke-width: 1.5;" width="180" x="1026.08" y="1056.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="1087.58" y="1078.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="45" x="1093.58" y="1095.7734">Vault</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="1118.08" y="1112.542"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="156" x="1036.08" y="1128.8389">Hashicorp Vault Secret</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="60" x="1086.08" y="1145.1357">Manager</text><!--MD5=[89112a84c8daddb34abf4f068893e892]
+entity PostgreSQL--><rect fill="#1168BD" height="85.1875" style="stroke: #3C7FC0; stroke-width: 1.5;" width="169" x="693.58" y="1064.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="749.58" y="1086.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="106" x="725.08" y="1103.7734">PostgreSQL</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="780.08" y="1120.542"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="149" x="703.58" y="1136.8389">PostgreSQL database</text><!--MD5=[3274b1e447f2b36f9afd52386a168835]
+entity TMS--><rect fill="#1168BD" height="85.1875" style="stroke: #3C7FC0; stroke-width: 1.5;" width="167" x="1241.58" y="1064.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="1296.58" y="1086.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="105" x="1272.58" y="1103.7734">Mail system</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="1327.08" y="1120.542"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="147" x="1251.58" y="1136.8389">technical mail system</text><!--MD5=[3d19f7cd0352bb22d6b0855dff88d25a]
+entity MariaDB--><rect fill="#1168BD" height="52.5938" style="stroke: #3C7FC0; stroke-width: 1.5;" width="93" x="897.58" y="1080.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="915.58" y="1102.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="73" x="907.58" y="1119.7734">MariaDB</text><!--MD5=[f96d690baea4a0823d36c98ba0c3a2b4]
+entity Redis--><rect fill="#1168BD" height="52.5938" style="stroke: #3C7FC0; stroke-width: 1.5;" width="77" x="581.58" y="1080.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="591.58" y="1102.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="48" x="596.08" y="1119.7734">Redis</text><!--MD5=[9e170f2017f16cb321f506c9c82eb10a]
+entity TwitterAPI--><rect fill="#1168BD" height="101.4844" style="stroke: #3C7FC0; stroke-width: 1.5;" width="152" x="1488.08" y="808.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="1535.58" y="830.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="101" x="1513.58" y="847.7734">Twitter API</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="1566.08" y="864.542"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="128" x="1498.08" y="880.8389">Twitter's public API</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="70" x="1529.08" y="897.1357">endpoints</text><!--MD5=[350c22637fe25b8790011264289418cf]
+entity ScreenAtDevDay--><rect fill="#1168BD" height="101.4844" style="stroke: #3C7FC0; stroke-width: 1.5;" width="211" x="1675.58" y="808.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="1752.58" y="830.0918">«system»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="174" x="1694.08" y="847.7734">Twitter Wall screen</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="0" x="1783.08" y="864.542"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="187" x="1685.58" y="880.8389">Large Twitter wall screen at</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="131" x="1715.58" y="897.1357">the Dev Day venue</text><!--MD5=[9936271e4c3fed2c90ca1046560ef7e5]
+entity DevDayAdmin--><rect fill="#08427B" height="52.5938" style="stroke: #073B6F; stroke-width: 1.5;" width="151" x="104.58" y="369.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="151.58" y="391.0918">«person»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="131" x="114.58" y="408.7734">Dev Day admin</text><!--MD5=[8cf334e1a3ba261dae6121c65a122afc]
+entity DevDayTeam--><rect fill="#08427B" height="71.2188" style="stroke: #073B6F; stroke-width: 1.5;" width="150" x="199.08" y="38.4531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="245.58" y="59.5918">«person»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="124" x="209.08" y="77.2734">Dev Day team</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="73" x="237.58" y="95.8984">member</text><!--MD5=[e20d0e6082a4e7cc310344c880507982]
+entity DevDayContentTeam--><rect fill="#08427B" height="71.2188" style="stroke: #073B6F; stroke-width: 1.5;" width="220" x="291.08" y="360.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="372.58" y="382.0918">«person»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="200" x="301.08" y="399.7734">Dev Day content team</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="73" x="364.58" y="418.3984">member</text><!--MD5=[fe27765b05b0864103315e339497d440]
+entity DevDaySpeaker--><rect fill="#08427B" height="89.8438" style="stroke: #073B6F; stroke-width: 1.5;" width="218" x="1143.08" y="28.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="1223.58" y="50.0918">«person»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="164" x="1170.08" y="67.7734">Dev Day speaker (</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="198" x="1153.08" y="86.3984">potential and selected</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="89" x="1207.58" y="105.0234">speakers)</text><!--MD5=[3f9e17504eb287d48c1b9cf594b316fa]
+entity DevDaySponsor--><rect fill="#08427B" height="52.5938" style="stroke: #073B6F; stroke-width: 1.5;" width="171" x="513.58" y="47.4531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="570.58" y="68.5918">«person»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="151" x="523.58" y="86.2734">Dev Day sponsor</text><!--MD5=[ddd36fbed405effcaf5b7957133eed29]
+entity DevDayAttendee--><rect fill="#08427B" height="52.5938" style="stroke: #073B6F; stroke-width: 1.5;" width="180" x="720.08" y="47.4531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="781.58" y="68.5918">«person»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="160" x="730.08" y="86.2734">Dev Day attendee</text><!--MD5=[1cafa5b0a7b428f47d402479693b8407]
+entity DevDayCommittee--><rect fill="#08427B" height="71.2188" style="stroke: #073B6F; stroke-width: 1.5;" width="180" x="92.08" y="569.4531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="57" x="153.58" y="590.5918">«person»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="154" x="102.08" y="608.2734">Dev Day program</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="95" x="134.58" y="626.8984">committee</text><!--MD5=[6fce4eceb7e98f4cf504d3d6e4adb509]
+link DevDayPWA to DevDayAPI--><path d="M752.96,438.9931 C787.01,468.5431 833.33,508.7331 871.73,542.0431 " fill="none" id="DevDayPWA-&gt;DevDayAPI" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="875.9,545.6631,871.7416,536.7352,872.13,542.3787,866.4865,542.7671,875.9,545.6631" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="24" x="839.08" y="497.02">API</text><!--MD5=[7d6673ffce02918a640ff2f10373acc8]
+link DevDayPWA to Pretalx--><path d="M707.83,439.2031 C708.91,468.2031 708.31,503.7431 700.08,515.9531 C682.07,542.6731 651.52,518.8631 634.08,545.9531 C605.69,590.0431 631.53,611.5731 634.08,663.9531 C636.55,714.5431 642.6,772.2831 647.21,811.6231 " fill="none" id="DevDayPWA-&gt;Pretalx" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="647.83,816.8031,650.7495,807.3969,647.245,811.8375,642.8044,808.333,647.83,816.8031" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="24" x="635.08" y="609.52">API</text><!--MD5=[33dd5c0ea614cfd729e19011068b5960]
+link DevDayPWA to CMS--><path d="M712.57,439.2431 C718.69,473.3931 727.33,521.6431 733.68,557.0931 " fill="none" id="DevDayPWA-&gt;CMS" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="734.6,562.2231,736.9402,552.6563,733.7131,557.3024,729.0671,554.0753,734.6,562.2231" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="24" x="726.08" y="497.02">API</text><!--MD5=[40b728f775982be23acd1569c9737165]
+link DevDayPWA to TMS--><path d="M811.26,434.3731 C817.26,436.0231 823.23,437.5631 829.08,438.9531 C920.83,460.6731 957.32,422.0031 1039.08,468.9531 C1169.4,543.7931 1185.66,597.7131 1249.08,733.9531 C1300.09,843.5131 1317.01,986.9131 1322.51,1059.6931 " fill="none" id="DevDayPWA-&gt;TMS" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="1322.89,1064.8131,1326.2367,1055.5503,1322.5327,1059.8259,1318.2572,1056.1219,1322.89,1064.8131" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="106" x="1247.08" y="707.02">send bulk and</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="115" x="1245.08" y="722.1528">individual mails</text><!--MD5=[b67fb2ad004ee1504d13b3cdb559fbf3]
+link ScreenAtDevDay to TwitterWall--><path d="M1740.09,808.8631 C1666.54,723.6531 1503.05,550.7231 1324.08,468.9531 C1236.33,428.8531 1127.29,411.2431 1048.73,403.5131 " fill="none" id="ScreenAtDevDay-&gt;TwitterWall" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="1043.6,403.0131,1052.1697,407.8669,1048.5764,403.4979,1052.9454,399.9046,1043.6,403.0131" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="116" x="1597.08" y="602.02">Get Twitter wall</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="56" x="1629.58" y="617.1528">content</text><!--MD5=[ff66665b2c97d7a1f41f6f98e72dfe16]
+link DevDayAPI to Pretalx--><path d="M844.06,663.9831 C813.1,684.2531 779.82,708.3831 752.08,733.9531 C726.65,757.3931 702.4,787.7031 684.27,812.5431 " fill="none" id="DevDayAPI-&gt;Pretalx" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="681.19,816.8031,689.7206,811.8808,684.1326,812.7607,683.2526,807.1727,681.19,816.8031" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="96" x="815.08" y="707.02">reservations,</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="129" x="801.08" y="722.1528">favourites via API</text><!--MD5=[6e20a81e38c49bf606c38c1690a25a5b]
+link DevDayAPI to Vault--><path d="M1044.24,662.6231 C1069.22,681.8331 1092.88,705.7231 1107.08,733.9531 C1158.61,836.3831 1143.1,975.5431 1128.68,1051.4631 " fill="none" id="DevDayAPI-&gt;Vault" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="1127.64,1056.8231,1133.2642,1048.738,1128.5821,1051.9127,1125.4075,1047.2306,1127.64,1056.8231" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="97" x="1143.08" y="864.02">fetch secrets</text><!--MD5=[05652bf49c006aeb847eefae80a7f14c]
+link DevDayAPI to PostgreSQL--><path d="M959.11,664.0931 C974.65,731.8731 990.84,845.8531 953.08,933.9531 C942.93,957.6431 933.62,961.4431 911.08,973.9531 C898.64,980.8631 892.07,974.2931 880.08,981.9531 C849.24,1001.6531 823.25,1033.7931 805.23,1060.4831 " fill="none" id="DevDayAPI-&gt;PostgreSQL" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="802.4,1064.7131,810.7205,1059.4435,805.1735,1060.5529,804.0641,1055.0059,802.4,1064.7131" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="109" x="980.58" y="856.52">read and write</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="121" x="977.08" y="871.6528">application data</text><!--MD5=[0bb7edea46a4fe87d4b6793110e3b828]
+link DevDayAPI to TwitterAPI--><path d="M1044.23,615.6531 C1167.97,628.9631 1368.93,655.6731 1433.08,693.9531 C1477.22,720.2931 1512.43,767.4031 1535.18,804.4831 " fill="none" id="DevDayAPI-&gt;TwitterAPI" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="1537.89,808.9531,1536.6511,799.1825,1535.3007,804.6758,1529.8074,803.3254,1537.89,808.9531" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="104" x="1474.08" y="707.02">fetch Dev Day</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="108" x="1474.58" y="722.1528">related tweets</text><!--MD5=[032faf9dfae133f2995ed6a1f4f5df3d]
+link CMS to MariaDB--><path d="M770.11,647.6331 C778.12,661.7431 785.83,677.9731 790.08,693.9531 C803.8,745.5031 758.28,895.3331 795.08,933.9531 C812.91,952.6531 891.67,924.9031 911.08,941.9531 C948.62,974.9331 950.67,1037.5931 947.93,1075.3331 " fill="none" id="CMS-&gt;MariaDB" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="947.5,1080.7131,952.2089,1072.0629,947.901,1075.7292,944.2347,1071.4213,947.5,1080.7131" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="148" x="796.08" y="864.02">read and write data</text><!--MD5=[875fc3af93b8b567f695bc0289dac21b]
+link Pretalx to PostgreSQL--><path d="M707.73,902.2731 C719.93,913.9331 731.71,927.4231 740.08,941.9531 C760.99,978.2631 770.4,1025.3231 774.63,1059.8031 " fill="none" id="Pretalx-&gt;PostgreSQL" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="775.22,1064.7931,778.1395,1055.3869,774.635,1059.8275,770.1944,1056.323,775.22,1064.7931" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="148" x="754.08" y="962.52">read and write data</text><!--MD5=[83e643447ee85341753e85a19706866e]
+link Pretalx to Redis--><path d="M630.12,901.9931 C624.37,914.4631 619.01,928.4331 616.08,941.9531 C606.19,987.6731 610.59,1042.2031 615.04,1075.5731 " fill="none" id="Pretalx-&gt;Redis" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="615.76,1080.7431,618.4891,1071.2799,615.0749,1075.7903,610.5645,1072.3761,615.76,1080.7431" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="113" x="617.08" y="955.02">cache and task</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="34" x="659.08" y="970.1528">data</text><!--MD5=[8e8957b6c336deb9e89fc3be3556d7d5]
+link TwitterWall to DevDayAPI--><path d="M944.68,439.2431 C944.39,468.3231 944.01,507.6431 943.69,540.5731 " fill="none" id="TwitterWall-&gt;DevDayAPI" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="943.64,545.7931,947.717,536.8277,943.6829,540.7933,939.7173,536.7592,943.64,545.7931" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="72" x="949.08" y="489.52">get tweet</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="85" x="945.08" y="504.6528">information</text><!--MD5=[2427d7cae53843264cd18eda8742019a]
+link DevDayAdmin to DevDayAPI--><path d="M230.24,423.0731 C243.84,429.1231 258.78,434.9631 273.08,438.9531 C376.62,467.8331 415.8,423.2231 513.08,468.9531 C540.68,481.9231 535.41,503.1231 563.08,515.9531 C669.41,565.2631 712.62,512.9531 825.08,545.9531 C829.1,547.1331 833.14,548.4331 837.19,549.8531 " fill="none" id="DevDayAdmin-&gt;DevDayAPI" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="841.94,551.5531,834.8123,544.7564,837.2319,549.8696,832.1187,552.2893,841.94,551.5531" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="140" x="564.08" y="489.52">administration and</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="98" x="587.58" y="504.6528">configuration</text><!--MD5=[559d574dac7fddb804d6bf4a02848ffc]
+link DevDayAdmin to Pretalx--><path d="M206.52,423.2231 C283.55,498.2931 508.46,717.5031 606.5,813.0531 " fill="none" id="DevDayAdmin-&gt;Pretalx" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="610.22,816.6731,606.5735,807.5242,606.642,813.1806,600.9855,813.249,610.22,816.6731" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="140" x="449.08" y="602.02">administration and</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="98" x="472.58" y="617.1528">configuration</text><!--MD5=[38421e9bf5b671c21d4aec5672954a63]
+link DevDayTeam to DevDayPWA--><path d="M318.02,109.6031 C356.02,137.6631 413.61,175.7231 470.08,195.9531 C494.99,204.8731 505.62,191.7031 529.08,203.9531 C593.45,237.5631 646.4,304.5131 676.88,349.6531 " fill="none" id="DevDayTeam-&gt;DevDayPWA" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="679.75,353.9531,678.0628,344.2499,676.9666,349.7995,671.417,348.7033,679.75,353.9531" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="67" x="507.08" y="162.02">attendee</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="139" x="471.08" y="177.1528">management, mail</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="52" x="517.08" y="192.2856">editing</text><!--MD5=[cc42f6f5571da070c25cbeb136b00885]
+link DevDayTeam to Pretalx--><path d="M198.81,106.2731 C158.14,127.4631 111.39,159.7131 87.08,203.9531 C-11.42,383.2031 -24.16,484.5631 74.08,663.9531 C123.44,754.0931 429.97,819.2331 575.95,845.5631 " fill="none" id="DevDayTeam-&gt;Pretalx" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="581.07,846.4831,572.9222,840.9502,576.1493,845.5963,571.5032,848.8233,581.07,846.4831" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="93" x="15.08" y="482.02">speaker and</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="55" x="34.08" y="497.1528">session</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="98" x="15.08" y="512.2856">management</text><!--MD5=[d6106decb06c01ee9a79cd15bb3148e6]
+link DevDayContentTeam to CMS--><path d="M383.05,432.0231 C372.18,458.2031 363.93,493.4031 384.08,515.9531 C423.72,560.3131 593.95,526.2631 650.08,545.9531 C660.28,549.5331 670.51,554.4031 680.26,559.8231 " fill="none" id="DevDayContentTeam-&gt;CMS" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="684.7,562.3431,678.8451,554.4235,680.3509,559.8763,674.8981,561.382,684.7,562.3431" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="118" x="385.08" y="489.52">content editing,</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="88" x="402.58" y="504.6528">mail editing</text><!--MD5=[43c16c23ea0d5b36bacbe968d4a7aad9]
+link DevDaySponsor to DevDayPWA--><path d="M607.58,100.6431 C625.42,154.6031 667.03,280.4131 689.7,348.9431 " fill="none" id="DevDaySponsor-&gt;DevDayPWA" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="691.3,353.7731,692.2752,343.9727,689.7317,349.0254,684.6789,346.4819,691.3,353.7731" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="57" x="651.08" y="169.52">request</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="90" x="637.08" y="184.6528">sponsorship</text><!--MD5=[28aaf1f675f05d2cc2a93f541f88c55e]
+link DevDaySpeaker to Pretalx--><path d="M1307.16,119.3331 C1442.52,233.3731 1767.53,540.6931 1584.08,725.9531 C1568.21,741.9831 792.78,724.9831 772.08,733.9531 C734.82,750.1031 703.6,784.1631 682.5,812.5731 " fill="none" id="DevDaySpeaker-&gt;Pretalx" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="679.46,816.7231,687.9906,811.8008,682.4026,812.6807,681.5226,807.0927,679.46,816.7231" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="118" x="1624.08" y="489.52">add and modify</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="36" x="1667.58" y="504.6528">talks</text><!--MD5=[5aba57f8339eaaa5f6e21b2d9a2aaf01]
+link DevDaySpeaker to DevDayPWA--><path d="M1161.41,119.0531 C1101.25,146.1731 1019.74,178.8831 944.08,195.9531 C919.09,201.5931 851.15,190.9431 829.08,203.9531 C774.27,236.2731 739.42,303.4431 721.06,348.9931 " fill="none" id="DevDaySpeaker-&gt;DevDayPWA" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="719.12,353.8831,726.1582,346.9937,720.9646,349.2358,718.7225,344.0423,719.12,353.8831" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="117" x="1091.08" y="177.02">act as attendee</text><!--MD5=[e844a7eeccbafa7276dd70574ba9888c]
+link DevDayAttendee to DevDayPWA--><path d="M801.67,100.6431 C783.99,154.6031 742.77,280.4131 720.32,348.9431 " fill="none" id="DevDayAttendee-&gt;DevDayPWA" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="718.74,353.7731,725.3413,346.464,720.2954,349.0212,717.7382,343.9753,718.74,353.7731" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="143" x="786.08" y="162.02">register for events,</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="150" x="785.08" y="177.1528">workshops, manage</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="48" x="836.08" y="192.2856">profile</text><!--MD5=[4051419d440271641d90c80c5eb2e300]
+link DevDayCommittee to Pretalx--><path d="M175.96,640.6431 C173.37,666.9831 174.58,702.5531 194.08,725.9531 C242.87,784.5031 458.13,827.2731 575.73,846.7431 " fill="none" id="DevDayCommittee-&gt;Pretalx" style="stroke: #666666; stroke-width: 1.0;"/><polygon fill="#666666" points="580.91,847.5931,572.6799,842.1834,575.9765,846.7804,571.3795,850.077,580.91,847.5931" style="stroke: #666666; stroke-width: 1.0;"/><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="96" x="204.58" y="707.02">evaluate and</text><text fill="#666666" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="120" x="195.08" y="722.1528">choose sessions</text><!--MD5=[d2b259bef08ea52ea2dd9214b724e304]
+@startuml
+
+
+
+
+
+skinparam defaultTextAlignment center
+
+skinparam wrapWidth 200
+skinparam maxMessageSize 150
+
+skinparam rectangle {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam database {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam Arrow {
+    Color #666666
+    FontColor #666666
+    FontSize 12
+}
+
+skinparam rectangle<<boundary>> {
+    Shadowing false
+    StereotypeFontSize 0
+    FontColor #444444
+    BorderColor #444444
+    BorderStyle dashed
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skinparam rectangle<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+
+skinparam rectangle<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+
+skinparam rectangle<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+
+skinparam rectangle<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+
+skinparam database<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+
+skinparam database<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+
+
+
+
+
+
+
+
+
+
+
+
+title Context diagram Dev Day Website Neu
+
+rectangle "==Dev Day infrastructure\n<size:12>[Enterprise]</size>" <<boundary>> as DEVDAY {
+  rectangle "==Applications\n<size:12>[System]</size>" <<boundary>> as Applications {
+    rectangle "==Dev Day website\n\n Progressive web application" <<system>> as DevDayPWA
+    rectangle "==Dev Day API\n\n Dev Day API (i.e. attendee management, mail, twitter proxy)" <<system>> as DevDayAPI
+    rectangle "==Dev Day Twitterwall\n\n Dev Day Twitter wall" <<system>> as TwitterWall
+    rectangle "==Pretalx\n\n Talk management" <<system>> as Pretalx
+    rectangle "==WordPress\n\n WordPress CMS" <<system>> as CMS
+  }
+
+  rectangle "==Backend Services\n<size:12>[System]</size>" <<boundary>> as Backend {
+    rectangle "==Vault\n\n Hashicorp Vault Secret Manager" <<system>> as Vault
+    rectangle "==PostgreSQL\n\n PostgreSQL database" <<system>> as PostgreSQL
+    rectangle "==Mail system\n\n technical mail system" <<system>> as TMS
+    rectangle "==MariaDB" <<system>> as MariaDB
+    rectangle "==Redis" <<system>> as Redis
+  }
+}
+
+rectangle "==External Systems\n<size:12>[System]</size>" <<boundary>> as ExternalSystems {
+  rectangle "==Twitter API\n\n Twitter's public API endpoints" <<system>> as TwitterAPI
+  rectangle "==Twitter Wall screen\n\n Large Twitter wall screen at the Dev Day venue" <<system>> as ScreenAtDevDay
+}
+
+rectangle "==Dev Day admin" <<person>> as DevDayAdmin
+rectangle "==Dev Day team member" <<person>> as DevDayTeam
+rectangle "==Dev Day content team member" <<person>> as DevDayContentTeam
+rectangle "==Dev Day speaker (potential and selected speakers)" <<person>> as DevDaySpeaker
+rectangle "==Dev Day sponsor" <<person>> as DevDaySponsor
+rectangle "==Dev Day attendee" <<person>> as DevDayAttendee
+rectangle "==Dev Day program committee" <<person>> as DevDayCommittee
+
+DevDayPWA - -> DevDayAPI : "===API"
+DevDayPWA - -> Pretalx : "===API"
+DevDayPWA - -> CMS : "===API"
+DevDayPWA - -> TMS : "===send bulk and individual mails"
+
+ScreenAtDevDay - -> TwitterWall : "===Get Twitter wall content"
+
+DevDayAPI - -> Pretalx : "===reservations, favourites via API"
+DevDayAPI - -> Vault : "===fetch secrets"
+DevDayAPI - -> PostgreSQL : "===read and write application data"
+DevDayAPI - -> TwitterAPI : "===fetch Dev Day related tweets"
+
+CMS - -> MariaDB : "===read and write data"
+
+Pretalx - -> PostgreSQL : "===read and write data"
+Pretalx - -> Redis : "===cache and task data"
+
+TwitterWall - -> DevDayAPI : "===get tweet information"
+
+DevDayAdmin - -> DevDayAPI : "===administration and configuration"
+DevDayAdmin - -> Pretalx : "===administration and configuration"
+
+DevDayTeam - -> DevDayPWA : "===attendee management, mail editing"
+DevDayTeam - -> Pretalx : "===speaker and session management"
+
+DevDayContentTeam - -> CMS : "===content editing, mail editing"
+
+DevDaySponsor - -> DevDayPWA : "===request sponsorship"
+
+DevDaySpeaker - -> Pretalx : "===add and modify talks"
+DevDaySpeaker - -> DevDayPWA : "===act as attendee"
+
+DevDayAttendee - -> DevDayPWA : "===register for events, workshops, manage profile"
+
+DevDayCommittee - -> Pretalx : "===evaluate and choose sessions"
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 11:22:07 CET 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 17.0.4+8-Ubuntu-122.04
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

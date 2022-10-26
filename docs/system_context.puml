@@ -1,0 +1,48 @@
+@startuml
+!include <C4/C4_Context.puml>
+
+title Context diagram Dev Day Website
+
+Enterprise_Boundary(MMSBT, "T-Systems MMS BT&E") {
+  System(ReverseProxy, "Reverse Proxy", "MMS reverse proxy")
+  System_Boundary(DevDay, "Dev Day applications") {
+    System(DevDayWebsite, "Dev Day website", "Dev Day Website application")
+    System(TwitterWall, "Dev Day Twitterwall", "Dev Day Twitter wall")
+  }
+  System(Vault, "Vault", "Hashicorp Vault Secret Manager")
+  System(PostgreSQL, "PostgreSQL", "PostgreSQL database")
+  System(TMS, "Mail system", "technical mail system")
+
+  Person(DevDayAdmin, "Dev Day admin")
+}
+
+System(TwitterAPI, "Twitter API", "Twitter's public API endpoints")
+
+Person(DevDayTeam, "Dev Day team member")
+Person(DevDaySpeaker, "Dev Day speaker (potential and selected speakers)")
+Person(DevDaySponsor, "Dev Day sponsor")
+Person(DevDayAttendee, "Dev Day attendee")
+Person(DevDayCommittee, "Dev Day program committee")
+
+System(ScreenAtDevDay, "Twitter Wall screen", "Large Twitter wall screen at the Dev Day venue")
+
+Rel_D(ReverseProxy, DevDayWebsite, "forward user traffic")
+Rel_D(ReverseProxy, TwitterWall, "forward user traffic")
+
+Rel(ScreenAtDevDay, ReverseProxy, "Get Twitter wall content")
+
+Rel(DevDayWebsite, Vault, "fetch secrets")
+Rel(DevDayWebsite, PostgreSQL, "read and write application data")
+Rel(DevDayWebsite, TwitterAPI, "fetch Dev Day related tweets")
+Rel(DevDayWebsite, TMS, "send bulk and individual mails")
+
+Rel_R(TwitterWall, DevDayWebsite, "get tweet information")
+
+Rel(DevDayAdmin, DevDayWebsite, "administration and configuration")
+Rel(DevDayTeam, ReverseProxy, "content editing, mail editing")
+Rel(DevDaySponsor, ReverseProxy, "request sponsorship")
+Rel(DevDaySpeaker, ReverseProxy, "add and modify talks")
+Rel(DevDayAttendee, ReverseProxy, "register for events, workshops, manage profile")
+Rel(DevDayCommittee, ReverseProxy, "evaluate and choose sessions")
+
+@enduml

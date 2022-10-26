@@ -6,22 +6,20 @@
  *
  */
 
-var basepath           = './';
-var assets             = '../devday/devday/static';
-var srcDir             = 'src';
-var nodemodules        = 'node_modules';
-var srcTest            = 'src-test';
-var fs                 = require('fs');
-var pkg                = JSON.parse(fs.readFileSync('./package.json'));
+const basepath = './';
+const assets = '../devday/devday/static';
+const srcDir = 'src';
+const nodemodules = 'node_modules';
+const fs = require('fs');
+const pkg = JSON.parse(fs.readFileSync('./package.json'));
 
 module.exports = {
     basepath: basepath,
     strings: {
         banner: [
             '/**',
-            ' * Build on <%= new Date().getFullYear() %>-<%= new Date().getMonth() + 1 %>-<%= new Date().getDate() %>',
             ' * @package ' + pkg.name + '',
-            ' * @version v' + pkg.version  + '',
+            ' * @version v' + pkg.version + '',
             ' */',
             ''].join('\n')
     },
@@ -29,17 +27,17 @@ module.exports = {
 
     environment: {
         string: 'env',
-        default: { env: process.env.NODE_ENV || 'development' },
+        default: {env: process.env.NODE_ENV || 'development'},
         production: 'production',
         development: 'development'
     },
 
     sass: {
-        src:  srcDir + '/scss/style.scss',
-        allsrc: [
-                srcDir + '/scss/*.scss',
-                srcDir + '/scss/components/*.scss',
-                nodemodules + '@fortawesome/fontawesome-free/scss/*.scss'
+        src: srcDir + '/scss/style.scss',
+        all_src: [
+            srcDir + '/scss/*.scss',
+            srcDir + '/scss/components/*.scss',
+            nodemodules + '@fortawesome/fontawesome-free/scss/*.scss'
         ],
         dest: assets + '/css',
         options: {
@@ -61,13 +59,13 @@ module.exports = {
             config: srcDir + '/scss/.scss-lint.yml',
             filePipeOutput: 'scss-lint-report.json',
             reporterOutputFormat: 'JSON',
-            maxBuffer: 600*1024,
+            maxBuffer: 600 * 1024,
             endless: true
         }
     },
 
     js: {
-        src:  [
+        src: [
             nodemodules + '/jquery/dist/jquery.js',
             nodemodules + '/popper.js/dist/umd/popper.js',
             nodemodules + '/popper.js/dist/umd/popper-utils.js',
@@ -104,14 +102,14 @@ module.exports = {
     },
 
     jquery: {
-        src:  [
-            'bower_components/jquery/dist/jquery.js'
+        src: [
+            nodemodules + '/jquery/dist/jquery.js'
         ],
-        dest: assets + '/js/'
+        dest: assets + '/js'
     },
 
     images: {
-        src:  [
+        src: [
             srcDir + '/assets/img/*.*',
             nodemodules + '/cropperjs/src/images/bg.png',
         ],
@@ -119,7 +117,7 @@ module.exports = {
     },
 
     fonts: {
-        src:  [
+        src: [
             srcDir + '/assets/fonts/**/*',
             nodemodules + '/@fortawesome/fontawesome-free/webfonts/*'
         ],

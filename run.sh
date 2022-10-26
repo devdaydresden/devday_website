@@ -106,7 +106,7 @@ case "$cmd" in
       echo "*** Starting all containers"
       docker-compose up -d
     fi
-    docker-compose exec "${container}" coverage run --branch manage.py test -v1 -k $@
+    docker-compose exec "${container}" coverage run --branch manage.py test -v1 --keepdb $@
     docker-compose exec "${container}" coverage report -m
     docker-compose exec "${container}" coverage html
     ;;

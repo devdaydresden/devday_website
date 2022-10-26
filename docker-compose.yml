@@ -6,9 +6,19 @@ services:
       - "15432:5432"
     env_file:
       dev-env-db
+    read_only: true
     volumes:
       - "pg_data:/var/lib/postgresql/data"
-      - "./docker/db/dev/init-user-db.sql:/docker-entrypoint-initdb.d/init-user-db.sql"
+      - "/var/run/postgresql"
+      - "./docker/db/dev/init-user-db.sql:/docker-entrypoint-initdb.d/init-user-db.sql:ro"
+    cap_drop:
+      - ALL
+    cap_add:
+      - CAP_CHOWN
+      - CAP_DAC_READ_SEARCH
+      - CAP_FOWNER
+      - CAP_SETGID
+      - CAP_SETUID
   app:
     image: devdaydresden/devday_website_app:latest_dev
     build:
@@ -35,6 +45,8 @@ services:
       - "devday_static:/app/static"
     tmpfs:
       - /tmp
+    cap_drop:
+      - ALL
     depends_on:
       - db
 

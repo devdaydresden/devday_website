@@ -289,7 +289,7 @@ class TrackAdmin(admin.ModelAdmin):
 
 @admin.register(SessionReservation)
 class SessionReservationAdmin(admin.ModelAdmin):
-    list_display = ("email", "talk_title", "is_confirmed", "is_waiting")
+    list_display = ("email", "talk_title", "created", "is_confirmed", "is_waiting")
     list_select_related = ("attendee", "talk", "attendee__user")
     list_filter = ("attendee__event", "is_confirmed", "is_waiting")
     ordering = ("talk__title", "attendee__user__email")

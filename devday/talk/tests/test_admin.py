@@ -267,6 +267,47 @@ class AdminTest(TestCase):
         )
         self.assertTrue(response.is_rendered)
 
+    def test_session_reservation_admin_sorting(self):
+        speaker, _, _ = speaker_testutils.create_test_speaker()
+
+        talk = Talk.objects.create(
+            draft_speaker=speaker,
+            title="Test",
+            abstract="Test abstract",
+            remarks="Test remarks",
+            event=self.event,
+        )
+        track = Track.objects.filter(event=self.event).first()
+        talk.publish(track)
+
+        user, _ = attendee_testutils.create_test_user("test@example.org")
+        attendee = Attendee.objects.create(user=user, event=self.event)
+
+        reservation1 = SessionReservation.objects.create(attendee=attendee, talk=talk)
+
+        user2, _ = attendee_testutils.create_test_user("test2@example.org")
+        attendee2 = Attendee.objects.create(user=user2, event=self.event)
+
+        reservation2 = SessionReservation.objects.create(attendee=attendee2, talk=talk)
+
+        response = self.client.get(reverse("admin:talk_sessionreservation_changelist") + "?o=3")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context["cl"].result_count, 2, "should list 2 session registrations"
+        )
+
+        self.assertEqual(list(response.context["cl"].result_list), [reservation1, reservation2])
+        self.assertTrue(response.is_rendered)
+
+        response = self.client.get(reverse("admin:talk_sessionreservation_changelist") + "?o=-3")
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(
+            response.context["cl"].result_count, 2, "should list 2 session registrations"
+        )
+        self.assertEqual(list(response.context["cl"].result_list), [reservation2, reservation1])
+        self.assertTrue(response.is_rendered)
+
 
 class AttendeeFeedbackAdminTest(TestCase):
     @classmethod

@@ -1,0 +1,73 @@
+@startuml
+!include <C4/C4_Context.puml>
+
+title Context diagram Dev Day Website Neu
+
+Enterprise_Boundary(DEVDAY, "Dev Day infrastructure") {
+  System_Boundary(Applications, "Applications") {
+    System(DevDayPWA, "Dev Day website", "Progressive web application")
+    System(DevDayAPI, "Dev Day API", "Dev Day API (i.e. attendee management, mail, twitter proxy)")
+    System(TwitterWall, "Dev Day Twitterwall", "Dev Day Twitter wall")
+    System(Pretalx, "Pretalx", "Talk management")
+    System(CMS, "WordPress", "WordPress CMS")
+  }
+
+  System_Boundary(Backend, "Backend Services") {
+    System(Vault, "Vault", "Hashicorp Vault Secret Manager")
+    System(PostgreSQL, "PostgreSQL", "PostgreSQL database")
+    System(TMS, "Mail system", "technical mail system")
+    System(MariaDB, "MariaDB")
+    System(Redis, "Redis")
+  }
+}
+
+System_Boundary(ExternalSystems, "External Systems") {
+  System(TwitterAPI, "Twitter API", "Twitter's public API endpoints")
+  System(ScreenAtDevDay, "Twitter Wall screen", "Large Twitter wall screen at the Dev Day venue")
+}
+
+Person(DevDayAdmin, "Dev Day admin")
+Person(DevDayTeam, "Dev Day team member")
+Person(DevDayContentTeam, "Dev Day content team member")
+Person(DevDaySpeaker, "Dev Day speaker (potential and selected speakers)")
+Person(DevDaySponsor, "Dev Day sponsor")
+Person(DevDayAttendee, "Dev Day attendee")
+Person(DevDayCommittee, "Dev Day program committee")
+
+Rel(DevDayPWA, DevDayAPI, "API")
+Rel(DevDayPWA, Pretalx, "API")
+Rel(DevDayPWA, CMS, "API")
+Rel(DevDayPWA, TMS, "send bulk and individual mails")
+
+Rel(ScreenAtDevDay, TwitterWall, "Get Twitter wall content")
+
+Rel(DevDayAPI, Pretalx, "reservations, favourites via API")
+Rel(DevDayAPI, Vault, "fetch secrets")
+Rel(DevDayAPI, PostgreSQL, "read and write application data")
+Rel(DevDayAPI, TwitterAPI, "fetch Dev Day related tweets")
+
+Rel(CMS, MariaDB, "read and write data")
+
+Rel(Pretalx, PostgreSQL, "read and write data")
+Rel(Pretalx, Redis, "cache and task data")
+
+Rel(TwitterWall, DevDayAPI, "get tweet information")
+
+Rel(DevDayAdmin, DevDayAPI, "administration and configuration")
+Rel(DevDayAdmin, Pretalx, "administration and configuration")
+
+Rel(DevDayTeam, DevDayPWA, "attendee management, mail editing")
+Rel(DevDayTeam, Pretalx, "speaker and session management")
+
+Rel(DevDayContentTeam, CMS, "content editing, mail editing")
+
+Rel(DevDaySponsor, DevDayPWA, "request sponsorship")
+
+Rel(DevDaySpeaker, Pretalx, "add and modify talks")
+Rel(DevDaySpeaker, DevDayPWA, "act as attendee")
+
+Rel(DevDayAttendee, DevDayPWA, "register for events, workshops, manage profile")
+
+Rel(DevDayCommittee, Pretalx, "evaluate and choose sessions")
+
+@enduml

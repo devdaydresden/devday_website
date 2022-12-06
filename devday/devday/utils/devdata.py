@@ -44,7 +44,6 @@ from talk.models import (
     Vote,
     TalkDraftSpeaker,
 )
-from twitterfeed.models import Tweet, TwitterProfileImage
 
 LAST_NAMES = [
     "Schneider",
@@ -131,7 +130,7 @@ class DevData:
         self.style = style if style else no_style()
 
     def __del__(self):
-        if hasattr(self, 'devnull') and self.devnull:
+        if hasattr(self, "devnull") and self.devnull:
             self.devnull.close()
 
     def write_action(self, msg):
@@ -418,16 +417,6 @@ wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p
                 if amount <= 0:
                     return
 
-    def random_twitter_users(self, count):
-        for i in range(count):
-            first_name = self.rng.choice(FIRST_NAMES)
-            last_name = self.rng.choice(LAST_NAMES)
-            yield (
-                i,
-                "{}{}".format(first_name, last_name).lower(),
-                "{} {}".format(first_name, last_name),
-            )
-
     def get_name_from_email(self, email):
         m = re.match(r"^([^.]+)\.([^@]+)@.*$", email)
         if m:
@@ -648,38 +637,6 @@ wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p
                     talk.publish(self.rng.choice(tracks))
         return details
 
-    def create_twitter_profiles(self):
-        profile_image = TwitterProfileImage.objects.create(
-            user_profile_image_url="http://localhost/twitter_profile.png"
-        )
-        # https://stackoverflow.com/a/5256094
-        profile_image.image_data = profile_image.image_data.field.attr_class(
-            profile_image, profile_image.image_data, self.speaker_portrait_media_path
-        )
-        profile_image.save()
-
-    def create_tweets(self, count=7):
-        profile_image = TwitterProfileImage.objects.get(
-            user_profile_image_url="http://localhost/twitter_profile.png"
-        )
-        dt = timezone.now() - timedelta(days=-count)
-        for twitter_id, handle, username in self.random_twitter_users(count):
-            text = lorem.sentence()
-            Tweet.objects.create(
-                twitter_id=twitter_id,
-                user_profile_image=profile_image,
-                user_name=username,
-                user_screen_name=handle,
-                text=text,
-                plain_text=text,
-                entities="{}",
-                created_at=dt,
-                show_on_site=True,
-            )
-            dt += timedelta(
-                days=1, hours=self.rng.randrange(3), minutes=self.rng.randrange(30)
-            )
-
     def create_devdata(self):
         self.create_admin_user()
         self.update_site()
@@ -703,7 +660,3 @@ wir unterstützen gern. Denn wir freuen uns über vielfältige Einreichungen!</p
         self.create_objects("rooms", Room, 1, self.create_rooms)
         self.create_objects("time slots", TimeSlot, 1, self.create_time_slots)
         self.create_objects("talk slots", TalkSlot, 1, self.create_talk_slots)
-        self.create_objects(
-            "twitter profiles", TwitterProfileImage, 1, self.create_twitter_profiles
-        )
-        self.create_objects("tweets", Tweet, 1, self.create_tweets)

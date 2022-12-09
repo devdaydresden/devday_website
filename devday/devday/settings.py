@@ -174,7 +174,7 @@ CMS_TEMPLATES = (
     ),
 )
 CMS_PERMISSION = True
-CRISPY_TEMPLATE_PACK = "bootstrap3"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 DATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 DATABASES = {

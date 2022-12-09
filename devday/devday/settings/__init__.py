@@ -188,7 +188,6 @@ DATABASES = {
     }
 }
 DEVDAY_FACEBOOK_URL = "https://www.facebook.com/events/193156441425350/"
-DEVDAY_TWITTER_URL = "https://twitter.com/devdaydresden"
 DEVDAY_XING_URL = "https://www.xing.com/events/dev-day-2018-1897927"
 
 DEFAULT_EMAIL_SENDER = "info-bounce@devday.de"
@@ -228,7 +227,6 @@ INSTALLED_APPS = [
     "crispy_forms",
     "django_file_form",
     "django_file_form.ajaxuploader",
-    "twitterfeed.apps.TwitterFeedConfig",
     "speaker.apps.SpeakerConfig",
     "django.contrib.postgres",
     "psqlextra",
@@ -329,7 +327,6 @@ TEMPLATES = [
                 "devday.contextprocessors.devdaysettings_contextprocessor",
                 "talk.context_processors.committee_member_context_processor",
                 "talk.context_processors.reservation_context_processor",
-                "twitterfeed.contextprocessors.twitter_feed_context_processor",
                 "event.contextprocessors.current_event_contextprocessor",
             ],
             "loaders": [
@@ -394,7 +391,6 @@ _local_log_names = [
     "event",
     "speaker",
     "talk",
-    "twitterfeed",
 ]
 
 RUN_SCHEDULED_JOBS = get_setting(

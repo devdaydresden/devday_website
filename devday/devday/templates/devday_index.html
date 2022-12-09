@@ -52,31 +52,6 @@
 {% endif %}
 {% endblock %}
 
-{% if twitter_feed %}
-{% block container_class_3 %} twitter-area{% endblock %}
-{% block content_class_3 %} tweet-box{% endblock %}
-{% endif %}
-{% block content_box_3 %}{% if twitter_feed %}{% include "twitter-area.html" %}{% else %}No tweets no content{% endif %}{% endblock %}
+{% block content_box_3 %}{% endblock %}
 
-{% block content_box_4 %}
-<div class="tweet-icon mb-2">
-    <svg width="99px" height="99px" viewBox="0 0 99 99" version="1.1" xmlns="http://www.w3.org/2000/svg"
-         xmlns:xlink="http://www.w3.org/1999/xlink">
-        <defs></defs>
-        <g id="Startseite-v2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            <g id="Extra-Large" transform="translate(-970.000000, -737.000000)">
-                <g id="Twitter" transform="translate(0.000000, 721.000000)">
-                    <circle id="Oval-2" stroke="#2C889D" stroke-width="2" cx="1019.5" cy="65.5" r="48.5"></circle>
-                    <g id="twitter" transform="translate(999.000000, 50.000000)" fill="#2C889D" fill-rule="nonzero">
-                        <path d="M43,4.11764706 C41.417304,4.83823529 39.7112811,5.31176471 37.9435946,5.53823529 C39.7523901,4.44705882 41.1500956,2.71764706 41.8078394,0.638235294 C40.1018164,1.66764706 38.2108031,2.38823529 36.2170172,2.8 C34.5932122,1.02941176 32.3116635,0 29.7217973,0 C24.8914914,0 20.9450287,3.95294118 20.9450287,8.83235294 C20.9450287,9.53235294 21.0272467,10.2117647 21.1711281,10.85 C13.8537285,10.4794118 7.33795411,6.95882353 3.00095602,1.62647059 C2.24043977,2.92352941 1.80879541,4.44705882 1.80879541,6.05294118 C1.80879541,9.12058824 3.35038241,11.8382353 5.73470363,13.3823529 C4.27533461,13.3823529 2.91873805,12.9705882 1.72657744,12.3529412 C1.72657744,12.3529412 1.72657744,12.3529412 1.72657744,12.4147059 C1.72657744,16.6970588 4.76864245,20.2794118 8.79732314,21.0823529 C8.05736138,21.2882353 7.27629063,21.3911765 6.47466539,21.3911765 C5.91969407,21.3911765 5.36472275,21.3294118 4.83030593,21.2264706 C5.94024857,24.7058824 9.16730402,27.3 13.0521033,27.3617647 C10.0511472,29.75 6.24856597,31.15 2.09655832,31.15 C1.39770554,31.15 0.698852772,31.1088235 0,31.0264706 C3.90535373,33.5382353 8.55066922,35 13.5248566,35 C29.7217973,35 38.6218929,21.5352941 38.6218929,9.86176471 C38.6218929,9.47058824 38.6218929,9.1 38.6013384,8.70882353 C40.3279159,7.47352941 41.8078394,5.90882353 43,4.11764706 Z"
-                              id="Shape"></path>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </svg>
-</div>
-<h2 class="mb-3">#DEVDAYDD</h2>
-<a href="https://twitter.com/devdaydresden" class="btn btn-outline btn-call-action bright m-t-1">Folge uns auf
-    Twitter</a>
-{% endblock %}
+{% block content_box_4 %}{% endblock %}

@@ -127,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 

@@ -34,6 +34,35 @@ user: admin@devday.de
 password: admin
 ``` 
 
+## (Optional) Installing Dependency
+
+To install the required dependencies you need to install [Poetry](https://python-poetry.org) and run the following command in the projects root folder.
+
+```shell
+$ poetry install 
+```
+
+If you are running **macOS** on **Apple Silicon** you will need to explicitly install `postgresql` and `openssl`. Otherwise, poetry will not be able to compile `psycopg2-binary`.
+
+The recommended way of installing those packages is to use [brew](https://brew.sh):
+
+```shell
+brew install postgresql@14 openssl
+```
+
+At the end of the installation of OpenSSL you will get recommendations about environment variables you should export, which look like this:
+
+```shell
+If you need to have openssl@3 first in your PATH, run:
+  echo 'export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find openssl@3 you may need to set:
+  export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
+```
+
+It is important, that you do this or compilation will fail.
+
 ## Running the development environment
 
 You can run a local development environment easily with Docker and Docker Compose.  Make sure you have current versions of both installed.

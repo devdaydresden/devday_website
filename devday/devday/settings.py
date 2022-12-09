@@ -127,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -174,7 +174,7 @@ CMS_TEMPLATES = (
     ),
 )
 CMS_PERMISSION = True
-CRISPY_TEMPLATE_PACK = "bootstrap3"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 DATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 DATABASES = {
@@ -329,11 +329,8 @@ TEMPLATES = [
                 "talk.context_processors.reservation_context_processor",
                 "event.contextprocessors.current_event_contextprocessor",
             ],
-            "loaders": [
-                "django.template.loaders.filesystem.Loader",
-                "django.template.loaders.app_directories.Loader",
-            ],
         },
+        "APP_DIRS": True,
     }
 ]
 THUMBNAIL_HIGH_RESOLUTION = True

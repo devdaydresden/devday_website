@@ -47,6 +47,8 @@ services:
       - /tmp
     cap_drop:
       - ALL
+    cap_add:
+      - CAP_DAC_OVERRIDE
     depends_on:
       - db
 

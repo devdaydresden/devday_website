@@ -4,9 +4,9 @@ from django.utils.translation import ugettext_lazy as _
 from event.models import Event
 from ordered_model.models import OrderedModel
 
-PACKAGE_NAMES = ((1, _("Gold")), (2, _("Silver")), (3, _("Bronze")))
+PACKAGE_NAMES = ((1, _("Platinum")), (2, _("Gold")), (3, _("Silver")))
 
-PACKAGE_NAME_CSS_CLASS_MAP = {1: "gold", 2: "silver", 3: "bronze"}
+PACKAGE_NAME_CSS_CLASS_MAP = {1: "platinum", 2: "gold", 3: "silver"}
 
 
 class SponsoringPackage(models.Model):

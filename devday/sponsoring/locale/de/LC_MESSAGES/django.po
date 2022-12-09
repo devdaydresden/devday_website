@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-26 17:06+0000\n"
-"PO-Revision-Date: 2018-10-24 22:47+0200\n"
+"POT-Creation-Date: 2022-12-09 09:23+0100\n"
+"PO-Revision-Date: 2022-12-09 09:57+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: sponsoring/apps.py:7 sponsoring/tests/test_appconfig.py:10
 msgid "Sponsor Management"
@@ -55,16 +55,16 @@ msgid "Send sponsoring request"
 msgstr "Sponsoringanfrage senden"
 
 #: sponsoring/models.py:7
+msgid "Platinum"
+msgstr "Platin"
+
+#: sponsoring/models.py:7
 msgid "Gold"
 msgstr "Gold"
 
 #: sponsoring/models.py:7
 msgid "Silver"
 msgstr "Silber"
-
-#: sponsoring/models.py:7
-msgid "Bronze"
-msgstr "Bronze"
 
 #: sponsoring/models.py:13
 msgid "Event"

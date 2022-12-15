@@ -123,7 +123,6 @@ COPY --from=builder /app/event/locale/de/LC_MESSAGES/django.mo /app/event/locale
 COPY --from=builder /app/speaker/locale/de/LC_MESSAGES/django.mo /app/speaker/locale/de/LC_MESSAGES/
 COPY --from=builder /app/sponsoring/locale/de/LC_MESSAGES/django.mo /app/sponsoring/locale/de/LC_MESSAGES/
 COPY --from=builder /app/talk/locale/de/LC_MESSAGES/django.mo /app/talk/locale/de/LC_MESSAGES/
-COPY --from=builder /app/twitterfeed/locale/de/LC_MESSAGES/django.mo /app/twitterfeed/locale/de/LC_MESSAGES/
 
 RUN python3 -m compileall /app
 RUN mkdir -p /app/media /app/static /app/logs ; \

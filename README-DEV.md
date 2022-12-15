@@ -238,7 +238,6 @@ drwxr-xr-x  7 root root  4096 Sep 14 15:16 media
 -rw-r--r--  1 root root   206 Sep 11 12:55 setup.cfg
 drwxr-xr-x  2 root root  4096 Sep 14 15:00 static
 drwxr-xr-x 24 root root   768 Sep 11 14:49 talk
-drwxr-xr-x 14 root root   448 Sep 11 14:49 twitterfeed
 ```
 
 

@@ -75,7 +75,7 @@
     }
 }
 
-.speaker-datails {
+.speaker-details {
     .speaker-name {
         font-size: 30px;
         margin-top: 8px;
@@ -91,6 +91,10 @@
             max-width: 250px;
         }
     }
+}
+
+.session-details {
+    font-size: 25px;
 }
 
 @include media-breakpoint-down(sm) {

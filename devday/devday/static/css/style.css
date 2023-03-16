@@ -23243,16 +23243,20 @@ hr {
   margin: 0 auto;
 }
 
-.speaker-datails .speaker-name {
+.speaker-details .speaker-name {
   font-size: 30px;
   margin-top: 8px;
   margin-bottom: 34px;
 }
-.speaker-datails .speaker-name a {
+.speaker-details .speaker-name a {
   color: #ffffff;
 }
-.speaker-datails .speaker-image img {
+.speaker-details .speaker-image img {
   max-width: 250px;
+}
+
+.session-details {
+  font-size: 25px;
 }
 
 @media (max-width: 767.98px) {

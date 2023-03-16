@@ -142,5 +142,12 @@
             </div>
         {% endfor %}
         </div>
+        {# only show room and time for current event and when the talk is scheduled #}
+        {% if current and talk.talkslot %}
+            <div class="row session-details">
+                <div class="col-12">{% trans "Room:" %} {{ talk.talkslot.room.name }}</div>
+                <div class="col-12">{{ talk.talkslot.time.start_time|time:"TIME_FORMAT" }} - {{ talk.talkslot.time.end_time|time:"TIME_FORMAT" }}</div>
+            </div>
+        {% endif %}
     </div>
 {% endblock content_box_2_wrapper %}

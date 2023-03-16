@@ -453,11 +453,6 @@ else:
             "propagate": True,
         }
 
-    TWITTERFEED_PROXIES = {
-        "http": get_setting("http_proxy"),
-        "https": get_setting("https_proxy"),
-    }
-
 SPECTACULAR_SETTINGS = {
     "SERVE_PUBLIC": False,
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],

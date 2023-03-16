@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday talk app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-09 13:57+0000\n"
-"PO-Revision-Date: 2020-07-09 16:00+0200\n"
+"POT-Creation-Date: 2023-03-16 07:50+0100\n"
+"PO-Revision-Date: 2023-03-16 07:50+0100\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
 "Language: de\n"
@@ -16,40 +16,40 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: talk/admin.py:125
+#: talk/admin.py:127
 msgid "Draft speakers"
 msgstr "Unbestätigte SpeakerInnen"
 
-#: talk/admin.py:147
+#: talk/admin.py:149
 #, python-format
 msgid "One Session has been published."
 msgid_plural "%(count)d sessions have been published."
 msgstr[0] "One Session has been published."
 msgstr[1] "%(count)d Sessions wurden veröffentlicht."
 
-#: talk/admin.py:161
+#: talk/admin.py:163
 msgid "Publish selected sessions"
 msgstr "Ausgewählte Sessions veröffentlichen"
 
-#: talk/admin.py:191
+#: talk/admin.py:193
 #, python-format
 msgid "A confirmation mail has been sent to %(attendees)s."
 msgid_plural "%(count)d confirmation mails have been sent to %(attendees)s."
 msgstr[0] "Eine Bestätigungs-E-Mail wurde an %(attendees)s gesendet."
 msgstr[1] "%(count)d Bestätigungs-E-Mails wurden an %(attendees)s gesendet."
 
-#: talk/admin.py:200
+#: talk/admin.py:202
 msgid "Process waiting list for selected sessions"
 msgstr "Warteliste für ausgewählte Sessions verarbeiten"
 
-#: talk/admin.py:234
+#: talk/admin.py:236
 msgid "Talk slot created successfully"
 msgstr "Talk-Slot erfolgreich angelegt"
 
-#: talk/admin.py:254 talk/models.py:29 talk/models.py:83 talk/models.py:321
+#: talk/admin.py:256 talk/models.py:29 talk/models.py:83 talk/models.py:321
 #: talk/models.py:342
 msgid "Event"
 msgstr "Veranstaltung"
@@ -154,13 +154,11 @@ msgstr "Veröffentlichte/r SpeakerInnen"
 
 #: talk/models.py:213 talk/models.py:225
 msgid "Cannot delete last draft speaker from talk without published speaker"
-msgstr ""
-"Ein/e SpeakerIn (Entwurf) oder SpeakerIn (öffentlich) ist erforderlich."
+msgstr "Ein/e SpeakerIn (Entwurf) oder SpeakerIn (öffentlich) ist erforderlich"
 
 #: talk/models.py:249 talk/models.py:261
 msgid "Cannot delete last published speaker from talk without draft speaker"
-msgstr ""
-"Ein/e SpeakerIn (öffentlich) oder SpeakerIn (Entwurf) ist erforderlich."
+msgstr "Ein/e SpeakerIn (öffentlich) oder SpeakerIn (Entwurf) ist erforderlich"
 
 #: talk/models.py:269 talk/templates/talk/talk_details.html:41
 #: talk/templates/talk/talk_list_entry.html:22
@@ -465,8 +463,8 @@ msgid ""
 "You need to follow that link in the email to confirm your reservation for "
 "„<a href=\"%(talk_details)s\">%(title)s</a>“."
 msgstr ""
-"Bitte folge dem Link in der E-Mail, um deine Reservierung für „<a href="
-"\"%(talk_details)s\">%(title)s</a>“ zu bestätigen."
+"Bitte folge dem Link in der E-Mail, um deine Reservierung für „<a "
+"href=\"%(talk_details)s\">%(title)s</a>“ zu bestätigen."
 
 #: talk/templates/talk/sessionreservation_confirmed.html:3
 #, python-format
@@ -480,8 +478,8 @@ msgstr "Deine Platzreservierung ist bestätigt"
 #: talk/templates/talk/sessionreservation_confirmed.html:8
 #, python-format
 msgid ""
-"You successfully confirmed the reservation of your spot for „<a href="
-"\"%(talk_details)s\">%(title)s</a>“."
+"You successfully confirmed the reservation of your spot for „<a "
+"href=\"%(talk_details)s\">%(title)s</a>“."
 msgstr ""
 "Du hast deine Platzreservierung für „<a href=\"%(talk_details)s\">%(title)s</"
 "a>“ erfolgreich bestätigt."
@@ -881,6 +879,10 @@ msgstr "Beispielcode"
 #: talk/templates/talk/talk_details.html:69
 msgid "Your feedback for this session"
 msgstr "Dein Feedback für diese Session"
+
+#: talk/templates/talk/talk_details.html:147
+msgid "Room:"
+msgstr "Raum:"
 
 #: talk/templates/talk/talk_feedback_summary.html:3
 msgid "Feedback summary"

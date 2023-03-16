@@ -24,9 +24,6 @@ services:
     build:
       context: .
       dockerfile: app-dev.Dockerfile
-      args:
-        http_proxy: ${http_proxy}
-        no_proxy: ${no_proxy},vault
     read_only: true
     ports:
       - "8000:8000"

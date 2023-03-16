@@ -1,10 +1,6 @@
 FROM alpine:latest
 
-ARG http_proxy
-ARG no_proxy
-RUN http_proxy=${http_proxy} https_proxy=${http_proxy} \
-    no_proxy=${no_proxy} \
-    apk add --no-cache \
+RUN apk add --no-cache \
     bash \
     ca-certificates \
     cyrus-sasl-plain \

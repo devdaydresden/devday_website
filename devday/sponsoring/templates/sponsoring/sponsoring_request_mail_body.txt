@@ -7,9 +7,11 @@ the following sponsoring request for {{ event }} has been sent from the Website.
 
 {{ body_text }}
 
-{% blocktrans count counter=packages|length %}The requester is interested in the following sponsoring oportunity:{% plural %}The requester is interested in the following sponsoring oportunities:{% endblocktrans %}
+{% blocktrans count counter=packages|length %}The requester is interested in the following sponsoring opportunity:{% plural %}The requester is interested in the following sponsoring oportunities:{% endblocktrans %}
 
 {{ packages|join:", " }}
+
+{% blocktrans %}The requester would like to be contacted at {{ contact_email }}.{% endblocktrans %}
 
 -- {% blocktrans with domain=site.domain host=request.META.HTTP_HOST scheme=request.scheme remote=request.META.REMOTE_ADDR path=request.path %}
 Sent from {{ scheme }}://{{ domain }}{{ path }}

@@ -80,6 +80,7 @@ class SponsoringViewTest(TestCase):
         self.assertIn(organization, message.subject)
         self.assertIn(organization, message.body)
         self.assertIn(body_text, message.body)
+        self.assertIn(email, message.body)
         self.assertEqual(message.reply_to, [email])
 
 

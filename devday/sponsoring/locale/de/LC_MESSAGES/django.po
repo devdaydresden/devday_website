@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-09 09:23+0100\n"
-"PO-Revision-Date: 2022-12-09 09:57+0100\n"
+"POT-Creation-Date: 2023-03-29 11:42+0200\n"
+"PO-Revision-Date: 2023-03-29 11:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -136,7 +136,7 @@ msgstr ""
 "%(organization)s schrieb die folgende Anfrage:\n"
 
 #: sponsoring/templates/sponsoring/sponsoring_request_mail_body.txt:10
-msgid "The requester is interested in the following sponsoring oportunity:"
+msgid "The requester is interested in the following sponsoring opportunity:"
 msgid_plural ""
 "The requester is interested in the following sponsoring oportunities:"
 msgstr[0] ""
@@ -145,6 +145,11 @@ msgstr[1] ""
 "Der Anfragende ist an folgenden Sponsoringmöglichkeiten interessiert:"
 
 #: sponsoring/templates/sponsoring/sponsoring_request_mail_body.txt:14
+#, python-format
+msgid "The requester would like to be contacted at %(contact_email)s."
+msgstr "Der Anfragende hat %(contact_email)s als Kontaktadresse angegeben."
+
+#: sponsoring/templates/sponsoring/sponsoring_request_mail_body.txt:16
 #, python-format
 msgid ""
 "\n"

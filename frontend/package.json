@@ -9,7 +9,6 @@
   ],
   "devDependencies": {
     "browserify": "^16.2.3",
-    "caniuse-lite": "^1.0.30001341",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-concat": "^2.6.1",

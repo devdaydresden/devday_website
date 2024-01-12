@@ -85,4 +85,4 @@ website
 ## Kontakt
 
 - [Ihr wollt beim Dev Day mitmachen?](mailto:info@devday.de)
-- [Ihr habt Detailfragen zur Webseite?](mailto:jan.dittberner@t-systems.com)
+- [Ihr habt Detailfragen zur Webseite?](mailto:jan.dittberner@telekom.de)

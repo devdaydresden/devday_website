@@ -1,7 +1,7 @@
 # devday website talk application
-# Copyright (C) 2016-2020 T-Systems Multimedia Solutions GmbH
+# Copyright (C) Deutsche Telekom MMS GmbH
 # This file is distributed under the same license as the devday website package.
-# Jan Dittberner <jan.dittberner@t-systems.com>, 2016-2020
+# Jan Dittberner <jan.dittberner@telekom.de>, 2016-2024
 #
 msgid ""
 msgstr ""
@@ -9,8 +9,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-16 07:50+0100\n"
 "PO-Revision-Date: 2023-03-16 07:50+0100\n"
-"Last-Translator: Jan Dittberner <jan.dittberner@t-systems.com>\n"
-"Language-Team: Jan Dittberner <jan.dittberner@t-systems.com>\n"
+"Last-Translator: Jan Dittberner <jan.dittberner@telekom.de>\n"
+"Language-Team: Jan Dittberner <jan.dittberner@telekom.de>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

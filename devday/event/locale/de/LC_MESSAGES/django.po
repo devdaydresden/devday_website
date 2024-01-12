@@ -1,7 +1,7 @@
 # German translation for the devday website event app.
-# Copyright (C) 2017 Jan Dittberner
+# Copyright (C) Deutsche Telekom MMS GmbH
 # This file is distributed under the same license as the devday package.
-# Jan Dittberner <jan.dittberner@t-systems.com>, 2017.
+# Jan Dittberner <jan.dittberner@telekom.de>, 2017-2024.
 #
 msgid ""
 msgstr ""
@@ -9,8 +9,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-26 17:06+0000\n"
 "PO-Revision-Date: 2019-03-08 16:45+0100\n"
-"Last-Translator: Jan Dittberner <jan@dittberner.info>\n"
-"Language-Team: jan.dittberner@t-systems.com\n"
+"Last-Translator: Jan Dittberner <jan.dittberner@telekom.de>\n"
+"Language-Team: Jan Dittberner <jan.dittberner@telekom.de>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

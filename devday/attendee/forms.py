@@ -21,7 +21,7 @@ class DevDayRegistrationForm(RegistrationFormUniqueEmail):
         label=_("Contact for other events"),
         help_text=_(
             "I would like to receive updates related to events organized by"
-            " the T-Systems Multimedia Solutions GmbH Software Engineering"
+            " the Deutsche Telekom MMS GmbH Software Engineering"
             " Community via email."
         ),
         required=False,
@@ -79,7 +79,7 @@ class AttendeeProfileForm(ModelForm):
         label=_("Contact for other events"),
         help_text=_(
             "I would like to receive updates related to events organized by"
-            " the T-Systems Multimedia Solutions GmbH Software Engineering"
+            " the Deutsche Telekom MMS GmbH Software Engineering"
             " Community via email."
         ),
         required=False,

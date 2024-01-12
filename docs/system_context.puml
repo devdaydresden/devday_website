@@ -3,7 +3,7 @@
 
 title Context diagram Dev Day Website
 
-Enterprise_Boundary(MMSBT, "T-Systems MMS BT&E") {
+Enterprise_Boundary(MMSBT, "Deutsche Telekom MMS BT&E") {
   System(ReverseProxy, "Reverse Proxy", "MMS reverse proxy")
   System_Boundary(DevDay, "Dev Day applications") {
     System(DevDayWebsite, "Dev Day website", "Dev Day Website application")

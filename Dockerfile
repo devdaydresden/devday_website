@@ -71,8 +71,8 @@ RUN set -eu ; \
  && rm -rf compilemessages_settings.py __pycache__ /var/lib/apt/lists/*
 
 FROM debian:bullseye-slim
-LABEL maintainer="Jan Dittberner <jan.dittberner@t-systems.com>"
-LABEL vendor="T-Systems Multimedia Solutions GmbH"
+LABEL maintainer="Jan Dittberner <jan.dittberner@telekom.de>"
+LABEL vendor="Deutsche Telekom MMS GmbH"
 
 ENV \
     REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt

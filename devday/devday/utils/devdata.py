@@ -218,7 +218,7 @@ class DevData:
             """<p>Am <strong>05.05.2020 </strong>ist es soweit – der Dev Day findet zum 6ten Mal in der Börse Dresden statt. 
 Seid dabei, wenn wir die neusten Innovationen und heißesten Trends der IT-Branche diskutieren.</p>
 <p>Für alle die den Dev Day noch nicht kennen – die IT-Konferenz wird von der 
-Software Engineering Community der T-Systems Multimedia Solutions veranstaltet und bietet Platz zum 
+Software Engineering Community der Deutsche Telekom MMS GmbH veranstaltet und bietet Platz zum 
 Netzwerken und Wissensaustausch zu allen IT-Themen. Egal welche Technologie, egal ob 
 Trends und Innovationen oder Themen, die euch schon immer beschäftigt haben, wir diskutieren Methodiken, 
 Codes und die menschliche Seite in der Softwareentwicklung – auf dem Dev Day ist Platz für alle Themen! 

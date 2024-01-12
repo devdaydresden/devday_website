@@ -1,6 +1,6 @@
 FROM node:lts
-MAINTAINER Jan Dittberner <jan.dittberner@t-systems.com>
-LABEL vendor=T-Systems\ Multimedia\ Solutions\ GmbH
+MAINTAINER Jan Dittberner <jan.dittberner@telekom.de>
+LABEL vendor=Deutsche\ Telekom\ MMS\ GmbH
 
 VOLUME /app /app/frontend/node_modules
 

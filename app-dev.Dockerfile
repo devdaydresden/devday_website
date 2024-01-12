@@ -1,6 +1,6 @@
 FROM debian:bullseye-slim AS builder
-LABEL maintainer="Jan Dittberner <jan.dittberner@t-systems.com>"
-LABEL vendor="T-Systems Multimedia Solutions GmbH"
+LABEL maintainer="Jan Dittberner <jan.dittberner@telekom.de>"
+LABEL vendor="Deutsche Telekom MMS GmbH"
 
 COPY pyproject.toml poetry.lock /python-code/
 WORKDIR /python-code/

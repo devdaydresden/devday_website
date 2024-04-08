@@ -76,6 +76,10 @@ class AttendeeQRCodeMixIn(object):
                         "message_code": "OK",
                     }
                 )
+            try:
+                context.update({"name": attendee.badgedata.title})
+            except ObjectDoesNotExist:
+                pass
         else:
             context.update(
                 {

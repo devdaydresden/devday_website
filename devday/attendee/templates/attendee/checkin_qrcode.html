@@ -9,6 +9,7 @@
   <div class="row">
     <div class="offset-lg-2 col-lg-8 col-12 content-area">
       {% static_placeholder "attendee-checkin-qrcode-public-transport" %}
+      {% if name %}{% trans "Ticket for" %} <strong>{{ name }}</strong>{% endif %}
     </div>
   </div>
 {% endblock %}

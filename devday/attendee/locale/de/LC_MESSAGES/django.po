@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday attendee app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-26 17:06+0000\n"
-"PO-Revision-Date: 2020-02-17 15:20+0100\n"
+"POT-Creation-Date: 2024-04-08 15:07+0200\n"
+"PO-Revision-Date: 2024-04-08 15:06+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@telekom.de>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@telekom.de>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: attendee/admin.py:36
@@ -48,8 +48,8 @@ msgid ""
 "I would like to receive updates related to events organized by the Deutsche "
 "Telekom MMS GmbH Software Engineering Community via email."
 msgstr ""
-"Ich möchte Updates zu Veranstaltungen der Deutsche Telekom MMS "
-"GmbH Software Engineering Community per E-Mail erhalten."
+"Ich möchte Updates zu Veranstaltungen der Deutsche Telekom MMS GmbH Software "
+"Engineering Community per E-Mail erhalten."
 
 #: attendee/forms.py:91
 msgid "Contact permission granted on"
@@ -154,19 +154,19 @@ msgstr "Feedback abschicken"
 msgid "Submit your badge data"
 msgstr "Deine Badge-Daten anpassen"
 
-#: attendee/models.py:57
+#: attendee/models.py:55
 msgid "email address"
 msgstr "E-Mail-Adresse"
 
-#: attendee/models.py:59
+#: attendee/models.py:57
 msgid "staff status"
 msgstr "Staff-Status"
 
-#: attendee/models.py:64
+#: attendee/models.py:62
 msgid "active"
 msgstr "aktiv"
 
-#: attendee/models.py:67
+#: attendee/models.py:65
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
@@ -174,123 +174,123 @@ msgstr ""
 "Gibt an, ob dieser Nutzer als aktiv behandelt werden soll. Wähle dies ab, "
 "anstatt Nutzer zu löschen."
 
-#: attendee/models.py:72
+#: attendee/models.py:70
 msgctxt "devday website"
 msgid "date joined"
 msgstr "Anmeldedatum"
 
-#: attendee/models.py:75
+#: attendee/models.py:73
 msgid "contact permission date"
 msgstr "Kontaktaufnahme erteilt"
 
-#: attendee/models.py:84
+#: attendee/models.py:83
 msgid "user"
 msgstr "Nutzer"
 
-#: attendee/models.py:85
+#: attendee/models.py:84
 msgid "users"
 msgstr "Nutzer"
 
-#: attendee/models.py:149 attendee/models.py:264
+#: attendee/models.py:148 attendee/models.py:263
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: attendee/models.py:156
+#: attendee/models.py:155
 msgid "Check-In Code"
 msgstr "Check-In-Code"
 
-#: attendee/models.py:157
+#: attendee/models.py:156
 msgid "Code to check in attendee manually"
 msgstr "Code zum manuellen Einchecken des Teilnehmners"
 
-#: attendee/models.py:163
+#: attendee/models.py:162
 msgid "Checked-In"
 msgstr "Eingecheckt"
 
-#: attendee/models.py:164
+#: attendee/models.py:163
 msgid "Date and time the attendee checked in"
 msgstr "Datum und Uhrzeit, zu der der Teilnehmer eingecheckt hat"
 
-#: attendee/models.py:169
+#: attendee/models.py:168
 msgid "source"
 msgstr "Informationsquelle"
 
-#: attendee/models.py:169
+#: attendee/models.py:168
 msgid "How have you become aware of this event?"
 msgstr "Wie bist du auf den Dev Day aufmerksam geworden?"
 
-#: attendee/models.py:172
+#: attendee/models.py:171
 msgid "raffle"
 msgstr "Verlosung"
 
-#: attendee/models.py:172
+#: attendee/models.py:171
 msgid "Take part in the raffle"
 msgstr "An der Verlosung teilnehmen"
 
-#: attendee/models.py:178 attendee/models.py:224 attendee/models.py:256
+#: attendee/models.py:177 attendee/models.py:223 attendee/models.py:255
 msgid "Attendee"
 msgstr "Teilnehmer"
 
-#: attendee/models.py:179
+#: attendee/models.py:178
 #: attendee/templates/event/eventattendee_checkin_summary.html:8
 msgid "Attendees"
 msgstr "Teilnehmer"
 
-#: attendee/models.py:216
+#: attendee/models.py:215
 #, python-brace-format
 msgid "{email} at {event}"
 msgstr "{email} für {event}"
 
-#: attendee/models.py:231
+#: attendee/models.py:230
 msgid "Title"
 msgstr "Titel"
 
-#: attendee/models.py:233
+#: attendee/models.py:232
 msgid "How would you like to be named"
 msgstr "Wie möchtest du genannt beziehungsweise angesprochen werden"
 
-#: attendee/models.py:236
+#: attendee/models.py:235
 msgid "Contact"
 msgstr "Kontakt"
 
-#: attendee/models.py:239
+#: attendee/models.py:238
 msgid "optional contact information (i.e. a Twitter handle)"
 msgstr "optionale Kontaktinformation (z.B. ein Twitter-Handle)"
 
-#: attendee/models.py:242
+#: attendee/models.py:241
 msgid "Topics"
 msgstr "Themen"
 
-#: attendee/models.py:245
+#: attendee/models.py:244
 msgid "Topics you would like to talk about"
 msgstr "Themen über die du gern sprechen möchtest"
 
-#: attendee/models.py:249 attendee/models.py:250
+#: attendee/models.py:248 attendee/models.py:249
 msgid "Badge data"
 msgstr "Badge-Daten"
 
-#: attendee/models.py:269
+#: attendee/models.py:268
 msgid "Event score"
 msgstr "Bewertung Veranstaltung"
 
-#: attendee/models.py:271
+#: attendee/models.py:270
 msgid "Organisation score"
 msgstr "Bewertung Organisation"
 
-#: attendee/models.py:273
+#: attendee/models.py:272
 msgid "Session score"
 msgstr "Bewertung Sessions"
 
-#: attendee/models.py:274
+#: attendee/models.py:273
 msgid "Comment"
 msgstr "Kommentar"
 
-#: attendee/models.py:278
+#: attendee/models.py:277
 msgctxt "attendee event feedback singular form"
 msgid "Attendee event feedback"
 msgstr "Teilnehmerfeedback für Veranstaltung"
 
-#: attendee/models.py:281
+#: attendee/models.py:280
 msgctxt "attendee event feedback plural form"
 msgid "Attendee event feedback"
 msgstr "Teilnehmerfeedback für Veranstaltung"
@@ -523,6 +523,10 @@ msgstr "Bearbeite deine Badge-Daten"
 msgid "You are registered for the event &quot;%(event)s&quot;."
 msgstr "Du bist für die Veranstaltung &quot;%(event)s&quot; angemeldet."
 
+#: attendee/templates/attendee/checkin_qrcode.html:12
+msgid "Ticket for"
+msgstr "Ticket für"
+
 #: attendee/templates/attendee/checkin_qrcode_include.html:5
 #, python-format
 msgid "QR Code to check in at %(current_event)s on location"
@@ -651,7 +655,7 @@ msgid ""
 "%(current_event)s directly."
 msgstr ""
 "Super, du bist schon eingeloggt! Damit kannst du dich direkt für die "
-"Teilnahme an der Veranstaltung %(current_event)s anmelden!"
+"Teilnahme an der Veranstaltung %(current_event)s anmelden."
 
 #: attendee/templates/attendee/login_or_register.html:45
 msgid "Register"
@@ -758,63 +762,63 @@ msgstr "{} für {}"
 msgid "You are already checked in."
 msgstr "Du hast bereits eingecheckt."
 
-#: attendee/views.py:83
+#: attendee/views.py:87
 msgid "You are not registered for the current event."
 msgstr "Du bist nicht für die aktuelle Veranstaltung angemeldet."
 
-#: attendee/views.py:363
+#: attendee/views.py:367
 msgid "Account does not match the activation code"
 msgstr "Benutzerkonto passt nicht zum Aktivierungscode"
 
-#: attendee/views.py:615
+#: attendee/views.py:619
 msgid "Attendee has confirmed place for"
 msgstr "Teilnehmer hat reservierten Platz für"
 
-#: attendee/views.py:622
+#: attendee/views.py:626
 msgid "Attendee has no reservations."
 msgstr "Teilnehmer hat keine Reservierungen."
 
-#: attendee/views.py:629
+#: attendee/views.py:633
 #, python-brace-format
 msgid "<b>{email}</b> has been checked in successfully to {event}!"
 msgstr "<b>{email}</b> wurde erfolgreich für {event} eingecheckt!"
 
-#: attendee/views.py:680
+#: attendee/views.py:684
 msgid "Invalid verification URL"
 msgstr "Ungültige Verifizierungs-URL"
 
-#: attendee/views.py:681
+#: attendee/views.py:685
 msgid "Try again scanning the QR code."
 msgstr "Den QR-Code nochmal scannen."
 
-#: attendee/views.py:691
+#: attendee/views.py:695
 msgid "Attendee not found"
 msgstr "Teilnehmer nicht gefunden"
 
-#: attendee/views.py:692
+#: attendee/views.py:696
 msgid "The attendee is (no longer) registered."
 msgstr "Der Teilnehmer ist (nicht mehr) registriert."
 
-#: attendee/views.py:700
+#: attendee/views.py:704
 msgid "Code is for the wrong event"
 msgstr "Der Code ist für die falsche Veranstaltung"
 
-#: attendee/views.py:701
+#: attendee/views.py:705
 msgid "This checkin code is for another event."
 msgstr "Der Checkin-Code ist für eine andere Veranstaltung."
 
-#: attendee/views.py:712
+#: attendee/views.py:716
 msgid "Already checked in"
 msgstr "Bereits eingecheckt"
 
-#: attendee/views.py:714
+#: attendee/views.py:718
 msgid "Attendee <b>{}</b> has checked in at {}."
 msgstr "Teilnehmer <b>{}</b> hat bereits um {} eingecheckt."
 
-#: attendee/views.py:725
+#: attendee/views.py:729
 msgid "Welcome!"
 msgstr "Willkommen!"
 
-#: attendee/views.py:727
+#: attendee/views.py:731
 msgid "Attendee <b>{}</b> was successfully checked in."
 msgstr "Teilnehmer <b>{}</b> wurde erfolgreich eingecheckt."

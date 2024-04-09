@@ -22,7 +22,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView, TemplateView, UpdateView, View
-from django.views.generic.edit import FormView, ModelFormMixin
+from django.views.generic.edit import CreateView, FormView, ModelFormMixin
 from django.views.generic.list import BaseListView, ListView
 from django_registration import signals
 from django_registration.backends.activation.views import (
@@ -422,6 +422,25 @@ class AttendeeRegisterSuccessView(AttendeeRequiredMixin, UpdateView):
         return reverse(
             "attendee_registration_complete", kwargs={"event": self.event.slug}
         )
+
+
+class CreateBadgeDataView(AttendeeRequiredMixin, CreateView):
+    template_name = "attendee/badge_data_edit.html"
+    event = None
+    form_class = BadgeDataForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["attendee"] = self.attendee
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["event"] = self.event
+        return context
+
+    def get_success_url(self):
+        return reverse("user_profile")
 
 
 class EditBadgeDataView(AttendeeRequiredMixin, UpdateView):

@@ -2,165 +2,171 @@
 {% load i18n cms_tags crispy_forms_tags sekizai_tags %}
 {% block title %}{% trans "Attendee profile" %}{% endblock %}
 {% block content_body %}
-    <div class="row">
-        <div class="offset-lg-2 col-lg-8 col-12 content-area">
-            <h1>{% blocktrans with username=user.get_username %}User profile for
-                {{ username }}{% endblocktrans %}</h1>
-            <div class="text-justify">{% static_placeholder "gdpr_teaser" %}</div>
-            {% crispy form %}
-        </div>
-        {% if user.speaker %}
-            <div class="offset-lg-2 col-lg-8 col-12 text-justify">
-                {% url 'user_speaker_profile' as speaker_profile %}
-                <h3>{% trans "Speaker" %}</h3>
-                <p>
-                    {% blocktrans with speaker_name=user.speaker.name %}You are registered as speaker &quot;{{ speaker_name }}&quot;. Visit your
-                        <a href="{{ speaker_profile }}">speaker details page</a> to update your speaker data.{% endblocktrans %}
-                </p>
-            </div>
-        {% endif %}
-        <div class="offset-lg-2 col-lg-8 col-12">
-            <h3>{% trans "Events" %}</h3>
-            {% if attendees %}
-                <p>{% blocktrans %}You are registered for these
-                    events{% endblocktrans %}</p>
-                <div class="table-responsive">
-                    <table class="table">
-                        {% for attendee in attendees %}
-                            {% with event=attendee.event reservations=attendee.sessionreservation_set.all %}
-                                <tr>
-                                    <td>{{ event.title }}</td>
-                                    <td>{{ event.description }}
-                                        {% if event.id == current_event.id and reservations %}
-                                            <h5>{% trans "Workshops / Sessions" %}:</h5>
-                                            <div class="list-group list-group-flush">
-                                                {% for reservation in reservations %}
-                                                    {% with talk=reservation.talk %}
-                                                        <div class="list-group-item">
-                                                            {% if talk.is_reservation_available %}
-                                                                <p>
-                                                                    <a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}">{{ talk.title }}</a>
-                                                                </p>
-                                                                <p>
-                                                                    {% if reservation.is_confirmed %}
-                                                                        <span class="fas fa-check-circle text-success"
-                                                                              title="{% trans "You are a confirmed attendee of this session" %}"
-                                                                              aria-label="{% trans "You are a confirmed attendee of this session" %}"></span>
-                                                                        <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span
-                                                                                class="fas fa-calendar-times"></span> {% trans "Cancel reservation" %}
-                                                                        </a>
-                                                                    {% elif reservation.is_waiting %}
-                                                                        <span class="fas fa-question-circle text-danger"
-                                                                              title="{% trans "You are on a waiting list for this session" %}"
-                                                                              aria-label="{% trans "You are on a waiting list for this session" %}"></span>
-                                                                        <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span
-                                                                                class="fas fa-calendar-times"></span> {% trans "Remove from waiting list" %}
-                                                                        </a>
-                                                                    {% else %}
-                                                                        <span class="fas fa-question-circle text-warning"
-                                                                              title="{% trans "You have not confirmed your reservation for this session" %}"
-                                                                              aria-label="{% trans "You have not confirmed your reservation for this session" %}"></span>
-                                                                        <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}"><span
-                                                                                class="fas fa-send"></span> {% trans "Resend confirmation mail" %}
-                                                                        </a>
-                                                                    {% endif %}
-                                                                </p>
-                                                            {% elif reservation.is_confirmed %}
-                                                                <p>
-                                                                    <a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}">{{ talk.title }}</a>
-                                                                </p>
-                                                            {% endif %}
-                                                        </div>
-                                                    {% endwith %}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% comment %}
-                                        FIXME: implement is_raffle_available in a proper way (see https://github.com/devdaydresden/devday_website/issues/233)
-
-                                        {% if event.is_raffle_available %}
-                                            <div class="form-check-inline">
-                                                <input class="form-check-input"
-                                                       type="checkbox"
-                                                       {% if attendee.raffle %}checked{% endif %}
-                                                       id="raffle-checkbox"
-                                                       data-toggle-url="{% url "attendee_toggle_raffle" event=event.slug %}">
-                                                <label class="form-check-label">{% trans "Take part in the raffle" %}</label>
-                                            </div>
-                                            {% addtoblock "js" %}
-                                                <script type="text/javascript">
-                                                    function getCookie(name) {
-                                                        var cookieValue = null;
-                                                        if (document.cookie && document.cookie !== '') {
-                                                            var cookies = document.cookie.split(';');
-                                                            for (var i = 0; i < cookies.length; i++) {
-                                                                var cookie = jQuery.trim(cookies[i]);
-                                                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                                                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                        return cookieValue;
-                                                    }
-
-                                                    $(document).ready(function () {
-                                                        $("#raffle-checkbox").bind("change", function () {
-                                                            let eventUrl = $(this).data("toggle-url");
-                                                            $.ajax({
-                                                                type: 'POST',
-                                                                url: eventUrl,
-                                                                data: {},
-                                                                headers: {
-                                                                    "X-CSRFToken": getCookie("csrftoken")
-                                                                },
-                                                                success: function (data) {
-                                                                    $('#raffle-checkbox').checked = data["raffle"];
-                                                                },
-                                                                error: function (jqXHR, textStatus, errorThrown) {
-                                                                    alert(textStatus);
-                                                                },
-                                                                dataType: "json"
-                                                            });
-                                                        });
-                                                    })
-                                                </script>
-                                            {% endaddtoblock %}
-                                        {% endif %}
-                                        {% endcomment %}
-                                        {% if not event.is_started %}
-                                            <div class="btn-group float-left float-sm-right">
-
-                                                {% if not event.online_event %}
-                                                <a class="btn btn-{% if not attendee.badgedata %}warning{% else %}success{% endif %}"
-                                                   href="{% url "edit_badge_data" event=event.slug %}">{% trans "Edit badge data" %}</a>
-                                                {% endif %}
-                                            
-                                                {% if not user.get_speaker %}
-                                                    <a class="btn btn-danger"
-                                                       href="{% url "attendee_cancel" event=event.slug %}">{% trans "Cancel Registration" %}</a>
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endwith %}
-                        {% endfor %}
-                    </table>
-                </div>
-            {% else %}
-                <p>
-                    {% blocktrans %}You are not currently registered to participate in any event.{% endblocktrans %}</p>
-            {% endif %}
-        </div>
+  <div class="row">
+    <div class="offset-lg-2 col-lg-8 col-12 content-area">
+      <h1>{% blocktrans with username=user.get_username trimmed %}User profile for
+        {{ username }}{% endblocktrans %}</h1>
+      <div class="text-justify">{% static_placeholder "gdpr_teaser" %}</div>
+      {% crispy form %}
     </div>
-    {% if events and checkin_code %}
-        <div class="row">
-            <div class="offset-lg-2 col-lg-8 col-12 content-area">
-                {% include "attendee/checkin_qrcode_include.html" %}
-            </div>
-        </div>
+    {% if user.speaker %}
+      <div class="offset-lg-2 col-lg-8 col-12 text-justify">
+        {% url 'user_speaker_profile' as speaker_profile %}
+        <h3>{% trans "Speaker" %}</h3>
+        <p>
+          {% blocktrans with speaker_name=user.speaker.name trimmed %}
+            You are registered as speaker &quot;{{ speaker_name }}&quot;. Visit your
+            <a href="{{ speaker_profile }}">speaker details page</a> to update your speaker data.
+          {% endblocktrans %}
+        </p>
+      </div>
     {% endif %}
+    <div class="offset-lg-2 col-lg-8 col-12">
+      <h3>{% trans "Events" %}</h3>
+      {% if attendees %}
+        <p>{% blocktrans trimmed %}You are registered for these events{% endblocktrans %}</p>
+        <div class="table-responsive">
+          <table class="table">
+            {% for attendee in attendees %}
+              {% with event=attendee.event reservations=attendee.sessionreservation_set.all %}
+                <tr>
+                  <td>{{ event.title }}</td>
+                  <td>{{ event.description }}
+                    {% if event.id == current_event.id and reservations %}
+                      <h5>{% trans "Workshops / Sessions" %}:</h5>
+                      <div class="list-group list-group-flush">
+                        {% for reservation in reservations %}
+                          {% with talk=reservation.talk %}
+                            <div class="list-group-item">
+                              {% if talk.is_reservation_available %}
+                                <p>
+                                  <a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}">{{ talk.title }}</a>
+                                </p>
+                                <p>
+                                  {% if reservation.is_confirmed %}
+                                    <span class="fas fa-check-circle text-success"
+                                          title="{% trans "You are a confirmed attendee of this session" %}"
+                                          aria-label="{% trans "You are a confirmed attendee of this session" %}"></span>
+                                    <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span
+                                        class="fas fa-calendar-times"></span> {% trans "Cancel reservation" %}
+                                    </a>
+                                    {% elif reservation.is_waiting %}
+                                    <span class="fas fa-question-circle text-danger"
+                                          title="{% trans "You are on a waiting list for this session" %}"
+                                          aria-label="{% trans "You are on a waiting list for this session" %}"></span>
+                                    <a href="{% url "talk_cancel_reservation" event=talk.event.slug slug=talk.slug %}"><span
+                                        class="fas fa-calendar-times"></span> {% trans "Remove from waiting list" %}
+                                    </a>
+                                  {% else %}
+                                    <span class="fas fa-question-circle text-warning"
+                                          title="{% trans "You have not confirmed your reservation for this session" %}"
+                                          aria-label="{% trans "You have not confirmed your reservation for this session" %}"></span>
+                                    <a href="{% url "talk_resend_confirmation" event=talk.event.slug slug=talk.slug %}"><span
+                                        class="fas fa-send"></span> {% trans "Resend confirmation mail" %}
+                                    </a>
+                                  {% endif %}
+                                </p>
+                              {% elif reservation.is_confirmed %}
+                                <p>
+                                  <a href="{% url 'talk_details' event=talk.event.slug slug=talk.slug as talk_details %}">{{ talk.title }}</a>
+                                </p>
+                              {% endif %}
+                            </div>
+                          {% endwith %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% comment %}
+                      FIXME: implement is_raffle_available in a proper way (see
+                      https://github.com/devdaydresden/devday_website/issues/233)
+
+                      {% if event.is_raffle_available %}
+                        <div class="form-check-inline">
+                          <input class="form-check-input"
+                                 type="checkbox"
+                                 {% if attendee.raffle %}checked{% endif %}
+                                 id="raffle-checkbox"
+                                 data-toggle-url="{% url "attendee_toggle_raffle" event=event.slug %}">
+                          <label class="form-check-label">{% trans "Take part in the raffle" %}</label>
+                        </div>
+                        {% addtoblock "js" %}
+                          <script type="text/javascript">
+                              function getCookie(name) {
+                                  var cookieValue = null;
+                                  if (document.cookie && document.cookie !== '') {
+                                      var cookies = document.cookie.split(';');
+                                      for (var i = 0; i < cookies.length; i++) {
+                                          var cookie = jQuery.trim(cookies[i]);
+                                          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                              break;
+                                          }
+                                      }
+                                  }
+                                  return cookieValue;
+                              }
+
+                              $(document).ready(function () {
+                                  $("#raffle-checkbox").bind("change", function () {
+                                      let eventUrl = $(this).data("toggle-url");
+                                      $.ajax({
+                                          type: 'POST',
+                                          url: eventUrl,
+                                          data: {},
+                                          headers: {
+                                              "X-CSRFToken": getCookie("csrftoken")
+                                          },
+                                          success: function (data) {
+                                              $('#raffle-checkbox').checked = data["raffle"];
+                                          },
+                                          error: function (jqXHR, textStatus, errorThrown) {
+                                              alert(textStatus);
+                                          },
+                                          dataType: "json"
+                                      });
+                                  });
+                              })
+                          </script>
+                        {% endaddtoblock %}
+                      {% endif %}
+                    {% endcomment %}
+                    {% if not event.is_started %}
+                      <div class="btn-group float-left float-sm-right">
+                        {% if attendee.badgedata %}
+                          {% url 'edit_badge_data' event.slug as badge_url %}
+                        {% else %}
+                          {% url 'create_badge_data' event.slug as badge_url %}
+                        {% endif %}
+                        {% if not event.online_event %}
+                          <a class="btn btn-{% if not attendee.badgedata %}warning{% else %}success{% endif %}"
+                             href="{{ badge_url }}">{% trans "Edit badge data" %}</a>
+                        {% endif %}
+
+                        {% if not user.get_speaker %}
+                          <a class="btn btn-danger"
+                             href="{% url "attendee_cancel" event=event.slug %}">{% trans "Cancel Registration" %}</a>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endwith %}
+            {% endfor %}
+          </table>
+        </div>
+      {% else %}
+        <p>
+          {% blocktrans %}You are not currently registered to participate in any event.{% endblocktrans %}</p>
+      {% endif %}
+    </div>
+  </div>
+  {% if events and checkin_code %}
+    <div class="row">
+      <div class="offset-lg-2 col-lg-8 col-12 content-area">
+        {% include "attendee/checkin_qrcode_include.html" %}
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

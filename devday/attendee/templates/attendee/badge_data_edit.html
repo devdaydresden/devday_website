@@ -1,24 +1,24 @@
 {% extends "devday_site.html" %}
 {% load cms_tags i18n crispy_forms_tags staticfiles %}
-{% block title %}{{ block.super }} // {% blocktrans with event=event.title %}Edit your badge data for {{ event }} successful{% endblocktrans %}" %}{% endblock %}
+{% block title %}{{ block.super }} // {% blocktrans with event=event.title trimmed %}
+  Edit your badge data for {{ event }}
+{% endblocktrans %}" %}{% endblock %}
 {% block content %}
-    <div class="content-area">
-        <div class="col-md-8 offset-md-2 col-12">
-            {% static_placeholder "attendee-edit-badge-data-intro" or %}
-                <h1>{% trans "Edit your badge data" %}</h1>
-                <p>
-                    {% blocktrans with event=event.title %}You are registered for the event &quot;{{ event }}&quot;.{% endblocktrans %}</p>{% endstatic_placeholder %}
-            {% static_placeholder "attendee-edit-badge-data" or %}
-                {% trans "Please fill your badge information." %}{% endstatic_placeholder %}
-            <div class="row">
-                <div class="col-6">
-                    {% crispy form %}
-                </div>
-                <div class="col-6 badge-preview">
-                    <img src="{% static "images/devday20_badge_preview.png" %}"
-                         alt="{% trans "Badge preview" %}"/>
-                </div>
-            </div>
-        </div>
+  <div class="content-area">
+    <div class="row">
+      <div class="col-md-8 offset-md-2 col-12">
+        {% static_placeholder "attendee-edit-badge-data-intro" or %}
+          <h1>{% trans "Edit your badge data" %}</h1>
+          <p>{% blocktrans with event=event.title trimmed %}
+            You are registered for the event &quot;{{ event }}&quot;.
+          {% endblocktrans %}</p>
+        {% endstatic_placeholder %}
+        {% static_placeholder "attendee-edit-badge-data" or %}
+          <p>{% trans "Please fill your badge information." %}</p>
+        {% endstatic_placeholder %}
+
+        {% crispy form %}
+      </div>
     </div>
+  </div>
 {% endblock %}

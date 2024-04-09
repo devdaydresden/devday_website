@@ -8,8 +8,23 @@
   </div>
   <div class="row">
     <div class="offset-lg-2 col-lg-8 col-12 content-area">
-      {% static_placeholder "attendee-checkin-qrcode-public-transport" %}
-      {% if name %}{% trans "Ticket for" %} <strong>{{ name }}</strong>{% endif %}
+      {% static_placeholder "attendee-checkin-public-transport-intro" or %}
+        <h2>Your public transport ticket</h2>
+      {% endstatic_placeholder %}
+      {% if name %}
+        {% blocktrans %}Ticket for <strong>{{ name }}</strong>{% endblocktrans %}
+        {% static_placeholder "attendee-checkin-qrcode-public-transport" or %}{% endstatic_placeholder %}
+        {% url 'edit_badge_data' event=event as badge_url %}
+        <p>{% blocktrans trimmed %}
+          You can change the name in <a href="{{ badge_url }}">your badge data</a>.
+        {% endblocktrans %}</p>
+      {% else %}
+        {% url 'create_badge_data' event=event as badge_url %}
+        <strong>{% blocktrans trimmed %}
+          Please add your name in <a href="{{ badge_url }}">your badge data</a> if you want to use the public transport
+          ticket.
+        {% endblocktrans %}</strong>
+      {% endif %}
     </div>
   </div>
 {% endblock %}

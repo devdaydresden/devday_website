@@ -304,6 +304,58 @@ class AttendeeRegisterSuccessViewTest(TestCase):
         self.assertEqual(self.badge_data.topics, test_topics)
 
 
+class CreateBadgeDataViewTest(TestCase):
+    def setUp(self):
+        self.event = event_testutils.create_test_event("Test Event")
+        self.user, self.password = attendee_testutils.create_test_user(is_active=True)
+        self.attendee = Attendee.objects.create(user=self.user, event=self.event)
+        self.login_url = reverse("auth_login")
+        self.url = f"/{self.event.slug}/attendee/create-badge/"
+
+    def test_anonymous(self):
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, "{}?{}".format(self.login_url, urlencode({"next": self.url}, safe="/"))
+        )
+
+    def test_non_attendee(self):
+        non_attendee, password = attendee_testutils.create_test_user(
+            email="test2@example.org", is_active=True
+        )
+        self.client.login(username=non_attendee.email, password=password)
+        r = self.client.get(self.url)
+        self.assertRedirects(
+            r, reverse("attendee_registration", kwargs={"event": self.event.slug})
+        )
+
+    def test_get(self):
+        self.client.login(username=self.user.email, password=self.password)
+        r = self.client.get(self.url)
+        self.assertEqual(r.status_code, 200)
+        self.assertTemplateUsed(r, "attendee/badge_data_edit.html")
+        self.assertIn("form", r.context_data)
+        self.assertIsInstance(r.context_data["form"], BadgeDataForm)
+        self.assertIn("event", r.context_data)
+        self.assertEqual(r.context_data["event"], self.event)
+
+    def test_post(self):
+        self.client.login(username=self.user.email, password=self.password)
+        test_topics = "- test\n- food\n- misc"
+        r = self.client.post(
+            self.url,
+            data={
+                "title": "Call Me Tester",
+                "contact": "@tester",
+                "topics": test_topics,
+            },
+        )
+        self.assertRedirects(r, reverse("user_profile"))
+        badge_data = self.attendee.badgedata
+        self.assertEqual(badge_data.title, "Call Me Tester")
+        self.assertEqual(badge_data.contact, "@tester")
+        self.assertEqual(badge_data.topics, test_topics)
+
+
 class EditBadgeDataViewTest(TestCase):
     def setUp(self):
         self.event = event_testutils.create_test_event("Test Event")
@@ -386,7 +438,11 @@ class DevDayRegistrationViewTest(TestCase):
         self.assertEqual(data["next"], next_url)
         # post form with correct data
         data.update(
-            {"email": "test@example.org", "password1": USER_PASSWORD, "password2": USER_PASSWORD}
+            {
+                "email": "test@example.org",
+                "password1": USER_PASSWORD,
+                "password2": USER_PASSWORD,
+            }
         )
         response = self.client.post(self.url, data=data, follow=False)
         self.assertRedirects(response, "/accounts/register/complete/")
@@ -962,7 +1018,10 @@ class CheckInAttendeeViewUrlTest(TestCase):
         speaker, _, _ = speaker_testutils.create_test_speaker()
         talk_format = (TalkFormat.objects.create(name="Workshop", duration=60),)
         cls.talk = talk_testutils.create_test_talk(
-            speaker=speaker, event=cls.event, title="Test workshop", spots=10,
+            speaker=speaker,
+            event=cls.event,
+            title="Test workshop",
+            spots=10,
         )
         cls.talk.talkformat.set(talk_format)
         other_user, _ = attendee_testutils.create_test_user("other@example.org")

@@ -589,11 +589,13 @@ class AttendeeListView(StaffUserMixin, BaseListView):
                     (
                         attendee.user.email,
                         attendee.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
-                        attendee.user.contact_permission_date.strftime(
-                            "%Y-%m-%d %H:%M:%S"
-                        )
-                        if attendee.user.contact_permission_date
-                        else "",
+                        (
+                            attendee.user.contact_permission_date.strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            )
+                            if attendee.user.contact_permission_date
+                            else ""
+                        ),
                     )
                     for attendee in context.get("object_list", [])
                 ]
@@ -662,6 +664,8 @@ class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
         attendee.save()
         context = self.get_form_kwargs()
         context["form"] = form
+        event = Event.objects.get(slug=self.kwargs.get("event"))
+        context["is_speaker"] = is_speaker(attendee, event)
         context["checkin_message"] = self.get_success_message(form.cleaned_data)
         context["checkin_reservations"] = get_reservation_list(attendee)
         return self.render_to_response(context)
@@ -669,6 +673,15 @@ class CheckInAttendeeView(StaffUserMixin, SuccessMessageMixin, FormView):
     def form_invalid(self, form):
         context = self.get_form_kwargs()
         context["form"] = form
+        if form.has_error("attendee", "checked_in"):
+            error_data = [
+                e.params
+                for e in form.errors.as_data()["attendee"]
+                if e.code == "checked_in"
+            ][0]
+            attendee = error_data["attendee"]
+            event = Event.objects.get(slug=self.kwargs.get("event"))
+            context["is_speaker"] = is_speaker(attendee, event)
         return self.render_to_response(context)
 
     def get_success_message(self, cleaned_data):
@@ -688,15 +701,24 @@ class CheckInAttendeeQRView(LoginRequiredMixin, AttendeeQRCodeMixIn, TemplateVie
         return context
 
 
+def is_speaker(attendee, event):
+    try:
+        return attendee.user.speaker.publishedspeaker_set.filter(event=event).exists()
+    except ObjectDoesNotExist:
+        return False
+
+
 class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
     template_name = "attendee/checkin_result.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["event"] = Event.objects.get(slug=self.kwargs.get("event"))
-        id = self.kwargs["id"]
+        event = Event.objects.get(slug=self.kwargs.get("event"))
+        context["event"] = event
+
+        attendee_id = self.kwargs["id"]
         verification = self.kwargs["verification"]
-        if not Attendee.objects.is_verification_valid(id, verification):
+        if not Attendee.objects.is_verification_valid(attendee_id, verification):
             context.update(
                 {
                     "checkin_code": "invalid",
@@ -706,7 +728,7 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
             )
             return context
         try:
-            attendee = Attendee.objects.get(id=id)
+            attendee = Attendee.objects.get(id=attendee_id)
         except ObjectDoesNotExist:
             context.update(
                 {
@@ -738,6 +760,7 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
                     ).format(
                         attendee.user, attendee.checked_in.strftime("%H:%M %d.%m.%y")
                     ),
+                    "is_speaker": is_speaker(attendee, event),
                     "checkin_reservations": get_reservation_list(attendee),
                 }
             )
@@ -750,6 +773,7 @@ class CheckInAttendeeUrlView(StaffUserMixin, TemplateView):
                     "Attendee <b>{}</b> was successfully checked in."
                 ).format(attendee.user),
                 "checkin_reservations": get_reservation_list(attendee),
+                "is_speaker": is_speaker(attendee, event),
             }
         )
         return context

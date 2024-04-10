@@ -6,13 +6,15 @@ from attendee.views import (
     AttendeeConfirmationView,
     AttendeeEventFeedbackView,
     AttendeeRegisterSuccessView,
-    AttendeeRegistrationView,
+    AttendeeRegistrationCompleteView,
     AttendeeRegistrationPendingView,
+    AttendeeRegistrationView,
     AttendeeToggleRaffleView,
     CheckInAttendeeQRView,
     CheckInAttendeeSummaryView,
     CheckInAttendeeUrlView,
     CheckInAttendeeView,
+    CreateBadgeDataView,
     DevDayUserActivationView,
     DevDayUserDeleteView,
     DevDayUserProfileView,
@@ -21,7 +23,6 @@ from attendee.views import (
     FeedbackSummaryView,
     LoginOrRegisterAttendeeView,
     RaffleView,
-    AttendeeRegistrationCompleteView,
 )
 
 urlpatterns = [
@@ -71,6 +72,11 @@ urlpatterns = [
         r"^(?P<event>[^/]+)/attendee/register/complete/$",
         AttendeeRegistrationCompleteView.as_view(),
         name="attendee_registration_complete",
+    ),
+    url(
+        r"^(?P<event>[^/]+)/attendee/create-badge/$",
+        CreateBadgeDataView.as_view(),
+        name="create_badge_data",
     ),
     url(
         r"^(?P<event>[^/]+)/attendee/edit-badge/$",

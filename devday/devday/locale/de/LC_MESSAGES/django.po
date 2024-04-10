@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devday\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-26 17:06+0000\n"
-"PO-Revision-Date: 2020-02-17 15:19+0100\n"
+"POT-Creation-Date: 2024-04-09 17:08+0200\n"
+"PO-Revision-Date: 2024-04-09 17:08+0200\n"
 "Last-Translator: Jan Dittberner <jan.dittberner@telekom.de>\n"
 "Language-Team: Jan Dittberner <jan.dittberner@telekom.de>\n"
 "Language: de\n"
@@ -16,12 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: devday/cms_apps.py:8
-msgid "DevDay"
-msgstr "DevDay"
+#: devday/apps.py:21 devday/cms_apps.py:8
+msgid "Dev Day"
+msgstr "Dev Day"
 
 #: devday/cms_menus.py:39
 msgid "Register now for {}"
@@ -159,51 +159,51 @@ msgstr "Test-Email an mich selbst senden"
 msgid "Send Email To Selected Recipients"
 msgstr "Email an ausgewählte Empfängergruppe senden"
 
-#: devday/settings/base.py:127 devday/settings/base.py:227
+#: devday/settings.py:138 devday/settings.py:238
 msgid "de"
 msgstr "de"
 
-#: devday/settings/base.py:144
+#: devday/settings.py:155
 msgid "row"
 msgstr "row"
 
-#: devday/settings/base.py:145
+#: devday/settings.py:156
 msgid "container"
 msgstr "container"
 
-#: devday/settings/base.py:146
+#: devday/settings.py:157
 msgid "col-xs-12"
 msgstr "col-xs-12"
 
-#: devday/settings/base.py:147
+#: devday/settings.py:158
 msgid "col-md-12"
 msgstr "col-md-12"
 
-#: devday/settings/base.py:151
+#: devday/settings.py:162
 msgid "Image in carousel"
 msgstr "Bild in Karussel"
 
-#: devday/settings/base.py:152
+#: devday/settings.py:163
 msgid "First image in carousel"
 msgstr "Erstes Bild in Karussel"
 
-#: devday/settings/base.py:153
+#: devday/settings.py:164
 msgid "Image in galery"
 msgstr "Bild in Galerie"
 
-#: devday/settings/base.py:157
+#: devday/settings.py:168
 msgid "Dev Day Page"
 msgstr "Dev-Day-Seite"
 
-#: devday/settings/base.py:158
+#: devday/settings.py:169
 msgid "Dev Day Page with Call to Action area"
 msgstr "Dev-Day-Seite mit Call-to-Action-Bereich"
 
-#: devday/settings/base.py:159
+#: devday/settings.py:170
 msgid "Dev Day Home Page"
 msgstr "Dev-Day-Homepage"
 
-#: devday/settings/base.py:162
+#: devday/settings.py:173
 msgid "Page with all static placeholders not for menu"
 msgstr "Seite mit allen statischen Platzhaltern, nicht im Menü verlinken"
 

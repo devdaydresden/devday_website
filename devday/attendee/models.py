@@ -227,15 +227,18 @@ class BadgeData(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     title = models.CharField(
-        verbose_name=_("Title"),
+        verbose_name=_("Name"),
         max_length=50,
-        help_text=_("How would you like to be named"),
+        help_text=_(
+            "How would you like to be named "
+            "(this information will also be used for your public transport ticket)"
+        ),
     )
     contact = models.CharField(
         verbose_name=_("Contact"),
         blank=True,
         max_length=50,
-        help_text=_("optional contact information (i.e. a Twitter handle)"),
+        help_text=_("optional contact information (i.e. a social media handle)"),
     )
     topics = models.TextField(
         verbose_name=_("Topics"),

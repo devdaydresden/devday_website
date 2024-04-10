@@ -1,20 +1,27 @@
 {% extends "devday_site.html" %}
 {% load cms_tags crispy_forms_tags i18n %}
 {% block content_body %}
-    <div class="row">
-        <div class="col-12 col-md-10 offset-md-1 content-area">
-            {% static_placeholder "checkin-instructions" %}
-        </div>
+  <div class="row">
+    <div class="col-12 col-md-10 offset-md-1 content-area">
+      {% static_placeholder "checkin-instructions" %}
     </div>
-    <div class="row">
-        <div class="col-12 col-md-10 offset-md-1 content-area">
-          <p>{{ checkin_message | safe }}</p>
-          {{ checkin_reservations | safe }}
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-10 offset-md-1 content-area">
+      <p>{{ checkin_message | safe }}</p>
+      {% if is_speaker %}
+        <div class="alert alert-info">
+          {% blocktrans trimmed %}
+            <strong>Attention:</strong> Attendee is a <strong>Speaker</strong>!
+          {% endblocktrans %}
         </div>
+      {% endif %}
+      {{ checkin_reservations | safe }}
     </div>
-    <div class="row">
-      <div class="col-12 col-md-10 offset-md-1 content-area">
-            {% crispy form %}
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-10 offset-md-1 content-area">
+      {% crispy form %}
     </div>
+  </div>
 {% endblock %}

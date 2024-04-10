@@ -377,7 +377,11 @@ class CheckInAttendeeForm(forms.Form):
                 )
             )
         if attendee.checked_in is not None:
-            raise ValidationError(_("{} is already checked in!".format(attendee.user)))
+            raise ValidationError(
+                _("%(user)s is already checked in!"),
+                code="checked_in",
+                params={"attendee": attendee, "user": attendee.user},
+            )
 
         return attendee
 
@@ -452,9 +456,18 @@ class BadgeDataForm(forms.ModelForm):
         self.helper.form_method = "post"
         self.helper.html5_required = True
         self.helper.layout = Layout(
-            Div(Field("title", wrapper_class="col-12"), css_class="form-row",),
-            Div(Field("contact", wrapper_class="col-12"), css_class="form-row",),
-            Div(Field("topics", wrapper_class="col-12"), css_class="form-row",),
+            Div(
+                Field("title", wrapper_class="col-12"),
+                css_class="form-row",
+            ),
+            Div(
+                Field("contact", wrapper_class="col-12"),
+                css_class="form-row",
+            ),
+            Div(
+                Field("topics", wrapper_class="col-12"),
+                css_class="form-row",
+            ),
             Div(
                 Submit("submit", _("Submit your badge data")),
                 css_class="col-12 text-center",

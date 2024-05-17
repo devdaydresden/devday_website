@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/devdaydresden/devday_website/badge.svg?branch=development)](https://coveralls.io/github/devdaydresden/devday_website?branch=development)
+[![Coverage Status](https://coveralls.io/repos/github/devdaydresden/devday_website/badge.svg?branch=main)](https://coveralls.io/github/devdaydresden/devday_website?branch=main)
 
 # Dev Day website
 
